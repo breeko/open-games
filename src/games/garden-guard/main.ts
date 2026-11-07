@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import './shell.css';
 import { getDifficulty, setDifficulty, isDifficulty } from './difficulty';
 import { settings } from './state/settings';
 import { audio } from './audio/AudioManager';
@@ -91,12 +92,16 @@ if (import.meta.env.DEV) {
 
 // Touch controls live outside the scaled canvas so they stay comfortably large.
 const pause = document.querySelector<HTMLButtonElement>('#pause')!;
+const controls=document.querySelector<HTMLDialogElement>('#controls')!;
+const controlsToggle=document.querySelector<HTMLButtonElement>('#controls-toggle')!;
+let resumeAfterControls=false;
 let paused = false;
 function setPaused(value: boolean): void {
   const wasPaused=paused;
   paused = value;
   if (value) { game.pause(); audio.stopMusic(); }
   else {
+    if(controls.open)controls.close();
     if(wasPaused)for(const scene of game.scene.getScenes(true))if(scene instanceof GameScene)scene.resumeTweenClock();
     game.resume(); if (settings.current.music) { audio.unlock(); audio.startMusic(); }
   }
@@ -106,7 +111,49 @@ function setPaused(value: boolean): void {
   if(value)saveSession();
 }
 pause.onclick = () => setPaused(!paused);
-game.events.on('request-pause',()=>setPaused(true));
+document.querySelector<HTMLButtonElement>('#resume-play')!.onclick=()=>setPaused(false);
+function openControls():void {
+  if(controls.open)return;
+  resumeAfterControls=!paused;setPaused(true);
+  document.body.classList.add('controls-open');controls.showModal();
+}
+function closeControls(resume=resumeAfterControls):void {
+  controls.close();
+  if(resume)setPaused(false);
+}
+controlsToggle.onclick=openControls;
+document.querySelector<HTMLButtonElement>('#close-controls')!.onclick=()=>closeControls();
+controls.addEventListener('close',()=>{if(!controls.open){document.body.classList.remove('controls-open');controlsToggle.focus({preventScroll:true});}});
+controls.addEventListener('cancel',event=>{event.preventDefault();closeControls();});
+controls.addEventListener('click',event=>{
+  if(event.target!==controls)return;
+  const bounds=controls.getBoundingClientRect();
+  if(event.clientX<bounds.left||event.clientX>bounds.right||event.clientY<bounds.top||event.clientY>bounds.bottom)closeControls();
+});
+game.events.on('request-pause',openControls);
+
+const fullscreen=document.querySelector<HTMLButtonElement>('#fullscreen')!;
+const fullscreenHint=document.querySelector<HTMLParagraphElement>('#fullscreen-hint')!;
+const fullscreenAvailable=document.fullscreenEnabled&&typeof document.documentElement.requestFullscreen==='function';
+fullscreen.hidden=!fullscreenAvailable;fullscreenHint.hidden=fullscreenAvailable;
+function refreshFullscreen():void {fullscreen.textContent=document.fullscreenElement?'Exit fullscreen':'Enter fullscreen';}
+document.addEventListener('fullscreenchange',refreshFullscreen);
+fullscreen.onclick=async()=>{
+  const resume=resumeAfterControls;
+  // Browsers can reject fullscreen while a modal dialog is in the top layer.
+  // Close it synchronously, retaining the fullscreen button's user activation.
+  closeControls(false);
+  try {
+    if(document.fullscreenElement)await document.exitFullscreen();
+    else await document.documentElement.requestFullscreen();
+    refreshFullscreen();
+    if(resume)setPaused(false);
+  } catch(error) {
+    if(import.meta.env.DEV)console.info('Fullscreen unavailable:',error instanceof Error?error.message:String(error));
+    fullscreenHint.hidden=false;fullscreenHint.textContent='Fullscreen wasn’t available. You can keep playing here, or use Add to Home Screen.';
+    openControls();resumeAfterControls=resume;
+  }
+};
 game.events.on('session-started',()=>{savingEnabled=true;clearSessionPending=false;capturePending=true;});
 game.events.on('session-restored',()=>{
   setPaused(true);showSaveStatus('Level restored. Tap Resume when you’re ready.');
@@ -137,10 +184,12 @@ game.events.on('request-menu',openMenu);
 document.querySelector<HTMLButtonElement>('#shovel')!.onclick = () => {
   const scene = game.scene.getScene('game') as GameScene;
   if (game.scene.isActive('game')) scene.toggleShovel();
+  closeControls(true);
 };
 document.querySelector<HTMLButtonElement>('#cancel')!.onclick = () => {
   const scene = game.scene.getScene('game') as GameScene;
   if (game.scene.isActive('game')) scene.cancelSelection();
+  closeControls(true);
 };
 document.addEventListener('visibilitychange', () => { if (document.hidden) setPaused(true); });
 window.addEventListener('blur', () => setPaused(true));
@@ -209,7 +258,9 @@ const diagnosticsToggle=document.querySelector<HTMLButtonElement>('#diagnostics-
 diagnosticsToggle.onclick=()=>{
   diagnosticsPanel.hidden=!diagnosticsPanel.hidden;
   diagnosticsToggle.setAttribute('aria-expanded',String(!diagnosticsPanel.hidden));
+  closeControls(true);
 };
+document.querySelector<HTMLButtonElement>('#diagnostics-close')!.onclick=()=>{diagnosticsPanel.hidden=true;diagnosticsToggle.setAttribute('aria-expanded','false');};
 setInterval(()=>{
   const scene=game.scene.getScene('game') as GameScene;
   if(!game.scene.isActive('game'))return;
@@ -237,8 +288,6 @@ document.querySelector<HTMLButtonElement>('#trace-export')!.onclick=()=>{
   const url=URL.createObjectURL(new Blob([JSON.stringify({version:1,sourcePins:{corrected:'325b2229a7225d73870bb69322eefcda3a45bf8d',comparison:'c4692036c5e11d227c8fb7c593b734dac96da028'},...scene.diagnostics},null,2)],{type:'application/json'}));
   const a=document.createElement('a');a.href=url;a.download=`garden-level-${scene.levelId}-trace.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
-
-document.querySelectorAll<HTMLButtonElement>('.more-controls button').forEach(button=>button.addEventListener('click',()=>{document.querySelector<HTMLDetailsElement>('.more-controls')!.open=false;}));
 
 const autoSuns=document.querySelector<HTMLButtonElement>('#auto-suns')!;
 function refreshAutoSuns():void {

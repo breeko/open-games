@@ -19,11 +19,13 @@ Open the printed Network URL on an iPad on the same Wi-Fi as this Mac. Keep the 
 
 - Tap a seed, then a lawn square. Dragging also works.
 - Tap suns to collect 25 sun. Cards show price, recharge, or available conveyor supply.
-- Enable **More → Auto-collect suns** (or use Settings) to collect automatically. With auto-collect enabled, sky suns fall for 1.8 seconds and sunflower suns for 0.7 seconds, rest for just 100 ms, then fly to the sun bank in 300 ms and credit once on arrival. The preference saves on this device and can change mid-level; it starts off to preserve manual collection by default. Pause freezes the fall and collection flight.
+- Enable **Menu → Auto-collect suns** (or use Settings) to collect automatically. With auto-collect enabled, sky suns fall for 1.8 seconds and sunflower suns for 0.7 seconds, rest for just 100 ms, then fly to the sun bank in 300 ms and credit once on arrival. The preference saves on this device and can change mid-level; it starts off to preserve manual collection by default. Pause freezes the fall and collection flight.
 - Pause/Resume freezes the game. Switching away pauses automatically. Space also pauses.
+- The lawn fills the current viewport, including browser-toolbar height changes and safe-area insets. There is no persistent page header/footer. Tap the floating **Menu** or the lawn's Menu button for level selection, difficulty, restart, tools and save status; opening it pauses play. **Resume** returns to the lawn. The original 4:3 board stays uncropped, so wide screens keep side margins and portrait screens keep space above/below.
+- **Menu → Enter fullscreen** requests browser fullscreen from a tap when supported. Unsupported/denied requests keep the normal full-viewport layout and show an Add to Home Screen alternative. Native browser bars cannot be forced away outside a permitted fullscreen session.
 - Shovel removes a plant without a refund. Cancel seed / Escape clears tools and selection.
 - Choose any level with the level menu or previous/next buttons. Each cleared level saves separately.
-- The current level autosaves every two seconds, after planting/resource changes, on pause, and when leaving/backgrounding the page. Refresh or return to restore it paused with the same difficulty, loadout, board, timers and wave. **More → Resume saved level** returns from the menu. Restart or starting a new level replaces the ongoing session; victory/defeat clears it while preserving campaign progress. [Save details and verification](saves.md).
+- The current level autosaves every two seconds, after planting/resource changes, on pause, and when leaving/backgrounding the page. Refresh or return to restore it paused with the same difficulty, loadout, board, timers and wave. **Menu → Resume saved level** returns from the menu. Restart or starting a new level replaces the ongoing session; victory/defeat clears it while preserving campaign progress. [Save details and verification](saves.md).
 - Relaxed: 75% enemy health, 80% speed, +50 starting sun. Baseline: unmodified prototype balance. Hard: 135% health, 115% speed. Changing difficulty restarts the selected level.
 
 ## Daytime campaign
@@ -106,7 +108,7 @@ Configuration references: [Vite on Vercel](https://vercel.com/docs/frameworks/fr
 
 ## Original-style layout
 
-The lawn now keeps the original 4:3 view, with a wooden seed bank, integrated sun counter, stone Menu/pause button and original progress-meter artwork. Plants, zombie bodies, headgear and projectiles have independent display sizes. Sprites export at 2× display size and lawns use lossless PNG. These reduce avoidable blur; they are not a newly discovered native HD asset set. Extra controls are under More, while level navigation, difficulty and Pause remain visible.
+The lawn now keeps the original 4:3 view, with a wooden seed bank, integrated sun counter, stone Menu/pause button and original progress-meter artwork. Plants, zombie bodies, headgear and projectiles have independent display sizes. Sprites export at 2× display size and lawns use lossless PNG. These reduce avoidable blur; they are not a newly discovered native HD asset set. Controls now live in the overlay Menu so the lawn can use the full viewport; level navigation, difficulty and save status appear there while play is paused.
 
 
 ## Night expansion (2-1 to 2-4)
