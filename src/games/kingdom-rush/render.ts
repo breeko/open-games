@@ -86,7 +86,7 @@ export class Renderer {
       if(h.id===selected){c.strokeStyle='#ffe6a0';c.lineWidth=3;c.beginPath();c.ellipse(h.pos.x,h.pos.y-8,42,24,0,0,Math.PI*2);c.stroke();}
       if(debug){c.fillStyle='#fff';c.font='bold 13px sans-serif';c.fillText(String(h.id),h.pos.x-4,h.pos.y+16);}
     }
-    const objects:({kind:'tower';value:Tower}|{kind:'enemy';value:Enemy}|{kind:'soldier';value:Soldier})[]=[...sim.towers.map(value=>({kind:'tower' as const,value})),...sim.enemies.map(value=>({kind:'enemy' as const,value})),...sim.soldiers.map(value=>({kind:'soldier' as const,value}))];
+    const objects:({kind:'tower';value:Tower}|{kind:'enemy';value:Enemy}|{kind:'soldier';value:Soldier})[]=[...sim.towers.map(value=>({kind:'tower' as const,value})),...sim.enemies.map(value=>({kind:'enemy' as const,value})),...sim.soldiers.filter(s=>sim.tick>=s.activeAt).map(value=>({kind:'soldier' as const,value}))];
     objects.sort((a,b)=>a.value.y-b.value.y);
     for(const object of objects){
       switch(object.kind){

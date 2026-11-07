@@ -45,11 +45,11 @@ function updateHud():void {
   setText(pause,sim.paused?'Resume':'Pause');pause.disabled=sim.phase==='won'||sim.phase==='lost';
   fire.setAttribute('aria-pressed',String(mode==='fire'));reinforce.setAttribute('aria-pressed',String(mode==='reinforcements'));
   const fireWait=Math.max(0,Math.ceil((sim.fireReady-sim.tick)/FPS)),reinforceWait=Math.max(0,Math.ceil((sim.reinforcementsReady-sim.tick)/FPS));
-  setText(fireTime,fireWait?`${fireWait}s`:'Ready');setText(reinforceTime,reinforceWait?`${reinforceWait}s`:'Ready');
-  const stopped=sim.paused||sim.phase==='won'||sim.phase==='lost';fire.disabled=fireWait>0||stopped;reinforce.disabled=reinforceWait>0||stopped;
+  setText(fireTime,sim.phase==='ready'?'Start battle':fireWait?`${fireWait}s`:'Ready');setText(reinforceTime,sim.phase==='ready'?'Start battle':reinforceWait?`${reinforceWait}s`:'Ready');
+  const stopped=sim.paused||sim.phase!=='running';fire.disabled=fireWait>0||stopped;reinforce.disabled=reinforceWait>0||stopped;
   next.disabled=!sim.canCall||sim.paused;
   const label=sim.wave===0?'Start battle':sim.wave===LEVEL.groups.length?'Final wave':sim.canCall?'Call next wave':'Wave arriving';
-  const detail=sim.wave===0?'Wave 1 →':sim.earlyReward>0?`+${sim.earlyReward} gold · ${Math.ceil(sim.nextIn)}s early`:sim.wave===LEVEL.groups.length?'Hold the road':`Wave ${sim.wave+1} →`;
+  const detail=sim.wave===0?'Wave 1 →':sim.earlyReward>0?`+${sim.earlyReward} gold · ${Math.ceil(sim.nextIn)}s spell recharge`:sim.wave===LEVEL.groups.length?'Hold the road':`Wave ${sim.wave+1} →`;
   if(next.firstChild?.textContent!==label||next.lastChild?.textContent!==detail){next.replaceChildren(document.createTextNode(label));const sub=document.createElement('span');sub.textContent=detail;next.append(sub);}
   setText(phase,sim.paused?'Battle paused':sim.phase==='ready'?'Prepare your defenses':sim.phase==='won'?'Pagras defended':sim.phase==='lost'?'Defense broken':sim.canCall&&sim.nextIn>0?`Next wave in ${Math.ceil(sim.nextIn)}s`:'Hold the road');
   renderContext();

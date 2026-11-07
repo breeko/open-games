@@ -43,3 +43,14 @@ Full limitations and source details are maintained in [README.md](README.md). Th
 Branko authorized a commit and deployment limited to Kingdom Rush. The game's own folders and only its additions to the shared README, catalog, package scripts and build entries are in scope. Garden Guard work remains owned by the other agent.
 
 The prototype was played in the browser, and a seeded automated defense completed all eleven waves. It has **not** been played side by side with an unmodified original. The next fidelity milestone is a recorded original Pagras run with matched difficulty, hero and star-upgrade state, followed by comparisons of spawn/contact timing, purchases, soldier deaths and leaks. Source-data comparisons and prototype playtests do not replace that milestone.
+
+
+## November 7, 2026 — original Flash play comparison
+
+- Played publisher-hosted Flash v1.13 Pagras on Normal with no hero or purchased star upgrades. First run lost on wave nine; second run completed all eleven waves with ten lives and two stars. All final ogres were defeated.
+- Matched the three-tower opening in the local browser. Preserved 300 gold, twenty lives, eleven groups and 329 enemies; corrected edition-specific timing using the publisher binary's factual parameters.
+- Fixed damage RNG, artillery damage/falloff and prediction, arrow lead/misses, wind-ups/flights, countdown retention and flag delay, early-call power recharge, shaman self-heal/full casting/recharge, construction/door/regeneration timing and pre-battle power gating.
+- Nineteen Kingdom Rush checks and three game-boundary checks pass. A paced seeded defense completes the corrected campaign with sixteen lives. The production build passes.
+- Kept all changes in Kingdom Rush source, tests, scripts and documentation. No shared refactor or Garden Guard edits.
+
+See [the original comparison report](original-comparison.md) for publisher reference/hash, exact corrected rules, run observations and remaining approximations. The earlier entries above describe the state before this comparison.

@@ -1,23 +1,24 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { damageAfterArmor, ENEMIES, FPS, inRange, LEVEL, type TowerKind } from '../../../src/games/kingdom-rush/content';
+import { blastDamage, damageAfterArmor, ENEMIES, FPS, inRange, LEVEL, rollDamage, type TowerKind } from '../../../src/games/kingdom-rush/content';
 import { planWave, Simulation } from '../../../src/games/kingdom-rush/simulation';
 import source from '../../../src/games/kingdom-rush/reference/source-level03.json';
+import flash from '../../../src/games/kingdom-rush/reference/flash-pagras.json';
 
 describe('Pagras reference content',()=>{
-  test('keeps the older 300-gold economy, twelve foundations and complete source wave schedule',()=>{
+  test('keeps the 300-gold economy and geometry with the original Flash campaign schedule',()=>{
     assert.equal(LEVEL.cash,300);assert.equal(LEVEL.lives,20);assert.equal(LEVEL.holders.length,12);
     assert.equal(LEVEL.paths.length,2);assert.equal(LEVEL.groups.length,11);
-    assert.deepEqual(LEVEL.groups,source.waves.groups);
+    assert.deepEqual(LEVEL.groups,flash.groups);
     assert.equal(LEVEL.paths[0].lanes.length,3);
     source.paths.paths.forEach((route,i)=>route.forEach((lane,j)=>lane.forEach((p,k)=>assert.deepEqual(LEVEL.paths[i].lanes[j][k],{x:p.x,y:768-p.y}))));
   });
   test('matches source-derived spawn fixtures, including waits before the first enemy and concurrent routes',()=>{
-    const first=planWave(0,0);assert.equal(first.events.length,24);assert.equal(first.end,712);
-    assert.deepEqual(first.events.slice(0,3).map(e=>e.tick),[26,52,78]);
-    assert.equal(first.events[8].tick,340); // 8×26 + 100 inter-chunk wait + 32
-    const third=planWave(2,100);assert.equal(third.events.length,12);assert.equal(third.end,370);
-    assert.deepEqual(third.events.filter(e=>e.tick===145).map(e=>e.route),[1,0]);
+    const first=planWave(0,0);assert.equal(first.events.length,24);assert.equal(first.end,606);
+    assert.deepEqual(first.events.slice(0,3).map(e=>e.tick),[20,40,60]);
+    assert.equal(first.events[8].tick,287); // 8×20 + 100 wait + 2 transition frames + 25
+    const third=planWave(2,100);assert.equal(third.events.length,12);assert.equal(third.end,312);
+    assert.deepEqual(third.events.filter(e=>e.tick===135).map(e=>e.route),[1,0]);
     assert.deepEqual(LEVEL.groups.map((_,i)=>planWave(i,0).events.length),[24,10,12,40,35,10,31,39,63,23,42]);
     const final=planWave(10,0);assert.equal(final.events.filter(e=>e.kind==='ogre').length,2);
     assert.equal(final.events.filter(e=>e.kind==='shaman').length,4);
@@ -45,9 +46,9 @@ test('construction and upgrades charge once, reject invalid purchases and use th
 
 test('wave pressure and the early-call reward start after the spawners finish, while enemies may remain',()=>{
   const s=new Simulation();s.callWave();
-  for(let i=0;i<711;i++)s.step();assert.equal(s.canCall,false);
-  s.step();assert.equal(s.canCall,true);assert.equal(s.earlyReward,23); // round(700/30)
-  const before=s.gold;assert.equal(s.callWave(),true);assert.equal(s.gold,before+23);
+  for(let i=0;i<655;i++)s.step();assert.equal(s.canCall,false);
+  s.step();assert.equal(s.canCall,true);assert.equal(s.earlyReward,22); // round((700-50)/30)
+  const before=s.gold;assert.equal(s.callWave(),true);assert.equal(s.gold,before+22);
   assert.equal(s.wave,2);assert.ok(s.enemies.some(e=>e.hp>0));
 });
 
@@ -59,7 +60,7 @@ test('pause freezes enemies, spawns, spell cooldowns and economy commands',()=>{
 });
 
 test('soldiers physically stop enemies, release them when rallied, and respawn after death',()=>{
-  const s=new Simulation();s.build(12,'barrack');const soldier=s.soldiers[0],enemy=s.spawn('ogre');
+  const s=new Simulation();s.build(12,'barrack');for(let i=0;i<42;i++)s.step();const soldier=s.soldiers[0],enemy=s.spawn('ogre');
   enemy.x=329;enemy.y=474;enemy.nextAttack=0;
   soldier.x=enemy.x-24;soldier.y=enemy.y;soldier.rally={x:enemy.x,y:enemy.y};soldier.target=enemy.id;
   s.soldiers.slice(1).forEach(o=>{o.rally={x:100,y:100};o.x=100;o.y=100;});
@@ -102,7 +103,80 @@ function play(seed:number):Simulation {
   }
   return s;
 }
-test('a mixed defense can finish all eleven waves; a seeded replay reproduces the battle',()=>{
-  const a=play(0xc0ffee),b=play(0xc0ffee);assert.equal(a.phase,'won');assert.equal(a.wave,11);assert.ok(a.lives>0);
-  assert.equal(a.kills+a.leaked,329);assert.equal(a.export(),b.export());
+test('an aggressive early-call strategy has a deterministic battle outcome',()=>{
+  const a=play(0xc0ffee),b=play(0xc0ffee);assert.ok(a.phase==='won'||a.phase==='lost');assert.ok(a.wave>=7);
+  assert.ok(a.kills+a.leaked>200);assert.equal(a.export(),b.export());
+});
+
+
+test('early calls accelerate both spell cooldowns by the unrounded remaining countdown',()=>{
+  const s=new Simulation();s.callWave();while(!s.canCall)s.step();
+  s.cast('fire',{x:600,y:300});s.cast('reinforcements',LEVEL.holders[11].rally);
+  const fire=s.fireReady,reinforcements=s.reinforcementsReady,advance=Math.round(s.nextIn*FPS);
+  s.callWave();assert.equal(s.fireReady,fire-advance);assert.equal(s.reinforcementsReady,s.tick);
+  assert.ok(reinforcements<s.tick+advance);
+});
+
+test('a cleared road retains the countdown instead of silently starting the next wave',()=>{
+  const s=new Simulation();s.callWave();while(!s.canCall){s.enemies.forEach(e=>e.escaped=true);s.step();}
+  s.enemies.forEach(e=>e.escaped=true);const wait=Math.floor(s.nextIn*FPS);
+  for(let i=0;i<wait-1;i++)s.step();assert.equal(s.wave,1);s.step();assert.equal(s.wave,2);
+});
+
+test('artillery splash falls from maximum at the center to minimum at the ellipse boundary',()=>{
+  assert.equal(blastDamage(15,30,{x:0,y:0},{x:0,y:0},60),30);
+  assert.equal(blastDamage(15,30,{x:0,y:0},{x:60,y:0},60),15);
+  assert.equal(blastDamage(15,30,{x:0,y:0},{x:0,y:40},60),15);
+  assert.equal(blastDamage(15,30,{x:0,y:0},{x:30,y:0},60),22);
+});
+
+test('arrows can miss a target that moves away from the predicted impact point',()=>{
+  const s=new Simulation();const e=s.spawn('orc');e.x=600;e.y=300;
+  s.projectiles.push({id:900,kind:'physical',from:{x:100,y:100},to:{x:100,y:100},start:0,impact:1,target:e.id,damage:10,radius:0});
+  s.step();assert.equal(e.hp,80);
+});
+
+test('a healing shaman can heal itself and remains stationary for the full cast',()=>{
+  const s=new Simulation();const e=s.spawn('shaman');e.hp=40;e.nextHeal=0;
+  s.step();const x=e.x,y=e.y;while(s.tick<15)s.step();assert.equal(e.hp,90);
+  while(s.tick<28)s.step();assert.equal(e.x,x);assert.equal(e.y,y);
+  s.step();assert.ok(e.x!==x||e.y!==y);
+});
+
+
+test('a paced mixed defense can finish all eleven original-Flash waves',()=>{
+  const s=new Simulation();s.build(12,'barrack');s.build(10,'engineer');s.build(11,'archer');s.callWave();
+  const orders:[number,TowerKind][]=[[6,'mage'],[5,'archer'],[4,'mage'],[2,'archer'],[3,'mage'],[1,'archer'],[7,'barrack'],[8,'archer'],[9,'archer']];
+  for(let i=0;i<30000&&s.phase==='running';i++){
+    if(i%FPS===0){
+      const next=orders[0];if(next&&s.build(...next))orders.shift();
+      if(!orders.length)for(const t of s.towers)s.upgrade(t.id);
+      const enemies=s.enemies.filter(e=>e.hp>0&&!e.escaped&&e.x>0&&e.x<1024).sort((a,b)=>s.remaining(a)-s.remaining(b));
+      if(enemies[0]){
+        s.cast('reinforcements',enemies[0]);
+        if(enemies.length>10||enemies.some(e=>e.kind==='ogre'||e.kind==='shaman'))s.cast('fire',enemies[0]);
+      }
+    }
+    s.step();
+  }
+  assert.equal(s.phase,'won');assert.equal(s.wave,11);assert.ok(s.lives>0);
+  assert.equal(s.kills+s.leaked,329);
+});
+
+test('new towers take one second to construct; powers unlock at battle start',()=>{
+  const s=new Simulation();s.build(12,'barrack');s.build(11,'archer');
+  const enemy=s.spawn('orc');enemy.x=423;enemy.y=600;
+  for(let i=0;i<FPS-1;i++)s.step();assert.equal(s.towers[1].shots,0);
+  for(let i=0;i<8;i++)s.step();assert.equal(s.towers[1].shots,1);
+  while(s.tick<41)s.step();assert.equal(s.soldiers[0].x,410);assert.equal(s.soldiers[0].y,437);
+  s.step();assert.notEqual(s.soldiers[0].x,410);
+  assert.equal(s.cast('fire',{x:400,y:300}),false);s.callWave();assert.equal(s.cast('fire',{x:400,y:300}),true);
+});
+
+
+test('Flash damage rolls preserve the stronger low-end behavior of militia and farmers',()=>{
+  assert.equal(rollDamage([1,2],.01),2);assert.equal(rollDamage([1,2],.99),2);
+  assert.equal(rollDamage([1,3],.25),2);assert.equal(rollDamage([1,3],.75),3);
+  assert.equal(rollDamage([4,6],.01),5);assert.equal(rollDamage([4,6],.99),6);
+  assert.equal(rollDamage([4,6],0),4);
 });
