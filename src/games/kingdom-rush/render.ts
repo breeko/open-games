@@ -15,6 +15,7 @@ const ROOT='/games/kingdom-rush/assets/';
 const loadImage=(url:string):Promise<HTMLImageElement>=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=()=>reject(new Error(`Could not load ${url}`));i.src=url;});
 
 export class Renderer {
+  private spriteAspect=1;
   private constructor(readonly canvas:HTMLCanvasElement,readonly ctx:CanvasRenderingContext2D,private pack:SpritePack,private sheets:HTMLImageElement[],private background:HTMLImageElement) {}
   static async create(canvas:HTMLCanvasElement):Promise<Renderer> {
     const response=await fetch(ROOT+'sprites.json');if(!response.ok)throw new Error('Could not load sprite metadata');
@@ -34,7 +35,7 @@ export class Renderer {
   private sprite(name:string,p:Point,anchor:Point={x:.5,y:.5},flip=false,alpha=1,scale=1):void {
     const f=this.frame(name);if(!f)return;
     const [x,y,w,h]=f.region;const ctx=this.ctx;
-    ctx.save();ctx.translate(p.x,p.y);ctx.scale(flip?-scale:scale,scale);ctx.globalAlpha=alpha;
+    ctx.save();ctx.translate(p.x,p.y);ctx.scale((flip?-scale:scale)*this.spriteAspect,scale);ctx.globalAlpha=alpha;
     ctx.drawImage(this.sheets[f.page],x,y,w,h,-anchor.x*f.original[0]+f.trim[0],-(1-anchor.y)*f.original[1]+f.trim[1],w,h);ctx.restore();
   }
   private template(name:string,p:Point,age:number,animation?:string,flip=false,alpha=1,override?:string,attackAge=Infinity,up=false,shots=0):void {
@@ -75,8 +76,9 @@ export class Renderer {
   }
   draw(sim:Simulation,selected:number|null,mode:'none'|'rally'|'fire'|'reinforcements',pointer:Point|null,debug=false):void {
     const c=this.ctx,dpr=Math.min(1.5,window.devicePixelRatio||1);
-    const width=Math.max(1,Math.round(this.canvas.clientWidth*dpr)),height=Math.round(width*.75);
+    const width=Math.max(1,Math.round(this.canvas.clientWidth*dpr)),height=Math.max(1,Math.round(this.canvas.clientHeight*dpr));
     if(this.canvas.width!==width||this.canvas.height!==height){this.canvas.width=width;this.canvas.height=height;}
+    this.spriteAspect=Math.min(1,(height/768)/(width/1024));
     c.setTransform(width/1024,0,0,height/768,0,0);c.clearRect(0,0,1024,768);c.drawImage(this.background,0,0,1024,768);
     for(const d of DECORATIONS)this.template(d.template,{x:d.pos.x,y:768-d.pos.y},sim.tick,undefined,false,1,d['render.sprites[1].name']?this.frameName('',d['render.sprites[1].name'],sim.tick):undefined);
     if(debug){c.lineWidth=2;LEVEL.paths.forEach((route,i)=>{c.strokeStyle=i===0?'#ffd158':'#b2eaff';c.beginPath();route.lanes[0].forEach((p,j)=>j===0?c.moveTo(p.x,p.y):c.lineTo(p.x,p.y));c.stroke();});}
@@ -110,7 +112,7 @@ export class Renderer {
     for(const effect of sim.effects){const fraction=(sim.tick-effect.start)/effect.duration;c.globalAlpha=1-fraction;c.strokeStyle=effect.type==='heal'?'#95f979':effect.type==='fire'?'#ffc36a':'#e7d5ac';c.lineWidth=effect.type==='fire'?7:3;c.beginPath();c.ellipse(effect.x,effect.y,effect.radius*(.3+fraction*.7),effect.radius*ASPECT*(.3+fraction*.7),0,0,Math.PI*2);c.stroke();c.globalAlpha=1;}
     if(pointer&&mode!=='none'){c.fillStyle=mode==='fire'?'rgba(255,111,53,.2)':'rgba(149,217,237,.25)';c.strokeStyle=mode==='fire'?'#ffd09d':'#cbf4ff';c.lineWidth=2;c.beginPath();c.ellipse(pointer.x,pointer.y,mode==='fire'?60:35,(mode==='fire'?60:35)*ASPECT,0,0,Math.PI*2);c.fill();c.stroke();}
     if(sim.paused||sim.phase==='won'||sim.phase==='lost'){
-      c.fillStyle='rgba(20,30,22,.68)';c.fillRect(0,0,1024,768);c.textAlign='center';c.fillStyle='#fff1c8';c.font='bold 56px Georgia';c.fillText(sim.paused?'Paused':sim.phase==='won'?'Victory!':'The road has fallen',512,350);c.font='23px Georgia';c.fillText(sim.paused?'Resume when you’re ready.':sim.phase==='won'?`${sim.lives} lives saved · ${sim.kills} enemies defeated`:'Try a different defense. Barracks buy your towers time.',512,398);c.textAlign='left';
+      c.fillStyle='rgba(20,30,22,.68)';c.fillRect(0,0,1024,768);c.save();c.translate(512,0);c.scale(this.spriteAspect,1);c.textAlign='center';c.fillStyle='#fff1c8';c.font='bold 56px Georgia';c.fillText(sim.paused?'Paused':sim.phase==='won'?'Victory!':'The road has fallen',0,350);c.font='23px Georgia';c.fillText(sim.paused?'Resume when you’re ready.':sim.phase==='won'?`${sim.lives} lives saved · ${sim.kills} enemies defeated`:'Try a different defense. Barracks buy your towers time.',0,398);c.restore();
     }
   }
 }

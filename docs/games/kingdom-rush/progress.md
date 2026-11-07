@@ -73,3 +73,10 @@ See [the detailed comparison](original-comparison.md#melee-and-collision-follow-
 - Power buttons show an icon and cooldown, with accessible names. Tower/build/rally controls appear in a compact overlay only when selected. Mobile controls retain at least 44px touch targets and account for safe-area edges. Portrait has a usable centered-map fallback.
 - Browser checks at 844×390 and 667×375 confirm full-height map, no page overflow, tower selection/purchase, start-wave, reinforcement targeting/cooldown and pause. Also checked 390×844 portrait and the default desktop viewport. Production build and diff whitespace checks pass. Physical Safari browser-bar/notch behavior remains to be checked on a phone.
 - Layout and button presentation only; no combat, save format, shared library or Garden Guard changes.
+
+
+## November 7, 2026 — edge-to-edge landscape map
+
+- Replaced landscape side gutters with a viewport-filling battlefield. The entire map is fitted horizontally and vertically; no roads or tower sites are cropped. Terrain/range drawing adapts to the wider layout while unit/tower sprites and end-state text retain their proportions.
+- Controls overlay the map, with navigation in one top-right row. Rendering resolution now follows both displayed dimensions, matching existing pointer-coordinate conversion.
+- Browser verified at 844×390: edge-to-edge map, tower purchase, start-wave and reinforcement placement. Build passes. This changes presentation only; combat coordinates and timing remain unchanged.
