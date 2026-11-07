@@ -26,16 +26,16 @@ export const TOWERS: Readonly<Record<TowerKind, { name: string; price: readonly 
 };
 export interface EnemySpec { template: string; name: string; hp: number; armor: number; magicArmor: number; speed: number; gold: number; lives: number; damage: readonly [number,number]; cooldown: number; hitTime: number; dodge: number; slot: number }
 export const ENEMIES: Readonly<Record<EnemyKind, EnemySpec>> = {
-  goblin: { template:'enemy_goblin',name:'Goblin',hp:20,armor:0,magicArmor:0,speed:36,gold:3,lives:1,damage:[1,4],cooldown:1,hitTime:9/30,dodge:0,slot:18 },
-  orc: { template:'enemy_fat_orc',name:'Orc',hp:80,armor:0.3,magicArmor:0,speed:24,gold:9,lives:1,damage:[4,8],cooldown:1,hitTime:6/30,dodge:0,slot:18 },
-  wolf: { template:'enemy_wolf_small',name:'Wulf',hp:35,armor:0,magicArmor:0,speed:75,gold:5,lives:1,damage:[1,3],cooldown:44/30,hitTime:9/30,dodge:0.3,slot:18 },
-  shaman: { template:'enemy_shaman',name:'Shaman',hp:100,armor:0,magicArmor:0.85,speed:30,gold:10,lives:1,damage:[3,5],cooldown:1,hitTime:9/30,dodge:0,slot:18 },
-  ogre: { template:'enemy_ogre',name:'Ogre',hp:800,armor:0,magicArmor:0,speed:21,gold:50,lives:3,damage:[40,60],cooldown:1,hitTime:16/30,dodge:0,slot:24 },
+  goblin: { template:'enemy_goblin',name:'Goblin',hp:20,armor:0,magicArmor:0,speed:36,gold:3,lives:1,damage:[1,4],cooldown:1,hitTime:14/30,dodge:0,slot:19.2 },
+  orc: { template:'enemy_fat_orc',name:'Orc',hp:80,armor:0.3,magicArmor:0,speed:24,gold:9,lives:1,damage:[4,8],cooldown:1,hitTime:10/30,dodge:0,slot:19.2 },
+  wolf: { template:'enemy_wolf_small',name:'Wulf',hp:35,armor:0,magicArmor:0,speed:75,gold:5,lives:1,damage:[1,3],cooldown:38/30,hitTime:8/30,dodge:0.3,slot:19.2 },
+  shaman: { template:'enemy_shaman',name:'Shaman',hp:100,armor:0,magicArmor:0.85,speed:30,gold:10,lives:1,damage:[3,5],cooldown:1,hitTime:17/30,dodge:0,slot:19.2 },
+  ogre: { template:'enemy_ogre',name:'Ogre',hp:800,armor:0,magicArmor:0,speed:21,gold:50,lives:3,damage:[40,60],cooldown:1,hitTime:27/30,dodge:0,slot:32 },
 };
 export const SOLDIERS: Readonly<Record<SoldierKind,{template:string;hp:number;armor:number;damage:readonly [number,number];cooldown:number;speed:number;regen:number}>> = {
-  militia:{template:'soldier_militia',hp:50,armor:0,damage:[1,3],cooldown:1,speed:75,regen:5},
-  footmen:{template:'soldier_footmen',hp:100,armor:0.15,damage:[3,4],cooldown:50/30,speed:75,regen:7},
-  farmer:{template:'re_farmer',hp:30,armor:0,damage:[1,2],cooldown:1,speed:60,regen:3},
+  militia:{template:'soldier_militia',hp:50,armor:0,damage:[1,3],cooldown:1,speed:76.8,regen:5},
+  footmen:{template:'soldier_footmen',hp:100,armor:0.15,damage:[3,4],cooldown:50/30,speed:76.8,regen:7},
+  farmer:{template:'re_farmer',hp:30,armor:0,damage:[1,2],cooldown:1,speed:76.8,regen:3},
 };
 export function enemyKind(template: string): EnemyKind {
   switch(template) {

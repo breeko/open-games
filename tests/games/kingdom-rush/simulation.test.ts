@@ -59,19 +59,17 @@ test('pause freezes enemies, spawns, spell cooldowns and economy commands',()=>{
   assert.equal(s.cast('reinforcements',{x:329,y:474}),false);s.setPaused(false);s.step();assert.equal(s.tick,tick+1);
 });
 
-test('soldiers physically stop enemies, release them when rallied, and respawn after death',()=>{
-  const s=new Simulation();s.build(12,'barrack');for(let i=0;i<42;i++)s.step();const soldier=s.soldiers[0],enemy=s.spawn('ogre');
-  enemy.x=329;enemy.y=474;enemy.nextAttack=0;
-  soldier.x=enemy.x-24;soldier.y=enemy.y;soldier.rally={x:enemy.x,y:enemy.y};soldier.target=enemy.id;
-  s.soldiers.slice(1).forEach(o=>{o.rally={x:100,y:100};o.x=100;o.y=100;});
-  const x=enemy.x;s.step();assert.equal(enemy.x,x);assert.equal(soldier.target,enemy.id);
-  assert.equal(s.setRally(12,{x:329,y:474}),true);assert.equal(soldier.target,0);
-  // An isolated ogre kills the blocking militia; the tower owns its replacement.
-  soldier.rally={x:enemy.x,y:enemy.y};soldier.x=enemy.x-24;soldier.y=enemy.y;soldier.target=enemy.id;
-  soldier.hp=1;enemy.nextAttack=s.tick;enemy.hitAt=0;
-  for(let i=0;i<25;i++)s.step();assert.equal(soldier.hp,0);
-  enemy.escaped=true;const respawn=soldier.respawnAt;while(s.tick<respawn)s.step();
-  assert.equal(soldier.hp,50);assert.ok(s.events.some(e=>e.type==='soldier-respawn'));
+test('a primary blocker reserves an enemy during approach, then takes its attacks and respawns',()=>{
+  const s=new Simulation();s.build(12,'barrack');for(let i=0;i<42;i++)s.step();
+  const enemy=s.spawn('ogre');enemy.x=329;enemy.y=474;
+  s.step();const primary=s.soldiers.find(o=>o.id===enemy.attackTarget)!;
+  assert.ok(primary);assert.equal(primary.meleeSlot,2);assert.equal(enemy.x,329);
+  assert.equal(primary.arrived,false);assert.equal(enemy.hitAt,0,'no enemy attack before its blocker arrives');
+  for(let i=0;i<100&&!primary.arrived;i++)s.step();assert.equal(primary.arrived,true);
+  primary.hp=1;for(let i=0;i<35&&primary.hp>0;i++)s.step();assert.equal(primary.hp,0);
+  enemy.escaped=true;const respawn=primary.respawnAt;while(s.tick<respawn)s.step();
+  assert.equal(primary.hp,50);assert.ok(s.events.some(e=>e.type==='soldier-respawn'));
+  assert.equal(primary.x,410,'replacement waits at the barracks door');
 });
 
 test('a shaman heals wounded allies after its cast delay rather than making every enemy regenerate',()=>{

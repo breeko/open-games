@@ -1,3 +1,4 @@
+import { projectilePose } from './collision';
 import rawVisuals from './reference/visuals.json';
 import rawDecorations from './reference/decorations.json';
 import { ASPECT, ENEMIES, LEVEL, SOLDIERS, TOWERS, type Point, type TowerKind } from './content';
@@ -99,10 +100,10 @@ export class Renderer {
       c.strokeStyle='#f4e39a';c.lineWidth=2;c.beginPath();c.moveTo(t.rally.x,t.rally.y);c.lineTo(t.rally.x,t.rally.y-28);c.stroke();c.fillStyle='#6da9d7';c.beginPath();c.moveTo(t.rally.x,t.rally.y-28);c.lineTo(t.rally.x+20,t.rally.y-23);c.lineTo(t.rally.x,t.rally.y-16);c.fill();
     }
     for(const p of sim.projectiles){
-      if(sim.tick<p.start)continue;const progress=Math.min(1,(sim.tick-p.start)/(p.impact-p.start));
-      const x=p.from.x+(p.to.x-p.from.x)*progress,y=p.from.y+(p.to.y-p.from.y)*progress-(p.kind==='physical'||p.kind==='explosion'?Math.sin(progress*Math.PI)*50:0);
+      if(sim.tick<p.start)continue;
+      const {x,y,angle}=projectilePose(p,sim.tick);
       c.save();c.translate(x,y);
-      if(p.kind==='physical'){c.rotate(Math.atan2(p.to.y-p.from.y,p.to.x-p.from.x));c.strokeStyle='#3b281a';c.lineWidth=2;c.beginPath();c.moveTo(-7,0);c.lineTo(7,0);c.stroke();}
+      if(p.kind==='physical'){c.rotate(angle);c.strokeStyle='#3b281a';c.lineWidth=2;c.beginPath();c.moveTo(-7,0);c.lineTo(7,0);c.stroke();}
       else {c.shadowColor=p.kind==='magic'?'#71d7ff':'#ff8b3f';c.shadowBlur=10;c.fillStyle=p.kind==='magic'?'#aff6ff':p.kind==='true'?'#ffb54e':'#333535';c.beginPath();c.arc(0,0,p.kind==='true'?10:5,0,Math.PI*2);c.fill();}
       c.restore();
     }

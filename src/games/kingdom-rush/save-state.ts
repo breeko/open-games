@@ -27,6 +27,7 @@ const soldierSchema = point.extend({
   id: id.positive(), kind: z.enum(['militia', 'footmen', 'farmer']), towerId: id,
   activeAt: tick, slot: z.number().int().min(0).max(2), rally: point, hp: health,
   deadAt, respawnAt: deadline, expires: deadline, target: id, nextAttack: tick,
+  home: point, destination: point, meleeSlot: z.number().int().min(-1).max(2), arrived: z.boolean(), redeploying: z.boolean(),
   hitAt: tick, regenAt: tick, animation, animAt: tick, facing,
 });
 const towerSchema = point.extend({
@@ -50,7 +51,7 @@ const spawnSchema = z.object({
 
 /** Bump compatibility when changed rules cannot safely resume an older battle. */
 export const battleSnapshotSchema = z.object({
-  compatibility: z.literal('pagras-flash-v1.13-r1'), level: z.literal(3),
+  compatibility: z.literal('pagras-flash-v1.13-r2'), level: z.literal(3),
   tick, gold: tick, lives: tick.max(LEVEL.lives), wave: tick.max(LEVEL.groups.length),
   kills: tick, leaked: tick, phase: z.enum(['ready', 'running', 'won', 'lost']), paused: z.boolean(),
   seed: uint32, rng: uint32.positive(), nextId: id.positive(),

@@ -1,9 +1,10 @@
 import { ASPECT, blastDamage, damageAfterArmor, distance, ENEMIES, enemyKind, FPS, inRange, LEVEL, rollDamage, SOLDIERS, STEP, TOWERS, type DamageKind, type EnemyKind, type Point, type SoldierKind, type TowerKind } from './content';
+import { arrowHits, barracksFormation } from './collision';
 import { battleSnapshotSchema, type BattleSnapshot } from './save-state';
 
 export interface Event { tick:number; type:string; [key:string]:string|number|boolean }
 export interface Enemy extends Point { id:number; kind:EnemyKind; route:number; lane:number; node:number; hp:number; maxHp:number; deadAt:number; escaped:boolean; nextAttack:number; hitAt:number; attackTarget:number; healAt:number; healUntil:number; nextHeal:number; animation:string; animAt:number; facing:number }
-export interface Soldier extends Point { id:number; kind:SoldierKind; towerId:number; activeAt:number; slot:number; rally:Point; hp:number; deadAt:number; respawnAt:number; expires:number; target:number; nextAttack:number; hitAt:number; regenAt:number; animation:string; animAt:number; facing:number }
+export interface Soldier extends Point { id:number; kind:SoldierKind; towerId:number; activeAt:number; slot:number; rally:Point; hp:number; deadAt:number; respawnAt:number; expires:number; target:number; home:Point; destination:Point; meleeSlot:number; arrived:boolean; redeploying:boolean; nextAttack:number; hitAt:number; regenAt:number; animation:string; animAt:number; facing:number }
 export interface Tower extends Point { id:number; kind:TowerKind; level:number; readyAt:number; spent:number; rally:Point; targetId:number; nextAttack:number; fireAt:number; animAt:number; target:Point; shots:number }
 export interface Projectile { id:number; kind:DamageKind; from:Point; to:Point; start:number; impact:number; target:number; damage:number; radius:number; minDamage?:number }
 export interface Effect extends Point { type:'hit'|'heal'|'fire'|'death'; start:number; duration:number; radius:number }
@@ -43,7 +44,7 @@ export class Simulation {
   /** Capture gameplay data only, detached from the live simulation and renderer. */
   snapshot(): BattleSnapshot {
     const data: BattleSnapshot = {
-      compatibility: 'pagras-flash-v1.13-r1', level: 3,
+      compatibility: 'pagras-flash-v1.13-r2', level: 3,
       tick: this.tick, gold: this.gold, lives: this.lives, wave: this.wave,
       kills: this.kills, leaked: this.leaked, phase: this.phase, paused: this.paused,
       seed: this.seed, rng: this.rng, nextId: this.nextId, groupEnd: this.groupEnd,
@@ -101,20 +102,23 @@ export class Simulation {
     const t=this.towers.find(t=>t.id===id);if(!t||t.level>=2||this.paused||this.phase==='won'||this.phase==='lost')return false;
     const cost=TOWERS[t.kind].price[t.level];if(this.gold<cost)return false;
     this.gold-=cost;t.spent+=cost;t.level++;
-    if(t.kind==='barrack')for(const s of this.soldiers.filter(s=>s.towerId===t.id)){s.kind='footmen';s.hp=SOLDIERS.footmen.hp;s.deadAt=-1;s.respawnAt=0;}
+    if(t.kind==='barrack')for(const s of this.soldiers.filter(s=>s.towerId===t.id)){
+      if(s.hp<=0){this.release(s);s.x=t.x;s.y=t.y;s.activeAt=this.tick+12;}
+      s.kind='footmen';s.hp=SOLDIERS.footmen.hp;s.deadAt=-1;s.respawnAt=0;s.hitAt=0;s.nextAttack=this.tick+30;
+    }
     this.log('upgrade',{holder:id,level:t.level,gold:this.gold});return true;
   }
   sell(id:number):boolean {
     const i=this.towers.findIndex(t=>t.id===id);if(i<0||this.paused||this.phase==='won'||this.phase==='lost')return false;
     const [t]=this.towers.splice(i,1);const refund=Math.floor(t.spent*0.6);this.gold+=refund;
-    for(const s of this.soldiers.filter(s=>s.towerId===id)){s.hp=0;s.expires=this.tick;s.respawnAt=Infinity;s.target=0;s.deadAt=this.tick;}
+    for(const s of this.soldiers.filter(s=>s.towerId===id)){this.release(s);s.hp=0;s.expires=this.tick;s.respawnAt=Infinity;s.target=0;s.deadAt=this.tick;}
     this.log('sell',{holder:id,refund,gold:this.gold});return true;
   }
   setRally(id:number,p:Point):boolean {
-    const t=this.towers.find(t=>t.id===id);if(!t||t.kind!=='barrack'||!inRange(t,p,145)||this.paused||this.phase==='won'||this.phase==='lost')return false;
-    const road=this.nearestRoad(p);if(distance(road,p)>30)return false;
-    t.rally={...road};for(const s of this.soldiers.filter(s=>s.towerId===id)){s.rally=this.formation(t.rally,s.slot);s.target=0;s.hitAt=0;}
-    this.log('rally',{holder:id,x:road.x,y:road.y});return true;
+    const t=this.towers.find(t=>t.id===id);if(!t||t.kind!=='barrack'||!inRange({x:t.x,y:t.y-12.8},p,147.2)||this.paused||this.phase==='won'||this.phase==='lost')return false;
+    const road=this.nearestRoad(p);if(distance(road,p)>38.4)return false;
+    t.rally={...p};for(const s of this.soldiers.filter(s=>s.towerId===id)){this.release(s);s.rally=barracksFormation(t.rally,s.slot);s.redeploying=true;}
+    this.log('rally',{holder:id,x:p.x,y:p.y});return true;
   }
   nearestRoad(p:Point):Point {
     let best=LEVEL.paths[0].lanes[0][0],d=Infinity;
@@ -141,9 +145,9 @@ export class Simulation {
       }
     } else {
       if(this.tick<this.reinforcementsReady)return false;
-      const road=this.nearestRoad(p);if(distance(road,p)>35)return false;
+      const road=this.nearestRoad(p);if(distance(road,p)>38.4)return false;
       this.reinforcementsReady=this.tick+10*FPS;
-      for(let i=0;i<2;i++)this.createSoldier(undefined,i,road);
+      for(let i=0;i<2;i++)this.createSoldier(undefined,i,p);
     }
     this.log('cast',{kind,x:p.x,y:p.y});return true;
   }
@@ -152,11 +156,11 @@ export class Simulation {
     while(remaining>speed*1.28&&ticks<100){speed=Math.min(15,speed+Math.ceil(speed*.05));remaining-=speed*1.28;ticks++;}
     return Math.max(1,ticks+1);
   }
-  private formation(p:Point,slot:number):Point {return {x:p.x+(slot-1)*15,y:p.y+(slot===1?-8:5)};}
   private createSoldier(t:Tower|undefined,slot:number,p?:Point):void {
-    const rally=this.formation(t?.rally??p??{x:0,y:0},slot);
+    const home={...(t?.rally??p??{x:0,y:0})};
+    const rally=t?barracksFormation(home,slot):{x:home.x+(slot===0?8.96:-8.96),y:home.y+(slot===0?8.96:-8.96)};
     const kind:SoldierKind=t?(t.level===1?'militia':'footmen'):'farmer';
-    this.soldiers.push({id:this.nextId++,kind,towerId:t?.id??0,activeAt:t?this.tick+FPS+12:this.tick,slot,rally,hp:SOLDIERS[kind].hp,...(t?{x:t.x,y:t.y}:rally),deadAt:-1,respawnAt:0,expires:t?Infinity:this.tick+20*FPS,target:0,nextAttack:this.tick+FPS,hitAt:0,regenAt:this.tick+FPS,animation:'running',animAt:this.tick,facing:1});
+    this.soldiers.push({id:this.nextId++,kind,towerId:t?.id??0,activeAt:t?this.tick+FPS+12:this.tick+7,slot,rally,hp:SOLDIERS[kind].hp,...(t?{x:t.x,y:t.y}:rally),deadAt:-1,respawnAt:0,expires:t?Infinity:this.tick+7+20*FPS,target:0,home,destination:{...rally},meleeSlot:-1,arrived:false,redeploying:false,nextAttack:this.tick+FPS,hitAt:0,regenAt:this.tick+FPS,animation:'running',animAt:this.tick,facing:1});
   }
   spawn(kind:EnemyKind,route=0,lane=0):Enemy {
     const path=LEVEL.paths[route];const start=path.lanes[lane][path.start],spec=ENEMIES[kind];
@@ -174,44 +178,66 @@ export class Simulation {
     if(e.hp<=0||e.escaped)return;
     const spec=ENEMIES[e.kind];if(melee&&this.random()<spec.dodge){this.effects.push({...e,type:'hit',start:this.tick,duration:8,radius:12});return;}
     const damage=damageAfterArmor(value,kind,spec.armor,spec.magicArmor);e.hp=Math.max(0,e.hp-damage);
-    if(e.hp===0){e.deadAt=this.tick;e.animation='death';e.animAt=this.tick;this.kills++;this.gold+=spec.gold;this.log('kill',{enemy:e.id,gold:this.gold});}
+    if(e.hp===0){for(const s of this.soldiers.filter(s=>s.target===e.id))this.release(s);e.deadAt=this.tick;e.animation='death';e.animAt=this.tick;this.kills++;this.gold+=spec.gold;this.log('kill',{enemy:e.id,gold:this.gold});}
   }
   private hurtSoldier(s:Soldier,value:number):void {
     if(s.hp<=0)return;const spec=SOLDIERS[s.kind];s.hp=Math.max(0,s.hp-damageAfterArmor(value,'physical',spec.armor,0,true));
-    if(s.hp===0){s.deadAt=this.tick;s.respawnAt=s.towerId?this.tick+10*FPS:Infinity;s.target=0;s.animation='death';s.animAt=this.tick;this.log('soldier-death',{soldier:s.id});}
+    if(s.hp===0){this.release(s);s.deadAt=this.tick;s.respawnAt=s.towerId?this.tick+10*FPS:Infinity;s.target=0;s.animation='death';s.animAt=this.tick;this.log('soldier-death',{soldier:s.id});}
+  }
+  private release(s:Soldier):void {
+    const enemy=this.enemies.find(e=>e.id===s.target);
+    if(enemy?.attackTarget===s.id){enemy.attackTarget=0;enemy.hitAt=0;enemy.nextAttack=this.tick;}
+    s.target=0;s.meleeSlot=-1;s.arrived=false;s.hitAt=0;
+  }
+  private blocker(e:Enemy):Soldier|undefined {
+    return this.soldiers.find(s=>s.id===e.attackTarget&&s.hp>0&&this.tick>=s.activeAt&&this.tick<s.expires&&s.target===e.id&&s.meleeSlot===2);
+  }
+  private claim(s:Soldier,e:Enemy,primary:boolean):void {
+    this.release(s);s.target=e.id;s.arrived=false;s.nextAttack=this.tick;
+    if(primary){s.meleeSlot=2;e.attackTarget=s.id;e.hitAt=0;e.nextAttack=this.tick;}
+    else {
+      const occupied=this.soldiers.filter(o=>o.hp>0&&o.target===e.id&&o.meleeSlot!==2).map(o=>o.meleeSlot);
+      s.meleeSlot=!occupied.includes(0)?0:!occupied.includes(1)?1:this.random()>=.5?0:1;
+    }
+    const side=s.meleeSlot===2?0:s.meleeSlot===0?1:-1;
+    const gap=ENEMIES[e.kind].slot+(s.kind==='farmer'?6.4:0)-(side===0?0:3.84);
+    s.destination={x:e.x+e.facing*gap,y:e.y+side*7.68};
   }
   private stepSoldier(s:Soldier):void {
     if(this.tick<s.activeAt)return;
-    if(this.tick>=s.expires){if(s.hp>0){s.hp=0;s.target=0;s.deadAt=this.tick;s.animation='death';s.animAt=this.tick;}return;}
+    if(this.tick>=s.expires){if(s.hp>0){this.release(s);s.hp=0;s.deadAt=this.tick;s.animation='death';s.animAt=this.tick;}return;}
     if(s.hp<=0){
-      if(this.tick>=s.respawnAt){const t=this.towers.find(t=>t.id===s.towerId);if(!t)return; s.hp=SOLDIERS[s.kind].hp;s.activeAt=this.tick+12;s.x=t.x;s.y=t.y;s.rally=this.formation(t.rally,s.slot);s.deadAt=-1;s.target=0;s.hitAt=0;s.nextAttack=this.tick+FPS;this.log('soldier-respawn',{soldier:s.id});}
-      else return;
+      if(this.tick<s.respawnAt)return;
+      const t=this.towers.find(t=>t.id===s.towerId);if(!t)return;
+      s.hp=SOLDIERS[s.kind].hp;s.activeAt=this.tick+12;s.x=t.x;s.y=t.y;s.rally=barracksFormation(t.rally,s.slot);
+      s.deadAt=-1;this.release(s);s.nextAttack=this.tick;this.log('soldier-respawn',{soldier:s.id});return;
     }
     const spec=SOLDIERS[s.kind];
+    if(s.redeploying){this.animate(s,'running');s.facing=s.rally.x>=s.x?1:-1;s.redeploying=!this.move(s,s.rally,spec.speed);s.regenAt=this.tick+3*FPS;return;}
     let target=this.enemies.find(e=>e.id===s.target&&e.hp>0&&!e.escaped);
-    if(target&&!inRange(s.rally,target,85)){target=undefined;s.target=0;s.hitAt=0;}
-    if(!target){
-      const candidates=this.living().filter(e=>inRange(s.rally,e,60));
-      candidates.sort((a,b)=>{
-        const ab=this.soldiers.filter(o=>o.hp>0&&o.target===a.id).length,bb=this.soldiers.filter(o=>o.hp>0&&o.target===b.id).length;
-        return (ab>0?1:0)-(bb>0?1:0)||this.remaining(a)-this.remaining(b);
-      });
-      target=candidates[0];s.target=target?.id??0;
+    if(target&&!this.blocker(target)){this.release(s);target=undefined;}
+    // A primary blocker stays committed. Helpers prefer a new unblocked enemy.
+    if(!target||s.meleeSlot!==2){
+      const tower=this.towers.find(t=>t.id===s.towerId);
+      const center=tower?{x:tower.rally.x,y:tower.rally.y+12.8}:s.home;
+      const candidates=this.living().filter(e=>inRange(center,e,64)).sort((a,b)=>a.node-b.node||a.id-b.id);
+      const unblocked=candidates.find(e=>!this.blocker(e));
+      const next=unblocked??(!target?candidates.find(e=>this.blocker(e)):undefined);
+      if(next){this.claim(s,next,!!unblocked);target=next;}
     }
     if(target){
-      s.facing=target.x>=s.x?1:-1;
-      const companions=this.soldiers.filter(o=>o.hp>0&&o.target===target!.id),rank=companions.findIndex(o=>o.id===s.id);
-      const to={x:target.x+(rank%2===0?-1:1)*ENEMIES[target.kind].slot,y:target.y+(rank>1?10:0)};
-      if(distance(s,to)>5){this.animate(s,'running');this.move(s,to,spec.speed);s.hitAt=0;}
-      else {
-        if(s.hitAt>0&&this.tick>=s.hitAt){this.hurtEnemy(target,this.roll(spec.damage),'physical',true);s.hitAt=0;}
-        if(this.tick>=s.nextAttack&&target.hp>0){s.animation='attack';s.animAt=this.tick;s.hitAt=this.tick+5;s.nextAttack=this.tick+Math.round(spec.cooldown*FPS);}
-        else if(this.tick-s.animAt>20)this.animate(s,'idle');
+      if(!s.arrived){
+        s.facing=s.destination.x>=s.x?1:-1;this.animate(s,'running');
+        if(this.move(s,s.destination,spec.speed)){s.arrived=true;s.facing=-target.facing;s.nextAttack=this.tick;}
+        s.regenAt=this.tick+3*FPS;return;
       }
+      if(s.hitAt>0&&this.tick>=s.hitAt){this.hurtEnemy(target,this.roll(spec.damage),'physical',true);s.hitAt=0;}
+      if(s.target&&target.hp>0&&this.tick>=s.nextAttack){s.animation='attack';s.animAt=this.tick;s.hitAt=this.tick+5;s.nextAttack=this.tick+Math.round(spec.cooldown*FPS);}
+      else if(this.tick-s.animAt>=(s.kind==='footmen'?20:11))this.animate(s,'idle');
       s.regenAt=this.tick+3*FPS;
     } else {
       s.hitAt=0;
-      if(distance(s,s.rally)>2){s.facing=s.rally.x>=s.x?1:-1;this.animate(s,'running');this.move(s,s.rally,spec.speed);s.regenAt=this.tick+3*FPS;}
+      if(distance(s,s.rally)>0){s.facing=s.rally.x>=s.x?1:-1;this.animate(s,'running');this.move(s,s.rally,spec.speed);s.regenAt=this.tick+3*FPS;}
       else {this.animate(s,'idle');if(this.tick>=s.regenAt){s.hp=Math.min(spec.hp,s.hp+spec.regen);s.regenAt=this.tick+FPS;}}
     }
   }
@@ -223,17 +249,19 @@ export class Simulation {
         for(const o of wounded){o.hp=Math.min(o.maxHp,o.hp+50);this.effects.push({...o,type:'heal',start:this.tick,duration:24,radius:22});}
         e.healAt=0;
       }
-      if(this.tick>=e.nextHeal&&this.tick>=e.healUntil&&this.living().some(o=>o.hp<o.maxHp&&inRange(e,o,96))){e.healAt=this.tick+14;e.healUntil=this.tick+28;e.nextHeal=e.healUntil+8*FPS;e.animation='heal';e.animAt=this.tick;}
+      if(e.hitAt===0&&this.tick>=e.nextHeal&&this.tick>=e.healUntil&&this.living().some(o=>o.hp<o.maxHp&&inRange(e,o,96))){e.healAt=this.tick+14;e.healUntil=this.tick+28;e.nextHeal=e.healUntil+8*FPS;e.animation='heal';e.animAt=this.tick;}
       if(this.tick<e.healUntil)return;
     }
-    const blocker=this.soldiers.find(s=>s.hp>0&&this.tick>=s.activeAt&&s.target===e.id&&distance(s,e)<spec.slot+12);
+    const blocker=this.blocker(e);
     if(blocker){
-      e.facing=blocker.x>=e.x?1:-1;
-      if(e.hitAt>0&&this.tick>=e.hitAt){const victim=this.soldiers.find(s=>s.id===e.attackTarget&&s.hp>0);if(victim&&distance(e,victim)<55)this.hurtSoldier(victim,this.roll(spec.damage));e.hitAt=0;}
-      if(this.tick>=e.nextAttack){e.attackTarget=blocker.id;e.animation='attack';e.animAt=this.tick;e.hitAt=this.tick+Math.round(spec.hitTime*FPS);e.nextAttack=this.tick+Math.round(spec.cooldown*FPS);}
+      if(!blocker.arrived)return;
+      if(e.hitAt>0&&this.tick>=e.hitAt){this.hurtSoldier(blocker,this.roll(spec.damage));e.hitAt=0;if(blocker.hp<=0)return;}
+      if(this.tick>=e.nextAttack){e.animation='attack';e.animAt=this.tick;e.hitAt=this.tick+Math.round(spec.hitTime*FPS);e.nextAttack=this.tick+Math.round(spec.cooldown*FPS);}
+      else if(e.hitAt===0)this.animate(e,'idle');
       return;
     }
-    e.hitAt=0;
+    e.attackTarget=0;e.hitAt=0;
+
     const route=LEVEL.paths[e.route],lane=route.lanes[e.lane];
     let travel=spec.speed*1.28*STEP;
     while(travel>0&&e.node<route.end){
@@ -246,14 +274,14 @@ export class Simulation {
     if(e.node>=route.end){e.escaped=true;this.lives=Math.max(0,this.lives-spec.lives);this.leaked++;this.log('leak',{enemy:e.id,lives:this.lives});}
   }
   private target(t:Tower):Enemy|undefined {return this.living().filter(e=>inRange({x:t.x,y:t.y-12},t.kind==='engineer'?this.bombAim(e):e,TOWERS[t.kind].range[t.level-1])&&e.x>=0&&e.x<=1024).sort((a,b)=>this.remaining(a)-this.remaining(b))[0];}
-  private blocked(e:Enemy):boolean {return this.soldiers.some(s=>s.hp>0&&this.tick>=s.activeAt&&s.target===e.id&&distance(s,e)<ENEMIES[e.kind].slot+12);}
+  private blocked(e:Enemy):boolean {return !!this.blocker(e);}
   private bombAim(e:Enemy):Point {
     if(this.blocked(e)||this.tick<e.healUntil)return {x:e.x,y:e.y};
     const route=LEVEL.paths[e.route],lead=Math.ceil(5.5*ENEMIES[e.kind].speed/FPS);
     return {...route.lanes[e.lane][Math.min(route.end,e.node+lead)]};
   }
   private arrowAim(e:Enemy,ticks:number):Point {
-    const p={x:e.x,y:e.y-10.24};
+    const p={x:e.x+(e.kind==='ogre'?3.84:0),y:e.y-(e.kind==='ogre'?23.04:10.24)};
     if(!this.blocked(e)&&this.tick>=e.healUntil){
       const lane=LEVEL.paths[e.route].lanes[e.lane],next=lane[Math.min(e.node+1,lane.length-1)],d=distance(e,next);
       if(d>0){const travel=ENEMIES[e.kind].speed*1.28*ticks/FPS;p.x+=(next.x-e.x)*travel/d;p.y+=(next.y-e.y)*travel/d;}
@@ -283,10 +311,17 @@ export class Simulation {
     for(const s of this.soldiers)this.stepSoldier(s);
     for(const e of this.enemies)this.stepEnemy(e);
     for(const t of this.towers)this.stepTower(t);
+    const arrowsHit=new Set<number>();
+    for(const p of this.projectiles){
+      if(p.kind!=='physical'||this.tick<p.impact-2||this.tick>p.impact)continue;
+      const e=this.enemies.find(e=>e.id===p.target&&e.hp>0&&!e.escaped);
+      if(e&&arrowHits(e,p,this.tick)){this.hurtEnemy(e,p.damage,p.kind);arrowsHit.add(p.id);}
+    }
+    this.projectiles=this.projectiles.filter(p=>!arrowsHit.has(p.id));
     const arrived=this.projectiles.filter(p=>p.impact<=this.tick);this.projectiles=this.projectiles.filter(p=>p.impact>this.tick);
     for(const p of arrived){
       if(p.radius>0){for(const e of this.living())if((e.x-p.to.x)**2+((e.y-p.to.y)/(p.kind==='explosion'?2/3:ASPECT))**2<=p.radius**2)this.hurtEnemy(e,p.minDamage===undefined?p.damage:blastDamage(p.minDamage,p.damage,p.to,e,p.radius),p.kind);this.effects.push({...p.to,type:p.kind==='true'?'fire':'hit',start:this.tick,duration:18,radius:p.radius});}
-      else {const e=this.enemies.find(e=>e.id===p.target);if(e&&e.hp>0&&!e.escaped&&(p.kind!=='physical'||(Math.abs(e.x-p.to.x)<=24&&Math.abs(e.y-10.24-p.to.y)<=26))){this.hurtEnemy(e,p.damage,p.kind);this.effects.push({x:e.x,y:e.y-8,type:'hit',start:this.tick,duration:7,radius:10});}}
+      else {const e=this.enemies.find(e=>e.id===p.target);if(e&&e.hp>0&&!e.escaped&&p.kind!=='physical'){this.hurtEnemy(e,p.damage,p.kind);this.effects.push({x:e.x,y:e.y-8,type:'hit',start:this.tick,duration:7,radius:10});}}
     }
     this.effects=this.effects.filter(e=>this.tick<e.start+e.duration);
     if(this.lives===0){this.phase='lost';this.log('defeat');return;}

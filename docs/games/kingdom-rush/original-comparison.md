@@ -21,10 +21,10 @@ Comparison date: November 7, 2026. Target: **original Kingdom Rush, Armor Games 
 | Wind-ups / flights | Archer 5-frame wind-up, 22-frame flight; mage 8-frame wind-up; artillery 12-frame wind-up, 31-frame flight. | Flash archer fires at 7 / arrow travels 17; mage fires at 5; artillery fires at 24 / bomb travels 27. |
 | Artillery damage | Tier two 20–40, uniform splash damage. | `GameSettings` / `Bomb`: tier two 15–30; maximum at blast center, minimum at edge. Same horizontal radius, flatter 2:3 ellipse. |
 | Artillery aim | Current target position at firing time. | `TowerEngineer` / `Enemy.getNodesSpeed`: predicts ahead along path nodes, uses blocked enemy position, retains charge-time aim. Implemented. |
-| Arrows | Always damage a still-living target at impact. | `Arrow`: velocity prediction, aim error and collision can produce misses. Added lead/error and approximate collision bounds. |
+| Arrows | Always damage a still-living target at impact. | `Arrow`: velocity prediction, aim error and collision can produce misses. Added lead/error; the follow-up below replaces generic bounds with extracted display-list geometry. |
 | Shamans | Could not heal themselves; resumed moving at heal impact; recharged from cast start. | `EnemyShaman`: self-heal allowed, healing at frame 14, stationary 28-frame cast, then eight-second recharge. Implemented; target iteration order remains approximate. |
 | Melee timing | Shaman 1.6s attack cycle; footman 41 frames. | Flash shaman has a 30-frame combined cycle; footman has 30 reload + 20 charge frames. Updated. |
-| Construction / soldiers | Immediate activity and replacement; regeneration too soon after combat. | `GameSettings`, `TowerSoldier`, `Soldier`: thirty-frame construction, twelve-frame door delay, idle delay before periodic regeneration. Modeled; full door queues and melee state machines remain approximate. |
+| Construction / soldiers | Immediate activity and replacement; regeneration too soon after combat. | `GameSettings`, `TowerSoldier`, `Soldier`: thirty-frame construction, twelve-frame door delay, idle delay before periodic regeneration. Modeled; the follow-up below replaces the simplified melee ownership and formation. |
 | Rain of Fire | Three balls five frames apart, fixed one-second diagonal flight. | `FireballControler` / `Fireball`: balls launch at frames 10, 20, 30 from the top edge; travel depends on height and acceleration. Launch spacing, spread, scaled radius and height-dependent impact implemented. |
 | Pre-battle powers | Could be used before starting. | Original unlocks powers when the battle starts. The prototype now gates them and explains this in the controls. |
 
@@ -38,7 +38,7 @@ A second original Normal run completed all eleven waves with **10 lives remainin
 
 The local browser run verified the same opening economy, visible two-road rush, tower purchases and power gating. Automated seeded runs exercise complete corrected eleven-wave campaigns. A paced mixed defense with reinforcements and fire against shamans/ogres currently wins with **16 lives, 325 kills, four leaks, about 570 simulated seconds** for seed `0xc0ffee`. Earlier aggressive call/purchase choices can still lose. These numbers are regression observations for our simulation, not an original-game RNG or outcome match.
 
-Exact outcome parity remains unproven. Differences still include Flash dictionary target order, melee collision/formation and interruptions, path/terrain validation, bolt acceleration, sprite collision bounds, minor tick ordering, and the desktop-scaled background/viewport. No arbitrary HP or cash multiplier was added to force equal win rates. Physical iPad performance remains untested.
+Exact outcome parity remains unproven. After the melee follow-up below, differences still include Flash dictionary target order, full door queues, path/terrain validation, bolt acceleration, runtime display filters/transforms, minor tick ordering, and the desktop-scaled background/viewport. No arbitrary HP or cash multiplier was added to force equal win rates. Physical iPad performance remains untested.
 
 ## Reproduction and checks
 
@@ -50,3 +50,43 @@ bun run build
 ```
 
 Changes are confined to Kingdom Rush source, tests, preparation tooling and documentation. The independent Garden Guard work is outside this change.
+
+
+## Melee and collision follow-up: full browser campaign
+
+The same publisher Flash v1.13 source was inspected for `Soldier`, `TowerSoldier`, `Enemy`, farmer placement, arrows and enemy attack wind-ups. The original victory described above remains the reference playthrough; it was not replayed a second time for this follow-up.
+
+Verified rules now implemented:
+
+- A single primary soldier reserves an enemy immediately, stopping movement during approach. Enemy melee starts after that soldier reaches its fighting position. Support soldiers occupy the two offset positions on the same facing side and can leave to block a new enemy. Acquisition follows the original shared rally ellipse and smallest source path node preference.
+- Barracks use the original triangular ellipse formation. Rallying releases melee ownership and prevents reacquisition until redeployment finishes. Valid clicked rally/reinforcement positions are retained rather than snapped to the central subpath. Death, expiry and sale release reservations and pending attacks.
+- Soldiers use the source movement speed. Replacement soldiers wait at the tower door; upgrading a dead soldier replaces it there. Farmers retain their separate shared acquisition center, spawn offsets and initial delay. Enemy-specific wind-ups and the wulf attack cycle are corrected; shamans do not begin a heal during an attack wind-up.
+- Arrows test overlap in the final three flight frames against mirrored, animation-frame-dependent enemy bounds, including attached health bars. The renderer and collision use the same ballistic position and rotation. `reference/flash-collision.json` stores only numeric geometry/labels from the pinned SWF. `Bounds.java` reproduces it using an external JPEXS 26.4.0 jar. The original binary, artwork and ActionScript are not emitted by this extractor.
+
+These bounds come from the original display list, not a screenshot silhouette. Runtime filters, subtle transform/state ordering and first-charge tick ordering can still differ; this is not a pixel- or tick-exact certification. Terrain validation still uses a distance-to-road approximation.
+
+### Actual browser results
+
+Two full local attempts were played through the real UI against the revised combat. The first lost on wave nine after delayed spending. The second completed all eleven waves, with pauses for inspection and 2× playback early, then 1× from wave four. No runtime state, gold, enemy health or outcome was changed through developer controls.
+
+| Measurement | Original reference run | Revised local browser run |
+| --- | --- | --- |
+| Difficulty / upgrades | Normal, no hero or purchased stars | Same bounded rules |
+| Outcome | Victory, 10 lives, 2 stars | Victory, 5 lives |
+| Gold remaining | 352 | 280 |
+| Enemy kills | Not recorded | 314 of 329; 15 leaked |
+| Tower sites at finish | Barracks 12, artillery 10, archers 11/5/2, mages 6/4 | Same seven sites; all tier two |
+| Fire casts | Three, during waves 4/8/11 | Three, during waves 4/8/11 |
+| Simulated duration | Not recorded | 16,426 ticks / 547.53 seconds |
+
+The local run lost six lives around the wave-three wulf rush, one near the end of wave eight, and eight near the end of wave nine. Waves ten and eleven leaked none; all ogres were defeated. Purchases, reinforcements and fire were human-timed, not synchronized between games. Five versus ten lives is therefore an observation, **not evidence that ours is a fixed amount harder**. Both runs punish delayed defense and concentrate pressure in the mass rush; source-verified corrections were used instead of arbitrary cash/HP balancing.
+
+The [complete browser-exported trace](playtests/2026-11-07-melee-browser-win.json) records commands and outcomes for seed `12648430`. A regression test replays those command ticks and reproduces the exact local victory, gold, kills and duration. This supplements the browser playthrough; it does not replace it or prove the original shares our RNG.
+
+Validation: **32 Kingdom Rush tests**, **4 library boundary tests**, production build. Save compatibility is now `pagras-flash-v1.13-r2` because melee ownership/destination state changed. Older in-progress battles are rejected safely; completed best results remain separate.
+
+To reproduce the numeric display bounds (JPEXS jar and original SWF supplied locally):
+
+```sh
+java -Djava.awt.headless=true -cp /path/to/ffdec.jar scripts/games/kingdom-rush/Bounds.java /path/to/original.swf
+```

@@ -54,3 +54,14 @@ The prototype was played in the browser, and a seeded automated defense complete
 - Kept all changes in Kingdom Rush source, tests, scripts and documentation. No shared refactor or Garden Guard edits.
 
 See [the original comparison report](original-comparison.md) for publisher reference/hash, exact corrected rules, run observations and remaining approximations. The earlier entries above describe the state before this comparison.
+
+
+## November 7, 2026 — melee/collision and full browser victory
+
+- Replaced simplified melee with exclusive primary reservations during approach, same-side support slots, original formation/shared acquisition area, source movement speed, rally redeployment and release rules. Corrected enemy wind-ups, wulf cycle, farmer placement and tower-door replacement behavior.
+- Extracted numeric per-frame enemy/arrow/health-bar display geometry from the pinned original SWF using research-only `Bounds.java`. Arrow hit testing now uses those bounds and the same ballistic position/rotation as rendering, during the final three flight frames.
+- Played two local browser attempts. The first lost on wave nine; the second won all eleven waves with **5 lives, 280 gold, 314 kills**, at tick **16,426**. The existing original Normal/no-hero/no-stars victory had ten lives and 352 gold. Same seven final tower sites and three fire casts, but human command timings differ, so exact difficulty parity remains unproven.
+- Saved the full exported trace under `playtests/2026-11-07-melee-browser-win.json`. Its command replay reproduces the local browser result exactly. Thirty-two game checks, four library boundaries and the production build pass.
+- Bumped in-progress save compatibility to r2 for new melee state; completed best results stay separate. Kept source, tests, extraction tooling and documentation entirely inside Kingdom Rush folders.
+
+See [the detailed comparison](original-comparison.md#melee-and-collision-follow-up-full-browser-campaign) for observations, reproducibility and remaining approximations. No arbitrary health/cash adjustment was introduced to force equal scores.
