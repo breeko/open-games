@@ -34,7 +34,8 @@ it remains unsent. This applies to cold outreach and existing conversations.
 ## Library architecture
 
 - Open Games is a library of independent games, not a single Garden Guard application.
-- Shared library code owns catalog/discovery/navigation only. `src/games/catalog.ts` is metadata and must not import any engine or gameplay code.
+- The library shell owns catalog/discovery/navigation only. `src/games/catalog.ts` is metadata and must not import any engine or gameplay code.
+- Engine-independent persistence helpers live in `src/shared/persistence/`. Games may import them directly; each game still owns its schemas, snapshots, restoration, migrations and compatibility decisions. Shared helpers must not import game implementations or engines.
 - Each game has its own HTML page at `games/<game-id>/index.html`, code at `src/games/<game-id>/`, assets/credits at `public/games/<game-id>/`, tests at `tests/games/<game-id>/`, tools at `scripts/games/<game-id>/`, and documentation at `docs/games/<game-id>/`.
 - Separate games even when they share a genre. Categories are listing metadata, not a reason to mix assets or logic.
 - Game storage keys must be namespaced and versioned: `open-games.<game-id>.<store>.<version>`. A game owns its migrations; preserve existing saves.

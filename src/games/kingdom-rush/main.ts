@@ -2,6 +2,8 @@ import './style.css';
 import { distance, FPS, LEVEL, TOWER_KINDS, TOWERS, type Point } from './content';
 import { Renderer } from './render';
 import { Simulation } from './simulation';
+import { gameStores } from './persistence';
+import { startAutosave } from '../../shared/persistence/autosave';
 
 function element<T extends HTMLElement>(id:string,kind:{new():T}):T {const node=document.getElementById(id);if(!(node instanceof kind))throw new Error(`Missing ${id}`);return node;}
 const canvas=element('battlefield',HTMLCanvasElement),context=element('context',HTMLDivElement);
@@ -10,12 +12,40 @@ const fire=element('fire',HTMLButtonElement),reinforce=element('reinforcements',
 const gold=element('gold',HTMLElement),lives=element('lives',HTMLElement),wave=element('wave',HTMLElement),phase=element('phase-label',HTMLElement);
 const fireTime=element('fire-time',HTMLElement),reinforceTime=element('reinforce-time',HTMLElement),debug=element('debug',HTMLInputElement);
 const seedInput=element('seed',HTMLInputElement),message=element('message',HTMLDivElement),loading=element('loading',HTMLDivElement);
-let sim=new Simulation(),renderer:Renderer,selected:number|null=null,mode:'none'|'rally'|'fire'|'reinforcements'='none',pointer:Point|null=null,multiplier=1;
+let sim=new Simulation(),renderer:Renderer,selected:number|null=null,mode:'none'|'rally'|'fire'|'reinforcements'='none',pointer:Point|null=null,multiplier:1|2=1;
 let contextKey='',messageUntil=0,recorded=false;
-const STORE='open-games.kingdom-rush.results.v1';
+const stores=gameStores(),savedSession=stores.session.read();
+const saveStatus=element('save-status',HTMLParagraphElement);
+let savingEnabled=savedSession.status==='valid'||savedSession.status==='missing';
+let finishedSessionCleared=false;
+let terminalSaveAttempted=false;
+if(savedSession.status==='valid') {
+  sim=Simulation.restore(savedSession.value.battle);
+  multiplier=savedSession.value.speed;seedInput.value=String(sim.seed);speed.textContent=`${multiplier}×`;
+  saveStatus.textContent='Battle restored on this device. Resume when you’re ready.';
+} else if(savedSession.status==='invalid') {
+  saveStatus.textContent='Your saved battle could not be resumed. It has been kept. Choose Restart to replace it.';
+} else if(savedSession.status==='unavailable') {
+  saveStatus.textContent='Saving is unavailable. You can keep playing; choose Restart to try saving again.';
+} else saveStatus.textContent='Your battle saves automatically on this device.';
+function saveSession():void {
+  if(!savingEnabled||finishedSessionCleared)return;
+  if(sim.phase==='won'||sim.phase==='lost') {
+    const result=stores.session.clear();
+    finishedSessionCleared=result.status==='cleared';
+    setText(saveStatus,finishedSessionCleared?'Battle finished. Your completed record stays on this device.':'The finished battle could not be cleared from this device.');
+    return;
+  }
+  try {
+    const result=stores.session.write({version:1,savedAt:Date.now(),speed:multiplier,battle:sim.snapshot()});
+    setText(saveStatus,result.status==='saved'?'Battle saved on this device.':result.status==='invalid'?'This battle could not be saved. Your previous save has been kept.':'Saving is unavailable. Your battle continues in this tab.');
+  } catch {
+    setText(saveStatus,'This battle could not be saved. Your previous save has been kept.');
+  }
+}
 function setText(node:HTMLElement,text:string):void {if(node.textContent!==text)node.textContent=text;}
 function notify(text:string):void {message.textContent=text;messageUntil=performance.now()+3000;message.classList.add('visible');}
-function reset():void {const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee);selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;}
+function reset():void {const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee);selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();}
 function setMode(value:typeof mode):void {mode=mode===value?'none':value;contextKey='';if(mode==='rally')notify('Tap a nearby road to move your soldiers.');if(mode==='fire')notify('Tap the battlefield to call down fire.');if(mode==='reinforcements')notify('Tap a road to summon two reinforcements.');}
 function renderContext():void {
   const tower=sim.towers.find(t=>t.id===selected),key=`${selected}/${tower?.kind}/${tower?.level}/${mode}/${sim.phase}/${sim.paused}`;
@@ -56,10 +86,15 @@ function updateHud():void {
   if(performance.now()>messageUntil)message.classList.remove('visible');
   if(!recorded&&sim.phase==='won'){
     recorded=true;
-    try{const prior=Number(localStorage.getItem(STORE)||0);localStorage.setItem(STORE,String(Math.max(prior,sim.lives)));showBest();}catch{/* Storage may be unavailable; battle remains playable. */}
+    const prior=stores.results.read();
+    if(prior.status==='valid'||prior.status==='missing')stores.results.write(Math.max(prior.status==='valid'?prior.value:0,sim.lives));
+    showBest();
   }
 }
-function showBest():void {try{const n=Number(localStorage.getItem(STORE)||0);element('best',HTMLElement).textContent=n?`Best defense on this device: ${n} lives remaining.`:'Progress stays on this device. This prototype saves your best completed defense.';}catch{element('best',HTMLElement).textContent='Progress saving is unavailable in this browser.';}}
+function showBest():void {
+  const result=stores.results.read();
+  element('best',HTMLElement).textContent=result.status==='valid'&&result.value>0?`Best defense on this device: ${result.value} lives remaining.`:result.status==='invalid'?'Your previous completed record could not be read and has been kept.':result.status==='unavailable'?'Progress saving is unavailable in this browser.':'Progress stays on this device. Your best completed defense is saved separately from your current battle.';
+}
 function point(event:PointerEvent):Point {const rect=canvas.getBoundingClientRect();return{x:(event.clientX-rect.left)*1024/rect.width,y:(event.clientY-rect.top)*768/rect.height};}
 canvas.addEventListener('pointermove',event=>{pointer=point(event);});
 canvas.addEventListener('pointerleave',()=>{pointer=null;});
@@ -67,8 +102,8 @@ canvas.addEventListener('pointercancel',()=>{pointer=null;mode='none';contextKey
 canvas.addEventListener('pointerdown',event=>{
   if(!event.isPrimary||event.button!==0)return;event.preventDefault();canvas.focus({preventScroll:true});const p=point(event);pointer=p;
   if(sim.paused||sim.phase==='won'||sim.phase==='lost')return;
-  if(mode==='fire'||mode==='reinforcements'){if(sim.cast(mode,p)){mode='none';contextKey='';}else notify(mode==='reinforcements'?'Choose a road for your reinforcements.':'That power is not ready.');return;}
-  if(mode==='rally'){if(selected!==null&&sim.setRally(selected,p)){mode='none';contextKey='';}else notify('Choose a road within the barracks’ range.');return;}
+  if(mode==='fire'||mode==='reinforcements'){if(sim.cast(mode,p)){mode='none';contextKey='';saveSession();}else notify(mode==='reinforcements'?'Choose a road for your reinforcements.':'That power is not ready.');return;}
+  if(mode==='rally'){if(selected!==null&&sim.setRally(selected,p)){mode='none';contextKey='';saveSession();}else notify('Choose a road within the barracks’ range.');return;}
   const tower=sim.towers.filter(t=>Math.abs(t.x-p.x)<43&&p.y>=t.y-90&&p.y<t.y+18).sort((a,b)=>distance(a,p)-distance(b,p))[0];
   const holder=LEVEL.holders.filter(h=>Math.abs(h.pos.x-p.x)<45&&Math.abs(h.pos.y-10-p.y)<30).sort((a,b)=>distance(a.pos,p)-distance(b.pos,p))[0];
   selected=tower?.id??holder?.id??null;contextKey='';
@@ -78,8 +113,10 @@ speed.onclick=()=>{multiplier=multiplier===1?2:1;speed.textContent=`${multiplier
 element('restart',HTMLButtonElement).onclick=reset;element('apply-seed',HTMLButtonElement).onclick=reset;
 next.onclick=()=>{if(sim.callWave()){mode='none';contextKey='';}};
 fire.onclick=()=>setMode('fire');reinforce.onclick=()=>setMode('reinforcements');
-document.addEventListener('keydown',event=>{if(event.target instanceof HTMLInputElement)return;if(event.code==='Space'){event.preventDefault();if(sim.phase==='running'||sim.phase==='ready')sim.setPaused(!sim.paused);}if(event.code==='Escape'){mode='none';selected=null;contextKey='';}});
+document.addEventListener('keydown',event=>{if(event.target instanceof HTMLInputElement)return;if(event.code==='Space'){event.preventDefault();if(sim.phase==='running'||sim.phase==='ready'){sim.setPaused(!sim.paused);saveSession();}}if(event.code==='Escape'){mode='none';selected=null;contextKey='';}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){sim.setPaused(true);accumulator=0;contextKey='';}});
+// Runs after button actions, including dynamically created build/upgrade controls.
+document.addEventListener('click',event=>{if(event.target instanceof Element&&event.target.closest('button'))saveSession();});
 element('export',HTMLButtonElement).onclick=()=>{const url=URL.createObjectURL(new Blob([sim.export()],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`pagras-${sim.seed}-${sim.tick}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 let last=performance.now(),accumulator=0;
 function frame(now:number):void {
@@ -88,6 +125,10 @@ function frame(now:number):void {
     accumulator+=elapsed*multiplier;
     while(accumulator>=1/FPS){sim.step();accumulator-=1/FPS;}
   } else accumulator=0;
-  renderer.draw(sim,selected,mode,pointer,debug.checked);updateHud();requestAnimationFrame(frame);
+  renderer.draw(sim,selected,mode,pointer,debug.checked);updateHud();
+  if((sim.phase==='won'||sim.phase==='lost')&&!terminalSaveAttempted){terminalSaveAttempted=true;saveSession();}
+  requestAnimationFrame(frame);
 }
-Renderer.create(canvas).then(r=>{renderer=r;loading.hidden=true;showBest();requestAnimationFrame(frame);}).catch(error=>{loading.textContent=`The battlefield could not load. ${error instanceof Error?error.message:'Try reloading.'}`;});
+const autosave=startAutosave(saveSession);
+import.meta.hot?.dispose(()=>{autosave.flush();autosave.stop();});
+Renderer.create(canvas).then(r=>{renderer=r;loading.hidden=true;showBest();last=performance.now();requestAnimationFrame(frame);}).catch(error=>{loading.textContent=`The battlefield could not load. ${error instanceof Error?error.message:'Try reloading.'}`;});

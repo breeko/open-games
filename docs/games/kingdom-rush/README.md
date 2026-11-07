@@ -17,6 +17,8 @@ Open `/games/kingdom-rush/` at the printed address, or choose Kingdom Rush from 
 - Pause freezes the simulation and powers. Switching away pauses automatically; resume explicitly. Space also toggles pause.
 - 1×/2× changes playback speed without changing simulation rules.
 - Restart reuses the displayed seed. The tools section allows a different seed, path/tower-number overlays and JSON battle-trace export.
+- Battles autosave every two seconds, after commands, on pause and when leaving/backgrounding the page. Refresh or return to resume the same battle paused, with no offline simulation. Restart replaces it; victory/defeat clears the ongoing battle and preserves your completed record.
+- Saves are local to this browser and origin. Invalid/incompatible sessions are retained until you choose Restart, and the save status explains storage failures. A forced browser termination may lose changes since the last successful save. Diagnostic event history starts afresh after restoration.
 - Only the best completed defense is saved, in `open-games.kingdom-rush.results.v1`. A battle in progress is not saved. Storage failures do not prevent playing.
 
 ## What is implemented

@@ -22,6 +22,7 @@ index.html                          Library page
 src/main.ts                         Library presentation and category filtering
 src/library.css                     Library styles only
 src/games/catalog.ts                Game listings, categories, URLs and cover URLs
+src/shared/persistence/              Validated storage and autosave scheduling
 
 games/<game-id>/index.html           Independent game page
 src/games/<game-id>/                 That game's rules, UI, audio and save handling
@@ -31,7 +32,7 @@ scripts/games/<game-id>/             That game's asset and diagnostic tools
 docs/games/<game-id>/                That game's design notes, provenance and audits
 ```
 
-Organize by **game identity**, with genre/category stored in the catalog. Two tower-defense games still get separate folders. The platform owns discovery and navigation; games own their mechanics, assets, difficulty, progress and preferences. Games must not import another game's internals. Share code only when multiple games have a demonstrated common need.
+Organize by **game identity**, with genre/category stored in the catalog. Two tower-defense games still get separate folders. The platform owns discovery and navigation; games own their mechanics, assets, difficulty, progress and preferences. Games must not import another game's internals. Engine-independent persistence helpers can be imported directly by games; the library shell does not load them. Share further code only when multiple games have a demonstrated common need.
 
 Each game runs on a separate page so its engine, styles, timers and audio are unloaded when leaving. New games can use a different engine without changing the library.
 
@@ -56,6 +57,14 @@ bun run audit:garden-guard
 ```
 
 The move into a game folder preserves existing Garden Guard saves. Its storage adapter migrates legacy progress, preferences and difficulty into game-specific keys without deleting the originals. Progress remains local to the browser and site origin; an ongoing level is not saved. The library does not own or reset game saves.
+
+## Persistence and level resume
+
+`src/shared/persistence/store.ts` provides namespaced JSON storage with Zod runtime validation and typed results for missing, invalid or unavailable storage. It never deletes invalid data automatically. Games supply JSON-compatible schemas, defaults and migrations; a shared save-state base class is not required. `autosave.ts` schedules writes every two seconds and on backgrounding/page exit, with explicit flush and cleanup methods.
+
+Kingdom Rush is the first complete session-resume integration. It saves the current Pagras battle, including units, projectiles, cooldowns, pending spawns, random-generator state and speed. Reopening or refreshing restores it paused without simulating offline time. Restart replaces the session; victory/defeat clears it while retaining the separate best completed result and its existing key. Invalid/incompatible sessions are retained and autosave is disabled until an explicit Restart. Saving failures leave gameplay available and show a status message. A crash or forced browser termination can lose changes since the last successful autosave.
+
+Schemas and snapshot/restoration code stay in the owning game. Bump session format versions when changing the serialized shape, and the game's compatibility marker when changed rules cannot resume an old battle safely. Add game-owned migrations where practical and preserve old data until a validated replacement can be written. Historical battle traces are diagnostic and are not included in session saves. Garden Guard still saves campaign progress/preferences only; its active-level snapshot and restoration remain a separate integration.
 
 ## Deployment
 

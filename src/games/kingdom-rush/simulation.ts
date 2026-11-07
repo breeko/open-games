@@ -1,4 +1,5 @@
 import { ASPECT, blastDamage, damageAfterArmor, distance, ENEMIES, enemyKind, FPS, inRange, LEVEL, rollDamage, SOLDIERS, STEP, TOWERS, type DamageKind, type EnemyKind, type Point, type SoldierKind, type TowerKind } from './content';
+import { battleSnapshotSchema, type BattleSnapshot } from './save-state';
 
 export interface Event { tick:number; type:string; [key:string]:string|number|boolean }
 export interface Enemy extends Point { id:number; kind:EnemyKind; route:number; lane:number; node:number; hp:number; maxHp:number; deadAt:number; escaped:boolean; nextAttack:number; hitAt:number; attackTarget:number; healAt:number; healUntil:number; nextHeal:number; animation:string; animAt:number; facing:number }
@@ -39,6 +40,47 @@ export class Simulation {
   private groupEnd=0; private nextWaveTick=Infinity;
   fireReady=0; reinforcementsReady=0;
   constructor(seed=0xc0ffee) {this.seed=seed>>>0;this.rng=this.seed || 1;this.log('start',{seed:this.seed});}
+  /** Capture gameplay data only, detached from the live simulation and renderer. */
+  snapshot(): BattleSnapshot {
+    const data: BattleSnapshot = {
+      compatibility: 'pagras-flash-v1.13-r1', level: 3,
+      tick: this.tick, gold: this.gold, lives: this.lives, wave: this.wave,
+      kills: this.kills, leaked: this.leaked, phase: this.phase, paused: this.paused,
+      seed: this.seed, rng: this.rng, nextId: this.nextId, groupEnd: this.groupEnd,
+      nextWaveTick: this.nextWaveTick === Infinity ? null : this.nextWaveTick,
+      fireReady: this.fireReady, reinforcementsReady: this.reinforcementsReady,
+      enemies: this.enemies,
+      soldiers: this.soldiers.map(soldier => ({
+        ...soldier, respawnAt: soldier.respawnAt === Infinity ? null : soldier.respawnAt,
+        expires: soldier.expires === Infinity ? null : soldier.expires,
+      })),
+      towers: this.towers, projectiles: this.projectiles, effects: this.effects, pending: this.pending,
+    };
+    // Parsing detaches nested objects and drops incidental fields copied into effects.
+    return battleSnapshotSchema.parse(data);
+  }
+
+  /** Validation also protects callers that restore imported or development snapshots. */
+  static restore(input: unknown, options: { paused?: boolean } = {}): Simulation {
+    const data = battleSnapshotSchema.parse(input);
+    const sim = new Simulation(data.seed);
+    sim.tick = data.tick; sim.gold = data.gold; sim.lives = data.lives; sim.wave = data.wave;
+    sim.kills = data.kills; sim.leaked = data.leaked; sim.phase = data.phase;
+    sim.paused = options.paused ?? true;
+    sim.rng = data.rng; sim.nextId = data.nextId; sim.groupEnd = data.groupEnd;
+    sim.nextWaveTick = data.nextWaveTick ?? Infinity;
+    sim.fireReady = data.fireReady; sim.reinforcementsReady = data.reinforcementsReady;
+    sim.enemies.push(...data.enemies);
+    sim.soldiers.push(...data.soldiers.map(soldier => ({
+      ...soldier, respawnAt: soldier.respawnAt ?? Infinity, expires: soldier.expires ?? Infinity,
+    })));
+    sim.towers.push(...data.towers); sim.projectiles = data.projectiles;
+    sim.effects = data.effects; sim.pending = data.pending;
+    // Historical diagnostic events are not needed to resume gameplay.
+    sim.events.length = 0;
+    sim.log('restore');
+    return sim;
+  }
   get time():number {return this.tick/FPS;}
   get nextIn():number {return Number.isFinite(this.nextWaveTick)?Math.max(0,(this.nextWaveTick-this.tick)/FPS):0;}
   get canCall():boolean {return this.wave<LEVEL.groups.length && (this.phase==='ready'||this.phase==='running') && (this.wave===0||this.tick>=this.groupEnd+50);}

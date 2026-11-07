@@ -46,3 +46,12 @@ test('games do not import another game implementation',()=>{
     }
   }
 });
+test('shared persistence never imports game implementations or engines',()=>{
+  for(const file of typescriptFiles(resolve(root,'src/shared/persistence')))for(const dependency of imports(file)){
+    assert.notEqual(dependency,'phaser');
+    if(dependency.startsWith('.')){
+      const target=resolve(dirname(file),dependency);
+      assert.ok(target.startsWith(resolve(root,'src/shared')+'/'),`${file} imports ${dependency}`);
+    } else assert.equal(dependency,'zod',`${file} imports ${dependency}`);
+  }
+});
