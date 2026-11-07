@@ -1,0 +1,69 @@
+{
+  "title": "The Farmlands",
+  "flashSHA256": "7b5467a3eccc17f6dd001ff2d41bdf1b03d79fd515a2a9586c42bfd982bb1e23",
+  "factsOnly": true,
+  "waves": 7,
+  "enemies": 154,
+  "inputs": [
+    {
+      "url": "https://raw.githubusercontent.com/DanQZ/KR1-Smarter-Soldiers-Mod/fa84f20b6fc0cff19f5c8e13c588736fcf228fa7/kr1/data/levels/level02_data.lua",
+      "sha256": "4c4486dcb2fe9d147f81138b61f0831744c2f54f32aed20836ab4cbedae702b0",
+      "bytes": 4376
+    },
+    {
+      "url": "https://raw.githubusercontent.com/DanQZ/KR1-Smarter-Soldiers-Mod/fa84f20b6fc0cff19f5c8e13c588736fcf228fa7/kr1/data/levels/level02_paths.lua",
+      "sha256": "05d703299adf9007cc3534abfca2accf6a126446f7a119d7e9b80186c9aba391",
+      "bytes": 37239
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/definition.json",
+      "sha256": "c5b3382c75f6494ad5a08b162b846c004f021a73abfdde9193ed976ac8954907",
+      "bytes": 148103
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/atlas.json",
+      "sha256": "0f96b9956965f8d43ce8aac963b9af3b9cd71b9674bac63a33035ffaafdf175f",
+      "bytes": 464663
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/animations.json",
+      "sha256": "856294fd3f4eeec0f90ab6d46edc1731948b64637f3f668971b696d450e7090a",
+      "bytes": 16616
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/atlas_0.png",
+      "sha256": "b48cd591c926f7bf110a1d53b45d8fcd5556006c8b8d2afbe23cdd3b8fd71c84",
+      "bytes": 908809
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/atlas_1.png",
+      "sha256": "9737cd68753587fcd7e8ff7c2ed6de22f3c63ecc5eccae725c18246ded85c9a2",
+      "bytes": 3274457
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/atlas_2.png",
+      "sha256": "57d5c355a03b8c1e4bb6ed6df9db2cb7772d7545daa01568a6dc27ebab314c48",
+      "bytes": 3816194
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/atlas_3.png",
+      "sha256": "e426c71cb93e55f46deec10683c85154c2b54811cd4536b7d3a51892094d0922",
+      "bytes": 1747768
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/atlas_4.png",
+      "sha256": "26cf7319e66fe5818860f22cd3e9bd6421d7726ac80ad73bd4d8a36345a2a56d",
+      "bytes": 1543528
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/atlas_5.png",
+      "sha256": "a500dff6c3ba71d12ab0f336c3ddd96ea2036a9c62edcd7877ede56929724c67",
+      "bytes": 1193673
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level02/atlas_6.png",
+      "sha256": "e2ee036896734fcc1dee131d594435f1805b4fd2c54f20fcefbb9d0489116d5a",
+      "bytes": 749461
+    }
+  ]
+}

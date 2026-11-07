@@ -1,6 +1,6 @@
-# Kingdom Rush — Pagras reference level
+# Kingdom Rush — opening campaign
 
-A bounded recreation of stage 3 of the original Kingdom Rush for testing appearance, interaction, combat and balance in Open Games. This is an independent TypeScript/Canvas implementation with reference artwork, not a port of the mod engine and not a verified exact retail recreation.
+A bounded recreation of Southport, The Farmlands and Pagras (stages 1–3) of the original Kingdom Rush for testing appearance, interaction, combat and balance in Open Games. This is an independent TypeScript/Canvas implementation with reference artwork, not a port of the mod engine and not a verified exact retail recreation.
 
 ## Play
 
@@ -11,17 +11,27 @@ bun run dev
 Open `/games/kingdom-rush/` at the printed address, or choose Kingdom Rush from the library. For the preview started during implementation, use [the local level](http://localhost:5174/games/kingdom-rush/). On an iPad on the same Wi-Fi, use the printed Network address with the same path. Keep the Mac and preview running.
 
 - Tap a foundation, then choose Archers, Barracks, Mages or Artillery.
-- Tap a tower to upgrade, sell or change a barracks' rally point. This stage caps towers at level 2.
+- Tap a tower to upgrade, sell or change a barracks' rally point. Southport caps towers at tier 1; The Farmlands and Pagras allow tier 2.
 - Tap Reinforcements, then a road; tap Rain of Fire, then a target. Tap Cancel or press Escape to cancel targeting.
-- Prepare with 300 gold and 20 lives, then start the battle. Later waves can be called early for extra gold and spell recharge after the wave flag appears (50 ticks after the spawners finish).
+- Prepare with 265 / 220 / 300 gold in Southport / The Farmlands / Pagras and 20 lives, then start the battle. Later waves can be called early for extra gold and spell recharge after the wave flag appears (50 ticks after the spawners finish).
 - Pause freezes the simulation and powers. Switching away pauses automatically; resume explicitly. Space also toggles pause.
 - 1×/2× changes playback speed without changing simulation rules.
 - Restart reuses the displayed seed. The tools section allows a different seed, path/tower-number overlays and JSON battle-trace export.
 - Battles autosave every two seconds, after commands, on pause and when leaving/backgrounding the page. Refresh or return to resume the same battle paused, with no offline simulation. Restart replaces it; victory/defeat clears the ongoing battle and preserves your completed record.
 - Saves are local to this browser and origin. Invalid/incompatible sessions are retained until you choose Restart, and the save status explains storage failures. A forced browser termination may lose changes since the last successful save. Diagnostic event history starts afresh after restoration.
-- Only the best completed defense is saved, in `open-games.kingdom-rush.results.v1`. A battle in progress is not saved. Storage failures do not prevent playing.
+- The Maps button opens the campaign chooser. All three maps are available; each keeps its own battle and best result. Completing Southport or The Farmlands offers Next map. Pagras retains its existing save keys. Storage failures do not prevent playing.
 
 ## What is implemented
+
+| Map | Starting gold | Waves / enemies | Tower sites | Maximum tier |
+| --- | --- | --- | --- | --- |
+| Southport | 265 | 7 / 56 | 8 | 1 |
+| The Farmlands | 220 | 7 / 154 | 7 | 2 |
+| Pagras | 300 | 11 / 329 | 12 | 2 |
+
+Southport unlocks reinforcements at wave 3 and fire at wave 7, following the original notification waves. Tutorials/story transitions remain omitted. Direct links use `?level=1`, `?level=2` or `?level=3`; the existing URL without a query still opens Pagras. Map artwork loads on demand; selecting another map saves/pauses the current one and restores the destination paused when a battle exists.
+
+Phone landscape fills the viewport with the map and overlays compact controls. Terrain adapts to the wide viewport while sprites retain their proportions. Portrait retains the original map aspect; desktop retains its header and controls.
 
 Pagras has two entrances, three subpaths per route, twelve fixed tower sites, eleven wave groups and 329 enemies. The roster includes goblins, armored orcs, wulves, shamans and ogres. The prototype includes four tower families with source-based base costs, two tiers, separate physical/magic/explosion damage handling, attack wind-ups, projectile travel, soldiers, blocking, rally commands, death/respawn, shaman healing, wulf melee dodging and both powers.
 
@@ -39,12 +49,16 @@ The initial [feasibility audit](feasibility-audit.md) identified missing base-ga
 
 The two community wave schedules agree exactly, including routes, spacing and alternating enemy chunks. They disagree on starting gold: the older source has **300**, while the newer export has **330**. The latter also declares enemy HP/speed buffs. The prototype imports neither its starting economy nor its combat rules. Original Flash campaign enemy spacing is faster than both community exports; `reference/flash-pagras.json` overrides timing with verified Flash facts while preserving those historical inputs.
 
+For maps 1–2, [Southport](level01-manifest.json) and [The Farmlands](level02-manifest.json) record all input hashes. Their campaign waves and cash come directly from the pinned original Flash facts; community rules are not imported. These new maps have browser smoke checks and complete automated campaigns, but have not yet had the original-versus-local full browser comparison performed for Pagras.
+
 The [reference manifest](reference-manifest.json) records pinned source URLs and SHA-256 hashes for every preparation input. The [earlier source inventory](source-inventory.json) remains a historical record of the initial audit, not the current asset pack.
 
 To reproduce the bounded pack, with Python/Pillow installed:
 
 ```sh
 python3 scripts/games/kingdom-rush/prepare-reference.py
+# Maps 1–2 additionally require local original Flash source exports and the pinned SWF:
+python3 scripts/games/kingdom-rush/prepare-campaign.py /path/to/scripts /path/to/original.swf
 ```
 
 This downloads pinned files into the system temporary directory, parses literal Lua tables without executing Lua, checks both wave schedules, preserves original logical geometry, and repacks the visual export into one 2048×2048 atlas with 898 frames and aliases. Background art is scaled and center-cropped to the 1024×768 reference viewport. Rendering preserves original-canvas dimensions, trims, anchors, offsets and directional animation states. Full input sheets and unrelated game assets are not put in the runtime pack. The preparation cache is tagged with source revisions.
@@ -68,7 +82,7 @@ Original Ironhide art is separate from code provenance. Community availability a
 | Shamans and wulves | Healing range, cooldown/cast delay, heal amount and melee dodge chance implemented. Shamans can heal themselves, heal on tick fourteen, remain stationary for twenty-eight ticks and recharge after casting. Healing cannot interrupt a melee wind-up. Flash dictionary ordering and subtle tick ordering remain approximate. |
 | Powers | Three fireballs, damage/radius/spread and cooldown, two temporary reinforcements and cooldown. Early calls recharge both powers by the remaining countdown. Fireballs launch ten ticks apart from the top edge with height-dependent travel; exact particle trajectories, placement walkability and advanced upgrades remain approximate. |
 | Art | Animated reference units, layered towers and stage decorations. Community-export pixels have not been checked against an unmodified installation; background crop alignment needs comparison. Projectiles and impact effects currently use simple Canvas drawings. |
-| Audio, heroes, star upgrades, story, achievements and other levels/modes | Omitted from this bounded proof. |
+| Audio, heroes, star upgrades, story, achievements and stages beyond 3 / alternate modes | Omitted from this bounded proof. |
 | Retail balance | Original Flash Normal/no-hero/no-upgrade play comparison performed; source-verified corrections implemented. Exact same-command outcome parity is not certified; see the comparison report. |
 | iPad 6th generation / iPadOS 17.7.11 | Desktop viewport checks performed; physical-device interaction, frame pacing and memory remain untested. |
 

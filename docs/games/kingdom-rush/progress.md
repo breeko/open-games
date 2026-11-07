@@ -80,3 +80,14 @@ See [the detailed comparison](original-comparison.md#melee-and-collision-follow-
 - Replaced landscape side gutters with a viewport-filling battlefield. The entire map is fitted horizontally and vertically; no roads or tower sites are cropped. Terrain/range drawing adapts to the wider layout while unit/tower sprites and end-state text retain their proportions.
 - Controls overlay the map, with navigation in one top-right row. Rendering resolution now follows both displayed dimensions, matching existing pointer-coordinate conversion.
 - Browser verified at 844×390: edge-to-edge map, tower purchase, start-wave and reinforcement placement. Build passes. This changes presentation only; combat coordinates and timing remain unchanged.
+
+
+## November 7, 2026 — opening campaign expansion
+
+- Added original Southport and The Farmlands map artwork, scenery, path lanes, tower sites, source Flash waves and starting gold. Southport: 265 gold, 7 waves / 56 enemies, 8 sites, tier-one cap; Farmlands: 220 gold, 7 waves / 154 enemies, 7 sites, tier-two cap. Southport powers unlock on source notification waves 3/7.
+- Added a thumbnail map chooser, direct map URLs, completed best-defense records per map and a Next map action after victory. Maps remain freely selectable. Each map has a separate autosave. Existing Pagras keys and compatible r2 sessions remain valid.
+- Shared Kingdom Rush simulation now owns an explicit level reference; no global map mutation or cross-game imports. The renderer loads only the selected map's atlas/background/scenery. Trace exports identify the map. Save validation checks routes, nodes, sites and tier caps against the saved map.
+- Browser smoke checks in phone landscape covered both new boards, purchases, start-wave, reinforcement placement, chooser and paused restoration when switching back. The chooser retained the existing five-life Pagras record. Full new-map browser victories versus the original are still outstanding.
+- Thirty-nine Kingdom Rush checks and four boundary checks pass. Automated complete defenses win Southport with 20 lives and Farmlands with 18; repeated seeds match. The previously recorded full-browser Pagras command trace still reproduces its exact five-life victory. Production build passes.
+- Manifests record pinned input URLs/hashes. Preparation uses literal tables, numeric Flash facts and reference artwork; downloaded game code is not executed or bundled. Added about 10 MB of map assets, fetched only for the selected map (chooser thumbnails load each background).
+- Next campaign step: Twin Rivers Pass with source-verified bandit/brigand behavior and tier-three towers. Audio, purchased star upgrades and physical iPad/phone performance checks remain open.

@@ -1,7 +1,7 @@
 import { projectilePose } from './collision';
 import rawVisuals from './reference/visuals.json';
 import rawDecorations from './reference/decorations.json';
-import { ASPECT, ENEMIES, LEVEL, SOLDIERS, TOWERS, type Point, type TowerKind } from './content';
+import { ASPECT, ENEMIES, SOLDIERS, TOWERS, type Point, type TowerKind } from './content';
 import { Simulation, type Enemy, type Soldier, type Tower } from './simulation';
 
 interface Frame { page:number; region:number[]; original:number[]; trim:number[] }
@@ -16,13 +16,18 @@ const loadImage=(url:string):Promise<HTMLImageElement>=>new Promise((resolve,rej
 
 export class Renderer {
   private spriteAspect=1;
+  private visuals:Record<string,Sprite[]>=VISUALS;
+  private decorations:Decoration[]=DECORATIONS;
   private constructor(readonly canvas:HTMLCanvasElement,readonly ctx:CanvasRenderingContext2D,private pack:SpritePack,private sheets:HTMLImageElement[],private background:HTMLImageElement) {}
-  static async create(canvas:HTMLCanvasElement):Promise<Renderer> {
-    const response=await fetch(ROOT+'sprites.json');if(!response.ok)throw new Error('Could not load sprite metadata');
+  static async create(canvas:HTMLCanvasElement,level=3):Promise<Renderer> {
+    const root=level===3?ROOT:ROOT+`level${String(level).padStart(2,'0')}/`;
+    const response=await fetch(root+'sprites.json');if(!response.ok)throw new Error('Could not load sprite metadata');
     const pack:SpritePack=await response.json();
-    const [background,...sheets]=await Promise.all([loadImage(ROOT+'pagras.png'),...Array.from({length:pack.pages},(_,i)=>loadImage(ROOT+`sprites-${i}.png`))]);
+    const [background,...sheets]=await Promise.all([loadImage(root+(level===3?'pagras.png':'background.png')),...Array.from({length:pack.pages},(_,i)=>loadImage(root+`sprites-${i}.png`))]);
     const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas is unavailable');
-    return new Renderer(canvas,ctx,pack,sheets,background);
+    const renderer=new Renderer(canvas,ctx,pack,sheets,background);
+    if(level!==3){const response=await fetch(root+'scene.json');if(!response.ok)throw new Error('Could not load map scenery');const scene:{visuals:Record<string,Sprite[]>;decorations:Decoration[]}=await response.json();renderer.visuals=scene.visuals;renderer.decorations=scene.decorations;}
+    return renderer;
   }
   private frame(name:string):Frame|undefined {return this.pack.frames[this.pack.lookup[name]??name];}
   private frameName(prefix:string,name:string,ticks:number,loop=true):string {
@@ -39,7 +44,7 @@ export class Renderer {
     ctx.drawImage(this.sheets[f.page],x,y,w,h,-anchor.x*f.original[0]+f.trim[0],-(1-anchor.y)*f.original[1]+f.trim[1],w,h);ctx.restore();
   }
   private template(name:string,p:Point,age:number,animation?:string,flip=false,alpha=1,override?:string,attackAge=Infinity,up=false,shots=0):void {
-    const sprites=VISUALS[name]??[];
+    const sprites=this.visuals[name]??[];
     sprites.forEach((s,i)=>{
       if(s.hidden)return;
       let action=animation??s.name;
@@ -55,7 +60,7 @@ export class Renderer {
   towerIcon(canvas:HTMLCanvasElement,kind:TowerKind):void {
     const ctx=canvas.getContext('2d');if(!ctx)return;
     // Draw using the same renderer without constructing a second game/engine.
-    const icon=new Renderer(canvas,ctx,this.pack,this.sheets,this.background);
+    const icon=new Renderer(canvas,ctx,this.pack,this.sheets,this.background);icon.visuals=this.visuals;
     ctx.clearRect(0,0,canvas.width,canvas.height);ctx.save();ctx.translate(canvas.width/2,canvas.height-12);ctx.scale(.65,.65);
     icon.template(`tower_${kind}_1`,{x:0,y:0},0);ctx.restore();
   }
@@ -80,11 +85,11 @@ export class Renderer {
     if(this.canvas.width!==width||this.canvas.height!==height){this.canvas.width=width;this.canvas.height=height;}
     this.spriteAspect=Math.min(1,(height/768)/(width/1024));
     c.setTransform(width/1024,0,0,height/768,0,0);c.clearRect(0,0,1024,768);c.drawImage(this.background,0,0,1024,768);
-    for(const d of DECORATIONS)this.template(d.template,{x:d.pos.x,y:768-d.pos.y},sim.tick,undefined,false,1,d['render.sprites[1].name']?this.frameName('',d['render.sprites[1].name'],sim.tick):undefined);
-    if(debug){c.lineWidth=2;LEVEL.paths.forEach((route,i)=>{c.strokeStyle=i===0?'#ffd158':'#b2eaff';c.beginPath();route.lanes[0].forEach((p,j)=>j===0?c.moveTo(p.x,p.y):c.lineTo(p.x,p.y));c.stroke();});}
+    for(const d of this.decorations)this.template(d.template,{x:d.pos.x,y:768-d.pos.y},sim.tick,undefined,false,1,d['render.sprites[1].name']?this.frameName('',d['render.sprites[1].name'],sim.tick):undefined);
+    if(debug){c.lineWidth=2;sim.level.paths.forEach((route,i)=>{c.strokeStyle=i===0?'#ffd158':'#b2eaff';c.beginPath();route.lanes[0].forEach((p,j)=>j===0?c.moveTo(p.x,p.y):c.lineTo(p.x,p.y));c.stroke();});}
     const t=sim.towers.find(t=>t.id===selected);
     if(t){c.fillStyle='rgba(205,241,130,.12)';c.strokeStyle='#f9e4a0';c.lineWidth=2;c.setLineDash([6,4]);c.beginPath();c.ellipse(t.x,t.y-12,TOWERS[t.kind].range[t.level-1],TOWERS[t.kind].range[t.level-1]*ASPECT,0,0,Math.PI*2);c.fill();c.stroke();c.setLineDash([]);}
-    for(const h of LEVEL.holders){
+    for(const h of sim.level.holders){
       if(!sim.towers.some(t=>t.id===h.id))this.template('tower_holder_grass',h.pos,0);
       if(h.id===selected){c.strokeStyle='#ffe6a0';c.lineWidth=3;c.beginPath();c.ellipse(h.pos.x,h.pos.y-8,42,24,0,0,Math.PI*2);c.stroke();}
       if(debug){c.fillStyle='#fff';c.font='bold 13px sans-serif';c.fillText(String(h.id),h.pos.x-4,h.pos.y+16);}

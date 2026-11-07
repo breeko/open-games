@@ -1,4 +1,4 @@
-Kingdom Rush — Pagras reference prototype for Open Games
+Kingdom Rush — Southport, The Farmlands and Pagras for Open Games
 
 Original Kingdom Rush artwork, characters, names and game design:
 Copyright Ironhide Game Studio. All rights reserved.
@@ -28,3 +28,9 @@ have not been certified.
 
 See docs/games/kingdom-rush/README.md, progress.md, and reference-manifest.json
 in the source project for verification scope, source hashes and limitations.
+
+Maps 1–2 use the same pinned geometry and visual sources above. Campaign wave
+parameters and starting gold were transcribed from the publisher-hosted Flash
+v1.13 binary, SHA256 7b5467a3eccc17f6dd001ff2d41bdf1b03d79fd515a2a9586c42bfd982bb1e23.
+The original executable and ActionScript are not distributed with this project.
+See level01-manifest.json and level02-manifest.json for per-file input hashes.

@@ -1,4 +1,6 @@
 import source from './reference/level03.json';
+import southport from './reference/level01.json';
+import farmlands from './reference/level02.json';
 import flash from './reference/flash-pagras.json';
 
 export interface Point { x: number; y: number }
@@ -11,9 +13,12 @@ export interface WaveRoute { delay: number; path_index: number; spawns: SpawnChu
 export interface WaveGroup { interval: number; waves: WaveRoute[] }
 export interface Route { lanes: Point[][]; start: number; end: number }
 export interface Holder { id: number; pos: Point; rally: Point }
-export interface Level { title: string; level: number; cash: number; lives: number; holders: Holder[]; paths: Route[]; groups: WaveGroup[] }
+export type LevelId = 1 | 2 | 3;
+export interface Level { title: string; level: LevelId; maxTowerLevel:number; cash: number; lives: number; holders: Holder[]; paths: Route[]; groups: WaveGroup[] }
 // Flash v1.13 campaign timing on the existing desktop-scaled board.
-export const LEVEL: Level = {...source, groups: flash.groups};
+export const LEVEL: Level = {...source, level:3, maxTowerLevel:2, groups: flash.groups};
+export const LEVELS:readonly Level[]=[{...southport,level:1},{...farmlands,level:2},LEVEL];
+export function getLevel(id:number):Level {const level=LEVELS.find(level=>level.level===id);if(!level)throw new Error(`Unknown Kingdom Rush map: ${id}`);return level;}
 export const FPS = 30;
 export const STEP = 1 / FPS;
 export const ASPECT = 0.7;
