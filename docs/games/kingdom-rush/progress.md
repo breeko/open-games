@@ -65,3 +65,11 @@ See [the original comparison report](original-comparison.md) for publisher refer
 - Bumped in-progress save compatibility to r2 for new melee state; completed best results stay separate. Kept source, tests, extraction tooling and documentation entirely inside Kingdom Rush folders.
 
 See [the detailed comparison](original-comparison.md#melee-and-collision-follow-up-full-browser-campaign) for observations, reproducibility and remaining approximations. No arbitrary health/cash adjustment was introduced to force equal scores.
+
+
+## November 7, 2026 — compact phone landscape controls
+
+- Phone landscape now fills the available viewport height with the complete 4:3 battlefield. Header, save-status paragraph and research tools no longer consume mobile space. The spare side area carries compact power, wave and navigation controls; desktop retains its existing layout.
+- Power buttons show an icon and cooldown, with accessible names. Tower/build/rally controls appear in a compact overlay only when selected. Mobile controls retain at least 44px touch targets and account for safe-area edges. Portrait has a usable centered-map fallback.
+- Browser checks at 844×390 and 667×375 confirm full-height map, no page overflow, tower selection/purchase, start-wave, reinforcement targeting/cooldown and pause. Also checked 390×844 portrait and the default desktop viewport. Production build and diff whitespace checks pass. Physical Safari browser-bar/notch behavior remains to be checked on a phone.
+- Layout and button presentation only; no combat, save format, shared library or Garden Guard changes.

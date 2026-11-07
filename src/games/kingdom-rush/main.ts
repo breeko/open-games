@@ -50,7 +50,7 @@ function setMode(value:typeof mode):void {mode=mode===value?'none':value;context
 function renderContext():void {
   const tower=sim.towers.find(t=>t.id===selected),key=`${selected}/${tower?.kind}/${tower?.level}/${mode}/${sim.phase}/${sim.paused}`;
   if(key===contextKey){context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');return;}
-  contextKey=key;context.replaceChildren();
+  contextKey=key;context.dataset.active=String(selected!==null||mode!=='none');context.replaceChildren();
   const button=(label:string,action:()=>void,price?:number):HTMLButtonElement=>{const b=document.createElement('button');b.textContent=label;b.disabled=sim.paused||sim.phase==='won'||sim.phase==='lost';b.onclick=()=>{action();contextKey='';};if(price!==undefined)b.dataset.price=String(price);context.append(b);return b;};
   if(mode!=='none') {const p=document.createElement('p');p.textContent=mode==='rally'?'Choose a rally point':mode==='fire'?'Choose where the fire falls':'Choose a road for your troops';context.append(p);button('Cancel',()=>{mode='none';});return;}
   if(selected!==null&&!tower){
@@ -72,14 +72,16 @@ function renderContext():void {
 }
 function updateHud():void {
   setText(gold,String(sim.gold));setText(lives,String(sim.lives));setText(wave,`${sim.wave} / ${LEVEL.groups.length}`);
-  setText(pause,sim.paused?'Resume':'Pause');pause.disabled=sim.phase==='won'||sim.phase==='lost';
+  setText(pause,sim.paused?'Resume':'Pause');pause.dataset.icon=sim.paused?'▶':'Ⅱ';pause.setAttribute('aria-label',sim.paused?'Resume':'Pause');pause.disabled=sim.phase==='won'||sim.phase==='lost';
   fire.setAttribute('aria-pressed',String(mode==='fire'));reinforce.setAttribute('aria-pressed',String(mode==='reinforcements'));
   const fireWait=Math.max(0,Math.ceil((sim.fireReady-sim.tick)/FPS)),reinforceWait=Math.max(0,Math.ceil((sim.reinforcementsReady-sim.tick)/FPS));
   setText(fireTime,sim.phase==='ready'?'Start battle':fireWait?`${fireWait}s`:'Ready');setText(reinforceTime,sim.phase==='ready'?'Start battle':reinforceWait?`${reinforceWait}s`:'Ready');
+  fireTime.dataset.short=sim.phase==='ready'?'—':fireTime.textContent??'';reinforceTime.dataset.short=sim.phase==='ready'?'—':reinforceTime.textContent??'';
   const stopped=sim.paused||sim.phase!=='running';fire.disabled=fireWait>0||stopped;reinforce.disabled=reinforceWait>0||stopped;
   next.disabled=!sim.canCall||sim.paused;
   const label=sim.wave===0?'Start battle':sim.wave===LEVEL.groups.length?'Final wave':sim.canCall?'Call next wave':'Wave arriving';
   const detail=sim.wave===0?'Wave 1 →':sim.earlyReward>0?`+${sim.earlyReward} gold · ${Math.ceil(sim.nextIn)}s spell recharge`:sim.wave===LEVEL.groups.length?'Hold the road':`Wave ${sim.wave+1} →`;
+  next.dataset.short=sim.wave===0?'▶':sim.wave===LEVEL.groups.length?'✓':sim.canCall?'▶':'⌛';next.setAttribute('aria-label',`${label}. ${detail}`);
   if(next.firstChild?.textContent!==label||next.lastChild?.textContent!==detail){next.replaceChildren(document.createTextNode(label));const sub=document.createElement('span');sub.textContent=detail;next.append(sub);}
   setText(phase,sim.paused?'Battle paused':sim.phase==='ready'?'Prepare your defenses':sim.phase==='won'?'Pagras defended':sim.phase==='lost'?'Defense broken':sim.canCall&&sim.nextIn>0?`Next wave in ${Math.ceil(sim.nextIn)}s`:'Hold the road');
   renderContext();
