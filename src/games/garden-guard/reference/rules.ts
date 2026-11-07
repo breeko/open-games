@@ -39,9 +39,12 @@ export function referenceFlag(level:number,index:number):boolean {
   const interval=Math.min(10,REFERENCE.waveCounts[level-1] ?? 10);
   return index%interval===interval-1;
 }
-export function randomSource(seed:number):()=>number {
+export interface RandomSource { (): number; snapshot(): number; restore(state: number): void }
+export function randomSource(seed:number):RandomSource {
   let state=seed>>>0;
-  return ()=> { state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296; };
+  return Object.assign(()=> { state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296; }, {
+    snapshot: () => state, restore: (value: number) => { state=value>>>0; },
+  });
 }
 export function allowedZombies(level:number):ZombieType[] { if(level===15)return ['basic','conehead','buckethead'];return ZOMBIE_PICK_ORDER.filter(type=>ZOMBIE_RULES[type].levels.includes(level)); }
 export function sourceFirstCountdown(level:number):number { return level===2?5000:level===5||level===10||level===15?200:1800; }

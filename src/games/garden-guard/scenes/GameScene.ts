@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
 import {sizeArt} from '../art';
-import { sampleSkySunTicks } from '../reference/rules';
+import { randomSource, sampleSkySunTicks } from '../reference/rules';
+import { gardenSessionSchema, projectileSchema, type GardenSession } from '../state/session-data';
+import { restoreTween } from '../state/restore-tween';
+import { saveArcadeClock, restoreArcadeClock } from '../state/arcade-clock';
 import { DIFFICULTIES, getDifficulty } from '../difficulty';
 import { audio } from '../audio/AudioManager';
 import {
@@ -33,6 +36,7 @@ import { SeedBank } from '../ui/SeedBank';
 export interface GameSceneData {
   levelId?: number;
   seeds?: PlantType[];
+  resume?: GardenSession;
 }
 
 /**
@@ -43,6 +47,8 @@ export interface GameSceneData {
  * comes from the `LevelDefinition` passed in by the seed-select screen.
  */
 export class GameScene extends Phaser.Scene {
+  private resumeData?:GardenSession;
+  private random=randomSource(67890);
   private grid!: GridManager;
   private resources!: ResourceManager;
   private waves!: WaveManager;
@@ -75,7 +81,7 @@ export class GameScene extends Phaser.Scene {
   private shoveling = false;
   private supplyTimer = 0;
   private supplyIndex = 0;
-  private rolling: { image: Phaser.GameObjects.Image; row: number; hits: Set<Zombie> }[] = [];
+  private rolling: { image: Phaser.GameObjects.Image; row: number; hits: Set<Zombie>; bounce?:{fromY:number;tween:Phaser.Tweens.Tween} }[] = [];
   get isShoveling(): boolean { return this.shoveling; }
   toggleShovel(): void { this.deselect(); this.shoveling = !this.shoveling; }
 
@@ -85,19 +91,26 @@ export class GameScene extends Phaser.Scene {
   constructor() {
     super('game');
   }
+  /** Phaser tweens use a wall clock internally; exclude time spent fully paused. */
+  resumeTweenClock():void {
+    const now=Date.now();this.tweens.startTime+=now-this.tweens.prevTime;this.tweens.prevTime=now;
+  }
 
-  init(data: GameSceneData): void {
-    this.level = getLevel(data.levelId ?? this.level?.id ?? 1);
+  init(data: GameSceneData = {}): void {
+    this.resumeData=data.resume?gardenSessionSchema.parse(data.resume):undefined;
+    this.level = getLevel(this.resumeData?.levelId ?? data.levelId ?? this.level?.id ?? 1);
     this.seeds = this.level.mode==='whack'?[...this.level.availablePlants]:this.level.mode === 'standard' ? data.seeds && data.seeds.length > 0 ? [...data.seeds] : defaultSeedsForLevel(this.level.id) : [...new Set(this.level.conveyorSeeds)];
+    if(this.resumeData)this.seeds=[...this.resumeData.seeds];
   }
 
   create(): void {
+    this.random=randomSource(67890);
     this.plants = [];
     this.rolling = []; this.shoveling = false; this.supplyTimer = 0; this.supplyIndex = 0;
     this.selected = null;
     this.draggingType = null;
     this.dragPointer = undefined;
-    this.skySunTimer = 0; this.skyFallen=0;this.skyNext=sampleSkySunTicks(0,Math.random)*10;
+    this.skySunTimer = 0; this.skyFallen=0;this.skyNext=sampleSkySunTicks(0,this.random)*10;
     this.finished = false;
 
     this.diagnosticGraphics=this.add.graphics().setDepth(290);
@@ -116,11 +129,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.resources = new ResourceManager(this.level.startingSun + DIFFICULTIES[getDifficulty()].sunBonus);
+    this.resources.on('changed',()=>this.game.events.emit('session-dirty'));
 
-    this.peas = this.physics.add.group({ allowGravity: false });
+    this.peas = this.physics.add.group({ classType:Phaser.Physics.Arcade.Image, allowGravity: false });
     this.zombies = this.physics.add.group();
 
     this.ctx = {
+      random:this.random,
       graveAt:(col,row)=>this.graves.has(`${col},${row}`),
       clearGrave:(col,row)=>{this.graves.get(`${col},${row}`)?.destroy();this.graves.delete(`${col},${row}`);},
       sunBank:this.level.id<=2?{x:89,y:76}:{x:70,y:60},
@@ -184,7 +199,7 @@ export class GameScene extends Phaser.Scene {
       .setVisible(false);
 
     this.waves = new WaveManager(this, this.zombies, this.grid, this.level, {
-      onWhackKill:z=>{if(whackLoot(this.resources.sun,z.variant,Phaser.Math.Between(0,29999)))for(let i=0;i<3;i++)this.spawnSun(z.x-i*30,z.y-40);},
+      onWhackKill:z=>{if(whackLoot(this.resources.sun,z.variant,this.randomBetween(0,29999)))for(let i=0;i<3;i++)this.spawnSun(z.x-i*30,z.y-40);},
       addGraves:count=>this.addWhackGraves(count),
       graves:()=>[...this.graves.keys()].map(key=>{const [col,row]=key.split(',').map(Number);return {col,row};}),
       onWaveStart: (wave, total, isFlag) => {
@@ -203,7 +218,7 @@ export class GameScene extends Phaser.Scene {
     this.input.keyboard?.on('keydown-R', () => {
       if (this.finished) this.scene.restart({ levelId: this.level.id, seeds: this.seeds });
     });
-    this.input.keyboard?.on('keydown-M', () => this.scene.start('menu'));
+    this.input.keyboard?.on('keydown-M', () => this.game.events.emit('request-menu'));
 
     // Number keys arm a seed without moving the mouse. Press again to cancel.
     this.input.keyboard?.on('keydown', (event: KeyboardEvent) => {
@@ -221,11 +236,12 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.hud.setWave(0,this.level.waves.length);
-    if (this.level.mode==='bowling'||this.level.mode==='conveyor') {
+    if (!this.resumeData&&(this.level.mode==='bowling'||this.level.mode==='conveyor')) {
       for (let i=0;i<3;i++) this.seedBank.grant(this.level.conveyorSeeds[i % this.level.conveyorSeeds.length]);
     }
-    this.waves.start();
-    this.hud.announce(this.level.blurb, '#ffe066', 4500);
+    if(this.resumeData){this.restoreSession(this.resumeData);this.game.events.emit('session-restored');}
+    else {this.waves.start();this.hud.announce(this.level.blurb, '#ffe066', 4500);this.game.events.emit('session-started');}
+    this.resumeData=undefined;
 
     // Clean up listeners when the scene restarts so nothing accumulates.
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -275,7 +291,9 @@ export class GameScene extends Phaser.Scene {
     // Projectiles that left the screen
     this.peas.getChildren().forEach((child) => {
       const pea = child as Phaser.Physics.Arcade.Image;
-      if (pea.active && (pea.x > GAME_WIDTH + 60 || (pea.getData('expiresAt')&&this.time.now>=pea.getData('expiresAt')))) pea.destroy();
+      const expires=pea.getData('expiresMs');
+      if(typeof expires==='number')pea.setData('expiresMs',Math.max(0,expires-delta));
+      if (pea.active && (pea.x > GAME_WIDTH + 60 || (typeof expires==='number'&&expires<=delta))) pea.destroy();
     });
 
     if (this.level.mode==='bowling'||this.level.mode==='conveyor') {
@@ -289,8 +307,8 @@ export class GameScene extends Phaser.Scene {
     // Falling sun
     if (this.level.mode === 'standard'&&this.level.environment==='day') this.skySunTimer += delta;
     if (this.skySunTimer >= this.skyNext) {
-      this.skySunTimer -= this.skyNext;this.skyNext=sampleSkySunTicks(++this.skyFallen,Math.random)*10;
-      const col = Phaser.Math.Between(0, GRID.cols - 1);
+      this.skySunTimer -= this.skyNext;this.skyNext=sampleSkySunTicks(++this.skyFallen,this.random)*10;
+      const col = this.randomBetween(0, GRID.cols - 1);
       this.spawnSun(
         GRID.originX + col * GRID.tileWidth + GRID.tileWidth / 2,
         GRID.originY - 40,
@@ -298,7 +316,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.waves.update(delta);
-    this.seedBank.update(time);
+    this.seedBank.update(delta);
     this.hud.setProgress(this.waves.progress);
 
     for (const [row, mower] of this.mowers) {
@@ -339,7 +357,7 @@ export class GameScene extends Phaser.Scene {
 
     if (this.shoveling) {
       const col = this.grid.worldToCol(pointer.worldX); const row = this.grid.worldToRow(pointer.worldY);
-      this.grid.getPlant(col,row)?.remove(); this.shoveling = false; return;
+      this.grid.getPlant(col,row)?.remove(); this.shoveling = false;this.game.events.emit('session-dirty'); return;
     }
     if (!this.selected){if(this.level.mode==='whack')this.bonkAt(pointer.worldX,pointer.worldY);return;}
 
@@ -446,7 +464,7 @@ export class GameScene extends Phaser.Scene {
       if (col > 2) return false;
       const point = this.grid.cellToWorld(col,row);
       const image = this.add.image(point.x,point.y + 14,'wallnut').setDisplaySize(94,118).setDepth(DEPTH.plants);
-      this.rolling.push({image,row,hits:new Set()}); this.seedBank.startCooldown(type); audio.sfx('plant'); return true;
+      this.rolling.push({image,row,hits:new Set()}); this.seedBank.startCooldown(type); audio.sfx('plant');this.game.events.emit('session-dirty'); return true;
     }
     if (this.grid.getPlant(col, row)) return false;
     if(type==='gravebuster'?!this.ctx.graveAt(col,row):this.ctx.graveAt(col,row))return false;
@@ -454,6 +472,7 @@ export class GameScene extends Phaser.Scene {
 
     this.spawnPlant(type, col, row);
     this.seedBank.startCooldown(type);
+    this.game.events.emit('session-dirty');
     audio.sfx('plant');
 
     return true;
@@ -464,7 +483,7 @@ export class GameScene extends Phaser.Scene {
     for(let col=3;col<9;col++)for(let row=0;row<5;row++)if(!this.ctx.graveAt(col,row))cells.push({col,row});
     for(let i=0;i<count&&cells.length;i++){
       const free=cells.filter(c=>!this.grid.getPlant(c.col,c.row));
-      const pool=free.length?free:cells,cell=pool[Phaser.Math.Between(0,pool.length-1)];
+      const pool=free.length?free:cells,cell=pool[this.randomBetween(0,pool.length-1)];
       cells.splice(cells.indexOf(cell),1);this.grid.getPlant(cell.col,cell.row)?.remove();
       const point=this.grid.cellToWorld(cell.col,cell.row);
       this.graves.set(`${cell.col},${cell.row}`,this.add.image(point.x,point.y+25,'grave').setScale(1.6).setOrigin(0.5,0.72).setDepth(9));
@@ -480,6 +499,7 @@ export class GameScene extends Phaser.Scene {
     if(!zombie)return;
     audio.sfx('plant');
     zombie.bonk();
+    this.game.events.emit('session-dirty');
   }
 
   private updateRolling(delta: number): void {
@@ -488,9 +508,9 @@ export class GameScene extends Phaser.Scene {
       for (const enemy of this.zombies.getChildren()) {
         if (!(enemy instanceof Zombie) || !enemy.active || !enemy.isHostile || enemy.row !== nut.row || nut.hits.has(enemy) || Math.abs(enemy.x - nut.image.x) > 45) continue;
         nut.hits.add(enemy); enemy.takeDamage(enemy.hasArmor ? 500 : 1800); audio.sfx('plant');
-        const direction = nut.row === 0 ? 1 : nut.row === 4 ? -1 : Phaser.Math.Between(0,1) ? 1 : -1;
+        const direction = nut.row === 0 ? 1 : nut.row === 4 ? -1 : this.randomBetween(0,1) ? 1 : -1;
         nut.row += direction;
-        this.tweens.add({targets:nut.image,y:this.gridY(nut.row) + 14,duration:220});
+        nut.bounce={fromY:nut.image.y,tween:this.tweens.add({targets:nut.image,y:this.gridY(nut.row) + 14,duration:220})};
         break;
       }
     }
@@ -499,7 +519,66 @@ export class GameScene extends Phaser.Scene {
 
   private spawnSun(x: number, y: number): void {
     // eslint-disable-next-line no-new
-    new Sun(this, x, y, SKY_SUN_VALUE, (value) => this.resources.add(value), y < GRID.originY ? Phaser.Math.Between(GRID.originY + 40, GRID.originY + GRID.tileHeight*4.4) : undefined,this.ctx.sunBank);
+    new Sun(this, x, y, SKY_SUN_VALUE, (value) => this.resources.add(value), y < GRID.originY ? this.randomBetween(GRID.originY + 40, GRID.originY + GRID.tileHeight*4.4) : undefined,this.ctx.sunBank);
+  }
+
+  private randomBetween(min:number,max:number):number {return Math.floor(this.random()*(Math.floor(max)-min+1))+min;}
+
+  /** Snapshot only gameplay state; engine objects, selection and cosmetic effects are rebuilt. */
+  captureSession():GardenSession|null {
+    if(this.finished||!this.waves)return null;
+    const zombies=this.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie&&z.active&&!z.isDead);
+    const zombieIndexes=new Map(zombies.map((z,index)=>[z,index]));
+    const suns=this.children.list.filter((child):child is Sun=>child instanceof Sun).flatMap(sun=>{const saved=sun.save();return saved?[saved]:[];});
+    const projectiles=this.peas.getChildren().filter((pea):pea is Phaser.Physics.Arcade.Image=>pea instanceof Phaser.Physics.Arcade.Image&&pea.active).map(pea=>{
+      const body=pea.body as Phaser.Physics.Arcade.Body;
+      const expiresMs=pea.getData('expiresMs');
+      return projectileSchema.parse({x:pea.x,y:pea.y,texture:pea.texture.key,velocityX:body.velocity.x,velocityY:body.velocity.y,
+        row:pea.getData('row'),damage:pea.getData('damage'),slowFactor:pea.getData('slowFactor')??null,slowMs:pea.getData('slowMs')??null,
+        expiresMs:typeof expiresMs==='number'?expiresMs:null,originX:pea.getData('originX')});
+    });
+    return gardenSessionSchema.parse({version:1,compatibility:'garden-day-night-r1',savedAt:Date.now(),
+      levelId:this.level.id,difficulty:getDifficulty(),seeds:[...this.seeds],sun:this.resources.sun,random:this.random.snapshot(),physicsRemainderMs:saveArcadeClock(this.physics.world),
+      skySunTimer:this.skySunTimer,skyNext:this.skyNext,skyFallen:this.skyFallen,supplyTimer:this.supplyTimer,supplyIndex:this.supplyIndex,
+      plants:this.plants.filter(plant=>plant.active&&!plant.isDying).map(plant=>plant.save()),zombies:zombies.map(zombie=>zombie.save()),
+      suns,projectiles,seedBank:this.seedBank.save(),waves:this.waves.save(),
+      graves:[...this.graves.keys()].map(key=>{const [col,row]=key.split(',').map(Number);return {col,row};}),
+      mowers:[...this.mowers].map(([row,mower])=>({row,x:mower.image.x,used:mower.used,moving:mower.moving,visible:mower.image.visible})),
+      rolling:this.rolling.map(nut=>({x:nut.image.x,y:nut.image.y,row:nut.row,angle:nut.image.angle,
+        hits:[...nut.hits].flatMap(zombie=>{const index=zombieIndexes.get(zombie);return index===undefined?[]:[index];}),
+        bounce:nut.bounce&&nut.bounce.tween.isPlaying()?{fromY:nut.bounce.fromY,elapsed:Math.min(220,nut.bounce.tween.elapsed)}:null})),
+    });
+  }
+
+  private restoreSession(data:GardenSession):void {
+    this.resources.add(data.sun-this.resources.sun);
+    for(const image of this.graves.values())image.destroy();this.graves.clear();
+    for(const grave of data.graves){const point=this.grid.cellToWorld(grave.col,grave.row);this.graves.set(`${grave.col},${grave.row}`,this.add.image(point.x,point.y+25,'grave').setScale(1.6).setOrigin(0.5,0.72).setDepth(9));}
+    for(const plant of data.plants)this.spawnPlant(plant.type,plant.col,plant.row).restore(plant);
+    const zombies=data.zombies.map(zombie=>this.waves.restoreZombie(zombie));
+    this.waves.restore(data.waves);this.seedBank.restore(data.seedBank);
+    for(const sun of data.suns)Sun.fromSave(this,sun,value=>this.resources.add(value),this.ctx.sunBank);
+    for(const projectile of data.projectiles){
+      const pea=this.peas.create(projectile.x,projectile.y,projectile.texture) as Phaser.Physics.Arcade.Image;
+      sizeArt(pea,projectile.texture);const body=pea.body as Phaser.Physics.Arcade.Body;
+      body.setCircle(pea.width*12/28);body.setOffset(pea.width/2-body.radius,pea.height/2-body.radius);
+      pea.setDepth(DEPTH.peas).setVelocity(projectile.velocityX,projectile.velocityY);
+      pea.setData({row:projectile.row,damage:projectile.damage,originX:projectile.originX});
+      if(projectile.slowFactor!==null)pea.setData('slowFactor',projectile.slowFactor);
+      if(projectile.slowMs!==null)pea.setData('slowMs',projectile.slowMs);
+      if(projectile.expiresMs!==null)pea.setData('expiresMs',projectile.expiresMs);
+    }
+    for(const saved of data.mowers){const mower=this.mowers.get(saved.row)!;mower.used=saved.used;mower.moving=saved.moving;mower.image.setX(saved.x).setVisible(saved.visible);}
+    for(const saved of data.rolling){
+      const image=this.add.image(saved.x,saved.y,'wallnut').setDisplaySize(94,118).setDepth(DEPTH.plants).setAngle(saved.angle);
+      const nut:typeof this.rolling[number]={image,row:saved.row,hits:new Set(saved.hits.map(index=>zombies[index]))};
+      if(saved.bounce){image.y=saved.bounce.fromY;const tween=this.tweens.add({targets:image,y:{from:saved.bounce.fromY,to:this.gridY(saved.row)+14},duration:220});restoreTween(tween,saved.bounce.elapsed);nut.bounce={fromY:saved.bounce.fromY,tween};image.y=saved.y;}
+      this.rolling.push(nut);
+    }
+    this.skySunTimer=data.skySunTimer;this.skyNext=data.skyNext;this.skyFallen=data.skyFallen;
+    this.supplyTimer=data.supplyTimer;this.supplyIndex=data.supplyIndex;this.random.restore(data.random);
+    restoreArcadeClock(this.physics.world,data.physicsRemainderMs);
+    this.hud.setWave(this.waves.currentWave,this.waves.totalWaves);this.hud.setProgress(this.waves.progress);
   }
 
   private drawBackground(): void {
@@ -543,6 +622,7 @@ export class GameScene extends Phaser.Scene {
     this.waves.stop();
 
     progress.recordAttempt(this.waves.currentWave);
+    this.game.events.emit('session-finished');
     audio.sfx('lose');
 
     this.physics.pause();
@@ -559,6 +639,7 @@ export class GameScene extends Phaser.Scene {
     this.finished = true;
 
     const firstClear = progress.completeLevel(this.level.id, this.waves.totalWaves);
+    this.game.events.emit('session-finished');
     audio.sfx('win');
 
     // Let the victory sound land before handing over to the reward screen.

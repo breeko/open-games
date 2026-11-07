@@ -4,7 +4,9 @@ import { GroundMotion } from '../reference/motion';
 import {whackBonk} from '../whack-director';
 import {damageWithShield,waveHealth} from '../combat';
 import { audio } from '../audio/AudioManager';
-import { DEPTH, ZOMBIE_BARE_TEXTURE } from '../constants';
+import { DEPTH, ZOMBIE_BARE_TEXTURE, ZOMBIE_DEFS } from '../constants';
+import type { ZombieSnapshot } from '../state/session-data';
+import { restoreTween } from '../state/restore-tween';
 import type { GridManager } from '../managers/GridManager';
 import type { ZombieType } from '../types';
 import type { Plant } from './Plant';
@@ -38,6 +40,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   readonly waveIndex: number;
   private hasPole: boolean;
   private vaulting = false;
+  private vaultState?: { startX:number; groundY:number; tween:Phaser.Tweens.Tween };
   readonly speed: number;
 
   private readonly onDeath?:(zombie:Zombie)=>void;
@@ -67,9 +70,9 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   /** Hit-flash timer, so we don't schedule a delayed call per pea. */
   private flash = 0;
 
-  /** Applied by Snow Pea. `slowUntil` is a scene timestamp. */
+  /** Remaining gameplay time; browser pause and offline time must not consume it. */
   private slowFactor = 1;
-  private slowUntil = 0;
+  private slowRemainingMs = 0;
   /** Cached tint state: 0 = none, 1 = chilled, 2 = hit flash. */
   private tintState = 0;
 
@@ -117,6 +120,35 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   get waveHealth():number {return this.dead?0:waveHealth({hp:this.hp,armor:this.armorHp,shield:this.shieldHp});}
   get isHostile():boolean{return !this.allies&&!this.dead;}
   get variant():ZombieType{return this.zombieType;}
+  save(): ZombieSnapshot {
+    return {type:this.zombieType,x:this.x,y:this.y,row:this.row,wave:this.waveIndex,hp:this.hp,maxHp:this.maxHp,
+      armorHp:this.armorHp,shieldHp:this.shieldHp,speed:this.speed,speedMultiplier:this.speedMultiplier,dps:this.dps,
+      allies:this.allies,hasPole:this.hasPole,emergenceTotal:this.emergenceTotal,emergenceMs:this.emergenceMs,
+      rageDelay:this.rageDelay,headless:this.headless,bleedTicks:this.bleedTicks,biteRemainder:this.biteRemainder,
+      slowFactor:this.slowFactor,slowRemainingMs:this.slowRemainingMs,motion:this.motion.save(),
+      vault:this.vaulting&&this.vaultState?{startX:this.vaultState.startX,groundY:this.vaultState.groundY,elapsed:Math.min(650,this.vaultState.tween.elapsed)}:null};
+  }
+  static fromSave(scene:Phaser.Scene,grid:GridManager,data:ZombieSnapshot,options:Pick<ZombieOptions,'group'|'random'|'onDeath'>):Zombie {
+    const zombie=new Zombie(scene,data.x,data.row,grid,{...options,type:data.type,wave:data.wave,hp:data.maxHp,
+      armorHp:data.armorHp,shieldHp:data.shieldHp,speed:data.speed,speedMultiplier:data.speedMultiplier,dps:data.dps,
+      emergenceMs:data.emergenceTotal,parameter:data.motion.parameter});
+    zombie.hp=data.hp;zombie.allies=data.allies;zombie.hasPole=data.hasPole;zombie.emergenceMs=data.emergenceMs;
+    zombie.rageDelay=data.rageDelay;zombie.headless=data.headless;zombie.bleedTicks=data.bleedTicks;
+    zombie.biteRemainder=data.biteRemainder;zombie.slowFactor=data.slowFactor;zombie.slowRemainingMs=data.slowRemainingMs;
+    zombie.motion.restore(data.motion);
+    const texture=data.type==='polevaulter'&&!data.hasPole&&!data.vault?'zombie-pole-walk':
+      data.type==='newspaper'&&data.shieldHp===0?'zombie-paper-angry':
+      data.type==='football'&&data.armorHp===0?'zombie-football-bare':
+      ((data.type==='conehead'||data.type==='buckethead')&&data.armorHp===0)||(data.type==='screendoor'&&data.shieldHp===0)?ZOMBIE_BARE_TEXTURE:ZOMBIE_DEFS[data.type].texture;
+    zombie.setTexture(texture).setOrigin(data.type==='polevaulter'&&(data.hasPole||data.vault)?0.78:0.5,0.78).setFlipX(data.allies);
+    const body=zombie.body as Phaser.Physics.Arcade.Body;
+    body.setOffset(zombie.width*zombie.originX-body.width/2,zombie.height*zombie.originY-288);
+    zombie.walk();
+    if(data.vault)zombie.startVault(data.vault.startX,data.vault.groundY,data.vault.elapsed);
+    zombie.setPosition(data.x,data.y);
+    if(data.emergenceMs>0)zombie.setAlpha(1-data.emergenceMs/data.emergenceTotal);
+    zombie.updateTint();return zombie;
+  }
   get isHeadless():boolean {return this.headless;}
 
   get isDead(): boolean {
@@ -134,7 +166,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
 
   /** True while a Snow Pea's chill is still in effect. */
   get isSlowed(): boolean {
-    return this.scene.time.now < this.slowUntil;
+    return this.slowRemainingMs > 0;
   }
 
   /** Walk speed after any active chill is taken into account. */
@@ -154,7 +186,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     const alreadySlowed = this.isSlowed;
 
     this.slowFactor = alreadySlowed ? Math.min(this.slowFactor, factor) : factor;
-    this.slowUntil = this.scene.time.now + durationMs;
+    this.slowRemainingMs = durationMs;
   }
 
   /** Starts the idle shuffle animation. */
@@ -171,7 +203,9 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
 
   /** Called every frame by `GameScene`. */
   tick(delta: number): void {
-    if (this.dead || !this.active || this.vaulting) return;
+    if (this.dead || !this.active) return;
+    this.slowRemainingMs=Math.max(0,this.slowRemainingMs-delta);
+    if(this.vaulting)return;
 
     if (this.flash > 0) this.flash -= delta;
     if(this.emergenceMs>0){this.emergenceMs=Math.max(0,this.emergenceMs-delta);this.setAlpha(1-this.emergenceMs/this.emergenceTotal);return;}
@@ -202,12 +236,17 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
 
   private vault(): void {
     this.hasPole = false; this.motion=new GroundMotion('poleWalk',(0.23+this.random()*0.14)*this.speedMultiplier); this.vaulting = true; this.setVelocityX(0);
-    const groundY = this.y;
-    this.scene.tweens.add({ targets: this, x: this.x - 157, duration: 650, ease: 'Sine.easeInOut',
+    this.startVault(this.x,this.y);
+  }
+  private startVault(startX:number,groundY:number,elapsed=0):void {
+    this.vaulting=true;this.setPosition(startX,groundY);
+    const tween=this.scene.tweens.add({ targets: this, x: {from:startX,to:startX - 157}, duration: 650, ease: 'Sine.easeInOut',
       onUpdate: tween => { this.y = groundY - Math.sin(tween.progress * Math.PI) * 60; },
       onComplete: () => { this.y = groundY; this.vaulting = false; this.setTexture('zombie-pole-walk').setOrigin(0.5,0.78);
         const body = this.body as Phaser.Physics.Arcade.Body;
         body.setSize(42*1.6/ART_SCALE,115*1.6/ART_SCALE);body.setOffset(this.width/2-67.2,this.height*0.78-288); } });
+    this.vaultState={startX,groundY,tween};
+    if(elapsed>0)restoreTween(tween,elapsed);
   }
 
   takeDamage(amount: number,bypassShield=false): void {

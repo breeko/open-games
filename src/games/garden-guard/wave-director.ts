@@ -1,6 +1,7 @@
 import type { WaveDefinition } from './levels';
 import type { ZombieType } from './types';
 import { REFERENCE as R } from './reference/rules';
+import { waveDirectorSchema, type WaveDirectorSnapshot } from './state/session-data';
 export interface WavePort {
   spawn(type: ZombieType, wave: number): number;
   health(wave: number): number;
@@ -29,6 +30,14 @@ export class WaveDirector {
   get snapshot() { return {tick:this.tick, wave:this.index+1, countdownTicks:this.countdown, warningTicks:this.warningTicks,
     initialHealth:this.initialHealth, remainingHealth:this.index<0?0:this.port.health(this.index), healthThreshold:this.threshold}; }
   stop(): void { this.done = true; }
+  save(): WaveDirectorSnapshot { return {kind:'standard',index:this.index,remainder:this.remainder,tick:this.tick,countdown:this.countdown,interval:this.interval,warningTicks:this.warningTicks,initialHealth:this.initialHealth,threshold:this.threshold,done:this.done}; }
+  restore(input: WaveDirectorSnapshot): void {
+    const data=waveDirectorSchema.parse(input);
+    if(data.index>=this.waves.length)throw new Error('Invalid wave index');
+    this.index=data.index;this.remainder=data.remainder;this.tick=data.tick;this.countdown=data.countdown;
+    this.interval=data.interval;this.warningTicks=data.warningTicks;this.initialHealth=data.initialHealth;
+    this.threshold=data.threshold;this.done=data.done;this.events.length=0;
+  }
   update(delta: number): void {
     this.remainder += delta;
     while(this.remainder >= R.tickMs && !this.done) { this.remainder -= R.tickMs; this.step(); }

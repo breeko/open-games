@@ -56,7 +56,7 @@ bun run check:art:garden-guard
 bun run audit:garden-guard
 ```
 
-The move into a game folder preserves existing Garden Guard saves. Its storage adapter migrates legacy progress, preferences and difficulty into game-specific keys without deleting the originals. Progress remains local to the browser and site origin; an ongoing level is not saved. The library does not own or reset game saves.
+The move into a game folder preserves existing Garden Guard saves. Its storage adapter migrates legacy progress, preferences and difficulty into game-specific keys without deleting the originals. Progress and ongoing levels remain local to the browser and site origin. The library does not own or reset game saves.
 
 ## Persistence and level resume
 
@@ -64,7 +64,9 @@ The move into a game folder preserves existing Garden Guard saves. Its storage a
 
 Kingdom Rush is the first complete session-resume integration. It saves the current Pagras battle, including units, projectiles, cooldowns, pending spawns, random-generator state and speed. Reopening or refreshing restores it paused without simulating offline time. Restart replaces the session; victory/defeat clears it while retaining the separate best completed result and its existing key. Invalid/incompatible sessions are retained and autosave is disabled until an explicit Restart. Saving failures leave gameplay available and show a status message. A crash or forced browser termination can lose changes since the last successful autosave.
 
-Schemas and snapshot/restoration code stay in the owning game. Bump session format versions when changing the serialized shape, and the game's compatibility marker when changed rules cannot resume an old battle safely. Add game-owned migrations where practical and preserve old data until a validated replacement can be written. Historical battle traces are diagnostic and are not included in session saves. Garden Guard still saves campaign progress/preferences only; its active-level snapshot and restoration remain a separate integration.
+Garden Guard also saves the current level, difficulty, seed bank, resources, plants and their timers, zombies and status effects, projectiles, suns, mowers, graves, rolling nuts and both wave directors. Refresh or reentry restores it paused; **More → Resume saved level** returns from the menu. Starting/restarting a level replaces the session, while victory/defeat clears it without changing campaign history or preferences. Invalid sessions are preserved until an explicit new-level start. [Save format and verification](docs/games/garden-guard/saves.md).
+
+Schemas and snapshot/restoration code stay in the owning game. Bump session format versions when changing the serialized shape, and the game's compatibility marker when changed rules cannot resume an old battle safely. Add game-owned migrations where practical and preserve old data until a validated replacement can be written. Historical battle traces are diagnostic and are not included in session saves.
 
 ## Deployment
 

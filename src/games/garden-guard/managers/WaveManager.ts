@@ -11,6 +11,7 @@ import { randomSource } from '../reference/rules';
 import { sourceToWorldX } from '../reference/motion';
 import {WhackDirector} from '../whack-director';
 import { WaveDirector } from '../wave-director';
+import type { WaveManagerSnapshot, ZombieSnapshot } from '../state/session-data';
 export interface WaveHooks {
   onWaveStart: (wave: number, total: number, isFlag: boolean) => void;
   onComplete: () => void;
@@ -48,6 +49,18 @@ export class WaveManager {
   get totalWaves(): number { return this.level.waves.length; }
   get progress(): number { return this.director.progress; }
   start(): void { /* New director is constructed for each run. */ }
+  save():WaveManagerSnapshot {return {random:this.random.snapshot(),tickRemainder:this.tickRemainder,riseTicks:this.rise.save(),laneHistory:[...this.laneHistory],director:this.director.save()};}
+  restore(data:WaveManagerSnapshot):void {
+    if(data.director.kind==='whack'&&this.director instanceof WhackDirector)this.director.restore(data.director);
+    else if(data.director.kind==='standard'&&this.director instanceof WaveDirector)this.director.restore(data.director);
+    else throw new Error('Wave director mismatch');
+    this.random.restore(data.random);this.tickRemainder=data.tickRemainder;this.rise.restore(data.riseTicks);this.laneHistory=[...data.laneHistory];
+  }
+  restoreZombie(data:ZombieSnapshot):Zombie {
+    const zombie=Zombie.fromSave(this.scene,this.grid,data,{group:this.zombies,random:this.random,
+      onDeath:this.level.mode==='whack'?z=>this.hooks.onWhackKill(z):undefined});
+    this.zombies.add(zombie);return zombie;
+  }
   stop(): void { this.rise.cancel();this.director.stop(); }
   update(delta: number): void {
     this.tickRemainder+=delta;

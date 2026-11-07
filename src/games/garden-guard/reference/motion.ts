@@ -1,4 +1,5 @@
 import tracks from './ground-tracks.json';
+import type { MotionSnapshot } from '../state/session-data';
 export const SOURCE_X_SCALE=128/80;
 export function sourceToWorldX(x:number):number{return 64+(x-40)*SOURCE_X_SCALE;}
 export type Gait=keyof typeof tracks;
@@ -7,6 +8,8 @@ export class GroundMotion {
   private phase=0;
   private remainder=0;
   constructor(public gait:Gait,public parameter:number){}
+  save(): MotionSnapshot { return { gait: this.gait, parameter: this.parameter, phase: this.phase, remainder: this.remainder }; }
+  restore(data: MotionSnapshot): void { this.gait=data.gait;this.parameter=data.parameter;this.phase=data.phase;this.remainder=data.remainder; }
   advance(delta:number,chilled=false):number {
     this.remainder+=delta;let distance=0;
     const track=tracks[this.gait];const xs=track.groundX;const n=track.frameCount;

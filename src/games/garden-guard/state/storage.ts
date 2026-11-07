@@ -1,3 +1,11 @@
+import { createStore, type StorageAccess as SharedStorageAccess } from '../../../shared/persistence/store';
+import { gardenSessionSchema } from './session-data';
+
+export const GAME_SESSION_KEY = 'open-games.garden-guard.session.v1';
+export function createSessionStore(storage?: SharedStorageAccess) {
+  return createStore({ key: GAME_SESSION_KEY, schema: gardenSessionSchema, storage });
+}
+
 /** Garden Guard owns these keys and the legacy migration; other games must not use them. */
 export const GAME_STORAGE_KEYS = {
   progress: 'open-games.garden-guard.progress.v2',

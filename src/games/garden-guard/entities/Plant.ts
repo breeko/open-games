@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import {ART_SCALE} from '../art';
 import { DEPTH } from '../constants';
 import type { GameContext, PlantDefinition } from '../types';
+import type { PlantBehavior, PlantSnapshot } from '../state/session-data';
 
 /**
  * Base class for everything that can be planted on the lawn.
@@ -76,6 +77,14 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
   remove(): void { this.kill(); }
 
   get plantType(){return this.def.type;}
+  save(): PlantSnapshot { return {type:this.def.type,col:this.col,row:this.row,hp:this.hp,behavior:this.saveBehavior()}; }
+  restore(data: PlantSnapshot): void {
+    if(data.type!==this.def.type||data.col!==this.col||data.row!==this.row)throw new Error('Plant identity mismatch');
+    this.hp=data.hp;this.ctx.scene.tweens.killTweensOf(this);this.setScale(ART_SCALE).setAlpha(1);
+    this.restoreBehavior(data.behavior);
+  }
+  protected saveBehavior(): PlantBehavior { return {kind:'idle'}; }
+  protected restoreBehavior(data: PlantBehavior): void { if(data.kind!=='idle')throw new Error('Wrong plant behavior'); }
 
   get isDying(): boolean {
     return this.dying;

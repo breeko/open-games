@@ -23,6 +23,7 @@ Open the printed Network URL on an iPad on the same Wi-Fi as this Mac. Keep the 
 - Pause/Resume freezes the game. Switching away pauses automatically. Space also pauses.
 - Shovel removes a plant without a refund. Cancel seed / Escape clears tools and selection.
 - Choose any level with the level menu or previous/next buttons. Each cleared level saves separately.
+- The current level autosaves every two seconds, after planting/resource changes, on pause, and when leaving/backgrounding the page. Refresh or return to restore it paused with the same difficulty, loadout, board, timers and wave. **More → Resume saved level** returns from the menu. Restart or starting a new level replaces the ongoing session; victory/defeat clears it while preserving campaign progress. [Save details and verification](saves.md).
 - Relaxed: 75% enemy health, 80% speed, +50 starting sun. Baseline: unmodified prototype balance. Hard: 135% health, 115% speed. Changing difficulty restarts the selected level.
 
 ## Daytime campaign
@@ -52,7 +53,7 @@ bun run audit
 bun run build
 ```
 
-Forty-three tests cover the sixteen-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, and single-credit sun pickup behavior. Diagnostics in the game show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build includes a bundle-size advisory for Phaser, approximately 366 KB gzipped for the main script.
+Forty-nine tests cover the sixteen-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, single-credit sun pickup behavior, validated sessions and restored director/random/motion state. A developer browser check also exercises real Phaser entities, all sixteen levels and detailed mid-action restoration. Diagnostics show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build retains a bundle-size advisory for Phaser.
 
 Artwork regression checks (requires Python and Pillow):
 

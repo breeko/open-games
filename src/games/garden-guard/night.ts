@@ -13,6 +13,8 @@ export const NIGHT_RULES={sunGrowthMs:120000,smallSun:15,largeSun:25,graveRiseDe
 /** Source uses a 200-tick rise countdown after the final wave. */
 export class FinalGraveRise {
  private ticks=0;
+ save():number {return this.ticks;}
+ restore(ticks:number):void {this.ticks=ticks;}
  get pending():boolean {return this.ticks>0;}
  schedule():void {this.ticks=NIGHT_RULES.graveRiseDelayMs/10;}
  cancel():void {this.ticks=0;}

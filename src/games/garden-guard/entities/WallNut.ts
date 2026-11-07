@@ -1,5 +1,6 @@
 import type { GameContext, PlantDefinition } from '../types';
 import { Plant } from './Plant';
+import type { PlantBehavior } from '../state/session-data';
 
 const TEX_HEALTHY = 'wallnut';
 const TEX_CRACKED = 'wallnut-cracked';
@@ -11,6 +12,7 @@ const TEX_BROKEN = 'wallnut-broken';
  * the player readable feedback.
  */
 export class WallNut extends Plant {
+  protected override restoreBehavior(data:PlantBehavior):void {super.restoreBehavior(data);this.onTick();}
   constructor(ctx: GameContext, def: PlantDefinition, col: number, row: number) {
     super(ctx, def, col, row);
   }

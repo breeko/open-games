@@ -1,4 +1,5 @@
 import type {ZombieType} from './types';
+import { whackDirectorSchema, type WhackDirectorSnapshot } from './state/session-data';
 export const WHACK={waves:8,firstTicks:200,waveTicks:2000,quietTicks:300,finalDelayTicks:300,helmetHit:900} as const;
 export function whackLoot(sun:number,type:ZombieType,roll:number):boolean {
  const factor=type==='buckethead'?4:type==='conehead'?2:1;
@@ -31,6 +32,11 @@ export class WhackDirector {
  get progress():number{return this.wave/WHACK.waves;}
  get snapshot(){return {tick:this.tick,wave:this.wave,countdownTicks:this.countdown,warningTicks:0,initialHealth:0,remainingHealth:0,healthThreshold:0};}
  stop():void {this.done=true;}
+ save():WhackDirectorSnapshot {return {kind:'whack',tick:this.tick,remainder:this.remainder,wave:this.wave,countdown:this.countdown,spawnCountdown:this.spawnCountdown,done:this.done};}
+ restore(input:WhackDirectorSnapshot):void {
+  const data=whackDirectorSchema.parse(input);this.tick=data.tick;this.remainder=data.remainder;this.wave=data.wave;
+  this.countdown=data.countdown;this.spawnCountdown=data.spawnCountdown;this.done=data.done;this.events.length=0;
+ }
  update(delta:number):void {
   this.remainder+=delta;
   while(this.remainder>=10&&!this.done){this.remainder-=10;this.step();}

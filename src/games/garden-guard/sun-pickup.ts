@@ -1,7 +1,10 @@
+import type { PickupSnapshot } from './state/session-data';
 /** A pickup can be claimed by tapping or automation, but credited only once. */
 export class SunPickup {
   private phase: 'falling' | 'resting' | 'flying' | 'finished' = 'falling';
   private restingMs = 0;
+  save(): PickupSnapshot { return { phase:this.phase, restingMs:this.restingMs }; }
+  restore(data: PickupSnapshot): void { this.phase=data.phase;this.restingMs=data.restingMs; }
 
   land(): void {
     if (this.phase === 'falling') this.phase = 'resting';

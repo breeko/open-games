@@ -3,6 +3,7 @@ import { explode } from '../utils/explosion';
 import type { GameContext, PlantDefinition } from '../types';
 import { Plant } from './Plant';
 import type { Zombie } from './Zombie';
+import type { PlantBehavior } from '../state/session-data';
 
 const TEX_ARMING = 'potatomine';
 const TEX_ARMED = 'potatomine-armed';
@@ -17,6 +18,8 @@ export class PotatoMine extends Plant {
   private armTimer = 0;
   private armed = false;
   private detonated = false;
+  protected override saveBehavior(): PlantBehavior { return {kind:'mine',timer:this.armTimer,armed:this.armed}; }
+  protected override restoreBehavior(data: PlantBehavior): void {if(data.kind!=='mine')throw new Error('Wrong mine behavior');this.armTimer=data.timer;this.armed=data.armed;this.setTexture(this.armed?TEX_ARMED:TEX_ARMING);}
 
   constructor(ctx: GameContext, def: PlantDefinition, col: number, row: number) {
     super(ctx, def, col, row);

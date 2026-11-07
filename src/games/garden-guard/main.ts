@@ -13,6 +13,31 @@ import { PreloadScene } from './scenes/PreloadScene';
 import { RewardScene } from './scenes/RewardScene';
 import { SeedSelectScene } from './scenes/SeedSelectScene';
 import { SettingsScene } from './scenes/SettingsScene';
+import { createSessionStore } from './state/storage';
+import type { GardenSession } from './state/session-data';
+import { startAutosave } from '../../shared/persistence/autosave';
+
+const sessionStore=createSessionStore(),initialSession=sessionStore.read();
+let savingEnabled=initialSession.status==='valid'||initialSession.status==='missing';
+let clearSessionPending=false,capturePending=false;
+const saveStatus=document.querySelector<HTMLElement>('#save-status')!;
+function showSaveStatus(message:string):void {if(saveStatus.textContent!==message)saveStatus.textContent=message;}
+if(initialSession.status==='invalid')showSaveStatus('Saved level could not resume and has been kept. Start a new level to replace it.');
+else if(initialSession.status==='unavailable')showSaveStatus('Saving is unavailable. You can still play.');
+function saveSession():void {
+  if(!savingEnabled)return;
+  if(clearSessionPending){
+    const result=sessionStore.clear();clearSessionPending=result.status!=='cleared';
+    showSaveStatus(clearSessionPending?'Finished level could not be cleared.':'Level finished. Campaign progress stays saved.');return;
+  }
+  if(!game.scene.isActive('game'))return;
+  try {
+    const scene=game.scene.getScene('game');if(!(scene instanceof GameScene))return;
+    const saved=scene.captureSession();if(!saved)return;
+    const result=sessionStore.write(saved);
+    showSaveStatus(result.status==='saved'?'Level saved on this device.':result.status==='invalid'?'Level could not save. Previous save kept.':'Saving is unavailable. Your level continues in this tab.');
+  }catch {showSaveStatus('Level could not save. Previous save kept.');}
+}
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.CANVAS,
@@ -68,25 +93,41 @@ if (import.meta.env.DEV) {
 const pause = document.querySelector<HTMLButtonElement>('#pause')!;
 let paused = false;
 function setPaused(value: boolean): void {
+  const wasPaused=paused;
   paused = value;
   if (value) { game.pause(); audio.stopMusic(); }
-  else { game.resume(); if (settings.current.music) { audio.unlock(); audio.startMusic(); } }
+  else {
+    if(wasPaused)for(const scene of game.scene.getScenes(true))if(scene instanceof GameScene)scene.resumeTweenClock();
+    game.resume(); if (settings.current.music) { audio.unlock(); audio.startMusic(); }
+  }
   pause.textContent = value ? 'Resume' : 'Pause';
   pause.setAttribute('aria-pressed', String(value));
   document.querySelector('#pause-notice')!.classList.toggle('visible', value);
+  if(value)saveSession();
 }
 pause.onclick = () => setPaused(!paused);
 game.events.on('request-pause',()=>setPaused(true));
+game.events.on('session-started',()=>{savingEnabled=true;clearSessionPending=false;capturePending=true;});
+game.events.on('session-restored',()=>{
+  setPaused(true);showSaveStatus('Level restored. Tap Resume when you’re ready.');
+  const scene=game.scene.getScene('game');
+  if(scene instanceof GameScene){lastStatus=scene.summary;document.querySelector('#play-status')!.textContent=lastStatus;}
+});
+game.events.on('session-finished',()=>{clearSessionPending=true;saveSession();});
+game.events.on('session-dirty',()=>{capturePending=true;});
 document.querySelector<HTMLButtonElement>('#retry')!.onclick = () => {
   setPaused(false);
   const scene = game.scene.getScene('game') as GameScene;
-  if (game.scene.isActive('game')) scene.scene.restart();
+  if (game.scene.isActive('game')) scene.scene.restart({levelId:scene.levelId});
 };
-document.querySelector<HTMLButtonElement>('#menu')!.onclick = () => {
+function openMenu():void {
+  saveSession();
   setPaused(false);
   for (const scene of game.scene.getScenes(true)) game.scene.stop(scene.scene.key);
   game.scene.start('menu');
-};
+}
+document.querySelector<HTMLButtonElement>('#menu')!.onclick=openMenu;
+game.events.on('request-menu',openMenu);
 document.querySelector<HTMLButtonElement>('#shovel')!.onclick = () => {
   const scene = game.scene.getScene('game') as GameScene;
   if (game.scene.isActive('game')) scene.toggleShovel();
@@ -105,7 +146,24 @@ levelSelect.replaceChildren(...LEVELS.map(level => { const option = document.cre
 let currentLevel = 1;
 let assetsReady=false;
 let queuedLevel:number|null=null;
-game.events.once('assets-ready',()=>{assetsReady=true;if(queuedLevel!==null){const id=queuedLevel;queuedLevel=null;openLevel(id);}});
+game.events.once('assets-ready',()=>{
+  assetsReady=true;
+  if(queuedLevel!==null){const id=queuedLevel;queuedLevel=null;openLevel(id);}
+  else if(initialSession.status==='valid')openSavedLevel(initialSession.value);
+});
+function openSavedLevel(saved:GardenSession):void {
+  savingEnabled=true;clearSessionPending=false;
+  currentLevel=saved.levelId;levelSelect.value=String(currentLevel);
+  setDifficulty(saved.difficulty);difficultySelect.value=saved.difficulty;
+  setPaused(false);
+  for(const scene of game.scene.getScenes(true))game.scene.stop(scene.scene.key);
+  game.scene.start('game',{resume:saved});
+}
+document.querySelector<HTMLButtonElement>('#resume-session')!.onclick=()=>{
+  const saved=sessionStore.read();
+  if(saved.status==='valid')openSavedLevel(saved.value);
+  else showSaveStatus(saved.status==='missing'?'No unfinished level to resume.':'Saved level could not resume and has been kept.');
+};
 function openLevel(id: number): void {
   currentLevel = Math.max(1, Math.min(TOTAL_LEVELS, id));
   if(!assetsReady){queuedLevel=currentLevel;return;}
@@ -130,7 +188,10 @@ game.events.on(Phaser.Core.Events.POST_STEP, () => {
   document.querySelector('#shovel')!.setAttribute('aria-pressed',String(scene.isShoveling));
   const status = scene.summary;
   if (status !== lastStatus) { document.querySelector('#play-status')!.textContent = status; lastStatus = status; }
+  if(capturePending){capturePending=false;saveSession();}
 });
+const autosave=startAutosave(saveSession);
+import.meta.hot?.dispose(()=>{autosave.flush();autosave.stop();});
 
 window.addEventListener('keydown', event => {
   if (event.code !== 'Space' || event.repeat || (event.target instanceof HTMLElement && ['BUTTON','SELECT','INPUT'].includes(event.target.tagName))) return;

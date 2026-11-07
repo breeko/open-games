@@ -3,6 +3,7 @@ import { audio } from '../audio/AudioManager';
 import { DEPTH, PLANT_DEFS } from '../constants';
 import type { ResourceManager } from '../managers/ResourceManager';
 import type { PlantDefinition, PlantType } from '../types';
+import type { SeedBankSnapshot } from '../state/session-data';
 
 const CARD_WIDTH = 80;
 const CARD_HEIGHT = 112;
@@ -93,6 +94,13 @@ export class SeedBank extends Phaser.Events.EventEmitter {
   get seedOrder(): PlantType[] {
     return [...this.cards.keys()];
   }
+  save():SeedBankSnapshot {return [...this.cards].map(([type,card])=>({type,stock:this.stock.get(type)??0,...card.saveCooldown()}));}
+  restore(data:SeedBankSnapshot):void {
+    for(const item of data){const card=this.cards.get(item.type);if(!card)throw new Error('Unknown saved seed');
+      card.restoreCooldown(item.remainingMs,item.totalMs);
+      if(this.supplied){this.stock.set(item.type,item.stock);card.setQuantity(item.stock);}}
+    this.refreshAffordability();this.update(0);
+  }
 
   /**
    * Arms `type` (or clears the selection with `null`). Never toggles, so it is
@@ -114,8 +122,8 @@ export class SeedBank extends Phaser.Events.EventEmitter {
   }
 
   /** Called every frame by `GameScene` to animate cooldown overlays. */
-  update(time: number): void {
-    this.cards.forEach((card) => card.update(time));
+  update(delta: number): void {
+    this.cards.forEach((card) => card.update(delta));
   }
 
   /** Begins the recharge timer for a seed after it has been planted. */
@@ -163,7 +171,7 @@ class SeedCard extends Phaser.GameObjects.Container {
   private readonly unavailable:Phaser.GameObjects.Rectangle;
 
   private costLabel!: Phaser.GameObjects.Text;
-  private cooldownEndsAt = 0;
+  private cooldownRemaining = 0;
   private cooldownTotal = 1;
   private affordable = true;
   private dragging = false;
@@ -269,12 +277,14 @@ class SeedCard extends Phaser.GameObjects.Container {
   setQuantity(quantity: number): void { this.costLabel.setText('×' + quantity); }
 
   isReady(): boolean {
-    return this.scene.time.now >= this.cooldownEndsAt;
+    return this.cooldownRemaining <= 0;
   }
+  saveCooldown():{remainingMs:number;totalMs:number} {return {remainingMs:this.cooldownRemaining,totalMs:this.cooldownTotal};}
+  restoreCooldown(remainingMs:number,totalMs:number):void {this.cooldownRemaining=remainingMs;this.cooldownTotal=totalMs;}
 
   startCooldown(): void {
     this.cooldownTotal = Math.max(1, this.def.cooldownMs);
-    this.cooldownEndsAt = this.scene.time.now + this.cooldownTotal;
+    this.cooldownRemaining = this.cooldownTotal;
   }
 
   setSelected(selected: boolean): void {
@@ -287,8 +297,9 @@ class SeedCard extends Phaser.GameObjects.Container {
   }
 
   /** Shrinks the dark overlay from full height to zero as the seed recharges. */
-  update(time: number): void {
-    const remaining = this.cooldownEndsAt - time;
+  update(delta: number): void {
+    this.cooldownRemaining=Math.max(0,this.cooldownRemaining-delta);
+    const remaining = this.cooldownRemaining;
 
     if (remaining > 0) {
       this.overlay.setVisible(true);

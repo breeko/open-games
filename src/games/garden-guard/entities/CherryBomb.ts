@@ -1,6 +1,7 @@
 import { explode } from '../utils/explosion';
 import type { GameContext, PlantDefinition } from '../types';
 import { Plant } from './Plant';
+import type { PlantBehavior } from '../state/session-data';
 
 /**
  * One-shot bomb. On a short fuse it pulses, then blows up everything in a
@@ -9,6 +10,8 @@ import { Plant } from './Plant';
 export class CherryBomb extends Plant {
   private fuse = 0;
   private detonated = false;
+  protected override saveBehavior(): PlantBehavior { return {kind:'cherry',fuse:this.fuse}; }
+  protected override restoreBehavior(data: PlantBehavior): void {if(data.kind!=='cherry')throw new Error('Wrong cherry behavior');this.fuse=data.fuse;}
 
   constructor(ctx: GameContext, def: PlantDefinition, col: number, row: number) {
     super(ctx, def, col, row);
