@@ -16,7 +16,7 @@ export class Chomper extends Plant {
     this.digest = Math.max(0,this.digest - delta);
     this.bar.setVisible(this.digest > 0).setScale(this.digest / 42000,1);
     if (this.digest > 0) return;
-    const prey = this.ctx.zombies.getChildren().find((child): child is Zombie => child instanceof Zombie && child.active && !child.isDead && child.row === this.row && child.x >= this.x - 20 && child.x < this.x + 115);
+    const prey = this.ctx.zombies.getChildren().find((child): child is Zombie => child instanceof Zombie && child.active && child.isHostile && child.row === this.row && child.x >= this.x - 20 && child.x < this.x + 115);
     if (!prey) return;
     prey.takeDamage(99999); this.digest = 42000; audio.sfx('plant');
     this.setTexture('chomper-digest');

@@ -23,15 +23,15 @@ export class Hud {
     const roomy=level.id<=2?1.3:1;
     scene.add.image(8,8,'seed-bank').setOrigin(0).setDisplaySize(928,139*roomy).setDepth(DEPTH.ui);
     scene.add.image(8,8,'SunBank').setOrigin(0).setDisplaySize(125*roomy,139*roomy).setDepth(DEPTH.ui+1);
-    this.sunText=scene.add.text(8+62*roomy,8+111*roomy,level.mode==='standard'?String(resources.sun):'—',{
-      fontFamily:'Arial, sans-serif',fontSize:`${31*roomy}px`,fontStyle:'bold',color:'#201c13',
+    this.sunText=scene.add.text(8+62*roomy,8+111*roomy,(level.mode==='standard'||level.mode==='whack')?String(resources.sun):'—',{
+      resolution:2,fontFamily:'Arial, sans-serif',fontSize:`${31*roomy}px`,fontStyle:'bold',color:'#201c13',
     }).setOrigin(0.5).setDepth(DEPTH.ui+2);
     const menuX=1102,menuY=6,menuWidth=170,menuHeight=64;
     scene.add.image(menuX,menuY,'button_left').setOrigin(0).setDisplaySize(40,menuHeight).setDepth(DEPTH.ui);
     scene.add.image(menuX+40,menuY,'button_middle').setOrigin(0).setDisplaySize(menuWidth-80,menuHeight).setDepth(DEPTH.ui);
     scene.add.image(menuX+menuWidth-40,menuY,'button_right').setOrigin(0).setDisplaySize(40,menuHeight).setDepth(DEPTH.ui);
     scene.add.text(menuX+menuWidth/2,menuY+menuHeight/2,'Menu',{
-      fontFamily:'Georgia, serif',fontSize:'37px',fontStyle:'bold',color:'#57c82b',stroke:'#234524',strokeThickness:2,
+      resolution:2,fontFamily:'Georgia, serif',fontSize:'37px',fontStyle:'bold',color:'#57c82b',stroke:'#234524',strokeThickness:2,
     }).setOrigin(0.5).setDepth(DEPTH.ui+1);
     scene.add.zone(menuX+menuWidth/2,menuY+menuHeight/2,menuWidth,menuHeight).setDepth(DEPTH.ui+3)
       .setInteractive({useHandCursor:true}).on('pointerdown',(_p:Phaser.Input.Pointer,_x:number,_y:number,e:Phaser.Types.Input.EventData)=>{e.stopPropagation();scene.game.events.emit('request-pause');});
@@ -42,15 +42,16 @@ export class Hud {
         .on('pointerdown',(_p:Phaser.Input.Pointer,_x:number,_y:number,e:Phaser.Types.Input.EventData)=>{e.stopPropagation();scene.events.emit('shovel-request');});
     }
     this.levelText=scene.add.text(GAME_WIDTH-288,GAME_HEIGHT-24,`Level ${level.name}`,{
-      fontFamily:'Georgia, serif',fontSize:'30px',fontStyle:'bold',color:'#e6c47d',stroke:'#2e201b',strokeThickness:5,
+      resolution:2,fontFamily:'Georgia, serif',fontSize:'30px',fontStyle:'bold',color:'#e6c47d',stroke:'#2e201b',strokeThickness:5,
     }).setOrigin(1,0.5).setDepth(DEPTH.ui);
     this.waveText=scene.add.text(GAME_WIDTH-22,GAME_HEIGHT-60,'',{
-      fontFamily:'Arial, sans-serif',fontSize:'16px',color:'#ecedcc',stroke:'#253620',strokeThickness:3,
+      resolution:2,fontFamily:'Arial, sans-serif',fontSize:'16px',color:'#ecedcc',stroke:'#253620',strokeThickness:3,
     }).setOrigin(1,0.5).setDepth(DEPTH.ui);
     this.banner = scene.add
       .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 40, '', {
         fontFamily: 'Arial Black, Arial, sans-serif',
         fontSize: '30px',
+        resolution:2,
         wordWrap: { width: 940 },
         align: 'center',
         color: '#ff6b6b',
@@ -73,7 +74,7 @@ export class Hud {
       if(wave.flag)scene.add.image(barX+12+((index+1)/level.waves.length)*228,barY-20,'FlagMeterParts','flag').setDisplaySize(30,30).setDepth(DEPTH.ui+2);
     });
     resources.on('changed', (sun: number) => {
-      if (level.mode === 'standard') this.sunText.setText(String(sun));
+      if (level.mode === 'standard'||level.mode==='whack') this.sunText.setText(String(sun));
     });
 
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.bannerTimer?.remove());

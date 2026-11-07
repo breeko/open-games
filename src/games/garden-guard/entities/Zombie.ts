@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import {ART_SCALE} from '../art';
 import { GroundMotion } from '../reference/motion';
+import {whackBonk} from '../whack-director';
 import {damageWithShield,waveHealth} from '../combat';
 import { audio } from '../audio/AudioManager';
 import { DEPTH, ZOMBIE_BARE_TEXTURE } from '../constants';
@@ -9,6 +10,8 @@ import type { ZombieType } from '../types';
 import type { Plant } from './Plant';
 
 export interface ZombieOptions {
+  onDeath?:(zombie:Zombie)=>void;
+  group?:Phaser.Physics.Arcade.Group;
   parameter?:number;
   speedMultiplier?:number;
   shieldHp?:number;
@@ -37,6 +40,10 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   private vaulting = false;
   readonly speed: number;
 
+  private readonly onDeath?:(zombie:Zombie)=>void;
+  private allies=false;
+  private readonly group?:Phaser.Physics.Arcade.Group;
+  private readonly emergenceTotal:number;
   private shieldHp:number;
   private readonly zombieType:ZombieType;
   private rageDelay=0;
@@ -75,6 +82,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   ) {
     super(scene, x, grid.cellToWorld(0, row).y + 10, options.texture ?? ZOMBIE_BARE_TEXTURE);
 
+    this.onDeath=options.onDeath;this.group=options.group;this.emergenceTotal=options.emergenceMs??0;
     this.zombieType=options.type??'basic';this.shieldHp=options.shieldHp??0;
     this.emergenceMs=options.emergenceMs??0;this.speedMultiplier=options.speedMultiplier??1;
     this.row = row;
@@ -82,7 +90,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     this.hasPole = options.type === 'polevaulter';
     this.speed = options.speed;
     this.random=options.random??Math.random;
-    this.motion=new GroundMotion(this.zombieType==='newspaper'?'paperWalk':this.hasPole?'poleRun':this.random()<0.5?'walk':'walk2',options.parameter??0.3);
+    this.motion=new GroundMotion(this.zombieType==='football'?'football':this.zombieType==='newspaper'?'paperWalk':this.hasPole?'poleRun':this.random()<0.5?'walk':'walk2',options.parameter??0.3);
     if(options.type==='flag')this.flagLabel=scene.add.text(x+20,this.y-55,'⚑',{fontSize:'44px',color:'#e34832'}).setDepth(21);
     this.hp = options.hp;
     this.maxHp = options.hp;
@@ -97,8 +105,9 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     this.setOrigin(options.type === 'polevaulter' ? 0.78 : 0.5, 0.78);
 
     const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setSize(42*1.6/ART_SCALE,115*1.6/ART_SCALE);
-    body.setOffset(this.width*this.originX-42*1.6/ART_SCALE/2,this.height*this.originY-144/ART_SCALE);
+    const bodyWidth=(this.zombieType==='football'?57:42)*1.6/ART_SCALE;
+    body.setSize(bodyWidth,115*1.6/ART_SCALE);
+    body.setOffset(this.width*this.originX-bodyWidth/2,this.height*this.originY-144/ART_SCALE);
     body.setAllowGravity(false);
     body.setVelocity(0, 0);
   }
@@ -106,6 +115,8 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   get remainingHealth(): number { return this.dead ? 0 : Math.max(0,this.hp) + Math.max(0,this.armorHp)+Math.max(0,this.shieldHp); }
 
   get waveHealth():number {return this.dead?0:waveHealth({hp:this.hp,armor:this.armorHp,shield:this.shieldHp});}
+  get isHostile():boolean{return !this.allies&&!this.dead;}
+  get variant():ZombieType{return this.zombieType;}
   get isHeadless():boolean {return this.headless;}
 
   get isDead(): boolean {
@@ -163,11 +174,18 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     if (this.dead || !this.active || this.vaulting) return;
 
     if (this.flash > 0) this.flash -= delta;
-    if(this.emergenceMs>0){this.emergenceMs=Math.max(0,this.emergenceMs-delta);this.setAlpha(1-this.emergenceMs/1500);return;}
+    if(this.emergenceMs>0){this.emergenceMs=Math.max(0,this.emergenceMs-delta);this.setAlpha(1-this.emergenceMs/this.emergenceTotal);return;}
     if(this.rageDelay>0){this.rageDelay=Math.max(0,this.rageDelay-delta);this.updateTint();return;}
 
     this.flagLabel?.setPosition(this.x+20,this.y-55);
     if(this.headless){this.bleedTicks+=delta;while(this.bleedTicks>=10){this.bleedTicks-=10;if(this.random()<0.2)this.hp-=this.maxHp>=500?3:1;}if(this.hp<=0){this.die();return;}}
+    const opponent=this.group?.getChildren().find((z):z is Zombie=>z instanceof Zombie&&z!==this&&z.active&&!z.dead&&z.allies!==this.allies&&z.row===this.row&&Math.abs(z.x-this.x)<75&&(this.allies?z.x>=this.x-20:z.x<=this.x+20));
+    if(!this.headless&&opponent){
+      this.biteRemainder+=delta;const interval=this.isSlowed?80:40;
+      while(this.biteRemainder>=interval){this.biteRemainder-=interval;opponent.takeDamage(this.dps*0.04);}
+      this.updateTint();return;
+    }
+    if(this.allies){this.x+=this.motion.advance(delta,this.isSlowed);if(this.x>1400){this.destroy();return;}this.updateTint();return;}
     const col = this.grid.worldToCol(this.x - (this.hasPole?82:0));
     const plant = this.grid.getPlant(col, this.row);
 
@@ -205,7 +223,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
         this.setTexture('zombie-paper-angry');this.rageDelay=1625;
         this.motion=new GroundMotion('paperRun',(0.89+this.random()*0.02)*this.speedMultiplier);
       }else {this.setTexture(ZOMBIE_BARE_TEXTURE);
-        const body=this.body as Phaser.Physics.Arcade.Body;body.setOffset(this.width*this.originX-67.2,this.height*this.originY-288);
+        const body=this.body as Phaser.Physics.Arcade.Body;body.setOffset(this.width*this.originX-body.width/2,this.height*this.originY-288);
       }
     }
     if (hadArmor && this.armorHp === 0) this.shedArmor();
@@ -218,7 +236,8 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
 
   /** Drops the cone / bucket, leaving an ordinary zombie behind. */
   private shedArmor(): void {
-    this.setTexture(ZOMBIE_BARE_TEXTURE);
+    this.setTexture(this.zombieType==='football'?'zombie-football-bare':ZOMBIE_BARE_TEXTURE);
+    const body=this.body as Phaser.Physics.Arcade.Body;body.setOffset(this.width*this.originX-body.width/2,this.height*this.originY-288);
 
     this.scene.tweens.add({
       targets: this,
@@ -231,18 +250,20 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
 
   /** Applies the highest-priority visual state, only touching the tint on change. */
   private updateTint(): void {
-    const next = this.flash > 0 ? 2 : this.isSlowed ? 1 : 0;
+    const next = this.flash > 0 ? 2 : this.isSlowed ? 1 : this.allies?3:0;
     if (next === this.tintState) return;
 
     this.tintState = next;
 
     if (next === 2) this.setTintFill(0xffffff);
     else if (next === 1) this.setTint(0x9fd8ff);
+    else if(next===3)this.setTint(0xd3a4ff);
     else this.clearTint();
   }
 
   private eat(plant: Plant, delta: number): void {
     this.setVelocityX(0);
+    if(plant.plantType==='hypnoshroom'){plant.remove();this.allies=true;this.setFlipX(true);this.motion.parameter=0.17*this.speedMultiplier;this.biteRemainder=0;return;}
     this.biteRemainder+=delta;
     const interval=this.isSlowed?80:40;
     while(this.biteRemainder>=interval){this.biteRemainder-=interval;plant.takeDamage(this.dps*0.04);}
@@ -251,8 +272,17 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     this.setAngle(Math.sin(this.scene.time.now * 0.03) * 5);
   }
 
+  bonk():boolean {
+    if(!this.active||!this.isHostile)return false;
+    const hadArmor=this.armorHp>0,result=whackBonk(this.hp,this.armorHp);
+    this.hp=result.hp;this.armorHp=result.armor;this.flash=60;
+    if(hadArmor&&this.armorHp===0)this.shedArmor();
+    if(this.hp<=0){this.die();return true;}return false;
+  }
+
   private die(): void {
     this.dead = true;
+    this.onDeath?.(this);
     this.flagLabel?.destroy();
     this.bobTween?.stop();
     this.scene.tweens.killTweensOf(this);

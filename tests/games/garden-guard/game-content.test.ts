@@ -12,7 +12,7 @@ test('each selectable level has its introductory plants without relying on earli
     assert.ok(level.activeRows.length > 0);
     assert.ok(level.availablePlants.every(plant => PLANT_DEFS[plant]));
     assert.ok(level.activeRows.every(row => row >= 0 && row < 5));
-    assert.ok(level.waves.every(wave => Object.values(wave.zombies).some(count => count! > 0)));
+    if(level.mode!=='whack')assert.ok(level.waves.every(wave => Object.values(wave.zombies).some(count => count! > 0)));
   }
 });
 
@@ -32,7 +32,7 @@ test('difficulty scales are ordered and baseline preserves base definitions', ()
 });
 
 test('expanded campaign preserves the original day special modes and plants', () => {
-  assert.equal(LEVELS.length,14);
+  assert.equal(LEVELS.length,16);
   assert.equal(LEVELS[4].mode,'bowling');
   assert.equal(LEVELS[9].mode,'conveyor');
   assert.ok(plantsForLevel(8).includes('chomper'));

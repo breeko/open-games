@@ -53,7 +53,8 @@ export class Button extends Phaser.GameObjects.Container {
 
     this.labelText = scene.add
       .text(0, 0, config.label, {
-        fontFamily: 'Arial, sans-serif',
+        resolution:2,
+      fontFamily: 'Arial, sans-serif',
         fontSize: `${config.fontSize ?? 22}px`,
         color: '#ffffff',
         fontStyle: 'bold',

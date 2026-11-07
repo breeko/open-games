@@ -12,6 +12,7 @@
       "startingSun": 150,
       "skySun": true,
       "graves": [],
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -145,6 +146,7 @@
       "startingSun": 50,
       "skySun": true,
       "graves": [],
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 50000,
@@ -356,6 +358,7 @@
       "startingSun": 50,
       "skySun": true,
       "graves": [],
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -631,6 +634,7 @@
       "startingSun": 50,
       "skySun": true,
       "graves": [],
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -975,6 +979,7 @@
       "startingSun": 50,
       "skySun": true,
       "graves": [],
+      "mode": "bowling",
       "plan": [
         {
           "delayMs": 2000,
@@ -1287,6 +1292,7 @@
       "startingSun": 50,
       "skySun": true,
       "graves": [],
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -1631,6 +1637,7 @@
       "startingSun": 50,
       "skySun": true,
       "graves": [],
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -2343,6 +2350,7 @@
       "startingSun": 50,
       "skySun": true,
       "graves": [],
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -2686,6 +2694,7 @@
       "startingSun": 50,
       "skySun": true,
       "graves": [],
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -3392,6 +3401,7 @@
       "startingSun": 50,
       "skySun": true,
       "graves": [],
+      "mode": "conveyor",
       "plan": [
         {
           "delayMs": 2000,
@@ -4218,6 +4228,7 @@
         "graveEmergenceMs": 1500,
         "graveEatingMs": 5000
       },
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -4588,6 +4599,7 @@
         "graveEmergenceMs": 1500,
         "graveEatingMs": 5000
       },
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -5327,6 +5339,7 @@
         "graveEmergenceMs": 1500,
         "graveEatingMs": 5000
       },
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -5707,6 +5720,7 @@
         "graveEmergenceMs": 1500,
         "graveEatingMs": 5000
       },
+      "mode": "standard",
       "plan": [
         {
           "delayMs": 18000,
@@ -6405,6 +6419,1169 @@
           "kind": "spawn",
           "wave": 20,
           "count": 12
+        }
+      ]
+    },
+    {
+      "level": 15,
+      "environment": "night",
+      "startingSun": 0,
+      "skySun": false,
+      "graves": [
+        {
+          "col": 3,
+          "row": 0
+        },
+        {
+          "col": 3,
+          "row": 1
+        },
+        {
+          "col": 6,
+          "row": 2
+        },
+        {
+          "col": 7,
+          "row": 0
+        },
+        {
+          "col": 8,
+          "row": 2
+        },
+        {
+          "col": 3,
+          "row": 4
+        },
+        {
+          "col": 5,
+          "row": 4
+        },
+        {
+          "col": 6,
+          "row": 1
+        },
+        {
+          "col": 6,
+          "row": 4
+        }
+      ],
+      "nightRules": {
+        "sunGrowthMs": 120000,
+        "smallSun": 15,
+        "largeSun": 25,
+        "graveRiseDelayMs": 2000,
+        "graveEmergenceMs": 1500,
+        "graveEatingMs": 5000
+      },
+      "mode": "whack",
+      "whack": {
+        "rules": {
+          "waves": 8,
+          "firstTicks": 200,
+          "waveTicks": 2000,
+          "quietTicks": 300,
+          "finalDelayTicks": 300,
+          "helmetHit": 900
+        },
+        "gravesAtFinal": 16,
+        "events": [
+          {
+            "tick": 195,
+            "kind": "next wave warning",
+            "wave": 1
+          },
+          {
+            "tick": 200,
+            "kind": "wave start",
+            "wave": 1
+          },
+          {
+            "tick": 200,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 350,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 500,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 650,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 800,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 950,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 1100,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 1250,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 1400,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 1550,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 1700,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 1850,
+            "kind": "spawn",
+            "wave": 1,
+            "count": 1
+          },
+          {
+            "tick": 2195,
+            "kind": "next wave warning",
+            "wave": 2
+          },
+          {
+            "tick": 2200,
+            "kind": "wave start",
+            "wave": 2
+          },
+          {
+            "tick": 2200,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 2340,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 2480,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 2620,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 2760,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 2900,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 3040,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 3180,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 3320,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 3460,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 3600,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 3740,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 3880,
+            "kind": "spawn",
+            "wave": 2,
+            "count": 1
+          },
+          {
+            "tick": 4195,
+            "kind": "next wave warning",
+            "wave": 3
+          },
+          {
+            "tick": 4200,
+            "kind": "wave start",
+            "wave": 3
+          },
+          {
+            "tick": 4200,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 4331,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 4462,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 4593,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 4724,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 4855,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 4986,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 5117,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 5248,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 5379,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 5510,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 5641,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 5772,
+            "kind": "spawn",
+            "wave": 3,
+            "count": 1
+          },
+          {
+            "tick": 6195,
+            "kind": "next wave warning",
+            "wave": 4
+          },
+          {
+            "tick": 6200,
+            "kind": "wave start",
+            "wave": 4
+          },
+          {
+            "tick": 6200,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 6321,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 6442,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 6563,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 6684,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 6805,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 6926,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 7047,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 7168,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 7289,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 7410,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 7531,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 7652,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 7773,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 7894,
+            "kind": "spawn",
+            "wave": 4,
+            "count": 1
+          },
+          {
+            "tick": 8195,
+            "kind": "next wave warning",
+            "wave": 5
+          },
+          {
+            "tick": 8200,
+            "kind": "wave start",
+            "wave": 5
+          },
+          {
+            "tick": 8200,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 8312,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 8424,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 8536,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 8648,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 8760,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 8872,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 8984,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 9096,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 9208,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 9320,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 9432,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 9544,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 9656,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 9768,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 9880,
+            "kind": "spawn",
+            "wave": 5,
+            "count": 1
+          },
+          {
+            "tick": 10195,
+            "kind": "next wave warning",
+            "wave": 6
+          },
+          {
+            "tick": 10200,
+            "kind": "wave start",
+            "wave": 6
+          },
+          {
+            "tick": 10200,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 10302,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 10404,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 10506,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 10608,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 10710,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 10812,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 10914,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 11016,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 11118,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 11220,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 11322,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 11424,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 11526,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 11628,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 11730,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 11832,
+            "kind": "spawn",
+            "wave": 6,
+            "count": 1
+          },
+          {
+            "tick": 12195,
+            "kind": "next wave warning",
+            "wave": 7
+          },
+          {
+            "tick": 12200,
+            "kind": "wave start",
+            "wave": 7
+          },
+          {
+            "tick": 12200,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 12292,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 12384,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 12476,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 12568,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 12660,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 12752,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 12844,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 12936,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13028,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13120,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13212,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13304,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13396,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13488,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13580,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13672,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13764,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 13856,
+            "kind": "spawn",
+            "wave": 7,
+            "count": 1
+          },
+          {
+            "tick": 14195,
+            "kind": "next wave warning",
+            "wave": 8
+          },
+          {
+            "tick": 14200,
+            "kind": "wave start",
+            "wave": 8
+          },
+          {
+            "tick": 14499,
+            "kind": "spawn",
+            "wave": 8,
+            "count": 16
+          }
+        ]
+      }
+    },
+    {
+      "level": 16,
+      "environment": "night",
+      "startingSun": 50,
+      "skySun": false,
+      "graves": [
+        {
+          "col": 5,
+          "row": 0
+        },
+        {
+          "col": 6,
+          "row": 0
+        },
+        {
+          "col": 7,
+          "row": 2
+        },
+        {
+          "col": 7,
+          "row": 3
+        },
+        {
+          "col": 8,
+          "row": 4
+        },
+        {
+          "col": 8,
+          "row": 0
+        },
+        {
+          "col": 8,
+          "row": 2
+        }
+      ],
+      "nightRules": {
+        "sunGrowthMs": 120000,
+        "smallSun": 15,
+        "largeSun": 25,
+        "graveRiseDelayMs": 2000,
+        "graveEmergenceMs": 1500,
+        "graveEatingMs": 5000
+      },
+      "mode": "standard",
+      "plan": [
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1
+          },
+          "sequence": [
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 1,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1
+          },
+          "sequence": [
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 1,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1
+          },
+          "sequence": [
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 1,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1
+          },
+          "sequence": [
+            "conehead"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 2,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1
+          },
+          "sequence": [
+            "conehead"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 2,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "football": 1
+          },
+          "sequence": [
+            "football"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 2,
+          "pointsRemaining": -5
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 3
+          },
+          "sequence": [
+            "basic",
+            "basic",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 3,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1,
+            "basic": 1
+          },
+          "sequence": [
+            "conehead",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 3,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1,
+            "conehead": 1
+          },
+          "sequence": [
+            "basic",
+            "conehead"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 3,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 4,
+            "flag": 1,
+            "football": 1,
+            "conehead": 1
+          },
+          "sequence": [
+            "basic",
+            "basic",
+            "basic",
+            "basic",
+            "flag",
+            "football",
+            "conehead"
+          ],
+          "flag": true,
+          "final": true,
+          "baseBudget": 4,
+          "pointsRemaining": -4
+        }
+      ],
+      "noDamage": [
+        {
+          "tick": 1800,
+          "kind": "spawn",
+          "wave": 1,
+          "count": 1
+        },
+        {
+          "tick": 4600,
+          "kind": "spawn",
+          "wave": 2,
+          "count": 1
+        },
+        {
+          "tick": 7400,
+          "kind": "spawn",
+          "wave": 3,
+          "count": 1
+        },
+        {
+          "tick": 10200,
+          "kind": "spawn",
+          "wave": 4,
+          "count": 1
+        },
+        {
+          "tick": 13000,
+          "kind": "spawn",
+          "wave": 5,
+          "count": 1
+        },
+        {
+          "tick": 15800,
+          "kind": "spawn",
+          "wave": 6,
+          "count": 1
+        },
+        {
+          "tick": 18600,
+          "kind": "spawn",
+          "wave": 7,
+          "count": 3
+        },
+        {
+          "tick": 21400,
+          "kind": "spawn",
+          "wave": 8,
+          "count": 2
+        },
+        {
+          "tick": 24200,
+          "kind": "spawn",
+          "wave": 9,
+          "count": 2
+        },
+        {
+          "tick": 28695,
+          "kind": "huge-wave warning",
+          "wave": 10
+        },
+        {
+          "tick": 29445,
+          "kind": "spawn",
+          "wave": 10,
+          "count": 7
+        }
+      ],
+      "immediateDamage": [
+        {
+          "tick": 1800,
+          "kind": "spawn",
+          "wave": 1,
+          "count": 1
+        },
+        {
+          "tick": 2201,
+          "kind": "health acceleration",
+          "wave": 2
+        },
+        {
+          "tick": 2401,
+          "kind": "spawn",
+          "wave": 2,
+          "count": 1
+        },
+        {
+          "tick": 2802,
+          "kind": "health acceleration",
+          "wave": 3
+        },
+        {
+          "tick": 3002,
+          "kind": "spawn",
+          "wave": 3,
+          "count": 1
+        },
+        {
+          "tick": 3403,
+          "kind": "health acceleration",
+          "wave": 4
+        },
+        {
+          "tick": 3603,
+          "kind": "spawn",
+          "wave": 4,
+          "count": 1
+        },
+        {
+          "tick": 4004,
+          "kind": "health acceleration",
+          "wave": 5
+        },
+        {
+          "tick": 4204,
+          "kind": "spawn",
+          "wave": 5,
+          "count": 1
+        },
+        {
+          "tick": 4605,
+          "kind": "health acceleration",
+          "wave": 6
+        },
+        {
+          "tick": 4805,
+          "kind": "spawn",
+          "wave": 6,
+          "count": 1
+        },
+        {
+          "tick": 5206,
+          "kind": "health acceleration",
+          "wave": 7
+        },
+        {
+          "tick": 5406,
+          "kind": "spawn",
+          "wave": 7,
+          "count": 3
+        },
+        {
+          "tick": 5807,
+          "kind": "health acceleration",
+          "wave": 8
+        },
+        {
+          "tick": 6007,
+          "kind": "spawn",
+          "wave": 8,
+          "count": 2
+        },
+        {
+          "tick": 6408,
+          "kind": "health acceleration",
+          "wave": 9
+        },
+        {
+          "tick": 6608,
+          "kind": "spawn",
+          "wave": 9,
+          "count": 2
+        },
+        {
+          "tick": 7009,
+          "kind": "health acceleration",
+          "wave": 10
+        },
+        {
+          "tick": 7204,
+          "kind": "huge-wave warning",
+          "wave": 10
+        },
+        {
+          "tick": 7954,
+          "kind": "spawn",
+          "wave": 10,
+          "count": 7
         }
       ]
     }

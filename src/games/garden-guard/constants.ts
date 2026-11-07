@@ -59,6 +59,7 @@ export const BALANCE = {
  * exactly like the original game's cone and bucket.
  */
 export const ZOMBIE_DEFS: Record<ZombieType, ZombieDefinition> = {
+  football:{texture:'zombie-football',hp:270,armorHp:1400,speed:52},
   newspaper: {texture:'zombie-paper',hp:270,armorHp:0,shieldHp:150,speed:20},
   screendoor: {texture:'zombie-door',hp:270,armorHp:0,shieldHp:1100,speed:20},
   basic: { texture: 'zombie', hp: 270, armorHp: 0, speed: 20 },
@@ -76,6 +77,8 @@ export const ZOMBIE_BARE_TEXTURE = 'zombie';
 /* -------------------------------------------------------------------------- */
 
 export const PLANT_DEFS: Record<PlantType, PlantDefinition> = {
+  hypnoshroom:{type:'hypnoshroom',label:'Hypno-shroom',cost:75,cooldownMs:30000,texture:'hypnoshroom',maxHp:300,description:'When eaten, turns the zombie around to fight other zombies. Keeps its remaining armor.'},
+  scaredyshroom:{type:'scaredyshroom',label:'Scaredy-shroom',cost:25,cooldownMs:7500,texture:'scaredyshroom',maxHp:300,projectile:'puff',damage:20,description:'Shoots long-range spores, but hides when zombies get close. Earned after 2-6; usable in the next night expansion.'},
   puffshroom: {type:'puffshroom',label:'Puff-shroom',cost:0,cooldownMs:7500,texture:'puffshroom',maxHp:300,damage:20,range:400,projectile:'puff',description:'Free short-range night defender. Shoots spores about three squares ahead.'},
   sunshroom: {type:'sunshroom',label:'Sun-shroom',cost:25,cooldownMs:7500,texture:'sunshroom',maxHp:300,description:'Produces 15 sun, then 25 after growing for two minutes. No sky sun falls at night.'},
   fumeshroom: {type:'fumeshroom',label:'Fume-shroom',cost:75,cooldownMs:7500,texture:'fumeshroom',maxHp:300,damage:20,range:576,description:'Piercing fumes hit every zombie ahead within range, passing through doors and newspapers.'},
@@ -208,7 +211,7 @@ export const SEED_ORDER: PlantType[] = [
   'snowpea',
   'chomper',
   'repeater',
-  'puffshroom','sunshroom','fumeshroom','gravebuster',
+  'puffshroom','sunshroom','fumeshroom','gravebuster','hypnoshroom','scaredyshroom',
 ];
 
 /** How many seeds fit in the seed bank (the original's Day levels allow six). */

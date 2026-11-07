@@ -36,3 +36,6 @@ Browser verification of this revision: 1024×768 landscape and 768×1024 portrai
 
 
 Night expansion: `background2.png`, `grave.png`, mushrooms (including both Sun-shroom sizes), newspaper states, screen-door state, `puff.png` and `plant-shadow.png` come from the same pinned original-art reference. No generative replacement art is used. The sprite preparation script reproduces the exports; `prepare-motion-tracks.py` reproduces numerical gait curves. Pea/snow-pea exports now preserve the native 28×28 transparent canvas and render at 45×45 board pixels; they were previously only 22×22. Supersampling improves transformation quality but does not add detail beyond the original images.
+
+
+The 2-5/2-6 expansion adds original Hypno-shroom and Scaredy-shroom poses plus aligned football helmet/bare states from the same pinned reference. The exported numerical motion tracks now include the football walk. Packet branding is covered at runtime by a clean text label; no original brand lettering is sharpened or synthetically enlarged.

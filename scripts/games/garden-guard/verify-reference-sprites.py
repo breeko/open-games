@@ -26,3 +26,8 @@ for key in ['puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster
 assert Image.open(base/'background2.png').size==(1280,960)
 assert Image.open(base/'sunshroom.png').getbbox()[3]==Image.open(base/'sunshroom-grown.png').getbbox()[3], 'growth must preserve the feet anchor'
 print('Night artwork and original-size projectile checks passed.')
+
+for key in ['hypnoshroom','scaredyshroom','scaredyshroom-hidden','zombie-football','zombie-football-bare']:
+    assert Image.open(base/(key+'.png')).getbbox(), key+' has no original artwork'
+assert Image.open(base/'zombie-football.png').size == Image.open(base/'zombie-football-bare.png').size
+print('Hypno, Scaredy and aligned football state checks passed.')

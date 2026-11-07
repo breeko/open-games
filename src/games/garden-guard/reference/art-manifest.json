@@ -119,6 +119,26 @@
       "width": 160,
       "height": 240
     },
+    "hypnoshroom": {
+      "width": 104,
+      "height": 104
+    },
+    "scaredyshroom": {
+      "width": 88,
+      "height": 128
+    },
+    "scaredyshroom-hidden": {
+      "width": 88,
+      "height": 128
+    },
+    "zombie-football": {
+      "width": 160,
+      "height": 240
+    },
+    "zombie-football-bare": {
+      "width": 160,
+      "height": 240
+    },
     "pea": {
       "width": 45,
       "height": 45

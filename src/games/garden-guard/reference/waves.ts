@@ -5,6 +5,7 @@ import { REFERENCE, ZOMBIE_RULES, allowedZombies, randomSource, referenceFlag, s
 /** Independent TypeScript implementation of the audited picker, not a fixed guessed enemy list.
  * Uses a portable seeded LCG; it does NOT reproduce the original game's PRNG stream. */
 export function referenceWaves(level:number,seed=12345):WaveDefinition[] {
+  if(level===15)return Array.from({length:8},(_,i)=>({delayMs:2000,gapMs:0,zombies:{},sequence:[],final:i===7}));
   const random=randomSource(seed);const count=REFERENCE.waveCounts[level-1];
   const allowed=allowedZombies(level);
   const intro=allowed.find(type=>type!=='basic' && ZOMBIE_RULES[type].startLevel===level);

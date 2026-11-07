@@ -75,6 +75,8 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
 
   remove(): void { this.kill(); }
 
+  get plantType(){return this.def.type;}
+
   get isDying(): boolean {
     return this.dying;
   }

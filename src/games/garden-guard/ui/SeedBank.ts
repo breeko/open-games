@@ -190,13 +190,18 @@ class SeedCard extends Phaser.GameObjects.Container {
     this.background.setStrokeStyle(2, CARD_STROKE);
     const packet = scene.add.image(0, 0, 'seed-packet').setOrigin(0).setDisplaySize(cardWidth, cardHeight);
 
+    // Cover the tiny baked-in brand lettering; labels remain real text at 2× resolution.
+    const heading=scene.add.rectangle(3,3,cardWidth-6,28,0xf1efcf).setOrigin(0);
+    const names:Partial<Record<PlantType,string>>={peashooter:'Pea\nshooter',cherrybomb:'Cherry\nBomb',potatomine:'Potato\nMine',snowpea:'Snow\nPea',puffshroom:'Puff\nshroom',sunshroom:'Sun\nshroom',fumeshroom:'Fume\nshroom',gravebuster:'Grave\nBuster',hypnoshroom:'Hypno\nshroom',scaredyshroom:'Scaredy\nshroom'};
+    const name=scene.add.text(cardWidth/2,17,names[def.type]??def.label,{fontFamily:'Arial, sans-serif',fontSize:'14px',fontStyle:'bold',color:'#244024',align:'center',lineSpacing:-3,resolution:2}).setOrigin(0.5);
     // Icon on top, sun cost underneath — like the real seed packets.
-    const icon = scene.add.image(cardWidth / 2, 53, def.texture).setScale(Math.min(66 / scene.textures.get(def.texture).getSourceImage().width, 76 / scene.textures.get(def.texture).getSourceImage().height));
+    const icon = scene.add.image(cardWidth / 2, 58, def.texture).setScale(Math.min(66 / scene.textures.get(def.texture).getSourceImage().width, 54 / scene.textures.get(def.texture).getSourceImage().height));
 
     const cost = scene.add
       .text(cardWidth / 2 - 5, 98, `${def.cost}`, {
         fontFamily: 'Arial, sans-serif',
         fontSize: '21px',
+        resolution:2,
         color: '#2b2016',
         fontStyle: 'bold',
       })
@@ -218,7 +223,7 @@ class SeedCard extends Phaser.GameObjects.Container {
       .setVisible(false);
 
     this.unavailable=scene.add.rectangle(0,0,cardWidth,cardHeight,0x151b10,0.38).setOrigin(0).setVisible(false);
-    this.add([packet, this.background, icon, cost, hotkeyLabel, this.unavailable, this.overlay]);
+    this.add([packet, this.background, heading, icon, name, cost, hotkeyLabel, this.unavailable, this.overlay]);
     this.background.setFillStyle(CARD_FILL, 0);
 
     this.setSize(cardWidth, cardHeight);

@@ -55,7 +55,7 @@ export class PotatoMine extends Plant {
       const zombie = child as Zombie;
       return (
         zombie.active &&
-        !zombie.isDead &&
+        zombie.isHostile &&
         zombie.row === this.row &&
         this.ctx.grid.worldToCol(zombie.x) === this.col
       );

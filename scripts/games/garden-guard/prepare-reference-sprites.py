@@ -84,6 +84,11 @@ boxes=[im.getbbox() for im in paper];crop=(min(b[0] for b in boxes),min(b[1] for
 for key,im in zip(['zombie-paper','zombie-paper-angry'],paper):save_pose(key,im,(160,224),crop)
 door=pose('Zombie',11,tuple(x for x in exclude if x!='screendoor'))
 save_pose('zombie-door',door,(160,240),(131,100,318,384))
+for key,name,frame,size in [('hypnoshroom','HypnoShroom',0,(104,104)),('scaredyshroom','ScaredyShroom',5,(88,128)),('scaredyshroom-hidden','ScaredyShroom',49,(88,128))]:
+ save_pose(key,pose(name,frame,('sleep','blink','eye2')),size)
+football=[pose('Zombie_football',21),pose('Zombie_football',21,exclude_exact=('zombie_football_helmet',))]
+boxes=[im.getbbox() for im in football];crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
+for key,im in zip(['zombie-football','zombie-football-bare'],football):save_pose(key,im,(160,240),crop)
 # Original projectiles, sized in board coordinates rather than their source canvas.
 for key,source,size in [('pea','ProjectilePea',(45,45)),('icepea','ProjectileSnowPea',(45,45))]:
  manifest[key]={'width':size[0],'height':size[1]}

@@ -4,7 +4,7 @@ import type { ResourceManager } from '../managers/ResourceManager';
 
 /** Every plant the player can place on the lawn. */
 export type PlantType =
-  | 'puffshroom' | 'sunshroom' | 'fumeshroom' | 'gravebuster'
+  | 'puffshroom' | 'sunshroom' | 'fumeshroom' | 'gravebuster' | 'hypnoshroom' | 'scaredyshroom'
   | 'sunflower'
   | 'peashooter'
   | 'wallnut'
@@ -16,7 +16,7 @@ export type PlantType =
   | 'chomper';
 
 /** Zombie variants. Later levels introduce the armoured ones. */
-export type ZombieType = 'basic' | 'flag' | 'conehead' | 'buckethead' | 'polevaulter' | 'newspaper' | 'screendoor';
+export type ZombieType = 'basic' | 'flag' | 'conehead' | 'buckethead' | 'polevaulter' | 'newspaper' | 'screendoor' | 'football';
 
 /** Static definition of a zombie variant. */
 export interface ZombieDefinition {

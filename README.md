@@ -45,7 +45,7 @@ Each game runs on a separate page so its engine, styles, timers and audio are un
 
 ## Current game
 
-**Garden Guard** — tower defense, fourteen day and night levels, original-art reference mode, touch controls, adjustable difficulty and optional fast sun auto-collection.
+**Garden Guard** — tower defense, sixteen day and night levels, original-art reference mode, touch controls, adjustable difficulty and optional fast sun auto-collection.
 
 [Game documentation](docs/games/garden-guard/README.md) · [Accuracy audit](docs/games/garden-guard/audit/accuracy.md) · [Asset provenance](docs/games/garden-guard/assets.md) · [Inherited MIT code license](src/games/garden-guard/THIRD-PARTY-LICENSE.txt)
 

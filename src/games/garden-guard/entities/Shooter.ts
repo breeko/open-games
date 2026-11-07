@@ -56,7 +56,7 @@ export abstract class Shooter extends Plant {
       const zombie = child as Zombie;
       return (
         zombie.active &&
-        !zombie.isDead && !zombie.isHeadless &&
+        zombie.isHostile && !zombie.isHeadless &&
         rows.includes(zombie.row) &&
         zombie.x > this.x - 10 && (!this.def.range || zombie.x-this.x<=this.def.range)
       );

@@ -155,13 +155,13 @@ Difficulty: ${d.difficulty} · ${d.environment} · ${d.graves.length} graves
 Projectiles: ${d.projectiles.map(p=>`${p.texture} ${p.width.toFixed(1)}×${p.height.toFixed(1)} at ${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('; ')}
 Simulation: ${(d.tick/100).toFixed(2)}s · wave ${d.wave}/${d.plan.length}
 Next countdown: ${(d.countdownTicks/100).toFixed(2)}s · warning: ${(d.warningTicks/100).toFixed(2)}s
-Wave health: ${d.remainingHealth.toFixed(0)}/${d.initialHealth} · advance threshold: ${d.healthThreshold.toFixed(0)}
+${d.mode==='whack'?'Timed spawning · health does not accelerate these waves':`Wave health: ${d.remainingHealth.toFixed(0)}/${d.initialHealth} · advance threshold: ${d.healthThreshold.toFixed(0)}`}
 
-Plan (all enemies in a wave spawn together):
+${d.mode==='whack'?'Whack mode: timed grave volleys; tap enemies to bonk.':'Plan (all enemies in a wave spawn together):'}
 `+
-    d.plan.map((w,i)=>`${i+1}${w.flag?' FLAG':''}: ${JSON.stringify(w.zombies)}`).join('\n')+
+    (d.mode==='whack'?'':d.plan.map((w,i)=>`${i+1}${w.flag?' FLAG':''}: ${JSON.stringify(w.zombies)}`).join('\n'))+
     '\n\nRecent events:\n'+d.events.slice(-10).map(e=>`${(e.tick/100).toFixed(2)}s ${e.kind} W${e.wave}${e.count?' ×'+e.count:''}`).join('\n')+
-    '\n\nLive enemies (mean speed; gait varies):\n'+d.zombies.map(z=>`W${z.wave} row ${z.row+1}: (${z.x.toFixed(1)}, ${z.y.toFixed(1)}) ${z.speed.toFixed(2)}px/s HP${z.hp.toFixed(0)}`).join('\n')+
+    '\n\nLive enemies (mean speed; gait varies):\n'+d.zombies.map(z=>`W${z.wave} ${z.kind} ${z.team} row ${z.row+1}: (${z.x.toFixed(1)}, ${z.y.toFixed(1)}) ${z.speed.toFixed(2)}px/s HP${z.hp.toFixed(0)}`).join('\n')+
     '\n\nRemaining approximations: tutorial gates, lane picker, pole vault, bite/shot animations, special-level supply, flattened night animations and grave emergence. See docs/games/garden-guard/audit/accuracy.md.';
 },250);
 document.querySelector<HTMLButtonElement>('#trace-export')!.onclick=()=>{

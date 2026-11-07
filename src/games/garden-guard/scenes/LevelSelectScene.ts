@@ -6,10 +6,10 @@ import { progress } from '../state/progress';
 import { Button } from '../ui/Button';
 
 const CARD_W = 214;
-const CARD_H = 170;
-const CARD_GAP = 20;
+const CARD_H = 158;
+const CARD_GAP = 14;
 const COLS = 5;
-const GRID_TOP = 150;
+const GRID_TOP = 140;
 
 /**
  * Adventure level map — the original's world map, flattened into a grid.

@@ -11,8 +11,8 @@ import {GroundMotion} from '../../../src/games/garden-guard/reference/motion';
 import {WaveDirector} from '../../../src/games/garden-guard/wave-director';
 
 test('first four night levels preserve PC wave counts, flags and sunless economy',()=>{
- assert.deepEqual(LEVELS.slice(10).map(l=>[l.name,l.waves.length,l.startingSun,l.skySunIntervalMs]),[['2-1',10,50,0],['2-2',20,50,0],['2-3',10,50,0],['2-4',20,50,0]]);
- for(const l of LEVELS.slice(10)){
+ assert.deepEqual(LEVELS.slice(10,14).map(l=>[l.name,l.waves.length,l.startingSun,l.skySunIntervalMs]),[['2-1',10,50,0],['2-2',20,50,0],['2-3',10,50,0],['2-4',20,50,0]]);
+ for(const l of LEVELS.slice(10,14)){
   assert.equal(l.environment,'night');assert.equal(l.waves[0].delayMs,18000);
   assert.deepEqual(l.waves.flatMap((w,i)=>w.flag?[i+1]:[]),l.waves.length===10?[10]:[10,20]);
   const seeds=defaultSeedsForLevel(l.id);assert.ok(seeds.includes('puffshroom'));assert.ok(seeds.includes('sunflower'));assert.ok(seeds.length<=8);
@@ -61,7 +61,7 @@ test('new night clears coexist with existing saves and loadouts',()=>{
  assert.deepEqual(data.completedLevels,[1,3,10,11,14]);assert.deepEqual(data.loadouts['14'],['puffshroom','gravebuster']);assert.equal(data.highestCompleted,1);
 });
 test('all expanded wave plans can finish without an unfinished countdown',()=>{
- for(const l of LEVELS){let completed=false;
+ for(const l of LEVELS.filter(l=>l.mode!=='whack')){let completed=false;
   const director=new WaveDirector(l.waves,{spawn:()=>270,health:()=>0,liveCount:()=>0,start(){},complete(){completed=true;}},randomSource(123));
   for(let i=0;i<200000&&!completed;i++)director.update(10);
   assert.ok(completed,l.name+' cannot finish');

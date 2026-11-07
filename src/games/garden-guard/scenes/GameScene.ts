@@ -17,6 +17,7 @@ import { createPlant } from '../entities/createPlant';
 import type { Plant } from '../entities/Plant';
 import { Sun } from '../entities/Sun';
 import { Zombie } from '../entities/Zombie';
+import {whackLoot} from '../whack-director';
 import {initialGraves} from '../night';
 import { getLevel, defaultSeedsForLevel, type LevelDefinition } from '../levels';
 import { GridManager } from '../managers/GridManager';
@@ -56,7 +57,7 @@ export class GameScene extends Phaser.Scene {
 
   private level!: LevelDefinition;
   get levelId(): number { return this.level.id; }
-  get summary(): string { return `Level ${this.level.name} · Wave ${this.waves.currentWave}/${this.waves.totalWaves} · ${this.level.mode === 'standard' ? this.resources.sun + ' sun' : 'Conveyor supply'} · ${this.plants.filter(p => p.active).length} plants`; }
+  get summary(): string { return `Level ${this.level.name} · Wave ${this.waves.currentWave}/${this.waves.totalWaves} · ${this.level.mode === 'standard'||this.level.mode==='whack' ? this.resources.sun + ' sun' : 'Conveyor supply'} · ${this.plants.filter(p => p.active).length} plants`; }
   private seeds: PlantType[] = [];
 
   private selected: PlantType | null = null;
@@ -69,7 +70,7 @@ export class GameScene extends Phaser.Scene {
   private skyFallen=0;
   private diagnosticGraphics?:Phaser.GameObjects.Graphics;
   diagnosticsVisible=false;
-  get diagnostics(){return {graves:[...this.graves.keys()],environment:this.level.environment,projectiles:this.peas.getChildren().filter((p):p is Phaser.Physics.Arcade.Image=>p instanceof Phaser.Physics.Arcade.Image).map(p=>({x:p.x,y:p.y,width:p.displayWidth,height:p.displayHeight,texture:p.texture.key})),level:this.level.id,difficulty:getDifficulty(),...this.waves.diagnostics,zombies:this.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie && z.active).map(z=>({x:z.x,y:z.y,row:z.row,wave:z.waveIndex+1,hp:z.remainingHealth,speed:z.currentSpeed,body:z.body?{x:z.body.x,y:z.body.y,width:z.body.width,height:z.body.height}:null}))};}
+  get diagnostics(){return {mode:this.level.mode,graves:[...this.graves.keys()],environment:this.level.environment,projectiles:this.peas.getChildren().filter((p):p is Phaser.Physics.Arcade.Image=>p instanceof Phaser.Physics.Arcade.Image).map(p=>({x:p.x,y:p.y,width:p.displayWidth,height:p.displayHeight,texture:p.texture.key})),level:this.level.id,difficulty:getDifficulty(),...this.waves.diagnostics,zombies:this.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie && z.active).map(z=>({kind:z.variant,team:z.isHostile?'enemy':'ally',x:z.x,y:z.y,row:z.row,wave:z.waveIndex+1,hp:z.remainingHealth,speed:z.currentSpeed,body:z.body?{x:z.body.x,y:z.body.y,width:z.body.width,height:z.body.height}:null}))};}
   private finished = false;
   private shoveling = false;
   private supplyTimer = 0;
@@ -87,7 +88,7 @@ export class GameScene extends Phaser.Scene {
 
   init(data: GameSceneData): void {
     this.level = getLevel(data.levelId ?? this.level?.id ?? 1);
-    this.seeds = this.level.mode === 'standard' ? data.seeds && data.seeds.length > 0 ? [...data.seeds] : defaultSeedsForLevel(this.level.id) : [...new Set(this.level.conveyorSeeds)];
+    this.seeds = this.level.mode==='whack'?[...this.level.availablePlants]:this.level.mode === 'standard' ? data.seeds && data.seeds.length > 0 ? [...data.seeds] : defaultSeedsForLevel(this.level.id) : [...new Set(this.level.conveyorSeeds)];
   }
 
   create(): void {
@@ -135,7 +136,7 @@ export class GameScene extends Phaser.Scene {
       const pea = peaObj as unknown as Phaser.Physics.Arcade.Image;
       const zombie = zombieObj as unknown as Zombie;
 
-      if (!pea.active || !zombie.active || zombie.isDead || pea.getData('row') !== zombie.row) return;
+      if (!pea.active || !zombie.active || !zombie.isHostile || pea.getData('row') !== zombie.row) return;
 
       zombie.takeDamage((pea.getData('damage') as number | undefined) ?? BALANCE.peaDamage);
 
@@ -147,7 +148,7 @@ export class GameScene extends Phaser.Scene {
       pea.destroy();
     });
 
-    this.seedBank = new SeedBank(this, this.resources, this.seeds, this.level.mode !== 'standard',this.level.id<=2);
+    this.seedBank = new SeedBank(this, this.resources, this.seeds, this.level.mode==='bowling'||this.level.mode==='conveyor',this.level.id<=2);
     this.seedBank.on('select', (type: PlantType | null) => {
       this.selected = type;
       if (type) this.shoveling = false;
@@ -183,12 +184,14 @@ export class GameScene extends Phaser.Scene {
       .setVisible(false);
 
     this.waves = new WaveManager(this, this.zombies, this.grid, this.level, {
+      onWhackKill:z=>{if(whackLoot(this.resources.sun,z.variant,Phaser.Math.Between(0,29999)))for(let i=0;i<3;i++)this.spawnSun(z.x-i*30,z.y-40);},
+      addGraves:count=>this.addWhackGraves(count),
       graves:()=>[...this.graves.keys()].map(key=>{const [col,row]=key.split(',').map(Number);return {col,row};}),
       onWaveStart: (wave, total, isFlag) => {
         this.hud.setWave(wave, total);
         if (isFlag) this.hud.announce(wave===total?'FINAL WAVE!':'HUGE WAVE!');
       },
-      onWarning:()=>this.hud.announce('A HUGE WAVE IS APPROACHING!','#ff6464',7500),
+      onWarning:()=>this.hud.announce(this.level.mode==='whack'?'NEXT WAVE!':'A HUGE WAVE IS APPROACHING!','#ff6464',this.level.mode==='whack'?1000:7500),
       onComplete: () => this.win(),
     });
 
@@ -218,7 +221,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.hud.setWave(0,this.level.waves.length);
-    if (this.level.mode !== 'standard') {
+    if (this.level.mode==='bowling'||this.level.mode==='conveyor') {
       for (let i=0;i<3;i++) this.seedBank.grant(this.level.conveyorSeeds[i % this.level.conveyorSeeds.length]);
     }
     this.waves.start();
@@ -275,7 +278,7 @@ export class GameScene extends Phaser.Scene {
       if (pea.active && (pea.x > GAME_WIDTH + 60 || (pea.getData('expiresAt')&&this.time.now>=pea.getData('expiresAt')))) pea.destroy();
     });
 
-    if (this.level.mode !== 'standard') {
+    if (this.level.mode==='bowling'||this.level.mode==='conveyor') {
       this.supplyTimer += delta;
       if (this.supplyTimer >= (this.level.mode === 'bowling' ? 3500 : 5000)) {
         this.supplyTimer = 0;
@@ -338,7 +341,7 @@ export class GameScene extends Phaser.Scene {
       const col = this.grid.worldToCol(pointer.worldX); const row = this.grid.worldToRow(pointer.worldY);
       this.grid.getPlant(col,row)?.remove(); this.shoveling = false; return;
     }
-    if (!this.selected) return;
+    if (!this.selected){if(this.level.mode==='whack')this.bonkAt(pointer.worldX,pointer.worldY);return;}
 
     const col = this.grid.worldToCol(pointer.worldX);
     const row = this.grid.worldToRow(pointer.worldY);
@@ -447,7 +450,7 @@ export class GameScene extends Phaser.Scene {
     }
     if (this.grid.getPlant(col, row)) return false;
     if(type==='gravebuster'?!this.ctx.graveAt(col,row):this.ctx.graveAt(col,row))return false;
-    if (this.level.mode === 'standard' && !this.resources.spend(PLANT_DEFS[type].cost)) return false;
+    if ((this.level.mode === 'standard'||this.level.mode==='whack') && !this.resources.spend(PLANT_DEFS[type].cost)) return false;
 
     this.spawnPlant(type, col, row);
     this.seedBank.startCooldown(type);
@@ -456,11 +459,34 @@ export class GameScene extends Phaser.Scene {
     return true;
   }
 
+  private addWhackGraves(count:number):void {
+    const cells:{col:number;row:number}[]=[];
+    for(let col=3;col<9;col++)for(let row=0;row<5;row++)if(!this.ctx.graveAt(col,row))cells.push({col,row});
+    for(let i=0;i<count&&cells.length;i++){
+      const free=cells.filter(c=>!this.grid.getPlant(c.col,c.row));
+      const pool=free.length?free:cells,cell=pool[Phaser.Math.Between(0,pool.length-1)];
+      cells.splice(cells.indexOf(cell),1);this.grid.getPlant(cell.col,cell.row)?.remove();
+      const point=this.grid.cellToWorld(cell.col,cell.row);
+      this.graves.set(`${cell.col},${cell.row}`,this.add.image(point.x,point.y+25,'grave').setScale(1.6).setOrigin(0.5,0.72).setDepth(9));
+    }
+  }
+
+  private bonkAt(x:number,y:number):void {
+    if(y<GRID.originY)return;
+    const targets=this.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie&&z.active&&z.isHostile&&z.getBounds().contains(x,y));
+    const zombie=targets.sort((a,b)=>b.row-a.row||b.x-a.x)[0];
+    const effect=this.add.text(x,y-25,zombie?'BONK!':'✦',{fontFamily:'Arial, sans-serif',fontSize:'28px',fontStyle:'bold',color:'#ffed88',stroke:'#563d1d',strokeThickness:4}).setOrigin(0.5).setDepth(DEPTH.effects);
+    this.tweens.add({targets:effect,y:y-70,alpha:0,duration:300,onComplete:()=>effect.destroy()});
+    if(!zombie)return;
+    audio.sfx('plant');
+    zombie.bonk();
+  }
+
   private updateRolling(delta: number): void {
     for (const nut of this.rolling) {
       nut.image.x += delta * 0.44; nut.image.angle += delta * 0.55;
       for (const enemy of this.zombies.getChildren()) {
-        if (!(enemy instanceof Zombie) || !enemy.active || enemy.isDead || enemy.row !== nut.row || nut.hits.has(enemy) || Math.abs(enemy.x - nut.image.x) > 45) continue;
+        if (!(enemy instanceof Zombie) || !enemy.active || !enemy.isHostile || enemy.row !== nut.row || nut.hits.has(enemy) || Math.abs(enemy.x - nut.image.x) > 45) continue;
         nut.hits.add(enemy); enemy.takeDamage(enemy.hasArmor ? 500 : 1800); audio.sfx('plant');
         const direction = nut.row === 0 ? 1 : nut.row === 4 ? -1 : Phaser.Math.Between(0,1) ? 1 : -1;
         nut.row += direction;
@@ -502,7 +528,7 @@ export class GameScene extends Phaser.Scene {
   private checkForLoss(): void {
     for (const child of this.zombies.getChildren()) {
       const zombie = child as Zombie;
-      if (zombie.active && !zombie.isDead && zombie.x < GRID.originX - 40) {
+      if (zombie.active && zombie.isHostile && zombie.x < GRID.originX - 40) {
         const mower = this.mowers.get(zombie.row);
         if (mower && !mower.used) {
           mower.used = true; mower.moving = true; zombie.takeDamage(99999);
@@ -523,7 +549,7 @@ export class GameScene extends Phaser.Scene {
     this.showBanner(
       'GAME OVER',
       '#ff6b6b',
-      'The garden was overrun. Try a different planting strategy.',
+      this.level.mode==='whack'?'Keep bonking! Cones need two taps and buckets need three.':'The garden was overrun. Try a different planting strategy.',
     );
     new Button(this, GAME_WIDTH / 2, GAME_HEIGHT / 2 + 100, { label: 'Try again', width: 260, height: 64, onClick: () => this.scene.restart({ levelId: this.level.id, seeds: this.seeds }) }).setDepth(DEPTH.banner + 1);
   }

@@ -35,11 +35,21 @@ export class FumeShroom extends Plant {
    this.remainder-=10;
    if(--this.ticks>0)continue;
    this.ticks=150-Math.floor(Math.random()*15);
-   const targets=this.ctx.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie&&z.active&&!z.isDead&&!z.isHeadless&&z.row===this.row&&z.x>this.x&&z.x-this.x<=(this.def.range??576));
+   const targets=this.ctx.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie&&z.active&&z.isHostile&&!z.isHeadless&&z.row===this.row&&z.x>this.x&&z.x-this.x<=(this.def.range??576));
    if(!targets.length)continue;
    for(const zombie of targets)zombie.takeDamage(20,true);
    const cloud=this.scene.add.image(this.x+190,this.y-25,'puff').setDisplaySize(400,76).setAlpha(0.55).setDepth(DEPTH.peas);
    this.scene.tweens.add({targets:cloud,x:cloud.x+80,alpha:0,duration:300,onComplete:()=>cloud.destroy()});
   }
+ }
+}
+
+
+export class HypnoShroom extends Plant {protected onTick(_delta:number):void {}}
+export class ScaredyShroom extends Shooter {
+ protected override onTick(delta:number):void {
+  const danger=this.ctx.zombies.getChildren().some(z=>z instanceof Zombie&&z.active&&z.isHostile&&Math.abs(z.row-this.row)<=1&&Math.hypot(z.x-this.x,(z.row-this.row)*160)<192);
+  this.setTexture(danger?'scaredyshroom-hidden':'scaredyshroom');
+  if(!danger)super.onTick(delta);
  }
 }
