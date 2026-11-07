@@ -164,7 +164,7 @@ export class MainMenuScene extends Phaser.Scene {
       .text(
         24,
         GAME_HEIGHT - 92,
-        `Levels cleared: ${progress.completedCount} / ${TOTAL_LEVELS}      Daytime plants: 8      Next up: ${getLevel(progress.unlockedLevel).name}`,
+        `Levels cleared: ${progress.completedCount} / ${TOTAL_LEVELS}      Plants: 12      Next up: ${getLevel(progress.unlockedLevel).name}`,
         {
           fontFamily: 'Arial, sans-serif',
           fontSize: '18px',

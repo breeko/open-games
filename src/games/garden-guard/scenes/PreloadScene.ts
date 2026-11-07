@@ -14,9 +14,11 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   preload(): void {
-    for (const key of ['peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower']) {
+    for (const key of ['peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower','puff','puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster','zombie-paper','zombie-paper-angry','zombie-door']) {
       this.load.image('reference-' + key, '/games/garden-guard/assets/reference/' + key + '.png');
     }
+    this.load.image('night','/games/garden-guard/assets/reference/background2.png');
+    for(const key of ['grave','plant-shadow'])this.load.image(key,'/games/garden-guard/assets/reference/'+key+'.png');
     for (const n of [1,2,3]) this.load.image('lawn' + n, '/games/garden-guard/assets/reference/lawn' + n + '.png');
     this.load.image('seed-packet', '/games/garden-guard/assets/reference/SeedPacket_Larger.png');
     this.load.image('seed-bank', '/games/garden-guard/assets/reference/SeedBank.png');
@@ -29,7 +31,7 @@ export class PreloadScene extends Phaser.Scene {
 
   create(): void {
     this.createTextures();
-    for (const key of ['peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower']) {
+    for (const key of ['peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower','puff','puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster','zombie-paper','zombie-paper-angry','zombie-door']) {
       if (!this.textures.exists('reference-' + key)) continue;
       if (this.textures.exists(key)) this.textures.remove(key);
       this.textures.renameTexture('reference-' + key, key);

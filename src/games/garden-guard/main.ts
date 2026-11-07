@@ -107,8 +107,8 @@ let assetsReady=false;
 let queuedLevel:number|null=null;
 game.events.once('assets-ready',()=>{assetsReady=true;if(queuedLevel!==null){const id=queuedLevel;queuedLevel=null;openLevel(id);}});
 function openLevel(id: number): void {
-  if(!assetsReady){queuedLevel=id;return;}
   currentLevel = Math.max(1, Math.min(TOTAL_LEVELS, id));
+  if(!assetsReady){queuedLevel=currentLevel;return;}
   levelSelect.value = String(currentLevel);
   setPaused(false);
   for (const scene of game.scene.getScenes(true)) game.scene.stop(scene.scene.key);
@@ -151,7 +151,8 @@ setInterval(()=>{
   const d=scene.diagnostics;
   document.querySelector('#diagnostics-readout')!.textContent=
     `PC Adventure rules · seed 12345 (portable PRNG)
-Difficulty: ${d.difficulty}
+Difficulty: ${d.difficulty} · ${d.environment} · ${d.graves.length} graves
+Projectiles: ${d.projectiles.map(p=>`${p.texture} ${p.width.toFixed(1)}×${p.height.toFixed(1)} at ${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('; ')}
 Simulation: ${(d.tick/100).toFixed(2)}s · wave ${d.wave}/${d.plan.length}
 Next countdown: ${(d.countdownTicks/100).toFixed(2)}s · warning: ${(d.warningTicks/100).toFixed(2)}s
 Wave health: ${d.remainingHealth.toFixed(0)}/${d.initialHealth} · advance threshold: ${d.healthThreshold.toFixed(0)}
@@ -161,7 +162,7 @@ Plan (all enemies in a wave spawn together):
     d.plan.map((w,i)=>`${i+1}${w.flag?' FLAG':''}: ${JSON.stringify(w.zombies)}`).join('\n')+
     '\n\nRecent events:\n'+d.events.slice(-10).map(e=>`${(e.tick/100).toFixed(2)}s ${e.kind} W${e.wave}${e.count?' ×'+e.count:''}`).join('\n')+
     '\n\nLive enemies (mean speed; gait varies):\n'+d.zombies.map(z=>`W${z.wave} row ${z.row+1}: (${z.x.toFixed(1)}, ${z.y.toFixed(1)}) ${z.speed.toFixed(2)}px/s HP${z.hp.toFixed(0)}`).join('\n')+
-    '\n\nRemaining approximations: tutorial gates, lane picker, pole vault, bite/shot animations, special-level supply. See docs/games/garden-guard/audit/accuracy.md.';
+    '\n\nRemaining approximations: tutorial gates, lane picker, pole vault, bite/shot animations, special-level supply, flattened night animations and grave emergence. See docs/games/garden-guard/audit/accuracy.md.';
 },250);
 document.querySelector<HTMLButtonElement>('#trace-export')!.onclick=()=>{
   if(!game.scene.isActive('game'))return;

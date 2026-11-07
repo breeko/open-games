@@ -4,6 +4,7 @@ import type { ResourceManager } from '../managers/ResourceManager';
 
 /** Every plant the player can place on the lawn. */
 export type PlantType =
+  | 'puffshroom' | 'sunshroom' | 'fumeshroom' | 'gravebuster'
   | 'sunflower'
   | 'peashooter'
   | 'wallnut'
@@ -15,7 +16,7 @@ export type PlantType =
   | 'chomper';
 
 /** Zombie variants. Later levels introduce the armoured ones. */
-export type ZombieType = 'basic' | 'flag' | 'conehead' | 'buckethead' | 'polevaulter';
+export type ZombieType = 'basic' | 'flag' | 'conehead' | 'buckethead' | 'polevaulter' | 'newspaper' | 'screendoor';
 
 /** Static definition of a zombie variant. */
 export interface ZombieDefinition {
@@ -25,6 +26,7 @@ export interface ZombieDefinition {
   readonly hp: number;
   /** Headgear hit points, absorbed before `hp`. 0 = no headgear. */
   readonly armorHp: number;
+  readonly shieldHp?: number;
   /** Walk speed in px/second. */
   readonly speed: number;
 }
@@ -71,6 +73,7 @@ export interface PlantDefinition {
 
   /** Projectile texture key. Defaults to `'pea'`. */
   readonly projectile?: string;
+  readonly range?: number;
 
   /** Rows this plant fires into, relative to its own row. Defaults to `[0]`. */
   readonly lanes?: readonly number[];
@@ -111,5 +114,7 @@ export interface GameContext {
   /** Pool of live zombies. */
   zombies: Phaser.Physics.Arcade.Group;
   /** Spawns a collectible sun at the given world position. */
+  graveAt: (col:number,row:number) => boolean;
+  clearGrave: (col:number,row:number) => void;
   spawnSun: (x: number, y: number) => void;
 }

@@ -1,3 +1,4 @@
+import {PuffShroom,SunShroom,FumeShroom,GraveBuster} from './NightPlants';
 import { PLANT_DEFS } from '../constants';
 import type { GameContext, PlantDefinition, PlantType } from '../types';
 import { Chomper } from './Chomper';
@@ -27,6 +28,7 @@ type PlantConstructor = new (
  * `lanes` / `peasPerVolley` / `damage` / `slow` in its definition.
  */
 const REGISTRY: Record<PlantType, PlantConstructor> = {
+  puffshroom:PuffShroom,sunshroom:SunShroom,fumeshroom:FumeShroom,gravebuster:GraveBuster,
   chomper: Chomper,
   sunflower: Sunflower,
   peashooter: Peashooter,

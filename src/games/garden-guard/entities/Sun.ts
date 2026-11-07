@@ -23,7 +23,7 @@ export class Sun extends Phaser.GameObjects.Image {
   ) {
     super(scene, x, y, 'sun');
     scene.add.existing(this);
-    this.setScale(ART_SCALE).setDepth(DEPTH.sun);
+    this.setScale(ART_SCALE*(value===15?0.5:1)).setDepth(DEPTH.sun);
     this.setInteractive(new Phaser.Geom.Circle(this.width / 2, this.height / 2, 112), Phaser.Geom.Circle.Contains);
     this.on('pointerdown', (_pointer: Phaser.Input.Pointer, _lx: number, _ly: number, event: Phaser.Types.Input.EventData) => {
       event.stopPropagation();

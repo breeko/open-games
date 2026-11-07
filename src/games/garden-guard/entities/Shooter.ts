@@ -56,9 +56,9 @@ export abstract class Shooter extends Plant {
       const zombie = child as Zombie;
       return (
         zombie.active &&
-        !zombie.isDead &&
+        !zombie.isDead && !zombie.isHeadless &&
         rows.includes(zombie.row) &&
-        zombie.x > this.x - 10
+        zombie.x > this.x - 10 && (!this.def.range || zombie.x-this.x<=this.def.range)
       );
     });
   }
@@ -82,12 +82,20 @@ export abstract class Shooter extends Plant {
     if (!this.active) return;
     if (!this.ctx.grid.isInside(0, laneRow)) return;
 
-    const y = this.ctx.grid.cellToWorld(this.col, laneRow).y - 24;
+    // Muzzle measured in the flattened texture; transform follows recoil and planting scale.
+    const muzzleY=this.def.type==='puffshroom'?0.75:0.35;
+    const point=this.getWorldTransformMatrix().transformPoint((0.88-this.originX)*this.width,(muzzleY-this.originY)*this.height);
+    const y=point.y+(laneRow-this.row)*160;
     const texture = this.def.projectile ?? 'pea';
 
-    const pea = this.ctx.peas.create(this.x + 36, y, texture) as Phaser.Physics.Arcade.Image;
+    const pea = this.ctx.peas.create(point.x, y, texture) as Phaser.Physics.Arcade.Image;
 
     sizeArt(pea,texture);
+    const body=pea.body as Phaser.Physics.Arcade.Body;
+    body.setCircle(pea.width*12/28);
+    body.setOffset(pea.width/2-body.radius,pea.height/2-body.radius);
+    pea.setData('originX',pea.x);
+    if(this.def.type==='puffshroom')pea.setData('expiresAt',this.scene.time.now+750);
     pea.setData('row', laneRow);
     pea.setDepth(DEPTH.peas);
     pea.setVelocityX(BALANCE.peaSpeed);

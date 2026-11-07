@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { audio } from '../audio/AudioManager';
 import { DEPTH, GAME_HEIGHT, GAME_WIDTH, PLANT_DEFS, SEED_ORDER, SEED_SLOTS } from '../constants';
-import { getLevel, plantsForLevel } from '../levels';
+import { getLevel, plantsForLevel, defaultSeedsForLevel } from '../levels';
 import { progress } from '../state/progress';
 import type { PlantType } from '../types';
 import { Button } from '../ui/Button';
@@ -15,8 +15,8 @@ const PICK_TOP = 148;
 const SLOT_W = 108;
 const SLOT_H = 82;
 const SLOT_GAP = 10;
-const SLOT_LABEL_Y = 424;
-const SLOT_TOP = 446;
+const SLOT_LABEL_Y = 580;
+const SLOT_TOP = 608;
 
 export interface SeedSelectData {
   levelId?: number;
@@ -66,7 +66,7 @@ export class SeedSelectScene extends Phaser.Scene {
     // Restore the saved loadout if it is still valid, otherwise pre-fill.
     this.chosen = stored
       ? stored.filter((type) => available.includes(type)).slice(0, SEED_SLOTS)
-      : available.slice(0, SEED_SLOTS);
+      : defaultSeedsForLevel(this.levelId);
 
     this.add
       .rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, 0x101c0d)

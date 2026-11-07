@@ -17,3 +17,12 @@ for n in [1,2,3]:
     assert im.size==(1280,960), 'board must preserve the original 4:3 view'
     assert sum(im.getpixel((640,0))[:3])>30, 'background must not include black padding'
 print('Sprite checks passed: complete plant silhouettes, aligned armor, sun size, special states.')
+
+for key in ['pea','icepea']:
+    im=Image.open(base/(key+'.png'))
+    assert im.size==(90,90), 'original 28px projectile must display at 45px on the 1.6× board'
+for key in ['puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster','zombie-paper','zombie-paper-angry','zombie-door']:
+    assert Image.open(base/(key+'.png')).getbbox(), key+' has no artwork'
+assert Image.open(base/'background2.png').size==(1280,960)
+assert Image.open(base/'sunshroom.png').getbbox()[3]==Image.open(base/'sunshroom-grown.png').getbbox()[3], 'growth must preserve the feet anchor'
+print('Night artwork and original-size projectile checks passed.')

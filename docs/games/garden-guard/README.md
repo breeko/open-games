@@ -1,6 +1,6 @@
 # Open Games — Garden Guard
 
-An ad-free, touch-friendly Plants vs. Zombies reference prototype. Ten daytime levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
+An ad-free, touch-friendly Plants vs. Zombies reference prototype. Fourteen day and night levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
 
 [Play Garden Guard](https://opengames-breeko.vercel.app/games/garden-guard/)
 
@@ -52,7 +52,7 @@ bun run audit
 bun run build
 ```
 
-Twenty-three tests cover the ten-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, and single-credit sun pickup behavior. Diagnostics in the game show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build includes a bundle-size advisory for Phaser, approximately 355 KB gzipped for the main script.
+Thirty-six tests cover the fourteen-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, and single-credit sun pickup behavior. Diagnostics in the game show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build includes a bundle-size advisory for Phaser, approximately 363 KB gzipped for the main script.
 
 Artwork regression checks (requires Python and Pillow):
 
@@ -106,3 +106,12 @@ Configuration references: [Vite on Vercel](https://vercel.com/docs/frameworks/fr
 ## Original-style layout
 
 The lawn now keeps the original 4:3 view, with a wooden seed bank, integrated sun counter, stone Menu/pause button and original progress-meter artwork. Plants, zombie bodies, headgear and projectiles have independent display sizes. Sprites export at 2× display size and lawns use lossless PNG. These reduce avoidable blur; they are not a newly discovered native HD asset set. Extra controls are under More, while level navigation, difficulty and Pause remain visible.
+
+
+## Night expansion (2-1 to 2-4)
+
+Four additional source-backed PC Adventure boards introduce Puff-shroom, Sun-shroom, Fume-shroom and Grave Buster, plus newspaper and screen-door zombies. Sky sun stops at night. Small Sun-shrooms make 15 sun and grow after two minutes; fumes pierce carried shields. Graves block ordinary planting and spawn another zombie two seconds after the final wave unless removed. The new levels retain 10/20/10/20 waves and 50 starting sun at Baseline.
+
+Peas now use their original 28px transparent canvas at the board scale, launch from the muzzle, and expose their size in diagnostics. Plant feet align consistently across small and tall sprites, with original ground shadows. The picker fits all twelve plants. Existing save keys and old level IDs remain unchanged.
+
+Validation: 36 Garden Guard tests; original-art regression checks; fourteen-level numerical audit; production build. Browser checks covered planting, grave blocking/removal, 15-sun production, pause, seed toggling and landscape/portrait iPad viewport sizes. A physical iPad test and full comparative original-game night playthrough remain outstanding. See the accuracy ledger for simplified animations and targeting differences.

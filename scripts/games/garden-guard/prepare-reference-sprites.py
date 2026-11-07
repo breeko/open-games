@@ -70,16 +70,34 @@ shared=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxe
 for key,im in zombie_poses:save_pose(key,im,(128,240),shared)
 save_pose('zombie-pole',pose('Zombie_polevaulter',0),(260,280))
 save_pose('zombie-pole-walk',pose('Zombie_polevaulter',0,exclude_exact=('Zombie_polevaulter_pole','Zombie_polevaulter_pole2')),(128,240))
+# Night plants and shield states, from the original Reanim tracks.
+for key,name,frame,size in [('puffshroom','PuffShroom',4,(72,72)),('fumeshroom','FumeShroom',4,(112,140)),('gravebuster','Gravebuster',11,(112,136))]:
+ save_pose(key,pose(name,frame,('blink','sleep')),size)
+small=pose('SunShroom',5,('blink','sleep'));big=pose('SunShroom',39,('blink','sleep'))
+b=big.getbbox();a=small.getbbox();crop=(min(a[0],b[0]),min(a[1],b[1]),max(a[2],b[2]),max(a[3],b[3]))
+for key,im in [('sunshroom',small),('sunshroom-grown',big)]:
+ save_pose(key,im,(96,128),crop)
+ exported=Image.open(out/(key+'.png')).convert('RGBA');dy=exported.height-exported.getbbox()[3]
+ aligned=Image.new('RGBA',exported.size);aligned.alpha_composite(exported,(0,dy));aligned.save(out/(key+'.png'))
+paper=[pose('Zombie_paper',f) for f in [25,145]]
+boxes=[im.getbbox() for im in paper];crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
+for key,im in zip(['zombie-paper','zombie-paper-angry'],paper):save_pose(key,im,(160,224),crop)
+door=pose('Zombie',11,tuple(x for x in exclude if x!='screendoor'))
+save_pose('zombie-door',door,(160,240),(131,100,318,384))
 # Original projectiles, sized in board coordinates rather than their source canvas.
-for key,source,size in [('pea','ProjectilePea',(22,22)),('icepea','ProjectileSnowPea',(22,22))]:
- save_pose(key,Image.open(base/'images'/(source+'.png')).convert('RGBA'),size)
+for key,source,size in [('pea','ProjectilePea',(45,45)),('icepea','ProjectileSnowPea',(45,45))]:
+ manifest[key]={'width':size[0],'height':size[1]}
+ Image.open(base/'images'/(source+'.png')).convert('RGBA').resize((size[0]*2,size[1]*2),Image.Resampling.LANCZOS).save(out/(key+'.png'))
+save_pose('puff',Image.open(layers/'puff_1.png').convert('RGBA'),(40,36))
 # Native 800×600 view: original camera shows source X 220..1020.
 # Never stretch the lawn independently in X/Y or add out-of-bounds black padding.
-for name in ['background1.jpg','background1unsodded.jpg']:
+for name in ['background1.jpg','background1unsodded.jpg','background2.jpg']:
  im=Image.open(base/'images'/name).crop((220,0,1020,600)).resize((1280,960),Image.Resampling.LANCZOS)
  im.save(out/(Path(name).stem+'.png'))
 for name in ['SeedBank.png','SeedPacket_Larger.png','SunBank.png','FlagMeter.png','FlagMeterParts.png','FlagMeterLevelProgress.png','ShovelBank.png','Shovel_hi_res.png','button_left.png','button_middle.png','button_right.png']:
  Image.open(base/'images'/name).save(out/name)
+Image.open(base/'images/Night_grave_graphic.png').save(out/'grave.png')
+Image.open(base/'images/plantshadow.png').save(out/'plant-shadow.png')
 full=Image.open(out/'background1.png');dirt=Image.open(out/'background1unsodded.png')
 for n,rows in [(1,[2]),(2,[1,2,3]),(3,list(range(5)))]:
  im=dirt.copy()

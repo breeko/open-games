@@ -42,7 +42,7 @@ export class LevelSelectScene extends Phaser.Scene {
       .setDepth(DEPTH.lawn);
 
     this.add
-      .text(GAME_WIDTH / 2, 54, 'ADVENTURE  \u00b7  DAY 1', {
+      .text(GAME_WIDTH / 2, 54, 'ADVENTURE  \u00b7  DAY & NIGHT', {
         fontFamily: 'Arial Black, Arial, sans-serif',
         fontSize: '40px',
         color: '#ffe066',

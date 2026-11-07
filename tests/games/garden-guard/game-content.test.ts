@@ -17,8 +17,8 @@ test('each selectable level has its introductory plants without relying on earli
 });
 
 test('source starting resources and non-tutorial countdowns remain intact', () => {
-  assert.deepEqual(LEVELS.map(l=>l.startingSun),[150,50,50,50,50,50,50,50,50,50]);
-  assert.deepEqual(LEVELS.map(l=>l.waves[0].delayMs),[18000,50000,18000,18000,2000,18000,18000,18000,18000,2000]);
+  assert.deepEqual(LEVELS.slice(0,10).map(l=>l.startingSun),[150,50,50,50,50,50,50,50,50,50]);
+  assert.deepEqual(LEVELS.slice(0,10).map(l=>l.waves[0].delayMs),[18000,50000,18000,18000,2000,18000,18000,18000,18000,2000]);
 });
 
 test('difficulty scales are ordered and baseline preserves base definitions', () => {
@@ -31,11 +31,11 @@ test('difficulty scales are ordered and baseline preserves base definitions', ()
   assert.equal(isDifficulty(null), false);
 });
 
-test('ten-level campaign includes distinct special modes and correct later plants', () => {
-  assert.equal(LEVELS.length,10);
+test('expanded campaign preserves the original day special modes and plants', () => {
+  assert.equal(LEVELS.length,14);
   assert.equal(LEVELS[4].mode,'bowling');
   assert.equal(LEVELS[9].mode,'conveyor');
   assert.ok(plantsForLevel(8).includes('chomper'));
   assert.ok(plantsForLevel(9).includes('repeater'));
-  assert.deepEqual(LEVELS.map(level=>level.waves.length),[4,6,8,10,8,10,20,10,20,20]);
+  assert.deepEqual(LEVELS.slice(0,10).map(level=>level.waves.length),[4,6,8,10,8,10,20,10,20,20]);
 });

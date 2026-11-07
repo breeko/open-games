@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import {ART_SCALE} from '../art';
 import { GroundMotion } from '../reference/motion';
-import { damageAfterArmor } from '../combat';
+import {damageWithShield,waveHealth} from '../combat';
 import { audio } from '../audio/AudioManager';
 import { DEPTH, ZOMBIE_BARE_TEXTURE } from '../constants';
 import type { GridManager } from '../managers/GridManager';
@@ -10,6 +10,9 @@ import type { Plant } from './Plant';
 
 export interface ZombieOptions {
   parameter?:number;
+  speedMultiplier?:number;
+  shieldHp?:number;
+  emergenceMs?:number;
   random?:()=>number;
   hp: number;
   type?: ZombieType;
@@ -34,6 +37,11 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   private vaulting = false;
   readonly speed: number;
 
+  private shieldHp:number;
+  private readonly zombieType:ZombieType;
+  private rageDelay=0;
+  private emergenceMs:number;
+  private readonly speedMultiplier:number;
   private hp: number;
   private readonly maxHp: number;
   private readonly dps: number;
@@ -67,12 +75,14 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   ) {
     super(scene, x, grid.cellToWorld(0, row).y + 10, options.texture ?? ZOMBIE_BARE_TEXTURE);
 
+    this.zombieType=options.type??'basic';this.shieldHp=options.shieldHp??0;
+    this.emergenceMs=options.emergenceMs??0;this.speedMultiplier=options.speedMultiplier??1;
     this.row = row;
     this.waveIndex = options.wave ?? 0;
     this.hasPole = options.type === 'polevaulter';
     this.speed = options.speed;
     this.random=options.random??Math.random;
-    this.motion=new GroundMotion(this.hasPole?'poleRun':this.random()<0.5?'walk':'walk2',options.parameter??0.3);
+    this.motion=new GroundMotion(this.zombieType==='newspaper'?'paperWalk':this.hasPole?'poleRun':this.random()<0.5?'walk':'walk2',options.parameter??0.3);
     if(options.type==='flag')this.flagLabel=scene.add.text(x+20,this.y-55,'⚑',{fontSize:'44px',color:'#e34832'}).setDepth(21);
     this.hp = options.hp;
     this.maxHp = options.hp;
@@ -93,7 +103,10 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     body.setVelocity(0, 0);
   }
 
-  get remainingHealth(): number { return this.dead ? 0 : Math.max(0,this.hp) + Math.max(0,this.armorHp); }
+  get remainingHealth(): number { return this.dead ? 0 : Math.max(0,this.hp) + Math.max(0,this.armorHp)+Math.max(0,this.shieldHp); }
+
+  get waveHealth():number {return this.dead?0:waveHealth({hp:this.hp,armor:this.armorHp,shield:this.shieldHp});}
+  get isHeadless():boolean {return this.headless;}
 
   get isDead(): boolean {
     return this.dead;
@@ -150,6 +163,8 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     if (this.dead || !this.active || this.vaulting) return;
 
     if (this.flash > 0) this.flash -= delta;
+    if(this.emergenceMs>0){this.emergenceMs=Math.max(0,this.emergenceMs-delta);this.setAlpha(1-this.emergenceMs/1500);return;}
+    if(this.rageDelay>0){this.rageDelay=Math.max(0,this.rageDelay-delta);this.updateTint();return;}
 
     this.flagLabel?.setPosition(this.x+20,this.y-55);
     if(this.headless){this.bleedTicks+=delta;while(this.bleedTicks>=10){this.bleedTicks-=10;if(this.random()<0.2)this.hp-=this.maxHp>=500?3:1;}if(this.hp<=0){this.die();return;}}
@@ -168,7 +183,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   }
 
   private vault(): void {
-    this.hasPole = false; this.motion=new GroundMotion('poleWalk',0.23+this.random()*0.14); this.vaulting = true; this.setVelocityX(0);
+    this.hasPole = false; this.motion=new GroundMotion('poleWalk',(0.23+this.random()*0.14)*this.speedMultiplier); this.vaulting = true; this.setVelocityX(0);
     const groundY = this.y;
     this.scene.tweens.add({ targets: this, x: this.x - 157, duration: 650, ease: 'Sine.easeInOut',
       onUpdate: tween => { this.y = groundY - Math.sin(tween.progress * Math.PI) * 60; },
@@ -177,12 +192,22 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
         body.setSize(42*1.6/ART_SCALE,115*1.6/ART_SCALE);body.setOffset(this.width/2-67.2,this.height*0.78-288); } });
   }
 
-  takeDamage(amount: number): void {
+  takeDamage(amount: number,bypassShield=false): void {
     if (this.dead || !this.active) return;
 
     const hadArmor = this.armorHp > 0;
-    const durability = damageAfterArmor({hp:this.hp,armor:this.armorHp},amount);
+    const hadShield=this.shieldHp>0;
+    const durability = damageWithShield({hp:this.hp,armor:this.armorHp,shield:this.shieldHp},amount,bypassShield);
+    this.shieldHp=durability.shield;
     this.hp = durability.hp; this.armorHp = durability.armor;
+    if(hadShield&&this.shieldHp===0){
+      if(this.zombieType==='newspaper'){
+        this.setTexture('zombie-paper-angry');this.rageDelay=1625;
+        this.motion=new GroundMotion('paperRun',(0.89+this.random()*0.02)*this.speedMultiplier);
+      }else {this.setTexture(ZOMBIE_BARE_TEXTURE);
+        const body=this.body as Phaser.Physics.Arcade.Body;body.setOffset(this.width*this.originX-67.2,this.height*this.originY-288);
+      }
+    }
     if (hadArmor && this.armorHp === 0) this.shedArmor();
 
     this.flash = 60;

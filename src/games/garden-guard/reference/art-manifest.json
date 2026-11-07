@@ -87,13 +87,49 @@
       "width": 128,
       "height": 240
     },
+    "puffshroom": {
+      "width": 72,
+      "height": 72
+    },
+    "fumeshroom": {
+      "width": 112,
+      "height": 140
+    },
+    "gravebuster": {
+      "width": 112,
+      "height": 136
+    },
+    "sunshroom": {
+      "width": 96,
+      "height": 128
+    },
+    "sunshroom-grown": {
+      "width": 96,
+      "height": 128
+    },
+    "zombie-paper": {
+      "width": 160,
+      "height": 224
+    },
+    "zombie-paper-angry": {
+      "width": 160,
+      "height": 224
+    },
+    "zombie-door": {
+      "width": 160,
+      "height": 240
+    },
     "pea": {
-      "width": 22,
-      "height": 22
+      "width": 45,
+      "height": 45
     },
     "icepea": {
-      "width": 22,
-      "height": 22
+      "width": 45,
+      "height": 45
+    },
+    "puff": {
+      "width": 40,
+      "height": 36
     }
   }
 }

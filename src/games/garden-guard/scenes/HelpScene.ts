@@ -4,26 +4,27 @@ import { DEPTH, GAME_HEIGHT, GAME_WIDTH } from '../constants';
 import { Button } from '../ui/Button';
 
 const SECTIONS: Array<{ heading: string; lines: string[] }> = [
-  { heading: 'Ten daytime levels', lines: [
-    'Start with one lane and a Peashooter. Later levels open five lanes and eight plants.',
+  { heading: 'Fourteen day and night levels', lines: [
+    'Start with one lane and a Peashooter. Later levels open five lanes and twelve plants.',
     'Use the level menu or arrows to jump backward and forward. Each cleared level saves separately.',
     'Relaxed, Baseline and Hard change enemy strength. Changing difficulty restarts the level.',
   ]},
   { heading: 'Touch controls', lines: [
     'Tap a seed, then a lawn square. Dragging also works.',
-    'Tap golden suns to collect 25 sun. Seed cards show their cost and recharge.',
+    'Tap golden suns to collect sun (small Sun-shroom suns give 15). Seed cards show their cost and recharge.',
     'Shovel removes a plant without a refund. Cancel seed clears your selection.',
     'Pause freezes the game; leaving the page pauses automatically. Space also pauses.',
   ]},
   { heading: 'Build a defense', lines: [
     'Sunflowers make 25 sun about every 24 seconds. Plant them early.',
-    'Wall-nuts buy time. Potato Mines need 14 seconds to arm.',
+    'Wall-nuts buy time. Potato Mines need 15 seconds to arm.',
     'Pole vaulters jump the first plant, then slow down. Snow Peas slow enemies.',
     'Chompers swallow one zombie, then digest for 42 seconds. Repeaters shoot twice.',
   ]},
   { heading: 'Special rounds', lines: [
     '1-5: Wall-nut Bowling. Launch from the first three columns. Nuts roll and bounce between lanes.',
     '1-10: Conveyor defense. Plants arrive over time, cost no sun, and are limited by supply.',
+    '2-1 to 2-4: No sky sun. Use free Puff-shrooms and sun producers. Clear graves before the final wave.',
     'A mower can rescue each lane once. A second breach ends the level.',
     'Waves can overlap. Keep building before the final flag!',
   ]},

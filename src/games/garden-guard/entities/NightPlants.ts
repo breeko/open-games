@@ -1,0 +1,45 @@
+import {Plant} from './Plant';
+import {Shooter} from './Shooter';
+import {Sun} from './Sun';
+import {Zombie} from './Zombie';
+import {NIGHT_RULES} from '../night';
+import {DEPTH} from '../constants';
+
+export class PuffShroom extends Shooter {}
+export class SunShroom extends Plant {
+ private age=0;
+ private timer=0;
+ private next=3000+Math.floor(Math.random()*951)*10;
+ protected onTick(delta:number):void {
+  this.age+=delta;this.timer+=delta;
+  if(this.age>=NIGHT_RULES.sunGrowthMs&&this.texture.key!=='sunshroom-grown')this.setTexture('sunshroom-grown');
+  if(this.timer<this.next)return;
+  this.timer-=this.next;this.next=23500+Math.floor(Math.random()*151)*10;
+  new Sun(this.scene,this.x,this.y-8,this.age<NIGHT_RULES.sunGrowthMs?15:25,value=>this.ctx.resources.add(value),undefined,this.ctx.sunBank);
+ }
+}
+export class GraveBuster extends Plant {
+ private elapsed=0;
+ protected onTick(delta:number):void {
+  this.elapsed+=delta;
+  if(this.elapsed<NIGHT_RULES.graveEatingMs)return;
+  this.ctx.clearGrave(this.col,this.row);this.remove();
+ }
+}
+export class FumeShroom extends Plant {
+ private ticks=50;
+ private remainder=0;
+ protected onTick(delta:number):void {
+  this.remainder+=delta;
+  while(this.remainder>=10){
+   this.remainder-=10;
+   if(--this.ticks>0)continue;
+   this.ticks=150-Math.floor(Math.random()*15);
+   const targets=this.ctx.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie&&z.active&&!z.isDead&&!z.isHeadless&&z.row===this.row&&z.x>this.x&&z.x-this.x<=(this.def.range??576));
+   if(!targets.length)continue;
+   for(const zombie of targets)zombie.takeDamage(20,true);
+   const cloud=this.scene.add.image(this.x+190,this.y-25,'puff').setDisplaySize(400,76).setAlpha(0.55).setDepth(DEPTH.peas);
+   this.scene.tweens.add({targets:cloud,x:cloud.x+80,alpha:0,duration:300,onComplete:()=>cloud.destroy()});
+  }
+ }
+}

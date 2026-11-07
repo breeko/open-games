@@ -12,6 +12,7 @@ export interface WaveDefinition {
   readonly pointsRemaining?: number;
 }
 interface LevelBase {
+  readonly environment: 'day' | 'night';
   readonly id: number;
   readonly name: string;
   readonly title: string;
@@ -43,12 +44,17 @@ const tips = [
   'Plants arrive on the conveyor. Use what you are given!',
 ];
 const availableCounts = [1,2,3,4,4,5,6,7,8,8];
-const rewards: (PlantType | undefined)[] = ['sunflower','cherrybomb','wallnut',undefined,'potatomine','snowpea','chomper','repeater',undefined,undefined];
+const rewards: (PlantType | undefined)[] = ['sunflower','cherrybomb','wallnut',undefined,'potatomine','snowpea','chomper','repeater',undefined,'puffshroom'];
 
 /** Wave construction is audited separately from UI progression. */
-export const LEVELS: readonly LevelDefinition[] = Array.from({length:10}, (_, index): LevelDefinition => {
+export const LEVELS: readonly LevelDefinition[] = Array.from({length:14}, (_, index): LevelDefinition => {
   const id = index + 1;
-  const base: LevelBase = { id, name: `1-${id}`, title: titles[index], blurb: tips[index], startingSun: id === 1 ? 150 : 50,
+  if(id>10) return {id,name:`2-${id-10}`,title:['After dark','Small beginnings','Through the screen','Rest in pieces'][id-11],
+    blurb:['No sky sun. Use free Puff-shrooms and build sunflowers.','Sun-shrooms start small and grow after two minutes.','Fumes pass through screen doors and hit a whole line.','Clear graves before the final wave rises from them.'][id-11],
+    environment:'night',mode:'standard',startingSun:50,skySunIntervalMs:0,activeRows:[0,1,2,3,4],waves:referenceWaves(id),
+    availablePlants:[...ORDER,...(['puffshroom','sunshroom','fumeshroom','gravebuster'] as const).slice(0,id-10)],
+    reward: (['sunshroom','fumeshroom','gravebuster',undefined] as const)[id-11]};
+  const base: LevelBase = { environment:'day', id, name: `1-${id}`, title: titles[index], blurb: tips[index], startingSun: id === 1 ? 150 : 50,
     skySunIntervalMs: 6500, activeRows: id === 1 ? [2] : id === 2 ? [1,2,3] : [0,1,2,3,4],
     waves: referenceWaves(id), availablePlants: ORDER.slice(0,availableCounts[index]), reward: rewards[index] };
   if (id === 5) return {...base, mode:'bowling', conveyorSeeds:['wallnut']};
@@ -62,3 +68,10 @@ export function getLevel(id: number,seed=12345): LevelDefinition {
 }
 export function plantsForLevel(id: number): PlantType[] { return [...getLevel(id).availablePlants]; }
 export function rewardForLevel(id: number): PlantType | undefined { return getLevel(id).reward; }
+
+/** Night defaults always include the new defenders and a source of sun. */
+export function defaultSeedsForLevel(id:number):PlantType[] {
+ const available=plantsForLevel(id);
+ const order:PlantType[]=id>10?['puffshroom','sunshroom','fumeshroom','gravebuster','sunflower','wallnut','cherrybomb','snowpea','potatomine','repeater','peashooter','chomper']:available;
+ return order.filter(p=>available.includes(p)).slice(0,8);
+}

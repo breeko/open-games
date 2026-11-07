@@ -27,7 +27,7 @@ test('timeouts advance even when the player does no damage',()=>{
   const game=setup();game.run(18100);game.run(28000);
   assert.ok(game.starts.length>=2);assert.equal(game.completed,0);
 });
-test('all ten levels finish exactly once only after the last enemy is defeated',()=>{
+test('all levels finish exactly once only after the last enemy is defeated',()=>{
   for(const level of LEVELS){
     const game=setup(level.id);
     for(let t=0;t<20*60*1000;t+=20){

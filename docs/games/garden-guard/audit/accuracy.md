@@ -17,7 +17,7 @@ Two reconstructions disagree materially. The primary reconstruction's correction
 | Area | Reference | Implementation |
 |---|---|---|
 | Clock | SexyAppBase.cpp mFrameTime=10; Reanimator.h SECONDS_PER_UPDATE=.01 | Wave countdown and walking tracks advance in 10 ms ticks |
-| Wave count | Board::InitZombieWaves | 4,6,8,10,8,10,20,10,20,20 |
+| Wave count | Board::InitZombieWaves | 4,6,8,10,8,10,20,10,20,20; night 10,20,10,20 |
 | Flags | Board::GetNumWavesPerFlag / IsFlagWave, around 518 | No flag in 1-1; last wave in short levels; waves 10 and 20 in long levels |
 | Wave budget | Board::PickZombieWaves, 575–795 | floor(zero-based wave/3)+1; flag budget ×2.5 truncated, forced plain+flag entries, then special multipliers |
 | Enemy selection | ZombieDefinition; Challenge eligibility table | Weighted cost-constrained selection; forced introduced enemy in midpoint/final; missing eligible types forced into final. Pole vaulters excluded from 1-8 |
@@ -36,7 +36,7 @@ Two reconstructions disagree materially. The primary reconstruction's correction
 | Sky sun | Board::UpdateSunSpawning | Initial 425+Rand(275) ticks, subsequent min(950,425+fallen×10)+Rand(275) |
 | Mine | Plant::UpdatePotato | 15 s arming counter; rise animation delay omitted |
 
-`ground-tracks.json` contains only extracted `_ground` displacement arrays for Zombie anim_walk / anim_walk2 and Zombie_polevaulter anim_run / anim_walk. No executable source is vendored. These curves determine speed despite static art. Horizontal scale is 128/80; source X=40 maps to canvas X=64. Normal walking is about 17.7–28.4 canvas px/s across the sampled parameter range; flag about 34.6. Source pixels and canvas pixels must not be compared directly.
+`ground-tracks.json` contains extracted `_ground` displacement arrays for Zombie anim_walk / anim_walk2, Zombie_polevaulter anim_run / anim_walk, and Zombie_paper anim_walk / anim_walk_nopaper. No executable source is vendored. These curves determine speed despite static art. Horizontal scale is 128/80; source X=40 maps to canvas X=64. Normal walking is about 17.7–28.4 canvas px/s across the sampled parameter range; flag about 34.6. Source pixels and canvas pixels must not be compared directly.
 
 Counts are stochastic: original levels define budgets and weighted rules, not one universal enemy count. Our same seed produces a repeatable plan, but it cannot match an arbitrary original run enemy-for-enemy. Level 1-2 is deterministic because it only allows normals: counts 1,1,1,2,2,5, with the last containing 4 normals and 1 flag.
 
@@ -48,12 +48,42 @@ Counts are stochastic: original levels define budgets and weighted rules, not on
 - Collision body dimensions and spawn mapping are improved, but plant attack-range checks, pole vault trajectory/landing, mower collision, and projectile overlap are still approximations. Post-vault speed resets omit difficulty scaling.
 - Shot release, mine rise, sunflower release, and eating animation phase offsets are omitted; physics collisions run on Phaser's frame clock. Very slow frames can still affect combat despite independent wave/motion clocks. Visible time is simulation time, not guaranteed wall time under throttling.
 - Bowling / 1-10 use corrected wave budgets, but conveyor supply, explosive nuts, bounce damage, and inventory weighting are not audited implementations. Their overall difficulty is **not** yet original-equivalent.
-- Full win conditions, plant targeting, sun travel/despawn and Chomper digestion need further comparison. Do not describe all ten levels as exact replicas.
+- Full win conditions, plant targeting, sun travel/despawn and Chomper digestion need further comparison. Do not describe these levels as exact replicas.
 
 ## Inspect and reproduce
 
 Open **Diagnostics** during a level: yellow cell boundaries, red zombie collision bodies and anchors, cyan plant image bounds. The panel lists plan, actual spawn ticks, warning ticks, health acceleration, current coordinates/HP/mean speed. **Download trace** exports that snapshot and source pins as JSON. Restart repeats wave generation/spawn stream; sun and plant random timers currently use unseeded random values and are not replayable from the trace.
 
-Run `bun test` for manually calculated early counts, source flag positions, eligibility/forced introductions, exact countdown scenarios, simultaneous spawning, frame-size invariance, and motion-scale checks. `bun run audit` writes `docs/games/garden-guard/audit/reference-report.json`, a repeatable simulation with all ten wave plans, no-damage spawn times and immediately-defeated-wave spawn times. This validates our transcription, not the original executable. Browser inspection verifies the diagnostics render and pause holds the simulation.
+Run `bun test` for manually calculated early counts, source flag positions, eligibility/forced introductions, exact countdown scenarios, simultaneous spawning, frame-size invariance, and motion-scale checks. `bun run audit` writes `docs/games/garden-guard/audit/reference-report.json`, a repeatable simulation with all fourteen wave plans, no-damage spawn times and immediately-defeated-wave spawn times. This validates our transcription, not the original executable. Browser inspection verifies the diagnostics render and pause holds the simulation.
 
 Visual revision: the board is now 1280×960 with uniform 1.6× source scaling. UI and sprite dimensions are documented in [asset provenance](../assets.md). The saved diagnostics.png predates this visual revision.
+
+
+## Night expansion and visual corrections (2-1 through 2-4)
+
+The next four original Adventure levels use the same pinned PC reconstruction:
+
+| Rule | Evidence | Implemented value |
+|---|---|---|
+| Eligible enemies | Challenge.cpp `gZombieWaves` rows 11–14 | 2-1 basic/newspaper; 2-2 basic/cone/bucket/newspaper; 2-3 basic/cone/door; 2-4 basic/cone/pole/door |
+| Waves / starting sun | Board::InitZombieWaves; InitBoard | 10/20/10/20 waves, 50 sun, five lanes, no sky sun |
+| New seeds | Plant.cpp seed definitions | Puff 0, Sun-shroom 25, Fume 75, Grave Buster 75; all recharge 750 ticks |
+| Sun-shroom | Plant::UpdateSunShroom; Coin.cpp small sun | 12000 ticks to grow; first production 300–1250 ticks, later 2350–2500; 15 sun small, 25 mature |
+| Short-range spores | Plant::GetPlantAttackRect; Projectile::CheckForCollision | Targeting right edge 250 source pixels from plant center; projectile expires at age 75 ticks |
+| Fumes | Plant::Fire / GetPlantAttackRect | 20 piercing lane damage, right edge 360 source pixels from center; carried shields bypassed, helmets retained |
+| Graves | Board::InitBoard | 2-1..2-3: columns 6/7/8 have 1/1/2; 2-4: columns 5/6/7/8 have 1/1/2/3 (zero-based) |
+| Final rise | Board::SpawnZombieWave / SpawnZombiesFromGraves | 200 ticks after final wave, one eligible normal/cone per remaining grave; pending rise prevents early completion |
+| Grave emergence | Zombie::RiseFromGrave | 150-tick immobile emergence; visual fade replaces original clipping animation |
+| Shields | Zombie::ZombieInitialize / DropShield; Board::TotalZombiesHealthInWave | Newspaper body 270 + shield 150; door body 270 + shield 1100. Shields contribute 20% to wave health thresholds |
+| Newspaper rage | Zombie::PickRandomSpeed / UpdateZombieNewspaper | Gasp delay 13 frames at 8 fps, then .89–.91 speed parameter with original no-paper ground curve |
+| Pea silhouette | Original ProjectilePea.png / SnowPea.png | Native 28×28 canvas preserves padding; exported 90×90 and displayed 45×45 at 1.6 board scale (rounding <0.5%). Visible ordinary pea ~38.6 px |
+
+Plants now share a feet baseline regardless of canvas height. Peas launch from measured muzzle coordinates on the flattened pose, including the planting/recoil transform; diagnostic circles show projectile collision bounds. Sun-shroom small/large poses preserve relative size and feet alignment. Original night background and mushroom/newspaper/screen-door artwork are flattened from the same pinned asset source.
+
+Limits: seed slots remain eight as an accessibility/convenience choice, rather than reproducing purchased slot progression. Grave placement uses a portable seeded sampler, not the original random sequence. Grave Buster combines an approximate one-second landing with the verified four-second eating counter; chewing/growth/fume visuals are simplified. Fume target overlap uses body anchors rather than the original full Rect intersection. Fume firing uses the source cadence with simplified shot release. None of the four night levels has yet received a complete comparative GamePix playthrough. Rule transcription and completion simulations do not prove identical player difficulty.
+
+### Continuing difficulty review
+
+For every level or combat change, run the Garden Guard tests, art checks, audit and build. Preserve the existing day fixtures. Inspect baseline economy, eligible enemy sets, midpoint introductions, flags, shields and weighted health. Keep `reference-report.json` alongside changes: it includes reproducible wave plans, no-damage/immediate-damage countdown traces and night grave/economy metadata. Treat those traces as bounds; actual player behavior changes wave timing.
+
+The original campaign has 50 Adventure levels, so 36 remain after this expansion. PvZ 2's desert world is Ancient Egypt ([EA features](https://www.ea.com/games/plants-vs-zombies/plants-vs-zombies-2/features?isLocalized=true)). It needs a separate ruleset/level dataset for mummies, Plant Food and PvZ 2 economy; do not label original-game night levels as that world or mix their balance tables. A future PvZ 2 mode should live in its own module within this game, sharing only deliberately compatible presentation.

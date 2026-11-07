@@ -18,6 +18,7 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
   protected readonly def: PlantDefinition;
   protected hp: number;
 
+  private shadow?:Phaser.GameObjects.Image;
   private dying = false;
   private hitFlash = 0;
 
@@ -35,6 +36,10 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
     ctx.scene.add.existing(this);
     this.setDepth(DEPTH.plants);
     this.setOrigin(0.5, 0.72);
+    // Keep feet on the same ground line even for small mushrooms and mines.
+    this.y=y+66-this.height*ART_SCALE*(1-this.originY);
+    const small=def.type==='puffshroom'||def.type==='sunshroom'||def.type==='potatomine';
+    this.shadow=ctx.scene.add.image(x,y+62,'plant-shadow').setDisplaySize(small?65:104,small?20:28).setAlpha(0.35).setDepth(DEPTH.plants-1);
 
     // Small "pop" when planted.
     this.setScale(ART_SCALE*0.7);
@@ -91,6 +96,7 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
   }
 
   override destroy(fromScene?: boolean): void {
+    this.shadow?.destroy();this.shadow=undefined;
     this.ctx.grid.removePlant(this.col, this.row, this);
     super.destroy(fromScene);
   }
