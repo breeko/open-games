@@ -4,7 +4,7 @@ import { initialGraves } from '../../../../src/games/garden-guard/night';
 import { randomSource, sampleSkySunTicks } from '../../../../src/games/garden-guard/reference/rules';
 import { WaveDirector } from '../../../../src/games/garden-guard/wave-director';
 import { WhackDirector } from '../../../../src/games/garden-guard/whack-director';
-import { gardenSessionSchema, type GardenSession, type PlantSnapshot, type ZombieSnapshot } from '../../../../src/games/garden-guard/state/session-data';
+import { gardenSessionSchema, zombieSnapshotSchema, type GardenSession, type PlantSnapshot, type ZombieSnapshot } from '../../../../src/games/garden-guard/state/session-data';
 
 export function freshSession(levelId: number): GardenSession {
   const level = getLevel(levelId), random = randomSource(67890);
@@ -24,11 +24,11 @@ export function freshSession(levelId: number): GardenSession {
 
 export function exampleZombie(type: ZombieSnapshot['type'], row = 0): ZombieSnapshot {
   const def = ZOMBIE_DEFS[type];
-  return { type, row, wave: 0, x: 1000, y: GRID.originY + (row + .5) * GRID.tileHeight + 10,
+  return zombieSnapshotSchema.parse({ type, row, wave: 0, x: 1000, y: GRID.originY + (row + .5) * GRID.tileHeight + 10,
     hp: def.hp, maxHp: def.hp, armorHp: def.armorHp, shieldHp: def.shieldHp ?? 0, speed: def.speed, speedMultiplier: 1, dps: 100,
     allies: false, hasPole: type === 'polevaulter', emergenceTotal: 0, emergenceMs: 0, rageDelay: 0, headless: false,
     bleedTicks: 0, biteRemainder: 0, slowFactor: 1, slowRemainingMs: 0,
-    motion: { gait: type === 'polevaulter' ? 'poleRun' : 'walk', parameter: .3, phase: .25, remainder: 0 }, vault: null };
+    motion: { gait: type === 'polevaulter' ? 'poleRun' : 'walk', parameter: .3, phase: .25, remainder: 0 }, vault: null });
 }
 
 /** Timers and transient gameplay states that board-position-only saves would lose. */

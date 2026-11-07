@@ -39,3 +39,6 @@ Night expansion: `background2.png`, `grave.png`, mushrooms (including both Sun-s
 
 
 The 2-5/2-6 expansion adds original Hypno-shroom and Scaredy-shroom poses plus aligned football helmet/bare states from the same pinned reference. The exported numerical motion tracks now include the football walk. Packet branding is covered at runtime by a clean text label; no original brand lettering is sharpened or synthetically enlarged.
+
+
+Late-night additions use `IceShroom` and `DoomShroom` poses, the original red-jacket `Zombie_disco` leader, the bandanna `Zombie_backup`, original `icetrap`/`icetrap2` layers, and one frame from the two-frame crater sheet. Motion exports include the leader's walk and moonwalk and backup walk; the moonwalk curve is sign-normalized for leftward travel. The generation scripts reproduce those crops and curve transforms. Original-art ownership/attribution remains unchanged.

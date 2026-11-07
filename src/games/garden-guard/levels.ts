@@ -48,10 +48,14 @@ const availableCounts = [1,2,3,4,4,5,6,7,8,8];
 const rewards: (PlantType | undefined)[] = ['sunflower','cherrybomb','wallnut',undefined,'potatomine','snowpea','chomper','repeater',undefined,'puffshroom'];
 
 /** Wave construction is audited separately from UI progression. */
-export const LEVELS: readonly LevelDefinition[] = Array.from({length:16}, (_, index): LevelDefinition => {
+export const LEVELS: readonly LevelDefinition[] = Array.from({length:18}, (_, index): LevelDefinition => {
   const id = index + 1;
+  if(id===17||id===18)return {id,name:`2-${id-10}`,title:id===17?'Keep your distance':'Freeze the dance floor',
+    blurb:id===17?'Keep Scaredy-shrooms in back. They hide near zombies.':'Freeze the lawn. Dancers replace lost backups.',
+    environment:'night',mode:'standard',startingSun:50,skySunIntervalMs:0,activeRows:[0,1,2,3,4],waves:referenceWaves(id),
+    availablePlants:[...ORDER,'puffshroom','sunshroom','fumeshroom','gravebuster','hypnoshroom','scaredyshroom',...(id===18?['iceshroom'] as const:[])],reward:id===17?'iceshroom':'doomshroom'};
   if(id===15)return {id,name:'2-5',title:'Whack-a-Zombie',blurb:'Tap zombies to bonk them. Cones take two hits, buckets three. Suns fund your three emergency seeds.',environment:'night',mode:'whack',startingSun:0,skySunIntervalMs:0,activeRows:[0,1,2,3,4],waves:referenceWaves(id),availablePlants:['potatomine','gravebuster','cherrybomb'],reward:'hypnoshroom'};
-  if(id===16)return {id,name:'2-6',title:'Changing sides',blurb:'Football helmets take a beating. Feed one a Hypno-shroom to turn it against the others.',environment:'night',mode:'standard',startingSun:50,skySunIntervalMs:0,activeRows:[0,1,2,3,4],waves:referenceWaves(id),availablePlants:[...ORDER,'puffshroom','sunshroom','fumeshroom','gravebuster','hypnoshroom'],reward:'scaredyshroom'};
+  if(id===16)return {id,name:'2-6',title:'Changing sides',blurb:'Feed a Football Zombie a Hypno-shroom to change sides.',environment:'night',mode:'standard',startingSun:50,skySunIntervalMs:0,activeRows:[0,1,2,3,4],waves:referenceWaves(id),availablePlants:[...ORDER,'puffshroom','sunshroom','fumeshroom','gravebuster','hypnoshroom'],reward:'scaredyshroom'};
   if(id>10) return {id,name:`2-${id-10}`,title:['After dark','Small beginnings','Through the screen','Rest in pieces'][id-11],
     blurb:['No sky sun. Use free Puff-shrooms and build sunflowers.','Sun-shrooms start small and grow after two minutes.','Fumes pass through screen doors and hit a whole line.','Clear graves before the final wave rises from them.'][id-11],
     environment:'night',mode:'standard',startingSun:50,skySunIntervalMs:0,activeRows:[0,1,2,3,4],waves:referenceWaves(id),
@@ -75,6 +79,6 @@ export function rewardForLevel(id: number): PlantType | undefined { return getLe
 /** Night defaults always include the new defenders and a source of sun. */
 export function defaultSeedsForLevel(id:number):PlantType[] {
  const available=plantsForLevel(id);
- const order:PlantType[]=id>10?['hypnoshroom','puffshroom','sunshroom','fumeshroom','gravebuster','sunflower','wallnut','cherrybomb','snowpea','potatomine','repeater','peashooter','chomper']:available;
+ const order:PlantType[]=id>=17?['iceshroom','scaredyshroom','puffshroom','sunshroom','fumeshroom','hypnoshroom','gravebuster','cherrybomb','wallnut','sunflower','snowpea','potatomine','repeater','peashooter','chomper']:id>10?['hypnoshroom','puffshroom','sunshroom','fumeshroom','gravebuster','sunflower','wallnut','cherrybomb','snowpea','potatomine','repeater','peashooter','chomper']:available;
  return order.filter(p=>available.includes(p)).slice(0,8);
 }

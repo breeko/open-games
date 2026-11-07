@@ -31,3 +31,9 @@ for key in ['hypnoshroom','scaredyshroom','scaredyshroom-hidden','zombie-footbal
     assert Image.open(base/(key+'.png')).getbbox(), key+' has no original artwork'
 assert Image.open(base/'zombie-football.png').size == Image.open(base/'zombie-football-bare.png').size
 print('Hypno, Scaredy and aligned football state checks passed.')
+
+for key in ['iceshroom','doomshroom','zombie-dancer','zombie-backup','ice-front','ice-back']:
+    assert Image.open(base/(key+'.png')).getbbox(), key+' has no original artwork'
+assert Image.open(base/'crater.png').size==(90,61), 'crater must be one frame, not both side by side'
+assert Image.open(base/'zombie-dancer.png').tobytes()!=Image.open(base/'zombie-backup.png').tobytes(), 'leader and backups need distinct original art'
+print('Ice, Doom, Dancing Zombie, backup, freeze overlay and crater checks passed.')

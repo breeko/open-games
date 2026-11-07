@@ -11,5 +11,5 @@ for track in tracks.values():
  state={};values=[]
  for frame in ground.findall('t'):
   state.update({c.tag:c.text for c in frame});values.append(float(state.get('x',0)))
- start=track['start'];track['groundX']=values[start:start+track['frameCount']]
+ start=track['start'];track['groundX']=[value*track.get('direction',1) for value in values[start:start+track['frameCount']]]
 output.write_text(json.dumps(tracks,indent=2)+'\n')

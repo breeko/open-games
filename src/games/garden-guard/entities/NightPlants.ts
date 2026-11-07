@@ -2,6 +2,7 @@ import {Plant} from './Plant';
 import {Shooter} from './Shooter';
 import {Sun} from './Sun';
 import {Zombie} from './Zombie';
+import {NIGHT_COMBAT,scaredyThreat} from '../night-combat';
 import {NIGHT_RULES} from '../night';
 import {DEPTH} from '../constants';
 import type {PlantBehavior} from '../state/session-data';
@@ -42,7 +43,7 @@ export class FumeShroom extends Plant {
    this.remainder-=10;
    if(--this.ticks>0)continue;
    this.ticks=150-Math.floor(this.ctx.random()*15);
-   const targets=this.ctx.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie&&z.active&&z.isHostile&&!z.isHeadless&&z.row===this.row&&z.x>this.x&&z.x-this.x<=(this.def.range??576));
+   const targets=this.ctx.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie&&z.active&&z.canBeShot&&z.row===this.row&&z.x>this.x&&z.x-this.x<=(this.def.range??576));
    if(!targets.length)continue;
    for(const zombie of targets)zombie.takeDamage(20,true);
    const cloud=this.scene.add.image(this.x+190,this.y-25,'puff').setDisplaySize(400,76).setAlpha(0.55).setDepth(DEPTH.peas);
@@ -54,9 +55,45 @@ export class FumeShroom extends Plant {
 
 export class HypnoShroom extends Plant {protected onTick(_delta:number):void {}}
 export class ScaredyShroom extends Shooter {
+ private hidden=false;
+ protected override saveBehavior():PlantBehavior {
+  const data=super.saveBehavior();if(data.kind!=='shooter')throw new Error('Wrong Scaredy-shroom state');return {...data,hidden:this.hidden};
+ }
+ protected override restoreBehavior(data:PlantBehavior):void {
+  super.restoreBehavior(data);if(data.kind!=='shooter')throw new Error('Wrong Scaredy-shroom state');this.hidden=data.hidden??false;this.updatePose();
+ }
+ private updatePose():void {this.setTexture(this.hidden?'scaredyshroom-hidden':'scaredyshroom');}
  protected override onTick(delta:number):void {
-  const danger=this.ctx.zombies.getChildren().some(z=>z instanceof Zombie&&z.active&&z.isHostile&&Math.abs(z.row-this.row)<=1&&Math.hypot(z.x-this.x,(z.row-this.row)*160)<192);
-  this.setTexture(danger?'scaredyshroom-hidden':'scaredyshroom');
-  if(!danger)super.onTick(delta);
+  const center=this.ctx.grid.cellToWorld(this.col,this.row);
+  this.hidden=this.ctx.zombies.getChildren().some(z=>{
+   if(!(z instanceof Zombie)||!z.active||!z.canBeShot)return false;
+   const body=z.body;if(!body)return false;
+   return scaredyThreat(center.x,center.y,this.row,{row:z.row,left:body.x,top:body.y,right:body.x+body.width,bottom:body.y+body.height});
+  });
+  this.updatePose();if(!this.hidden)super.onTick(delta);
+ }
+}
+export class IceShroom extends Plant {
+ private fuse=0;
+ protected override saveBehavior():PlantBehavior {return {kind:'ice',fuse:this.fuse};}
+ protected override restoreBehavior(data:PlantBehavior):void {if(data.kind!=='ice')throw new Error('Wrong Ice-shroom state');this.fuse=data.fuse;}
+ protected onTick(delta:number):void {
+  this.fuse+=delta;if(this.fuse<NIGHT_COMBAT.fuseMs)return;
+  for(const zombie of this.ctx.zombies.getChildren())if(zombie instanceof Zombie)zombie.freeze();
+  const flash=this.scene.add.rectangle(640,480,1280,960,0x97e5ff,0.28).setDepth(DEPTH.effects);
+  this.scene.tweens.add({targets:flash,alpha:0,duration:350,onComplete:()=>flash.destroy()});this.remove();
+ }
+}
+export class DoomShroom extends Plant {
+ private fuse=0;
+ protected override saveBehavior():PlantBehavior {return {kind:'doom',fuse:this.fuse};}
+ protected override restoreBehavior(data:PlantBehavior):void {if(data.kind!=='doom')throw new Error('Wrong Doom-shroom state');this.fuse=data.fuse;}
+ protected onTick(delta:number):void {
+  this.fuse+=delta;if(this.fuse<NIGHT_COMBAT.fuseMs)return;
+  const point=this.ctx.grid.cellToWorld(this.col,this.row);
+  for(const z of this.ctx.zombies.getChildren())if(z instanceof Zombie&&z.active&&z.isHostile&&Math.abs(z.row-this.row)<=3&&Math.hypot(z.x-point.x,z.y-point.y)<=NIGHT_COMBAT.doomRadius)z.takeDamage(NIGHT_COMBAT.doomDamage);
+  this.ctx.addCrater(this.col,this.row);
+  const ring=this.scene.add.circle(point.x,point.y,30,0x71315e,0.6).setDepth(DEPTH.effects);
+  this.scene.tweens.add({targets:ring,scale:13,alpha:0,duration:450,onComplete:()=>ring.destroy()});this.remove();
  }
 }

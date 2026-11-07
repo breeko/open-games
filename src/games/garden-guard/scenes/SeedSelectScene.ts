@@ -8,7 +8,7 @@ import { Button } from '../ui/Button';
 
 const PICK_W = 170;
 const PICK_H = 116;
-const PICK_COLS = 5;
+const PICK_COLS = 6;
 const PICK_GAP = 16;
 const PICK_TOP = 148;
 

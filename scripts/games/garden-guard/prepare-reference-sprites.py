@@ -89,6 +89,10 @@ for key,name,frame,size in [('hypnoshroom','HypnoShroom',0,(104,104)),('scaredys
 football=[pose('Zombie_football',21),pose('Zombie_football',21,exclude_exact=('zombie_football_helmet',))]
 boxes=[im.getbbox() for im in football];crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
 for key,im in zip(['zombie-football','zombie-football-bare'],football):save_pose(key,im,(160,240),crop)
+for key,name,frame,size in [('iceshroom','IceShroom',4,(100,110)),('doomshroom','DoomShroom',0,(112,128)),('zombie-dancer','Zombie_disco',46,(144,240)),('zombie-backup','Zombie_backup',0,(128,224))]:
+ save_pose(key,pose(name,frame,('blink','sleep','eye2')),size)
+for key,source in [('ice-front','icetrap.png'),('ice-back','icetrap2.png')]:Image.open(base/'images'/source).save(out/(key+'.png'))
+crater=Image.open(base/'images/crater.png');crater.crop((0,0,crater.width//2,crater.height)).save(out/'crater.png')
 # Original projectiles, sized in board coordinates rather than their source canvas.
 for key,source,size in [('pea','ProjectilePea',(45,45)),('icepea','ProjectileSnowPea',(45,45))]:
  manifest[key]={'width':size[0],'height':size[1]}

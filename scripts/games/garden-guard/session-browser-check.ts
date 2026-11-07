@@ -5,6 +5,7 @@ import { MainMenuScene } from '../../../src/games/garden-guard/scenes/MainMenuSc
 import { GameScene } from '../../../src/games/garden-guard/scenes/GameScene';
 import { gardenSessionSchema, type GardenSession } from '../../../src/games/garden-guard/state/session-data';
 import { busyNightSession, freshSession, exampleZombie } from '../../../tests/games/garden-guard/fixtures/session';
+import {nightDiagnostic} from '../../../src/games/garden-guard/diagnostics/night-scenarios';
 import { LEVELS } from '../../../src/games/garden-guard/levels';
 
 const results = document.querySelector<HTMLPreElement>('#results')!;
@@ -74,6 +75,33 @@ function run(): void {
     if (data.waves.director.kind !== 'standard') throw new Error('Wrong director');
     data.waves.director.index = LEVELS[13].waves.length - 1;data.waves.riseTicks = 80;
     roundTrip(data, 70);
+  });
+  check('dancer entry, four linked backups and continued summoning',()=>roundTrip(nightDiagnostic(),300));
+  check('frozen dancer group thaws identically after restoration',()=>roundTrip(nightDiagnostic(true),350));
+  check('a dying backup is replaced without breaking restored dancer links',()=>{
+    const data=nightDiagnostic(true);data.zombies[3].hp=1;data.zombies[3].headless=true;data.zombies[3].frozenMs=0;roundTrip(data,500);
+  });
+  check('Ice-shroom mid-fuse restores and freezes the same enemies',()=>{
+    const data=nightDiagnostic();data.plants.push({type:'iceshroom',col:1,row:4,hp:300,behavior:{kind:'ice',fuse:730}});roundTrip(data,150);
+  });
+  check('crater countdown and removal continue after restoration',()=>{
+    const data=nightDiagnostic();data.craters=[{col:2,row:4,remainingMs:30}];roundTrip(data,10);
+  });
+  check('rising backup dancers do not absorb normal projectiles',()=>{
+    const data=nightDiagnostic(true);data.zombies[1].frozenMs=0;data.zombies[1].emergenceTotal=1500;data.zombies[1].emergenceMs=1000;
+    data.projectiles=[{texture:'pea',x:800,y:350,row:1,velocityX:532.8,velocityY:0,damage:20,slowFactor:null,slowMs:null,expiresMs:null,originX:800}];
+    const scene=open(data);step(5);equal(capture(scene).zombies.find(z=>z.type==='backup'&&z.row===1)?.hp,270,'rising backup health');
+  });
+  check('Cherry Bombs spare hypnosis allies',()=>{
+    const data=nightDiagnostic();data.zombies[0].allies=true;
+    data.plants.push({type:'cherrybomb',col:6,row:2,hp:300,behavior:{kind:'cherry',fuse:1190}});
+    const scene=open(data);step(2);equal(capture(scene).zombies.find(z=>z.type==='dancer'&&z.allies)?.hp,500,'allied bomb survival');
+  });
+  check('moving mowers spare hypnosis allies and their allied backups',()=>{
+    const data=nightDiagnostic();data.zombies[0].allies=true;data.mowers[2]={row:2,x:850,used:true,moving:true,visible:true};
+    const scene=open(data);step(50);const survivors=capture(scene).zombies;
+    equal(survivors.find(z=>z.type==='dancer'&&z.allies)?.hp,500,'allied mower survival');
+    if(survivors.some(z=>!z.allies))throw new Error('Summoned followers lost allegiance');
   });
   check('paused restored level consumes no plant, wave, pickup or projectile time',()=>{
     const scene=open(busyNightSession());step(1);const before=capture(scene);

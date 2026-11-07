@@ -200,7 +200,7 @@ class SeedCard extends Phaser.GameObjects.Container {
 
     // Cover the tiny baked-in brand lettering; labels remain real text at 2× resolution.
     const heading=scene.add.rectangle(3,3,cardWidth-6,28,0xf1efcf).setOrigin(0);
-    const names:Partial<Record<PlantType,string>>={peashooter:'Pea\nshooter',cherrybomb:'Cherry\nBomb',potatomine:'Potato\nMine',snowpea:'Snow\nPea',puffshroom:'Puff\nshroom',sunshroom:'Sun\nshroom',fumeshroom:'Fume\nshroom',gravebuster:'Grave\nBuster',hypnoshroom:'Hypno\nshroom',scaredyshroom:'Scaredy\nshroom'};
+    const names:Partial<Record<PlantType,string>>={peashooter:'Pea\nshooter',cherrybomb:'Cherry\nBomb',potatomine:'Potato\nMine',snowpea:'Snow\nPea',puffshroom:'Puff\nshroom',sunshroom:'Sun\nshroom',fumeshroom:'Fume\nshroom',gravebuster:'Grave\nBuster',hypnoshroom:'Hypno\nshroom',scaredyshroom:'Scaredy\nshroom',iceshroom:'Ice\nshroom',doomshroom:'Doom\nshroom'};
     const name=scene.add.text(cardWidth/2,17,names[def.type]??def.label,{fontFamily:'Arial, sans-serif',fontSize:'14px',fontStyle:'bold',color:'#244024',align:'center',lineSpacing:-3,resolution:2}).setOrigin(0.5);
     // Icon on top, sun cost underneath — like the real seed packets.
     const icon = scene.add.image(cardWidth / 2, 58, def.texture).setScale(Math.min(66 / scene.textures.get(def.texture).getSourceImage().width, 54 / scene.textures.get(def.texture).getSourceImage().height));

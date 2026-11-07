@@ -5,6 +5,75 @@
   },
   "seed": 12345,
   "edition": "PC first Adventure; tutorial gates skipped",
+  "lateNight": {
+    "rules": {
+      "fuseMs": 1000,
+      "iceChillMs": 20000,
+      "iceDamage": 20,
+      "doomDamage": 1800,
+      "doomRadius": 400,
+      "craterMs": 180000
+    },
+    "dancer": {
+      "summonTicks": [
+        342,
+        742,
+        1202,
+        1662
+      ],
+      "centerSlots": [
+        {
+          "x": 800,
+          "row": 1,
+          "slot": 0
+        },
+        {
+          "x": 800,
+          "row": 3,
+          "slot": 1
+        },
+        {
+          "x": 640,
+          "row": 2,
+          "slot": 2
+        },
+        {
+          "x": 960,
+          "row": 2,
+          "slot": 3
+        }
+      ],
+      "edgeSlots": [
+        {
+          "x": 800,
+          "row": 1,
+          "slot": 1
+        },
+        {
+          "x": 640,
+          "row": 0,
+          "slot": 2
+        },
+        {
+          "x": 960,
+          "row": 0,
+          "slot": 3
+        }
+      ],
+      "note": "Unblocked leader with missing followers; actual deaths, freezing and eating change timing."
+    },
+    "freezeTicks": {
+      "first": [
+        400,
+        600
+      ],
+      "alreadyCold": [
+        300,
+        400
+      ]
+    },
+    "sessionCompatibility": "garden-day-night-r1; additive field defaults preserve existing sessions"
+  },
   "levels": [
     {
       "level": 1,
@@ -7403,6 +7472,1163 @@
           "final": true,
           "baseBudget": 4,
           "pointsRemaining": -4
+        }
+      ],
+      "noDamage": [
+        {
+          "tick": 1800,
+          "kind": "spawn",
+          "wave": 1,
+          "count": 1
+        },
+        {
+          "tick": 4600,
+          "kind": "spawn",
+          "wave": 2,
+          "count": 1
+        },
+        {
+          "tick": 7400,
+          "kind": "spawn",
+          "wave": 3,
+          "count": 1
+        },
+        {
+          "tick": 10200,
+          "kind": "spawn",
+          "wave": 4,
+          "count": 1
+        },
+        {
+          "tick": 13000,
+          "kind": "spawn",
+          "wave": 5,
+          "count": 1
+        },
+        {
+          "tick": 15800,
+          "kind": "spawn",
+          "wave": 6,
+          "count": 1
+        },
+        {
+          "tick": 18600,
+          "kind": "spawn",
+          "wave": 7,
+          "count": 3
+        },
+        {
+          "tick": 21400,
+          "kind": "spawn",
+          "wave": 8,
+          "count": 2
+        },
+        {
+          "tick": 24200,
+          "kind": "spawn",
+          "wave": 9,
+          "count": 2
+        },
+        {
+          "tick": 28695,
+          "kind": "huge-wave warning",
+          "wave": 10
+        },
+        {
+          "tick": 29445,
+          "kind": "spawn",
+          "wave": 10,
+          "count": 7
+        }
+      ],
+      "immediateDamage": [
+        {
+          "tick": 1800,
+          "kind": "spawn",
+          "wave": 1,
+          "count": 1
+        },
+        {
+          "tick": 2201,
+          "kind": "health acceleration",
+          "wave": 2
+        },
+        {
+          "tick": 2401,
+          "kind": "spawn",
+          "wave": 2,
+          "count": 1
+        },
+        {
+          "tick": 2802,
+          "kind": "health acceleration",
+          "wave": 3
+        },
+        {
+          "tick": 3002,
+          "kind": "spawn",
+          "wave": 3,
+          "count": 1
+        },
+        {
+          "tick": 3403,
+          "kind": "health acceleration",
+          "wave": 4
+        },
+        {
+          "tick": 3603,
+          "kind": "spawn",
+          "wave": 4,
+          "count": 1
+        },
+        {
+          "tick": 4004,
+          "kind": "health acceleration",
+          "wave": 5
+        },
+        {
+          "tick": 4204,
+          "kind": "spawn",
+          "wave": 5,
+          "count": 1
+        },
+        {
+          "tick": 4605,
+          "kind": "health acceleration",
+          "wave": 6
+        },
+        {
+          "tick": 4805,
+          "kind": "spawn",
+          "wave": 6,
+          "count": 1
+        },
+        {
+          "tick": 5206,
+          "kind": "health acceleration",
+          "wave": 7
+        },
+        {
+          "tick": 5406,
+          "kind": "spawn",
+          "wave": 7,
+          "count": 3
+        },
+        {
+          "tick": 5807,
+          "kind": "health acceleration",
+          "wave": 8
+        },
+        {
+          "tick": 6007,
+          "kind": "spawn",
+          "wave": 8,
+          "count": 2
+        },
+        {
+          "tick": 6408,
+          "kind": "health acceleration",
+          "wave": 9
+        },
+        {
+          "tick": 6608,
+          "kind": "spawn",
+          "wave": 9,
+          "count": 2
+        },
+        {
+          "tick": 7009,
+          "kind": "health acceleration",
+          "wave": 10
+        },
+        {
+          "tick": 7204,
+          "kind": "huge-wave warning",
+          "wave": 10
+        },
+        {
+          "tick": 7954,
+          "kind": "spawn",
+          "wave": 10,
+          "count": 7
+        }
+      ]
+    },
+    {
+      "level": 17,
+      "environment": "night",
+      "startingSun": 50,
+      "skySun": false,
+      "graves": [
+        {
+          "col": 4,
+          "row": 0
+        },
+        {
+          "col": 5,
+          "row": 0
+        },
+        {
+          "col": 5,
+          "row": 3
+        },
+        {
+          "col": 6,
+          "row": 3
+        },
+        {
+          "col": 6,
+          "row": 4
+        },
+        {
+          "col": 7,
+          "row": 0
+        },
+        {
+          "col": 7,
+          "row": 2
+        },
+        {
+          "col": 7,
+          "row": 3
+        },
+        {
+          "col": 8,
+          "row": 2
+        },
+        {
+          "col": 8,
+          "row": 4
+        },
+        {
+          "col": 8,
+          "row": 0
+        }
+      ],
+      "nightRules": {
+        "sunGrowthMs": 120000,
+        "smallSun": 15,
+        "largeSun": 25,
+        "graveRiseDelayMs": 2000,
+        "graveEmergenceMs": 1500,
+        "graveEatingMs": 5000
+      },
+      "mode": "standard",
+      "plan": [
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1
+          },
+          "sequence": [
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 1,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1
+          },
+          "sequence": [
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 1,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1
+          },
+          "sequence": [
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 1,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1
+          },
+          "sequence": [
+            "conehead"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 2,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1
+          },
+          "sequence": [
+            "conehead"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 2,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 2
+          },
+          "sequence": [
+            "basic",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 2,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1,
+            "basic": 1
+          },
+          "sequence": [
+            "conehead",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 3,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1,
+            "basic": 1
+          },
+          "sequence": [
+            "conehead",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 3,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1,
+            "basic": 1
+          },
+          "sequence": [
+            "conehead",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 3,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 5,
+            "flag": 1,
+            "screendoor": 1
+          },
+          "sequence": [
+            "basic",
+            "basic",
+            "basic",
+            "basic",
+            "flag",
+            "basic",
+            "screendoor"
+          ],
+          "flag": true,
+          "final": false,
+          "baseBudget": 4,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1,
+            "basic": 2
+          },
+          "sequence": [
+            "conehead",
+            "basic",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 4,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 2
+          },
+          "sequence": [
+            "conehead",
+            "conehead"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 4,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "screendoor": 1,
+            "basic": 1
+          },
+          "sequence": [
+            "screendoor",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 5,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1,
+            "basic": 3
+          },
+          "sequence": [
+            "conehead",
+            "basic",
+            "basic",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 5,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1,
+            "basic": 3
+          },
+          "sequence": [
+            "conehead",
+            "basic",
+            "basic",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 5,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 4,
+            "conehead": 1
+          },
+          "sequence": [
+            "basic",
+            "basic",
+            "conehead",
+            "basic",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 6,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "screendoor": 1,
+            "basic": 2
+          },
+          "sequence": [
+            "screendoor",
+            "basic",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 6,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 2,
+            "screendoor": 1
+          },
+          "sequence": [
+            "basic",
+            "basic",
+            "screendoor"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 6,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 3,
+            "basic": 1
+          },
+          "sequence": [
+            "conehead",
+            "conehead",
+            "conehead",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 7,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 7,
+            "flag": 1,
+            "conehead": 1,
+            "screendoor": 1,
+            "football": 1
+          },
+          "sequence": [
+            "basic",
+            "basic",
+            "basic",
+            "basic",
+            "basic",
+            "basic",
+            "basic",
+            "flag",
+            "conehead",
+            "screendoor",
+            "football"
+          ],
+          "flag": true,
+          "final": true,
+          "baseBudget": 7,
+          "pointsRemaining": -4
+        }
+      ],
+      "noDamage": [
+        {
+          "tick": 1800,
+          "kind": "spawn",
+          "wave": 1,
+          "count": 1
+        },
+        {
+          "tick": 4600,
+          "kind": "spawn",
+          "wave": 2,
+          "count": 1
+        },
+        {
+          "tick": 7400,
+          "kind": "spawn",
+          "wave": 3,
+          "count": 1
+        },
+        {
+          "tick": 10200,
+          "kind": "spawn",
+          "wave": 4,
+          "count": 1
+        },
+        {
+          "tick": 13000,
+          "kind": "spawn",
+          "wave": 5,
+          "count": 1
+        },
+        {
+          "tick": 15800,
+          "kind": "spawn",
+          "wave": 6,
+          "count": 2
+        },
+        {
+          "tick": 18600,
+          "kind": "spawn",
+          "wave": 7,
+          "count": 2
+        },
+        {
+          "tick": 21400,
+          "kind": "spawn",
+          "wave": 8,
+          "count": 2
+        },
+        {
+          "tick": 24200,
+          "kind": "spawn",
+          "wave": 9,
+          "count": 2
+        },
+        {
+          "tick": 28695,
+          "kind": "huge-wave warning",
+          "wave": 10
+        },
+        {
+          "tick": 29445,
+          "kind": "spawn",
+          "wave": 10,
+          "count": 7
+        },
+        {
+          "tick": 32245,
+          "kind": "spawn",
+          "wave": 11,
+          "count": 3
+        },
+        {
+          "tick": 35045,
+          "kind": "spawn",
+          "wave": 12,
+          "count": 2
+        },
+        {
+          "tick": 37845,
+          "kind": "spawn",
+          "wave": 13,
+          "count": 2
+        },
+        {
+          "tick": 40645,
+          "kind": "spawn",
+          "wave": 14,
+          "count": 4
+        },
+        {
+          "tick": 43445,
+          "kind": "spawn",
+          "wave": 15,
+          "count": 4
+        },
+        {
+          "tick": 46245,
+          "kind": "spawn",
+          "wave": 16,
+          "count": 5
+        },
+        {
+          "tick": 49045,
+          "kind": "spawn",
+          "wave": 17,
+          "count": 3
+        },
+        {
+          "tick": 51845,
+          "kind": "spawn",
+          "wave": 18,
+          "count": 3
+        },
+        {
+          "tick": 54645,
+          "kind": "spawn",
+          "wave": 19,
+          "count": 4
+        },
+        {
+          "tick": 59140,
+          "kind": "huge-wave warning",
+          "wave": 20
+        },
+        {
+          "tick": 59890,
+          "kind": "spawn",
+          "wave": 20,
+          "count": 11
+        }
+      ],
+      "immediateDamage": [
+        {
+          "tick": 1800,
+          "kind": "spawn",
+          "wave": 1,
+          "count": 1
+        },
+        {
+          "tick": 2201,
+          "kind": "health acceleration",
+          "wave": 2
+        },
+        {
+          "tick": 2401,
+          "kind": "spawn",
+          "wave": 2,
+          "count": 1
+        },
+        {
+          "tick": 2802,
+          "kind": "health acceleration",
+          "wave": 3
+        },
+        {
+          "tick": 3002,
+          "kind": "spawn",
+          "wave": 3,
+          "count": 1
+        },
+        {
+          "tick": 3403,
+          "kind": "health acceleration",
+          "wave": 4
+        },
+        {
+          "tick": 3603,
+          "kind": "spawn",
+          "wave": 4,
+          "count": 1
+        },
+        {
+          "tick": 4004,
+          "kind": "health acceleration",
+          "wave": 5
+        },
+        {
+          "tick": 4204,
+          "kind": "spawn",
+          "wave": 5,
+          "count": 1
+        },
+        {
+          "tick": 4605,
+          "kind": "health acceleration",
+          "wave": 6
+        },
+        {
+          "tick": 4805,
+          "kind": "spawn",
+          "wave": 6,
+          "count": 2
+        },
+        {
+          "tick": 5206,
+          "kind": "health acceleration",
+          "wave": 7
+        },
+        {
+          "tick": 5406,
+          "kind": "spawn",
+          "wave": 7,
+          "count": 2
+        },
+        {
+          "tick": 5807,
+          "kind": "health acceleration",
+          "wave": 8
+        },
+        {
+          "tick": 6007,
+          "kind": "spawn",
+          "wave": 8,
+          "count": 2
+        },
+        {
+          "tick": 6408,
+          "kind": "health acceleration",
+          "wave": 9
+        },
+        {
+          "tick": 6608,
+          "kind": "spawn",
+          "wave": 9,
+          "count": 2
+        },
+        {
+          "tick": 7009,
+          "kind": "health acceleration",
+          "wave": 10
+        },
+        {
+          "tick": 7204,
+          "kind": "huge-wave warning",
+          "wave": 10
+        },
+        {
+          "tick": 7954,
+          "kind": "spawn",
+          "wave": 10,
+          "count": 7
+        },
+        {
+          "tick": 8355,
+          "kind": "health acceleration",
+          "wave": 11
+        },
+        {
+          "tick": 8555,
+          "kind": "spawn",
+          "wave": 11,
+          "count": 3
+        },
+        {
+          "tick": 8956,
+          "kind": "health acceleration",
+          "wave": 12
+        },
+        {
+          "tick": 9156,
+          "kind": "spawn",
+          "wave": 12,
+          "count": 2
+        },
+        {
+          "tick": 9557,
+          "kind": "health acceleration",
+          "wave": 13
+        },
+        {
+          "tick": 9757,
+          "kind": "spawn",
+          "wave": 13,
+          "count": 2
+        },
+        {
+          "tick": 10158,
+          "kind": "health acceleration",
+          "wave": 14
+        },
+        {
+          "tick": 10358,
+          "kind": "spawn",
+          "wave": 14,
+          "count": 4
+        },
+        {
+          "tick": 10759,
+          "kind": "health acceleration",
+          "wave": 15
+        },
+        {
+          "tick": 10959,
+          "kind": "spawn",
+          "wave": 15,
+          "count": 4
+        },
+        {
+          "tick": 11360,
+          "kind": "health acceleration",
+          "wave": 16
+        },
+        {
+          "tick": 11560,
+          "kind": "spawn",
+          "wave": 16,
+          "count": 5
+        },
+        {
+          "tick": 11961,
+          "kind": "health acceleration",
+          "wave": 17
+        },
+        {
+          "tick": 12161,
+          "kind": "spawn",
+          "wave": 17,
+          "count": 3
+        },
+        {
+          "tick": 12562,
+          "kind": "health acceleration",
+          "wave": 18
+        },
+        {
+          "tick": 12762,
+          "kind": "spawn",
+          "wave": 18,
+          "count": 3
+        },
+        {
+          "tick": 13163,
+          "kind": "health acceleration",
+          "wave": 19
+        },
+        {
+          "tick": 13363,
+          "kind": "spawn",
+          "wave": 19,
+          "count": 4
+        },
+        {
+          "tick": 13764,
+          "kind": "health acceleration",
+          "wave": 20
+        },
+        {
+          "tick": 13959,
+          "kind": "huge-wave warning",
+          "wave": 20
+        },
+        {
+          "tick": 14709,
+          "kind": "spawn",
+          "wave": 20,
+          "count": 11
+        }
+      ]
+    },
+    {
+      "level": 18,
+      "environment": "night",
+      "startingSun": 50,
+      "skySun": false,
+      "graves": [
+        {
+          "col": 4,
+          "row": 0
+        },
+        {
+          "col": 5,
+          "row": 0
+        },
+        {
+          "col": 5,
+          "row": 3
+        },
+        {
+          "col": 6,
+          "row": 3
+        },
+        {
+          "col": 6,
+          "row": 4
+        },
+        {
+          "col": 7,
+          "row": 0
+        },
+        {
+          "col": 7,
+          "row": 2
+        },
+        {
+          "col": 7,
+          "row": 3
+        },
+        {
+          "col": 8,
+          "row": 2
+        },
+        {
+          "col": 8,
+          "row": 4
+        },
+        {
+          "col": 8,
+          "row": 0
+        }
+      ],
+      "nightRules": {
+        "sunGrowthMs": 120000,
+        "smallSun": 15,
+        "largeSun": 25,
+        "graveRiseDelayMs": 2000,
+        "graveEmergenceMs": 1500,
+        "graveEatingMs": 5000
+      },
+      "mode": "standard",
+      "plan": [
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1
+          },
+          "sequence": [
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 1,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1
+          },
+          "sequence": [
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 1,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1
+          },
+          "sequence": [
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 1,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1
+          },
+          "sequence": [
+            "conehead"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 2,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1
+          },
+          "sequence": [
+            "conehead"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 2,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "dancer": 1
+          },
+          "sequence": [
+            "dancer"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 2,
+          "pointsRemaining": -3
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 3
+          },
+          "sequence": [
+            "basic",
+            "basic",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 3,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "conehead": 1,
+            "basic": 1
+          },
+          "sequence": [
+            "conehead",
+            "basic"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 3,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 1,
+            "conehead": 1
+          },
+          "sequence": [
+            "basic",
+            "conehead"
+          ],
+          "flag": false,
+          "final": false,
+          "baseBudget": 3,
+          "pointsRemaining": 0
+        },
+        {
+          "delayMs": 18000,
+          "gapMs": 0,
+          "zombies": {
+            "basic": 4,
+            "flag": 1,
+            "dancer": 1,
+            "conehead": 1
+          },
+          "sequence": [
+            "basic",
+            "basic",
+            "basic",
+            "basic",
+            "flag",
+            "dancer",
+            "conehead"
+          ],
+          "flag": true,
+          "final": true,
+          "baseBudget": 4,
+          "pointsRemaining": -2
         }
       ],
       "noDamage": [

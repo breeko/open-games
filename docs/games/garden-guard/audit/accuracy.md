@@ -104,3 +104,32 @@ Limits: whack taps currently use the visible sprite bounds instead of the source
 ### Seed-packet lettering
 
 The original `SeedPacket_Larger.png` embeds tiny decorative branding. Enlarging that raster text cannot recover detail. The bank now covers it with a clean label area and renders plant names as 14px bold text at 2× text resolution; prices are also rendered at 2×. Original packet frames and illustrations remain. Icons fit below the name rather than overlapping it. Functional text should continue to be rendered, not flattened into low-resolution imagery.
+
+
+## Late night expansion: 2-7 and 2-8
+
+The same pinned source provides these next first-Adventure boards. 2-7 uses 20 waves, basic/cone/screen-door/football eligibility, 50 starting sun and eleven graves (zero-based columns 4/5/6/7/8 have 1/2/2/3/3). 2-8 uses 10 waves with basic/cone/dancer eligibility and the same economy/graves. Both have no sky sun. `Challenge.cpp` contains the wave and eligibility tables; `Board::InitBoard` contains the grave distribution. Ice-shroom is the 2-7 reward, Doom-shroom the 2-8 reward.
+
+### Scaredy-shroom and Ice-shroom
+
+Scaredy-shroom is now playable in 2-7. Its price is 25 and recharge 750 ticks. `Plant::UpdateScaredyShroom` checks zombie rectangles against a radius-120 source-pixel circle centered at plant top-left X, Y+20, considering the same and neighboring rows. The implementation uses the existing collision bodies at uniform 1.6 scale, a 25-tick initial shooting counter, long-range spores and a saved hidden pose. Lowering/raising animations are replaced by immediate pose changes; hiding pauses its shot counter. These animation/counter details still differ from the full original state machine.
+
+`Plant::UpdateIceShroom` sets a 100-tick fuse; definitions set price 75 and recharge 5000 ticks. `Zombie::HitIceTrap` applies a 2000-tick chill, then freezes eligible non-pool zombies for inclusive 400–600 ticks, or 300–400 if already chilled/frozen, and deals 20 damage. Emerging zombies and hypnosis allies are excluded; vaulting zombies receive chill but cannot be frozen. All currently implemented enemies use the land rules. The original front/back ice-trap textures visibly surround frozen feet under Canvas; WebGL-only tint is insufficient. Freeze timers and remaining chill are serialized. An ALLY label also makes hypnosis visible with Canvas.
+
+### Dancing Zombies
+
+`Zombie.cpp` defines a 500-HP leader, 270-HP backups, point cost 5, weight 1000, first eligible wave 5 and first level 18. A leader is forced at the midpoint and finale under the existing picker. Backups cost no additional wave points and are created only by leaders, never selected as independent wave entries. Each retains the leader's wave index, so its health contributes to that wave's remaining health.
+
+`Zombie::SummonBackupDancers` places backups one row above/below and 100 source pixels left/right (160 board pixels); edge rows have three positions. Missing slots are replenished. The source entry lasts 300+Rand(12) ticks, a point clip has 10 frames at 24fps (42 ticks), and the subsequent hold lasts 200 ticks. Missing-backup checks use a 100-tick countdown, then wait for frame 12 and source X<700. The global dance cycle is 23 frames ×20 ticks: movement during frames 0–11, stationary arm poses afterward. Group walking stops when a member freezes or chews, and chill slows group walking. Backup emergence lasts 150 ticks.
+
+The leader's original `Zombie_disco` walk and moonwalk ground arrays and the backup walk array are exported alongside existing gaits. Moonwalk displacement is sign-normalized for our left-moving coordinates. Both use static original poses. Hypnosis detaches existing followers, and subsequent summons inherit the leader's allegiance. Backups can continue independently after losing their leader. Ordinary projectiles, fumes and chomping ignore emerging/vaulting or headless targets; area bombs retain off-ground damage. `Plant::GetDamageRangeFlags` and `Zombie::EffectedByDamage` support that distinction. The no-off-ground projectile case is exercised with real physics bodies.
+
+Remaining differences include modern rendering-frame release offsets around the 100Hz counters, simplified group/eating synchronization, hitbox/target selection approximations and instantaneous pose changes. This is source-backed behavior, not a claim of exact original executable replay or complete comparative difficulty testing.
+
+### Save compatibility and verification
+
+The existing shared store/autosave integration remains in use. Keys and the `garden-day-night-r1` marker remain unchanged: frozen time, dance state, optional hiding pose, leader indices/slots and crater state are additive with safe defaults for previous sessions. Leader links validate against live array indices and same allegiance. Older battle states remain readable; no campaign progress/settings are reset. A paused restore now also guards the scene update that can otherwise run once in the frame it is created. A render-only frame refreshes a newly restored paused board without advancing physics or timers.
+
+59 unit tests and **30 real Phaser continuation checks** pass. The browser checks compare every continued frame against a restored run across all eighteen levels, linked and frozen dancers, pending summons, replacement backups, an Ice-shroom mid-fuse, crater expiry, rising-target collision, friendly bomb/mower exclusions and the previous busy combat scenarios. Separate manual checks covered placement, fear poses, Ice damage/chill, the first four backups and a paused refresh. Local diagnostics expose repeatable scenarios, excluded from production builds. Audit traces now include these wave plans and the pure dancer counter schedule; spawned followers and real player choices affect actual pressure.
+
+Doom-shroom's reward art and prepared fuse/blast/crater code are present for the next levels. Its 100-tick fuse, 1800 damage, 250-source-pixel radius and 18000-tick crater derive from `Plant::UpdateDoomShroom` / `DoSpecial`; crater snapshots and expiry are checked. It is not selectable before its 2-8 reward. Full 2-9 play and Doom targeting/balance verification are next.

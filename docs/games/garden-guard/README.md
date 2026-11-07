@@ -1,6 +1,6 @@
 # Open Games — Garden Guard
 
-An ad-free, touch-friendly Plants vs. Zombies reference prototype. Sixteen day and night levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
+An ad-free, touch-friendly Plants vs. Zombies reference prototype. Eighteen day and night levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
 
 [Play Garden Guard](https://opengames-breeko.vercel.app/games/garden-guard/)
 
@@ -53,7 +53,7 @@ bun run audit
 bun run build
 ```
 
-Forty-nine tests cover the sixteen-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, single-credit sun pickup behavior, validated sessions and restored director/random/motion state. A developer browser check also exercises real Phaser entities, all sixteen levels and detailed mid-action restoration. Diagnostics show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build retains a bundle-size advisory for Phaser.
+Fifty-nine tests cover the eighteen-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, single-credit sun pickup behavior, validated sessions and restored director/random/motion state. A developer browser check also exercises real Phaser entities, all eighteen levels and detailed mid-action restoration. Diagnostics show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build retains a bundle-size advisory for Phaser.
 
 Artwork regression checks (requires Python and Pillow):
 
@@ -121,8 +121,19 @@ Validation: 36 Garden Guard tests; original-art regression checks; fourteen-leve
 ## 2-5 and 2-6
 
 - **2-5: Whack-a-Zombie.** Eight timed waves, nine initial graves, tap attacks, armored targets and a final grave rush. Occasional sun drops fund mines, Grave Busters and cherries. Pause and auto-collect still work.
-- **2-6: Changing sides.** Source-backed football introduction and Hypno-shroom counterplay. Converted zombies turn purple, walk right and fight their former allies. They do not trigger mowers, loss or remaining-wave counts.
+- **2-6: Changing sides.** Source-backed football introduction and Hypno-shroom counterplay. Converted zombies show an ALLY marker, walk right and fight their former allies. They do not trigger mowers, loss or remaining-wave counts.
 - Packet labels now use crisp text instead of the small raster branding. Prices use higher-resolution text, with plant art below the labels.
-- Hypno-shroom is earned after 2-5; Scaredy-shroom after 2-6. Scaredy is in the collection and is reserved for the next playable night level.
+- Hypno-shroom is earned after 2-5; Scaredy-shroom after 2-6. Scaredy becomes playable in 2-7.
 
 The original eight-wave special-mode override, quiet windows, grave replenishment, final volley, tap damage, loot probabilities and football rules are covered by the audit and new regression tests. See the accuracy ledger for remaining collision/animation approximations.
+
+
+## 2-7 and 2-8
+
+**2-7: Keep your distance** has 20 waves, football/screen-door pressure and eleven graves. Scaredy-shroom costs 25 sun, shoots across the lane and hides when a nearby zombie threatens it, including adjacent lanes. Keep it behind your free Puff-shrooms. Clear this stage to earn Ice-shroom.
+
+**2-8: Freeze the dance floor** has 10 waves and introduces Dancing Zombies. Each leader has 500 HP and summons up to four 270-HP backups; missing backups can be replaced. Ice-shroom costs 75 sun and activates after one second: 20 damage, 4–6 seconds frozen (3–4 if already chilled), plus a 20-second chill. Its recharge is 50 seconds. Doom-shroom is the reward for future 2-9 play; its prepared crater timer persists with other session state.
+
+Existing saves retain their keys and r1 compatibility marker. Added freeze timers, dance routines, leader/backup links, hiding pose and crater state have backward-compatible defaults. Refresh restores paused with no offline advancement. Frozen enemies use original ice-trap artwork so the effect stays visible with Canvas rendering. Local diagnostics offer repeatable dancer and frozen-group boards; those buttons are excluded from production.
+
+Validation includes 59 per-game unit tests plus 30 real Phaser browser checks for every level, pending summons, frozen groups thawing, replacement backups, Ice-shroom mid-fuse and crater expiry. These compare each continued frame against a restored run; a full comparative original-game playthrough and physical iPad testing remain separate.

@@ -4,7 +4,7 @@ import type { ResourceManager } from '../managers/ResourceManager';
 
 /** Every plant the player can place on the lawn. */
 export type PlantType =
-  | 'puffshroom' | 'sunshroom' | 'fumeshroom' | 'gravebuster' | 'hypnoshroom' | 'scaredyshroom'
+  | 'puffshroom' | 'sunshroom' | 'fumeshroom' | 'gravebuster' | 'hypnoshroom' | 'scaredyshroom' | 'iceshroom' | 'doomshroom'
   | 'sunflower'
   | 'peashooter'
   | 'wallnut'
@@ -16,7 +16,7 @@ export type PlantType =
   | 'chomper';
 
 /** Zombie variants. Later levels introduce the armoured ones. */
-export type ZombieType = 'basic' | 'flag' | 'conehead' | 'buckethead' | 'polevaulter' | 'newspaper' | 'screendoor' | 'football';
+export type ZombieType = 'basic' | 'flag' | 'conehead' | 'buckethead' | 'polevaulter' | 'newspaper' | 'screendoor' | 'football' | 'dancer' | 'backup';
 
 /** Static definition of a zombie variant. */
 export interface ZombieDefinition {
@@ -116,6 +116,8 @@ export interface GameContext {
   zombies: Phaser.Physics.Arcade.Group;
   /** Spawns a collectible sun at the given world position. */
   graveAt: (col:number,row:number) => boolean;
+  craterAt:(col:number,row:number)=>boolean;
+  addCrater:(col:number,row:number)=>void;
   clearGrave: (col:number,row:number) => void;
   spawnSun: (x: number, y: number) => void;
 }

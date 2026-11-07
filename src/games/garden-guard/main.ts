@@ -110,6 +110,12 @@ game.events.on('request-pause',()=>setPaused(true));
 game.events.on('session-started',()=>{savingEnabled=true;clearSessionPending=false;capturePending=true;});
 game.events.on('session-restored',()=>{
   setPaused(true);showSaveStatus('Level restored. Tap Resume when you’re ready.');
+  // Pausing during scene creation can leave the old canvas frame on screen.
+  // Redraw after creation finishes, without stepping physics, timers or gameplay.
+  requestAnimationFrame(()=>{
+    if(!paused||!game.scene.isActive('game'))return;
+    game.renderer.preRender();game.scene.render(game.renderer);game.renderer.postRender();
+  });
   const scene=game.scene.getScene('game');
   if(scene instanceof GameScene){lastStatus=scene.summary;document.querySelector('#play-status')!.textContent=lastStatus;}
 });
@@ -222,7 +228,7 @@ ${d.mode==='whack'?'Whack mode: timed grave volleys; tap enemies to bonk.':'Plan
 `+
     (d.mode==='whack'?'':d.plan.map((w,i)=>`${i+1}${w.flag?' FLAG':''}: ${JSON.stringify(w.zombies)}`).join('\n'))+
     '\n\nRecent events:\n'+d.events.slice(-10).map(e=>`${(e.tick/100).toFixed(2)}s ${e.kind} W${e.wave}${e.count?' ×'+e.count:''}`).join('\n')+
-    '\n\nLive enemies (mean speed; gait varies):\n'+d.zombies.map(z=>`W${z.wave} ${z.kind} ${z.team} row ${z.row+1}: (${z.x.toFixed(1)}, ${z.y.toFixed(1)}) ${z.speed.toFixed(2)}px/s HP${z.hp.toFixed(0)}`).join('\n')+
+    '\n\nLive enemies (mean speed; gait varies):\n'+d.zombies.map(z=>`W${z.wave} ${z.kind} ${z.team} row ${z.row+1}: (${z.x.toFixed(1)}, ${z.y.toFixed(1)}) ${z.speed.toFixed(2)}px/s HP${z.hp.toFixed(0)}${z.frozenMs>0?` FROZEN ${(z.frozenMs/1000).toFixed(1)}s`:""}`).join('\n')+
     '\n\nRemaining approximations: tutorial gates, lane picker, pole vault, bite/shot animations, special-level supply, flattened night animations and grave emergence. See docs/games/garden-guard/audit/accuracy.md.';
 },250);
 document.querySelector<HTMLButtonElement>('#trace-export')!.onclick=()=>{
@@ -242,3 +248,12 @@ function refreshAutoSuns():void {
 autoSuns.onclick=()=>settings.toggle('autoCollectSuns');
 settings.on('changed',refreshAutoSuns);
 refreshAutoSuns();
+
+if(import.meta.env.DEV){
+ const note=document.createElement('p');note.textContent='Local test boards — replace the current level with a repeatable mid-battle scenario.';diagnosticsPanel.append(note);
+ for(const [label,frozen] of [['Test dancer summons',false],['Test frozen group',true]] as const){
+  const button=document.createElement('button');button.textContent=label;
+  button.onclick=async()=>{const {nightDiagnostic}=await import('./diagnostics/night-scenarios');openSavedLevel(nightDiagnostic(frozen));};
+  diagnosticsPanel.append(button);
+ }
+}

@@ -1,4 +1,4 @@
-import {PuffShroom,SunShroom,FumeShroom,GraveBuster,HypnoShroom,ScaredyShroom} from './NightPlants';
+import {PuffShroom,SunShroom,FumeShroom,GraveBuster,HypnoShroom,ScaredyShroom,IceShroom,DoomShroom} from './NightPlants';
 import { PLANT_DEFS } from '../constants';
 import type { GameContext, PlantDefinition, PlantType } from '../types';
 import { Chomper } from './Chomper';
@@ -28,6 +28,7 @@ type PlantConstructor = new (
  * `lanes` / `peasPerVolley` / `damage` / `slow` in its definition.
  */
 const REGISTRY: Record<PlantType, PlantConstructor> = {
+  iceshroom:IceShroom,doomshroom:DoomShroom,
   hypnoshroom:HypnoShroom,scaredyshroom:ScaredyShroom,
   puffshroom:PuffShroom,sunshroom:SunShroom,fumeshroom:FumeShroom,gravebuster:GraveBuster,
   chomper: Chomper,

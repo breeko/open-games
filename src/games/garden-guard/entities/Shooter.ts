@@ -25,7 +25,7 @@ import type { PlantBehavior } from '../state/session-data';
  */
 export abstract class Shooter extends Plant {
   /** Time remaining until the next volley may fire. */
-  private cooldown = Math.floor(this.ctx.random()*151);
+  private cooldown = this.def.type==='scaredyshroom'?25:Math.floor(this.ctx.random()*151);
   private tickRemainder=0;
   private pendingShots=new Set<{row:number;timer:Phaser.Time.TimerEvent}>();
   protected override saveBehavior(): PlantBehavior { return {kind:'shooter',cooldown:this.cooldown,remainder:this.tickRemainder,shots:[...this.pendingShots].map(shot=>({row:shot.row,remainingMs:Math.max(0,shot.timer.getRemaining())}))}; }
@@ -65,7 +65,7 @@ export abstract class Shooter extends Plant {
       const zombie = child as Zombie;
       return (
         zombie.active &&
-        zombie.isHostile && !zombie.isHeadless &&
+        zombie.canBeShot &&
         rows.includes(zombie.row) &&
         zombie.x > this.x - 10 && (!this.def.range || zombie.x-this.x<=this.def.range)
       );
@@ -97,7 +97,7 @@ export abstract class Shooter extends Plant {
     if (!this.ctx.grid.isInside(0, laneRow)) return;
 
     // Muzzle measured in the flattened texture; transform follows recoil and planting scale.
-    const muzzleY=this.def.type==='puffshroom'?0.75:0.35;
+    const muzzleY=this.def.type==='scaredyshroom'?0.5:this.def.type==='puffshroom'?0.75:0.35;
     const point=this.getWorldTransformMatrix().transformPoint((0.88-this.originX)*this.width,(muzzleY-this.originY)*this.height);
     const y=point.y+(laneRow-this.row)*160;
     const texture = this.def.projectile ?? 'pea';

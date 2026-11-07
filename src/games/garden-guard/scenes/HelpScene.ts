@@ -4,8 +4,8 @@ import { DEPTH, GAME_HEIGHT, GAME_WIDTH } from '../constants';
 import { Button } from '../ui/Button';
 
 const SECTIONS: Array<{ heading: string; lines: string[] }> = [
-  { heading: 'Fourteen day and night levels', lines: [
-    'Start with one lane and a Peashooter. Later levels open five lanes and twelve plants.',
+  { heading: 'Eighteen day and night levels', lines: [
+    'Start with one lane and a Peashooter. Later levels open five lanes and sixteen plants.',
     'Use the level menu or arrows to jump backward and forward. Each cleared level saves separately.',
     'Relaxed, Baseline and Hard change enemy strength. Changing difficulty restarts the level.',
   ]},
@@ -26,6 +26,7 @@ const SECTIONS: Array<{ heading: string; lines: string[] }> = [
     '1-10: Conveyor defense. Plants arrive over time, cost no sun, and are limited by supply.',
     '2-1 to 2-4: No sky sun. Use free Puff-shrooms and sun producers. Clear graves before the final wave.',
     'A mower can rescue each lane once. A second breach ends the level.',
+    '2-7 / 2-8: Keep Scaredy-shrooms in back. Ice-shrooms freeze enemies; dancers replace lost backups.',
     'Waves can overlap. Keep building before the final flag!',
   ]},
 ];
