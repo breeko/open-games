@@ -1,3 +1,4 @@
+import { readGameStorage,writeGameStorage } from './storage';
 import Phaser from 'phaser';
 
 /** User-configurable options, persisted to localStorage. */
@@ -14,7 +15,6 @@ export interface Settings {
   autoCollectSuns: boolean;
 }
 
-const STORAGE_KEY = 'pvz.settings.v1';
 
 const DEFAULTS: Settings = {
   music: true,
@@ -27,7 +27,7 @@ const DEFAULTS: Settings = {
 
 function readStored(): Partial<Settings> {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = readGameStorage('settings');
     return raw ? (JSON.parse(raw) as Partial<Settings>) : {};
   } catch {
     // Private mode / storage disabled: fall back to defaults.
@@ -71,7 +71,7 @@ class SettingsStore extends Phaser.Events.EventEmitter {
 
   private persist(): void {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.values));
+      writeGameStorage('settings', JSON.stringify(this.values));
     } catch {
       /* keep the values in memory only */
     }

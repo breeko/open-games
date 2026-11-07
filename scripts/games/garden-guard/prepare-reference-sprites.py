@@ -2,7 +2,7 @@
 import sys, math, xml.etree.ElementTree as ET, json
 from pathlib import Path
 from PIL import Image
-base=Path(sys.argv[1]); layers=base/'SexyAppFramework/DebugVS2005/reanim';out=Path('public/assets/reference')
+base=Path(sys.argv[1]); layers=base/'SexyAppFramework/DebugVS2005/reanim';out=Path('public/games/garden-guard/assets/reference')
 files={p.stem.upper():p for p in layers.glob('*.png')}
 manifest={}
 EXPORT_SCALE=2
@@ -85,7 +85,7 @@ for n,rows in [(1,[2]),(2,[1,2,3]),(3,list(range(5)))]:
  im=dirt.copy()
  for row in rows:im.paste(full.crop((64,128+row*160,1216,288+row*160)),(64,128+row*160))
  im.save(out/f'lawn{n}.png')
-Path('src/reference/art-manifest.json').write_text(json.dumps({'exportScale':EXPORT_SCALE,'board':{'width':1280,'height':960,'sourceCrop':[220,0,1020,600]},'sprites':manifest},indent=2)+'\n')
+Path('src/games/garden-guard/reference/art-manifest.json').write_text(json.dumps({'exportScale':EXPORT_SCALE,'board':{'width':1280,'height':960,'sourceCrop':[220,0,1020,600]},'sprites':manifest},indent=2)+'\n')
 # Contact sheet displays game sizes, not the oversampled texture dimensions.
 keys=['peashooter','sunflower','snowpea','repeater','chomper','wallnut','potatomine-armed','cherrybomb','sun','zombie','zombie-cone','zombie-pole']
 sheet=Image.new('RGB',(900,520),'#466d35')
@@ -95,4 +95,4 @@ for i,key in enumerate(keys):
  im=Image.open(out/(key+'.png'));im.thumbnail((130,210),Image.Resampling.LANCZOS);x=(i%6)*150;y=(i//6)*260
  sheet.paste(im,(x+(150-im.width)//2,y+8),im)
  labels.text((x+5,y+235),key,fill='white')
-sheet.save('/tmp/open-games-reference-sprites.png')
+sheet.save('/tmp/open-games-garden-guard-sprites.png')

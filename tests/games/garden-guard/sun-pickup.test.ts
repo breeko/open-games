@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SunPickup } from '../src/sun-pickup';
+import { SunPickup } from '../../../src/games/garden-guard/sun-pickup';
 
 test('automatic pickup waits for the full fall and a short rest',()=>{
   const sun=new SunPickup();

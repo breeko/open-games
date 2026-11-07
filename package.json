@@ -8,7 +8,10 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test": "bun test ./tests",
-    "audit": "bun scripts/audit-reference.ts"
+    "audit": "bun run audit:garden-guard",
+    "test:garden-guard": "bun test ./tests/games/garden-guard",
+    "check:art:garden-guard": "python3 scripts/games/garden-guard/verify-reference-sprites.py",
+    "audit:garden-guard": "bun scripts/games/garden-guard/audit-reference.ts"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",

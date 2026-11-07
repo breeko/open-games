@@ -1,3 +1,4 @@
+import { readGameStorage,writeGameStorage } from './storage';
 import Phaser from 'phaser';
 import { SEED_ORDER } from '../constants';
 import { TOTAL_LEVELS, plantsForLevel } from '../levels';
@@ -5,9 +6,8 @@ import type { PlantType } from '../types';
 
 import { freshProgress, parseProgress, recordClear, type ProgressData } from '../progress-data';
 export type Progress = ProgressData;
-const STORAGE_KEY = 'pvz.progress.v2';
 function readStored(): Progress {
-  try { return parseProgress(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null')); }
+  try { return parseProgress(JSON.parse(readGameStorage('progress') ?? 'null')); }
   catch { return freshProgress(); }
 }
 
@@ -90,7 +90,7 @@ class ProgressStore extends Phaser.Events.EventEmitter {
 
   private persist(): void {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.values));
+      writeGameStorage('progress', JSON.stringify(this.values));
     } catch {
       /* keep the values in memory only */
     }

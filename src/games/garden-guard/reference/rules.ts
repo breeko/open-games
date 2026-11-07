@@ -1,6 +1,6 @@
 import type { ZombieType } from '../types';
 
-/** Audited PC first-Adventure rules. See docs/audit/accuracy.md for pins and caveats. */
+/** Audited PC first-Adventure rules. See docs/games/garden-guard/audit/accuracy.md for pins and caveats. */
 export const REFERENCE = {
   tickMs: 10,
   tileWidth: 80,

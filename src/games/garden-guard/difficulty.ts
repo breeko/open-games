@@ -1,3 +1,4 @@
+import { readGameStorage,writeGameStorage } from './state/storage';
 export type Difficulty = 'relaxed' | 'baseline' | 'hard';
 export const DIFFICULTIES: Record<Difficulty, { health: number; speed: number; sunBonus: number }> = {
   relaxed: { health: 0.75, speed: 0.8, sunBonus: 50 },
@@ -6,8 +7,8 @@ export const DIFFICULTIES: Record<Difficulty, { health: number; speed: number; s
 };
 export function isDifficulty(value: unknown): value is Difficulty { return value === 'relaxed' || value === 'baseline' || value === 'hard'; }
 function read(): Difficulty {
-  try { const value = localStorage.getItem('open-games.difficulty'); return isDifficulty(value) ? value : 'baseline'; } catch { return 'baseline'; }
+  try { const value = readGameStorage('difficulty'); return isDifficulty(value) ? value : 'baseline'; } catch { return 'baseline'; }
 }
 let selected = read();
 export function getDifficulty(): Difficulty { return selected; }
-export function setDifficulty(value: Difficulty): void { selected = value; try { localStorage.setItem('open-games.difficulty', value); } catch { /* session only */ } }
+export function setDifficulty(value: Difficulty): void { selected = value; try { writeGameStorage('difficulty',value); } catch { /* session only */ } }

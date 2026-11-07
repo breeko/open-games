@@ -1,9 +1,9 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {referenceWaves} from '../src/reference/waves';
-import {GroundMotion,sourceToWorldX} from '../src/reference/motion';
-import {WaveDirector,type WavePort} from '../src/wave-director';
-import {sampleSkySunTicks} from '../src/reference/rules';
+import {referenceWaves} from '../../../src/games/garden-guard/reference/waves';
+import {GroundMotion,sourceToWorldX} from '../../../src/games/garden-guard/reference/motion';
+import {WaveDirector,type WavePort} from '../../../src/games/garden-guard/wave-director';
+import {sampleSkySunTicks} from '../../../src/games/garden-guard/reference/rules';
 
 test('flag positions match first Adventure including short levels and both late flags',()=>{
   assert.deepEqual(Array.from({length:10},(_,i)=>referenceWaves(i+1).flatMap((w,n)=>w.flag?[n+1]:[])),[[],[6],[8],[10],[8],[10],[10,20],[10],[10,20],[10,20]]);

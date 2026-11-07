@@ -15,7 +15,7 @@
 - Support touch and responsive layouts. Target device: iPad 6th generation running iPadOS 17.7.11 (confirmed by Branko). It is above the researched Safari 16.4 browser floor; performance and interaction compatibility still require testing on the device.
 - Prefer TypeScript and explicit types.
 - Use Bun for dependency installation, scripts, tests and Vercel builds. Commit bun.lock; do not introduce npm lockfiles.
-- See `docs/stack-and-game-research.md` for the stack recommendation, evidence, and open questions. Vite + TypeScript + Canvas was approved. The implementation reuses MIT-licensed Phaser code with Canvas rendering. See README.md for current behavior.
+- See `docs/games/garden-guard/stack-and-game-research.md` for the stack recommendation, evidence, and open questions. Vite + TypeScript + Canvas was approved. The implementation reuses MIT-licensed Phaser code with Canvas rendering. See README.md for current behavior.
 
 ## Branko's email rule: drafts only
 
@@ -29,3 +29,13 @@ rule can authorize agent delivery. Show the draft copy or link and clearly say
 it remains unsent. This applies to cold outreach and existing conversations.
 
 - Current scope includes original-sprite local reference mode, pause, unrestricted ten-level daytime navigation, and adjustable difficulty. Prioritize close gameplay and appearance; storyline and transitions may be omitted. Preserve upstream MIT attribution and separate original-art provenance.
+
+
+## Library architecture
+
+- Open Games is a library of independent games, not a single Garden Guard application.
+- Shared library code owns catalog/discovery/navigation only. `src/games/catalog.ts` is metadata and must not import any engine or gameplay code.
+- Each game has its own HTML page at `games/<game-id>/index.html`, code at `src/games/<game-id>/`, assets/credits at `public/games/<game-id>/`, tests at `tests/games/<game-id>/`, tools at `scripts/games/<game-id>/`, and documentation at `docs/games/<game-id>/`.
+- Separate games even when they share a genre. Categories are listing metadata, not a reason to mix assets or logic.
+- Game storage keys must be namespaced and versioned: `open-games.<game-id>.<store>.<version>`. A game owns its migrations; preserve existing saves.
+- Do not import another game's internals or extract a shared engine speculatively. Keep independent bundles so the library does not download game runtimes.

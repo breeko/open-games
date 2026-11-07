@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { LEVELS, plantsForLevel, rewardForLevel } from '../src/levels';
-import { PLANT_DEFS } from '../src/constants';
-import { DIFFICULTIES, isDifficulty } from '../src/difficulty';
+import { LEVELS, plantsForLevel, rewardForLevel } from '../../../src/games/garden-guard/levels';
+import { PLANT_DEFS } from '../../../src/games/garden-guard/constants';
+import { DIFFICULTIES, isDifficulty } from '../../../src/games/garden-guard/difficulty';
 
 test('each selectable level has its introductory plants without relying on earlier saves', () => {
   assert.deepEqual(plantsForLevel(1), ['peashooter']);

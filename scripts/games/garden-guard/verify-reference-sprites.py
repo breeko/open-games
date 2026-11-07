@@ -1,7 +1,7 @@
 """Regression checks for flattened artwork. Requires Pillow."""
 from pathlib import Path
 from PIL import Image
-base=Path('public/assets/reference')
+base=Path('public/games/garden-guard/assets/reference')
 for key in ['peashooter','snowpea','repeater','sunflower']:
     im=Image.open(base/(key+'.png'))
     box=im.getbbox()

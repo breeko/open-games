@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { damageAfterArmor, inBlast } from '../src/combat';
+import { damageAfterArmor, inBlast } from '../../../src/games/garden-guard/combat';
 test('armor absorbs first and overflow damage reaches the body on the same hit',()=>{
  assert.deepEqual(damageAfterArmor({hp:200,armor:10},20),{hp:190,armor:0});
  assert.deepEqual(damageAfterArmor({hp:200,armor:370},20),{hp:200,armor:350});

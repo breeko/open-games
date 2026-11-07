@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { WaveDirector, type WavePort } from '../src/wave-director';
-import { LEVELS } from '../src/levels';
-import { ZOMBIE_DEFS } from '../src/constants';
+import { WaveDirector, type WavePort } from '../../../src/games/garden-guard/wave-director';
+import { LEVELS } from '../../../src/games/garden-guard/levels';
+import { ZOMBIE_DEFS } from '../../../src/games/garden-guard/constants';
 
 function setup(level = 1) {
   const enemies: {wave:number; hp:number}[] = [];

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { freshProgress, parseProgress, recordClear } from '../src/progress-data';
+import { freshProgress, parseProgress, recordClear } from '../../../src/games/garden-guard/progress-data';
 test('skipping forward records individual clears and does not claim skipped levels',()=>{
  const data=freshProgress();assert.equal(recordClear(data,8,10),true);assert.equal(data.highestCompleted,0);assert.deepEqual(data.completedLevels,[8]);
  assert.equal(recordClear(data,8,10),false);recordClear(data,1,4);assert.equal(data.highestCompleted,1);

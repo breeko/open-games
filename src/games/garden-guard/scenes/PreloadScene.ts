@@ -15,12 +15,12 @@ export class PreloadScene extends Phaser.Scene {
 
   preload(): void {
     for (const key of ['peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower']) {
-      this.load.image('reference-' + key, '/assets/reference/' + key + '.png');
+      this.load.image('reference-' + key, '/games/garden-guard/assets/reference/' + key + '.png');
     }
-    for (const n of [1,2,3]) this.load.image('lawn' + n, '/assets/reference/lawn' + n + '.png');
-    this.load.image('seed-packet', '/assets/reference/SeedPacket_Larger.png');
-    this.load.image('seed-bank', '/assets/reference/SeedBank.png');
-    for(const key of ['SunBank','FlagMeter','FlagMeterParts','FlagMeterLevelProgress','ShovelBank','Shovel_hi_res','button_left','button_middle','button_right'])this.load.image(key,'/assets/reference/'+key+'.png');
+    for (const n of [1,2,3]) this.load.image('lawn' + n, '/games/garden-guard/assets/reference/lawn' + n + '.png');
+    this.load.image('seed-packet', '/games/garden-guard/assets/reference/SeedPacket_Larger.png');
+    this.load.image('seed-bank', '/games/garden-guard/assets/reference/SeedBank.png');
+    for(const key of ['SunBank','FlagMeter','FlagMeterParts','FlagMeterLevelProgress','ShovelBank','Shovel_hi_res','button_left','button_middle','button_right'])this.load.image(key,'/games/garden-guard/assets/reference/'+key+'.png');
     // --- Load real assets here, e.g. -----------------------------------------
     // this.load.setPath('assets/images');
     // this.load.atlas('plants', 'plants.png', 'plants.json');
