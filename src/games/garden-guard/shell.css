@@ -35,3 +35,8 @@ footer { display: grid; gap: 6px; border-top: 1px solid #49623e; margin-top: 18p
 #diagnostics p { line-height: 1.5; }
 @media (max-height: 500px) { dialog { padding: 14px 18px; } dialog header { margin-bottom: 12px; } }
 @media (max-width: 360px) { dialog { padding: 14px; } button, select, .library-action { padding: 10px 8px; font-size: 13px; } }
+
+#performance-panel { position: fixed; left: max(8px, env(safe-area-inset-left)); bottom: max(8px, env(safe-area-inset-bottom)); z-index: 8; width: min(400px, calc(100% - 16px)); max-height: calc(100dvh - 16px); overflow: auto; background: #102219fa; border: 1px solid #809f69; padding: 16px; border-radius: 10px; font-size: 12px; }
+#performance-close { float: right; font-size: 23px; padding: 6px 12px; }
+#performance-panel pre { white-space: pre-wrap; font-size: 11px; line-height: 1.5; }
+#performance-panel p { line-height: 1.5; }

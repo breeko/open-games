@@ -56,7 +56,17 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   private danceSlot:number|null=null;
   private readonly danceClock:()=>number;
   private readonly summonBackup?:(leader:Zombie,slot:number)=>Zombie|null;
+  // Most boards have no hypnosis allies. Keep a conservative live set so
+  // ordinary enemies can skip an otherwise quadratic opponent search. When
+  // allies exist we retain the original group order and exact target rules.
+  private static readonly alliesByGroup=new WeakMap<Phaser.Physics.Arcade.Group,Set<Zombie>>();
   private allies=false;
+  private setAllegiance(allies:boolean):void {
+    this.allies=allies;if(!this.group)return;
+    let members=Zombie.alliesByGroup.get(this.group);
+    if(allies){if(!members){members=new Set();Zombie.alliesByGroup.set(this.group,members);}members.add(this);}
+    else members?.delete(this);
+  }
   private readonly group?:Phaser.Physics.Arcade.Group;
   private readonly emergenceTotal:number;
   private shieldHp:number;
@@ -148,7 +158,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     const zombie=new Zombie(scene,data.x,data.row,grid,{...options,type:data.type,wave:data.wave,hp:data.maxHp,
       armorHp:data.armorHp,shieldHp:data.shieldHp,speed:data.speed,speedMultiplier:data.speedMultiplier,dps:data.dps,
       emergenceMs:data.emergenceTotal,parameter:data.motion.parameter});
-    zombie.hp=data.hp;zombie.allies=data.allies;zombie.hasPole=data.hasPole;zombie.emergenceMs=data.emergenceMs;
+    zombie.hp=data.hp;zombie.setAllegiance(data.allies);zombie.hasPole=data.hasPole;zombie.emergenceMs=data.emergenceMs;
     zombie.rageDelay=data.rageDelay;zombie.headless=data.headless;zombie.bleedTicks=data.bleedTicks;
     zombie.biteRemainder=data.biteRemainder;zombie.slowFactor=data.slowFactor;zombie.slowRemainingMs=data.slowRemainingMs;
     zombie.motion.restore(data.motion);zombie.frozenMs=data.frozenMs;zombie.danceSlot=data.danceSlot;
@@ -167,7 +177,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     zombie.updateTint();return zombie;
   }
   restoreDanceLink(data:ZombieSnapshot,zombies:readonly Zombie[]):void {this.leader=data.leaderIndex===null?undefined:zombies[data.leaderIndex];}
-  joinDance(leader:Zombie,slot:number):void {this.leader=leader;this.danceSlot=slot;this.allies=!leader.isHostile;this.setFlipX(this.allies);}
+  joinDance(leader:Zombie,slot:number):void {this.leader=leader;this.danceSlot=slot;this.setAllegiance(!leader.isHostile);this.setFlipX(this.allies);}
   get freezeRemainingMs():number{return this.frozenMs;}
   freeze():void {
     if(!this.active||!this.isHostile||this.headless||this.emergenceMs>0)return;
@@ -252,7 +262,8 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
       if(previousPhase==='entry'&&this.dance.phase!=='entry')this.motion=new GroundMotion('dancer',0.45*this.speedMultiplier);
       if(!this.allies)this.motion.parameter=(this.dance.phase==='entry'?0.5:0.45)*this.speedMultiplier;
     }
-    const opponent=this.group?.getChildren().find((z):z is Zombie=>z instanceof Zombie&&z!==this&&z.active&&!z.dead&&!z.headless&&z.emergenceMs<=0&&!z.vaulting&&z.allies!==this.allies&&z.row===this.row&&Math.abs(z.x-this.x)<75&&(this.allies?z.x>=this.x-20:z.x<=this.x+20));
+    const hasOpponents=this.allies||Boolean(this.group&&Zombie.alliesByGroup.get(this.group)?.size);
+    const opponent=hasOpponents?this.group?.getChildren().find((z):z is Zombie=>z instanceof Zombie&&z!==this&&z.active&&!z.dead&&!z.headless&&z.emergenceMs<=0&&!z.vaulting&&z.allies!==this.allies&&z.row===this.row&&Math.abs(z.x-this.x)<75&&(this.allies?z.x>=this.x-20:z.x<=this.x+20)):undefined;
     if(!this.headless&&opponent){
       this.biteRemainder+=delta;const interval=this.isSlowed?80:40;
       while(this.biteRemainder>=interval){this.biteRemainder-=interval;opponent.takeDamage(this.dps*0.04);}
@@ -286,9 +297,13 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   private danceCanMove():boolean {
     const leader=this.dance?this:this.leader?.active?this.leader:undefined;
     if(!leader)return this.zombieType!=='backup'||Math.floor(this.danceClock()/20)%23<=11;
-    return Boolean(leader.dance?.canMove(this.danceClock()))&&!this.danceMembers().some(z=>z.frozenMs>0||z.isChewing());
+    return Boolean(leader.dance?.canMove(this.danceClock()))&&!this.group?.getChildren().some(z=>z instanceof Zombie&&z.active&&!z.isDead&&(z===leader||z.leader===leader)&&(z.frozenMs>0||z.isChewing()));
   }
-  private danceChilled():boolean {return this.isSlowed||this.danceMembers().some(z=>z.isSlowed);}
+  private danceChilled():boolean {
+    if(this.isSlowed)return true;
+    const leader=this.dance?this:this.leader?.active?this.leader:undefined;
+    return Boolean(leader&&this.group?.getChildren().some(z=>z instanceof Zombie&&z.active&&!z.isDead&&(z===leader||z.leader===leader)&&z.isSlowed));
+  }
 
   private vault(): void {
     this.hasPole = false; this.motion=new GroundMotion('poleWalk',(0.23+this.random()*0.14)*this.speedMultiplier); this.vaulting = true; this.setVelocityX(0);
@@ -370,7 +385,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
 
   private eat(plant: Plant, delta: number): void {
     this.setVelocityX(0);
-    if(plant.plantType==='hypnoshroom'){for(const z of this.danceMembers())if(z.leader===this)z.leader=undefined;this.leader=undefined;plant.remove();this.allies=true;this.setFlipX(true);this.motion.parameter=0.17*this.speedMultiplier;this.biteRemainder=0;return;}
+    if(plant.plantType==='hypnoshroom'){for(const z of this.danceMembers())if(z.leader===this)z.leader=undefined;this.leader=undefined;plant.remove();this.setAllegiance(true);this.setFlipX(true);this.motion.parameter=0.17*this.speedMultiplier;this.biteRemainder=0;return;}
     this.biteRemainder+=delta;
     const interval=this.isSlowed?80:40;
     while(this.biteRemainder>=interval){this.biteRemainder-=interval;plant.takeDamage(this.dps*0.04);}
@@ -414,6 +429,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   }
 
   override destroy(fromScene?: boolean): void {
+    if(this.group)Zombie.alliesByGroup.get(this.group)?.delete(this);
     this.iceFront?.destroy();this.iceBack?.destroy();this.allyMarker?.destroy();this.iceFront=undefined;this.iceBack=undefined;this.allyMarker=undefined;
     this.bobTween?.stop();
     this.bobTween = undefined;

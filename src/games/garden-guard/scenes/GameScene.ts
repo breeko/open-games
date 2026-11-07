@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {gamePerformance as perf} from '../diagnostics/performance';
 import {sizeArt} from '../art';
 import { randomSource, sampleSkySunTicks } from '../reference/rules';
 import { gardenSessionSchema, projectileSchema, type GardenSession } from '../state/session-data';
@@ -79,7 +80,9 @@ export class GameScene extends Phaser.Scene {
   private diagnosticGraphics?:Phaser.GameObjects.Graphics;
   diagnosticsVisible=false;
   get diagnostics(){return {mode:this.level.mode,graves:[...this.graves.keys()],environment:this.level.environment,projectiles:this.peas.getChildren().filter((p):p is Phaser.Physics.Arcade.Image=>p instanceof Phaser.Physics.Arcade.Image).map(p=>({x:p.x,y:p.y,width:p.displayWidth,height:p.displayHeight,texture:p.texture.key})),level:this.level.id,difficulty:getDifficulty(),...this.waves.diagnostics,zombies:this.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie && z.active).map(z=>({frozenMs:z.freezeRemainingMs,kind:z.variant,team:z.isHostile?'enemy':'ally',x:z.x,y:z.y,row:z.row,wave:z.waveIndex+1,hp:z.remainingHealth,speed:z.currentSpeed,body:z.body?{x:z.body.x,y:z.body.y,width:z.body.width,height:z.body.height}:null}))};}
+  get performanceCounts(){return {level:this.level.name,plants:this.plants.length,zombies:this.zombies.getLength(),projectiles:this.peas.getLength(),displayObjects:this.children.length,drawCalls:this.game.renderer instanceof Phaser.Renderer.Canvas.CanvasRenderer?this.game.renderer.drawCount:0,physicsBodies:this.physics.world.bodies.size,tweens:this.tweens.getTweens().length};}
   private finished = false;
+  get isPlaying():boolean {return !this.finished;}
   private shoveling = false;
   private supplyTimer = 0;
   private supplyIndex = 0;
@@ -279,6 +282,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     for(const [key,crater] of this.craters){crater.remainingMs-=delta;if(crater.remainingMs<=0){crater.image.destroy();this.craters.delete(key);}}
+    const plantStart=perf.mark();
     // Plants
     for (const plant of this.plants) {
       if (plant.active) plant.tick(delta);
@@ -287,12 +291,16 @@ export class GameScene extends Phaser.Scene {
       this.plants = this.plants.filter((p) => p.active);
     }
 
+    perf.section('plants',plantStart);
+    const zombieStart=perf.mark();
     // Zombies
     this.zombies.getChildren().forEach((child) => {
       const zombie = child as Zombie;
       if (zombie.active) zombie.tick(delta);
     });
 
+    perf.section('zombies',zombieStart);
+    const projectileStart=perf.mark();
     // Projectiles that left the screen
     this.peas.getChildren().forEach((child) => {
       const pea = child as Phaser.Physics.Arcade.Image;
@@ -301,6 +309,8 @@ export class GameScene extends Phaser.Scene {
       if (pea.active && (pea.x > GAME_WIDTH + 60 || (typeof expires==='number'&&expires<=delta))) pea.destroy();
     });
 
+    perf.section('projectiles',projectileStart);
+    const otherStart=perf.mark();
     if (this.level.mode==='bowling'||this.level.mode==='conveyor') {
       this.supplyTimer += delta;
       if (this.supplyTimer >= (this.level.mode === 'bowling' ? 3500 : 5000)) {
@@ -320,10 +330,14 @@ export class GameScene extends Phaser.Scene {
       );
     }
 
+    perf.section('other gameplay',otherStart);
+    const waveStart=perf.mark();
     this.waves.update(delta);
     this.seedBank.update(delta);
     this.hud.setProgress(this.waves.progress);
 
+    perf.section('waves/UI',waveStart);
+    const finalStart=perf.mark();
     for (const [row, mower] of this.mowers) {
       if (!mower.moving) continue;
       mower.image.x += delta * 0.6;
@@ -342,6 +356,7 @@ export class GameScene extends Phaser.Scene {
       for(const child of this.peas.getChildren())if(child instanceof Phaser.Physics.Arcade.Image){g.lineStyle(2,0xff99ff,1);g.strokeCircle(child.x,child.y,child.displayWidth*12/28);}
     }
     this.checkForLoss();
+    perf.section('other gameplay',finalStart);
   }
 
   /* ------------------------------------------------------------------ */

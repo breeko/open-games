@@ -6,6 +6,7 @@ import { GameScene } from '../../../src/games/garden-guard/scenes/GameScene';
 import { gardenSessionSchema, type GardenSession } from '../../../src/games/garden-guard/state/session-data';
 import { busyNightSession, freshSession, exampleZombie } from '../../../tests/games/garden-guard/fixtures/session';
 import {nightDiagnostic} from '../../../src/games/garden-guard/diagnostics/night-scenarios';
+import { GRID } from '../../../src/games/garden-guard/constants';
 import { LEVELS } from '../../../src/games/garden-guard/levels';
 
 const results = document.querySelector<HTMLPreElement>('#results')!;
@@ -102,6 +103,23 @@ function run(): void {
     const scene=open(data);step(50);const survivors=capture(scene).zombies;
     equal(survivors.find(z=>z.type==='dancer'&&z.allies)?.hp,500,'allied mower survival');
     if(survivors.some(z=>!z.allies))throw new Error('Summoned followers lost allegiance');
+  });
+  check('opponent shortcut immediately registers a newly hypnotized zombie',()=>{
+    const data=freshSession(16),x=GRID.originX+4.5*GRID.tileWidth;
+    data.plants=[{type:'hypnoshroom',col:4,row:2,hp:300,behavior:{kind:'idle'}}];
+    data.zombies=[{...exampleZombie('basic',2),x},{...exampleZombie('basic',2),x:x+50}];
+    const scene=open(data);step(6);const zombies=capture(scene).zombies;
+    const ally=zombies.find(z=>z.allies),enemy=zombies.find(z=>!z.allies);
+    if(!ally||!enemy||ally.hp>=270||enemy.hp>=270)throw new Error('New hypnosis ally was not found by combat targeting');
+    roundTrip(capture(scene),30);
+  });
+  check('opponent shortcut retains restored target ordering with multiple allies',()=>{
+    const data=freshSession(16);
+    data.zombies=[{...exampleZombie('basic',2),x:800},
+      {...exampleZombie('basic',2),x:750,allies:true},{...exampleZombie('basic',2),x:755,allies:true}];
+    const scene=open(data);step(2);const zombies=capture(scene).zombies;
+    if(zombies[1].hp>=270||zombies[2].hp!==270)throw new Error('Enemy selected the wrong ally');
+    roundTrip(capture(scene),40);
   });
   check('paused restored level consumes no plant, wave, pickup or projectile time',()=>{
     const scene=open(busyNightSession());step(1);const before=capture(scene);

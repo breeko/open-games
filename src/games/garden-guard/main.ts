@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {gamePerformance as perf, PERFORMANCE_SECTIONS} from './diagnostics/performance';
 import './shell.css';
 import { getDifficulty, setDifficulty, isDifficulty } from './difficulty';
 import { settings } from './state/settings';
@@ -21,6 +22,7 @@ import { startAutosave } from '../../shared/persistence/autosave';
 const sessionStore=createSessionStore(),initialSession=sessionStore.read();
 let savingEnabled=initialSession.status==='valid'||initialSession.status==='missing';
 let clearSessionPending=false,capturePending=false;
+let lastSessionSaveAt=-Infinity;
 const saveStatus=document.querySelector<HTMLElement>('#save-status')!;
 function showSaveStatus(message:string):void {if(saveStatus.textContent!==message)saveStatus.textContent=message;}
 if(initialSession.status==='invalid')showSaveStatus('Saved level could not resume and has been kept. Start a new level to replace it.');
@@ -32,12 +34,14 @@ function saveSession():void {
     showSaveStatus(clearSessionPending?'Finished level could not be cleared.':'Level finished. Campaign progress stays saved.');return;
   }
   if(!game.scene.isActive('game'))return;
+  const saveStart=performance.now();
   try {
     const scene=game.scene.getScene('game');if(!(scene instanceof GameScene))return;
     const saved=scene.captureSession();if(!saved)return;
     const result=sessionStore.write(saved);
     showSaveStatus(result.status==='saved'?'Level saved on this device.':result.status==='invalid'?'Level could not save. Previous save kept.':'Saving is unavailable. Your level continues in this tab.');
   }catch {showSaveStatus('Level could not save. Previous save kept.');}
+  finally {lastSessionSaveAt=performance.now();perf.history.save(lastSessionSaveAt-saveStart);}
 }
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -154,7 +158,7 @@ fullscreen.onclick=async()=>{
     openControls();resumeAfterControls=resume;
   }
 };
-game.events.on('session-started',()=>{savingEnabled=true;clearSessionPending=false;capturePending=true;});
+game.events.on('session-started',()=>{savingEnabled=true;clearSessionPending=false;capturePending=true;lastSessionSaveAt=-Infinity;});
 game.events.on('session-restored',()=>{
   setPaused(true);showSaveStatus('Level restored. Tap Resume when you’re ready.');
   // Pausing during scene creation can leave the old canvas frame on screen.
@@ -235,16 +239,32 @@ difficultySelect.onchange = () => {
   openLevel(currentLevel);
 };
 let lastStatus = '';
+let lastShellUpdate=0;
 game.events.on(Phaser.Core.Events.POST_STEP, () => {
   const scene = game.scene.getScene('game') as GameScene;
   if (!game.scene.isActive('game')) { if (lastStatus) { document.querySelector('#play-status')!.textContent = ''; lastStatus = ''; } return; }
+  const now=performance.now();
+  // Auto-collected suns can emit many changes in a burst. Coalesce these
+  // requests; periodic (2s), pause and lifecycle saves still flush directly.
+  if(capturePending&&now-lastSessionSaveAt>=1000){capturePending=false;saveSession();}
+  if(now-lastShellUpdate<250)return;lastShellUpdate=now;
   currentLevel = scene.levelId;
   levelSelect.value = String(currentLevel);
   document.querySelector('#shovel')!.setAttribute('aria-pressed',String(scene.isShoveling));
   const status = scene.summary;
   if (status !== lastStatus) { document.querySelector('#play-status')!.textContent = status; lastStatus = status; }
-  if(capturePending){capturePending=false;saveSession();}
 });
+// Outer engine timings also include physics, tweens and shell work. Section
+// timings in GameScene let us separate those from entity logic.
+game.events.on(Phaser.Core.Events.PRE_STEP,()=>{
+  const scene=game.scene.getScene('game');
+  perf.begin(game.scene.isActive('game')&&scene instanceof GameScene&&scene.isPlaying&&!game.isPaused&&!document.hidden);
+});
+game.events.on(Phaser.Core.Events.POST_STEP,()=>perf.endUpdate());
+game.events.on(Phaser.Core.Events.PRE_RENDER,()=>perf.beginRender());
+game.events.on(Phaser.Core.Events.POST_RENDER,()=>perf.endRender());
+game.events.on(Phaser.Core.Events.PAUSE,()=>perf.resetClock());
+document.addEventListener('visibilitychange',()=>perf.resetClock());
 const autosave=startAutosave(saveSession);
 import.meta.hot?.dispose(()=>{autosave.flush();autosave.stop();});
 
@@ -306,3 +326,43 @@ if(import.meta.env.DEV){
   diagnosticsPanel.append(button);
  }
 }
+
+const performancePanel=document.querySelector<HTMLElement>('#performance-panel')!;
+const performanceToggle=document.querySelector<HTMLButtonElement>('#performance-toggle')!;
+performanceToggle.onclick=()=>{performancePanel.hidden=!performancePanel.hidden;performanceToggle.setAttribute('aria-expanded',String(!performancePanel.hidden));closeControls(true);};
+document.querySelector<HTMLButtonElement>('#performance-close')!.onclick=()=>{performancePanel.hidden=true;performanceToggle.setAttribute('aria-expanded','false');};
+document.querySelector<HTMLButtonElement>('#performance-reset')!.onclick=()=>{perf.history.clear();perf.resetClock();};
+function performanceReport(){
+ const scene=game.scene.getScene('game');
+ return {version:1,createdAt:new Date().toISOString(),device:{userAgent:navigator.userAgent,viewport:[innerWidth,innerHeight],pixelRatio:devicePixelRatio,canvas:[game.canvas.width,game.canvas.height],renderer:'Canvas'},
+   board:game.scene.isActive('game')&&scene instanceof GameScene?scene.performanceCounts:null,measurements:perf.history.snapshot()};
+}
+setInterval(()=>{
+ if(performancePanel.hidden)return;
+ const report=performanceReport(),m=report.measurements,b=report.board;
+ const ms=(n:number)=>n.toFixed(2)+' ms';
+ document.querySelector('#performance-readout')!.textContent=
+  `${m.fps.toFixed(0)} FPS · ${m.frames} recent frames
+Frame interval: avg ${ms(m.interval.mean)} · 95% ≤ ${ms(m.interval.p95)}
+Slow frames: ${m.over25ms} over 25 ms · ${m.over50ms} over 50 ms
+
+CPU time per frame (average / 95th percentile)
+Engine update: ${ms(m.update.mean)} / ${ms(m.update.p95)}
+Canvas drawing: ${ms(m.render.mean)} / ${ms(m.render.p95)}
+`+
+  PERFORMANCE_SECTIONS.map(name=>`  ${name}: ${ms(m.sections[name].mean)} / ${ms(m.sections[name].p95)}`).join('\n')+
+  `
+Engine remainder (physics/tweens/input): ${ms(m.engineOther.mean)} / ${ms(m.engineOther.p95)}
+Autosave: avg ${ms(m.saves.mean)} · max ${ms(m.saves.max)}
+${b?`
+${b.plants} plants · ${b.zombies} zombies · ${b.projectiles} projectiles
+${b.displayObjects} scene objects · ${b.drawCalls} rendered objects
+${b.physicsBodies} physics bodies · ${b.tweens} tweens`:''}
+
+Worst observed frame: ${ms(Math.max(m.interval.max,m.worst[0]?.interval??0))}
+Last 600 active frames; slowest frames retained until reset. Last 30 saves measured. Drawing time excludes browser/GPU compositing.`;
+},1000);
+document.querySelector<HTMLButtonElement>('#performance-export')!.onclick=()=>{
+ const url=URL.createObjectURL(new Blob([JSON.stringify(performanceReport(),null,2)],{type:'application/json'}));
+ const a=document.createElement('a');a.href=url;a.download='garden-performance.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};

@@ -139,3 +139,7 @@ The original eight-wave special-mode override, quiet windows, grave replenishmen
 Existing saves retain their keys and r1 compatibility marker. Added freeze timers, dance routines, leader/backup links, hiding pose and crater state have backward-compatible defaults. Refresh restores paused with no offline advancement. Frozen enemies use original ice-trap artwork so the effect stays visible with Canvas rendering. Local diagnostics offer repeatable dancer and frozen-group boards; those buttons are excluded from production.
 
 Validation includes 59 per-game unit tests plus 30 real Phaser browser checks for every level, pending summons, frozen groups thawing, replacement backups, Ice-shroom mid-fuse and crater expiry. These compare each continued frame against a restored run; a full comparative original-game playthrough and physical iPad testing remain separate.
+
+## Performance monitor
+
+Open **Menu → Performance** after a slowdown to inspect frame, drawing, gameplay and save costs, or download a local report. Measurements continue with the panel closed. See [performance.md](performance.md) for the repeatable crowded-board benchmark, optimizations, and limits of desktop measurements versus a physical iPad.

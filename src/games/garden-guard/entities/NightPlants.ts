@@ -62,7 +62,7 @@ export class ScaredyShroom extends Shooter {
  protected override restoreBehavior(data:PlantBehavior):void {
   super.restoreBehavior(data);if(data.kind!=='shooter')throw new Error('Wrong Scaredy-shroom state');this.hidden=data.hidden??false;this.updatePose();
  }
- private updatePose():void {this.setTexture(this.hidden?'scaredyshroom-hidden':'scaredyshroom');}
+ private updatePose():void {const key=this.hidden?'scaredyshroom-hidden':'scaredyshroom';if(this.texture.key!==key)this.setTexture(key);}
  protected override onTick(delta:number):void {
   const center=this.ctx.grid.cellToWorld(this.col,this.row);
   this.hidden=this.ctx.zombies.getChildren().some(z=>{
