@@ -1,0 +1,30 @@
+Kingdom Rush — Pagras reference prototype for Open Games
+
+Original Kingdom Rush artwork, characters, names and game design:
+Copyright Ironhide Game Studio. All rights reserved.
+Open Games is not affiliated with or endorsed by Ironhide.
+
+Independent TypeScript simulation, Canvas renderer, controls and preparation
+tools authored for Open Games. No third-party game executable or engine is used.
+
+Level geometry, placements and wave data researched from:
+https://github.com/DanQZ/KR1-Smarter-Soldiers-Mod
+Commit fa84f20b6fc0cff19f5c8e13c588736fcf228fa7
+This is a modified community reference, not official source code.
+Modified soldier AI is not copied into this implementation.
+
+Converted sprite/animation data and textures obtained from:
+https://github.com/wicked-knife/KingdomRushWeb
+Commit 3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a
+The converter identifies its upstream as KingdomRushDove 2.1.0.6,
+commit 4072b18bf4e418eec8b813a960c83003744cb710.
+These visual exports include community changes; exact original texture fidelity
+has not been verified. Their gameplay buffs and 330-gold economy are not used.
+
+Original artwork rights are separate from any code/converter license.
+No general redistribution permission has been established. This is a bounded,
+unofficial reference prototype; original-pixel and retail balance fidelity
+have not been certified.
+
+See docs/games/kingdom-rush/README.md, progress.md, and reference-manifest.json
+in the source project for verification scope, source hashes and limitations.

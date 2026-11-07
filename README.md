@@ -59,6 +59,8 @@ The move into a game folder preserves existing Garden Guard saves. Its storage a
 
 ## Deployment
 
+Kingdom Rush has a **Pagras reference level** at `/games/kingdom-rush/`, with independent code and assets. [Play Pagras](https://opengames-breeko.vercel.app/games/kingdom-rush/) · [Game documentation and fidelity ledger](docs/games/kingdom-rush/README.md) · [Progress](docs/games/kingdom-rush/progress.md).
+
 Public repository: [breeko/open-games](https://github.com/breeko/open-games). Vercel project: **opengames-breeko**, personal scope **breekos-projects**. `main` deploys automatically through the GitHub connection.
 
 | Setting | Value |

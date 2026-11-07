@@ -11,6 +11,15 @@ export interface GameListing {
 
 export const GAMES: readonly GameListing[] = [
   {
+    id: 'kingdom-rush',
+    title: 'Kingdom Rush',
+    category: 'Tower defense',
+    description: 'Hold the roads of Pagras with archers, soldiers, magic and artillery.',
+    href: '/games/kingdom-rush/',
+    cover: '/games/kingdom-rush/assets/pagras.png',
+    detail: 'Pagras · 1 reference level · Touch & mouse',
+  },
+  {
     id: 'garden-guard',
     title: 'Garden Guard',
     category: 'Tower defense',

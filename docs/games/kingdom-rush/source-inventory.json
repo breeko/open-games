@@ -1,0 +1,4154 @@
+{
+  "audit_date": "2026-11-07",
+  "method": "Read-only GitHub connector directory listings and selected text files. No third-party executable run, no asset extraction, no retail comparison, no iPad benchmark. Blob SHAs identify inspected source snapshots; branches may subsequently change.",
+  "repositories": [
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "url": "https://github.com/ReBBBorn/Kingdom-Rush",
+      "default_branch": "main",
+      "pushed_at": "2026-01-17T20:36:53Z",
+      "github_detected_license": null
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "url": "https://github.com/QinyangTan/KingdomRush-Hacked",
+      "default_branch": "main",
+      "pushed_at": "2026-04-05T03:22:33Z",
+      "github_detected_license": null
+    },
+    {
+      "repository": "zidonghua2018/KingdomRushFL",
+      "url": "https://github.com/zidonghua2018/KingdomRushFL",
+      "default_branch": "main",
+      "pushed_at": "2026-06-28T15:34:32Z",
+      "github_detected_license": null
+    }
+  ],
+  "critical_gaps": {
+    "rebbborn_original_campaign_waves": "No level01–level12 wave files in listed kr1/data/waves; only custom 27–29 and endless 81.",
+    "rebbborn_original_campaign_paths": "No level01–level12 path or grid files in listed kr1/data/levels.",
+    "rebbborn_first_level_textures": "level01_data.lua requires go_enemies_grass, go_stages_grass, go_stage01, go_stage01_bg, gui_tutorial; none of these atlas metadata files appear in listed fullhd folder.",
+    "license": "No project-level license detected by GitHub for three candidate repositories; not proof of a complete legal assessment.",
+    "large_files": "go_towers.lua (2,467,998 bytes) and native towers-hd.plist (1,075,898 bytes) listed but connector could not return contents; not text inspected."
+  },
+  "files": [
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/achievements_handlers.lua",
+      "blob_sha": "57f862ed365821d1c1bd12fa57c4846010073382",
+      "size_bytes": 12656,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/game_overrides.lua",
+      "blob_sha": "2b72d6e328ae352b74f0d94961f88fc484020946",
+      "size_bytes": 50586,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/game_scripts.lua",
+      "blob_sha": "e55f81f0e369c9b0a47a760affebcec49ab4b8b8",
+      "size_bytes": 378076,
+      "inspection": "text inspected",
+      "line_count": 15161
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/game_scripts_2.lua",
+      "blob_sha": "60ba7d02c289bcef2b69b310c6191bc74fe0d06d",
+      "size_bytes": 532322,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/game_scripts_3.lua",
+      "blob_sha": "d01ac26f93b6b41c727c3b59d0d2d4780f5de912",
+      "size_bytes": 585984,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/game_scripts_4.lua",
+      "blob_sha": "4ae8cea0e8a43de9b663a8cc8052aab09eda268f",
+      "size_bytes": 231421,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/game_settings.lua",
+      "blob_sha": "f21587956b98d97569fa6d3f6c265d49770c0c8f",
+      "size_bytes": 5015,
+      "inspection": "text inspected",
+      "line_count": 397
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/game_templates.lua",
+      "blob_sha": "2d3b0588fb55954ee5fd968483cb6d482592e016",
+      "size_bytes": 828454,
+      "inspection": "text inspected",
+      "line_count": 30654
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/screen_kr1_fa.lua",
+      "blob_sha": "bf210efd49ba520f79c562c5720dfb94d8229bc2",
+      "size_bytes": 2462,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/upgrades.lua",
+      "blob_sha": "0e58402a38f3eca7c0302ba6378327df78ef41ca",
+      "size_bytes": 38163,
+      "inspection": "text inspected",
+      "line_count": 1411
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/achievements_data.lua",
+      "blob_sha": "14b3260b62e631cedaf83d0c97727166ef616899",
+      "size_bytes": 4967,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/game_animations.lua",
+      "blob_sha": "1d65ec96688110f2446da8d13347b7d2b5876ff5",
+      "size_bytes": 296047,
+      "inspection": "text inspected",
+      "line_count": 18764
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/tower_menus_data.lua",
+      "blob_sha": "5ffdcc7b50231cbdb5fc9e57aedf73cc67920537",
+      "size_bytes": 156576,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/constants.lua",
+      "blob_sha": "3f5e97b011ae5a588310d7582db192db926a2e89",
+      "size_bytes": 10062,
+      "inspection": "text inspected",
+      "line_count": 446
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/difficulty.lua",
+      "blob_sha": "44f47faa8081fd733d867741a84571f0e9e32234",
+      "size_bytes": 3697,
+      "inspection": "text inspected",
+      "line_count": 156
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/director.lua",
+      "blob_sha": "01cfb8baa4f20c06038205a8281db3199397d66d",
+      "size_bytes": 25408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/screen_credits.lua",
+      "blob_sha": "4d071ae4483f946de755d4e75c14650d174c534f",
+      "size_bytes": 15624,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/screen_splash.lua",
+      "blob_sha": "64f51e54c82360065fa653a2b7301d4b80055ed6",
+      "size_bytes": 11318,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/script_utils.lua",
+      "blob_sha": "38e569e20da56f22f392f9eae3312c1fd5431603",
+      "size_bytes": 91320,
+      "inspection": "text inspected",
+      "line_count": 3441
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/scripts.lua",
+      "blob_sha": "ab8c433e77dd46112703e52fd9ecdd948c0ee84e",
+      "size_bytes": 183456,
+      "inspection": "text inspected",
+      "line_count": 7497
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/scripts_2.lua",
+      "blob_sha": "dbdd04bb0f8f5170f42536b354219edc57823c8b",
+      "size_bytes": 159053,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/storage.lua",
+      "blob_sha": "7b5b0ed12eb3172537288dd00754cfa8df4696a7",
+      "size_bytes": 12807,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/systems.lua",
+      "blob_sha": "56313a9529d8782f06c98a6a7eab9954d7ce533c",
+      "size_bytes": 61427,
+      "inspection": "text inspected",
+      "line_count": 2452
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/templates.lua",
+      "blob_sha": "7d90876d6b9e63980dd5aef6b5ea3637438c8071",
+      "size_bytes": 55853,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "all/utils.lua",
+      "blob_sha": "482407240f7e0456df8e688c95cfccd2ec5c0bba",
+      "size_bytes": 32023,
+      "inspection": "text inspected",
+      "line_count": 1317
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level01_data.lua",
+      "blob_sha": "efd9cad49ef91605bb829fc2bfbab354c21c1145",
+      "size_bytes": 5804,
+      "inspection": "text inspected",
+      "line_count": 377
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level02_data.lua",
+      "blob_sha": "44c60751daac2d6fb3d898115a9103b1a3ac48f5",
+      "size_bytes": 5397,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level03_data.lua",
+      "blob_sha": "027eea489035d1a92bf7a394d798b998de05581a",
+      "size_bytes": 11086,
+      "inspection": "text inspected",
+      "line_count": 684
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level04_data.lua",
+      "blob_sha": "51a9ce4d6d305574ce6f3b3cca3cb2756ee94394",
+      "size_bytes": 16009,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level05_data.lua",
+      "blob_sha": "1ae27cf37644ea412a5c5a5d1e5297d2263cd084",
+      "size_bytes": 12171,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level06_data.lua",
+      "blob_sha": "face62d51f073070aee72189d25b8cce34454b39",
+      "size_bytes": 21050,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level07_data.lua",
+      "blob_sha": "9bedaa9ce49677e78a860d479aa7f21920e803cf",
+      "size_bytes": 10267,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level08_data.lua",
+      "blob_sha": "4680c93ee1d925525b28d22419525ce8b30f61ac",
+      "size_bytes": 9381,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level09_data.lua",
+      "blob_sha": "a8dac2232c5146c3c094529c5dc25e67995e64ef",
+      "size_bytes": 16812,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level10_data.lua",
+      "blob_sha": "a3801674b46093033119ee6440f3aae64046be3e",
+      "size_bytes": 8146,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level11_data.lua",
+      "blob_sha": "5508288c5e1cbefa7492cfaa71f47f1de300b501",
+      "size_bytes": 7591,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level12_data.lua",
+      "blob_sha": "f6b41924245f9571a1826af6f346ff5386fb81e3",
+      "size_bytes": 9273,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level13_data.lua",
+      "blob_sha": "2678ebd0867614ae3263faecf10040c51e61d565",
+      "size_bytes": 6286,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level14_data.lua",
+      "blob_sha": "35bdba7032f5f9f15d786396fab1e7cafe2a57fa",
+      "size_bytes": 9253,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level15_data.lua",
+      "blob_sha": "e9f9ca0c00c1d25c6538fff47466e9f7eb486998",
+      "size_bytes": 9591,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level16_data.lua",
+      "blob_sha": "8b168a1f08fd5e2f99a8926db6efd44b355e420d",
+      "size_bytes": 6279,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level17_data.lua",
+      "blob_sha": "f6a400dcc609388bb99947c50b3767eac75a7869",
+      "size_bytes": 7979,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level18_data.lua",
+      "blob_sha": "531fb5c1c9eced6fe73c9ab819f0928d0b02d007",
+      "size_bytes": 6511,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level19_data.lua",
+      "blob_sha": "9547ec038c704897c913a321f0966e481b0236ad",
+      "size_bytes": 7852,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level20_data.lua",
+      "blob_sha": "7b7181864f8333e4f82dfb40395b2cf3fb9da543",
+      "size_bytes": 10803,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level21_data.lua",
+      "blob_sha": "8883b70114671c9d234055d5a5e1d8eb824979e5",
+      "size_bytes": 18560,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level22_data.lua",
+      "blob_sha": "8546872985380a5491b802ffbf85c4c354687c47",
+      "size_bytes": 17998,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level23_data.lua",
+      "blob_sha": "73da1818c7f74599248433b60580e44be2bcf5c0",
+      "size_bytes": 10755,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level24_data.lua",
+      "blob_sha": "4d9dc61497a3cc6c1d2df3dc9741aa5f139dd89f",
+      "size_bytes": 24269,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level25_data.lua",
+      "blob_sha": "801858f271cd7fa8b324c02fcc94b54344d8a63b",
+      "size_bytes": 19985,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level26_data.lua",
+      "blob_sha": "616041ec6a23a3b175afd4753e2bda8ebc39a0c1",
+      "size_bytes": 30720,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level27.lua",
+      "blob_sha": "3203b4476f963ddedd1cbabddc7a81b277455906",
+      "size_bytes": 692,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level27_data.lua",
+      "blob_sha": "25a2d659db7c9dad0c3c19812c69020ff858b4b5",
+      "size_bytes": 11024,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level27_grid.lua",
+      "blob_sha": "73a5ce787da0633a346516aef5b55495f33c98ea",
+      "size_bytes": 29581,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level27_paths.lua",
+      "blob_sha": "96a2573ea15def7b8027f6595e92fe7cf3a97088",
+      "size_bytes": 134854,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level28.lua",
+      "blob_sha": "7e7ecb79b7c7ab7630d1e6d061a3cbb14f2b2e1a",
+      "size_bytes": 1915,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level28_data.lua",
+      "blob_sha": "fdc5e0f460f92566d67562dee83ef3c1b79eeb5d",
+      "size_bytes": 16659,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level28_grid.lua",
+      "blob_sha": "46204b60746eac9e07da7fb64e727d5367c87c5d",
+      "size_bytes": 28381,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level28_paths.lua",
+      "blob_sha": "a32d62acfe99f79783249080cff8c53c46d942d3",
+      "size_bytes": 186482,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level29.lua",
+      "blob_sha": "a7b8182cd398982be2ddded07c5ee6f3c0d9e544",
+      "size_bytes": 4436,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level29_data.lua",
+      "blob_sha": "d7ce5ac0b474b221c97a76569dcf600f2576dc96",
+      "size_bytes": 7986,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level29_grid.lua",
+      "blob_sha": "ee5ffe084084333fa11379d92ed28c63de056139",
+      "size_bytes": 28749,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level29_paths.lua",
+      "blob_sha": "7b10a1e58c8522271c079a26b79d723f6601cacd",
+      "size_bytes": 197933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level81_data.lua",
+      "blob_sha": "2cc03107a4e83e1384b608f8fbebb637d7cdfa08",
+      "size_bytes": 15810,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level81_grid.lua",
+      "blob_sha": "5ad662e744232a25a671cc33a72af2d87e1a1f90",
+      "size_bytes": 30793,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/levels/level81_paths.lua",
+      "blob_sha": "ea14acc33e0c9ad1e3ef5f8a56449ddcc2a036ce",
+      "size_bytes": 52141,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level27_waves_campaign.lua",
+      "blob_sha": "131bb7ea98679b812af023f6335813d7448d30aa",
+      "size_bytes": 35722,
+      "inspection": "text inspected",
+      "line_count": 1916
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level27_waves_heroic.lua",
+      "blob_sha": "c47e35b5ad100d2662b104de7e82d19468a7f5ee",
+      "size_bytes": 8683,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level27_waves_iron.lua",
+      "blob_sha": "8a34c1f03d38eeaea100e90271af7aa52738fb1e",
+      "size_bytes": 8524,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level28_waves_campaign.lua",
+      "blob_sha": "7be02fefb8ad2611661d98adef4ee153bbeccdd3",
+      "size_bytes": 36748,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level28_waves_heroic.lua",
+      "blob_sha": "19a1ca4a20e7a6cd2d23b4a61c9f97b2380a0c53",
+      "size_bytes": 14849,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level28_waves_iron.lua",
+      "blob_sha": "d79318acc4d19074b1cbef96af9ce1e9a2fdaa81",
+      "size_bytes": 8285,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level29_waves_campaign.lua",
+      "blob_sha": "fa9826feda480c2682f2c540cd5a3e35286bf918",
+      "size_bytes": 37276,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level29_waves_heroic.lua",
+      "blob_sha": "fa98f37876efda7bc449c1ae11e1b9003220151e",
+      "size_bytes": 8097,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level29_waves_iron.lua",
+      "blob_sha": "c0938671303e39fc21768d1af7402874f7905134",
+      "size_bytes": 8596,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1/data/waves/level81_waves_endless.lua",
+      "blob_sha": "276477b6691b468844b2e9d08a2809d46598f032",
+      "size_bytes": 24018,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1-desktop/data/credits_data.lua",
+      "blob_sha": "eabc200b670ff47ca584f80ae9932c40c97bd6b3",
+      "size_bytes": 8562,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1-desktop/data/credits_data_end.lua",
+      "blob_sha": "50b639d789c1e6b28d2ce8a3fc47239e939b4763",
+      "size_bytes": 7585,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1-desktop/data/credits_data_fa.lua",
+      "blob_sha": "d1009d89db14677bc26c9c1e787123857bceaa50",
+      "size_bytes": 1045,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1-desktop/data/director_data.lua",
+      "blob_sha": "dcf4bff541e47ab7238e0e04d562e324f64dd5b3",
+      "size_bytes": 1194,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1-desktop/data/game_gui_data.lua",
+      "blob_sha": "d419ff3469c76f94ca6547b27c6053d055963473",
+      "size_bytes": 38829,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1-desktop/data/map_data.lua",
+      "blob_sha": "3fc4de4c67439f1a6f3d8f3a7fe964081c0c204a",
+      "size_bytes": 41273,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "kr1-desktop/data/map_points.lua",
+      "blob_sha": "d677cc54f7060be13ffcb7dbe2c74560759d5417",
+      "size_bytes": 2150,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/achievements-1.png",
+      "blob_sha": "e5037cd92c945497eb0be71307aac855fd8ceefa",
+      "size_bytes": 749411,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/achievements.lua",
+      "blob_sha": "a5efc81abcd7e9b2766d5f019cd030b8c31bd41a",
+      "size_bytes": 40437,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/comic_end_fa-1.png",
+      "blob_sha": "e3fe1bef0404d2eebf9c975206e6806b29958e7b",
+      "size_bytes": 665106,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/comic_end_fa.lua",
+      "blob_sha": "0292fc6c0fa2e8daac136808c182ded464d6fde6",
+      "size_bytes": 746,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-100.png",
+      "blob_sha": "4975331d9f7dc1f78dbc44229304769e7f6ada9b",
+      "size_bytes": 91968,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-101.png",
+      "blob_sha": "a565de915dfdafb824964af35f844ece31bf1453",
+      "size_bytes": 99549,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-102.png",
+      "blob_sha": "3de08763b74e2b8c438a97f185042208a9b18927",
+      "size_bytes": 108313,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-103.png",
+      "blob_sha": "da93f38f4129c82ef93d865ac4020056a1fc9579",
+      "size_bytes": 104658,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-104.png",
+      "blob_sha": "52532fe30328173d2623e7eba28a7d506dc38e91",
+      "size_bytes": 96718,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-105.png",
+      "blob_sha": "cdf3c964e16694ddfd1df7356e5978293407627c",
+      "size_bytes": 132996,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-106.png",
+      "blob_sha": "d15cfba9edeca00d373e41340570c73c4e36a4d8",
+      "size_bytes": 105220,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-107.png",
+      "blob_sha": "bc1ad072ccf8e31f7b925c49beb9a8291df84974",
+      "size_bytes": 102212,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-108.png",
+      "blob_sha": "6f30d3df80e5f2bc26358ccb875a22ea29dfa2c4",
+      "size_bytes": 86257,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-109.png",
+      "blob_sha": "d7f221735ce3d5ac7f3fe498232189abfe3b694e",
+      "size_bytes": 76128,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-110.png",
+      "blob_sha": "ae2f13c09617cfd456badf21e7fc742526f4a69c",
+      "size_bytes": 137427,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-111.png",
+      "blob_sha": "ecc5761cbb4e627c730350fcbf4f4ef8f5c3fa0e",
+      "size_bytes": 107361,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-112.png",
+      "blob_sha": "08c7bf82a5a59d514cfb9070c7446e79c0f98452",
+      "size_bytes": 126733,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-113.png",
+      "blob_sha": "ab9509950e4682d6205a8954d261eb4b5e789393",
+      "size_bytes": 117184,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-114.png",
+      "blob_sha": "98827d1821494d98d7e86939b738a9612a3d9cf4",
+      "size_bytes": 78594,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-115.png",
+      "blob_sha": "8e4e79e7714ecc66b0daceea9162ed8c556f883e",
+      "size_bytes": 130832,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-116.png",
+      "blob_sha": "de7dc885e1be3132118c149f3fc72e5f21ab1bfc",
+      "size_bytes": 97427,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-117.png",
+      "blob_sha": "775459c7b2f73570eb7fd2d5e32ee61b17864fdd",
+      "size_bytes": 61946,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-118.png",
+      "blob_sha": "868b6c31f89be42dfb76b1bce6ff8addfc8f3173",
+      "size_bytes": 87780,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-119.png",
+      "blob_sha": "e21740c8fedcac73323e6932b982e072d99e649b",
+      "size_bytes": 87578,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-120.png",
+      "blob_sha": "aed5fa19d08c4fc62e81e79911cfa799128ac831",
+      "size_bytes": 86915,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-200.png",
+      "blob_sha": "970005f22c03dccae0d5f4eeb71b20ff8dd288e5",
+      "size_bytes": 37351,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-201.png",
+      "blob_sha": "ae7acd3495504ed1c42d6131c078691147eb99b5",
+      "size_bytes": 38641,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-202.png",
+      "blob_sha": "e6f9c0aff2b3dbd227380394aa215a94b9d44fc8",
+      "size_bytes": 46807,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-203.png",
+      "blob_sha": "65589b8d7abd9abbc3358a519bba145303942c99",
+      "size_bytes": 47780,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-204.png",
+      "blob_sha": "e2f07b08af72f2d24e73ab39d26bdacb8af33933",
+      "size_bytes": 49520,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-205.png",
+      "blob_sha": "8dc3feaaea5f4857b14f705f284fba158dbad360",
+      "size_bytes": 44183,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-206.png",
+      "blob_sha": "7d8a1c4680163795830fabfcc398a63da6ec8056",
+      "size_bytes": 51154,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-207.png",
+      "blob_sha": "a6f4bd98b927bb67da9343ec7f2c9014665d41df",
+      "size_bytes": 42834,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-208.png",
+      "blob_sha": "2df32340c091bc3a0ecc9fd124254195bf69ee50",
+      "size_bytes": 54200,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-209.png",
+      "blob_sha": "6d3784e29257b6c65e68ab8c522eebafe9c3a509",
+      "size_bytes": 46740,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-210.png",
+      "blob_sha": "48b4084a51dcfa0836be6b0a0ed61420c2702134",
+      "size_bytes": 57548,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-211.png",
+      "blob_sha": "255ba5abc94ecb56b8067296b481d6b3868292ba",
+      "size_bytes": 48494,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-212.png",
+      "blob_sha": "3169b78ff0307c3ecabbaa5cae9be562331ed93e",
+      "size_bytes": 83935,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-273.png",
+      "blob_sha": "3b2f4d9c8400d06e3cf28ecdda530047516cd33c",
+      "size_bytes": 52644,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-274.png",
+      "blob_sha": "8a2dab135f6ff643a1a3e9c3d738410f40cf4354",
+      "size_bytes": 60245,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-275.png",
+      "blob_sha": "542c0203a63ee09661c82a3535a2c0046a60b36d",
+      "size_bytes": 60205,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-276.png",
+      "blob_sha": "9c9b3a96b20fe48aa5a97097d24e62437a164cae",
+      "size_bytes": 59798,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-277.png",
+      "blob_sha": "fabbcb9f82cd7cb723b40c5a162d7e38bc49346f",
+      "size_bytes": 79627,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-278.png",
+      "blob_sha": "423643c4b6a43c1dd3a13891246b1d6eae220777",
+      "size_bytes": 66097,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-279.png",
+      "blob_sha": "56e34f8720793fbf8c4f95cb296dbf0d2b2b075a",
+      "size_bytes": 91517,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-280.png",
+      "blob_sha": "114db186fb9f578562a32f3d7cc419b5bbf63103",
+      "size_bytes": 70636,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-349.png",
+      "blob_sha": "6223c1b7a6de39e64cdbd0556fd7810e885eaf47",
+      "size_bytes": 55535,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-350.png",
+      "blob_sha": "fef1916bfea2a8e3cc7aa60795d5333e8df22382",
+      "size_bytes": 61309,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-351.png",
+      "blob_sha": "5d0be3473384e4753c66e2137ec140455928a2c1",
+      "size_bytes": 56461,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-352.png",
+      "blob_sha": "6d2fd696e99889336669a4d71f76515beca50c0d",
+      "size_bytes": 60571,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-353.png",
+      "blob_sha": "0daaf1b50185fc6200cbce600706a9052524bda9",
+      "size_bytes": 50318,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-354.png",
+      "blob_sha": "0e71f1929345bcba0548efb7918a49df7d763e23",
+      "size_bytes": 64436,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-355.png",
+      "blob_sha": "89fd0afa5fe929587c6a6272effd4b1e186efc60",
+      "size_bytes": 61526,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-356.png",
+      "blob_sha": "6d688fc056033596c9934507cd760e59e47eaadb",
+      "size_bytes": 59794,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-357.png",
+      "blob_sha": "e8970083060ab28995d70aa943913b65a74ce5ed",
+      "size_bytes": 65652,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-358.png",
+      "blob_sha": "5c0b1f1829a92f73cc0f22beb1be5a95dce1f2b3",
+      "size_bytes": 65167,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-359.png",
+      "blob_sha": "54a13e9f189b62ba0716a80b5928cc009122896a",
+      "size_bytes": 58084,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-360.png",
+      "blob_sha": "3391d02b425f1d579deacd33a37f3b68e64b391c",
+      "size_bytes": 65182,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-361.png",
+      "blob_sha": "bea77f2457e3161076dd4c2bef92f385a4f10dc1",
+      "size_bytes": 63029,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-362.png",
+      "blob_sha": "a0ff9510913750fdc3872499d6f4fc7d41d17bca",
+      "size_bytes": 76357,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-363.png",
+      "blob_sha": "dc039b99c1056f14edd31efe7a41c1cabf57302a",
+      "size_bytes": 70643,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-364.png",
+      "blob_sha": "6e7ea7f3a90e85fe00db85e506acd752cc15eb6f",
+      "size_bytes": 69122,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-365.png",
+      "blob_sha": "393594882ddb49a449bed2b0d6360d4fcf0bedae",
+      "size_bytes": 65828,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-366.png",
+      "blob_sha": "f1be9d518604d4b5b4e3c4fc91cca9aa54ed6166",
+      "size_bytes": 77724,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-367.png",
+      "blob_sha": "f7d43dc78cddc06a86a70084d9e2d71008f9c214",
+      "size_bytes": 66669,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-368.png",
+      "blob_sha": "70a21b332c02fd193675f84709b3bce82f0438dc",
+      "size_bytes": 63511,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-369.png",
+      "blob_sha": "27feafa0b929a145570069a4c8c4a896755b5ff6",
+      "size_bytes": 3674,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-370.png",
+      "blob_sha": "2bb93c690205b2ab305eafbb3ea98c9bd63ac71a",
+      "size_bytes": 4029,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-371.png",
+      "blob_sha": "8805f14c60446cd1d37b0719be5ff32bfef682eb",
+      "size_bytes": 3706,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-372.png",
+      "blob_sha": "330be5e322b0d77a1ea03a890f6988d66d6dd33d",
+      "size_bytes": 3834,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-373.png",
+      "blob_sha": "81cc414ba3ef835be23e4c9569e3fef18d7461f4",
+      "size_bytes": 4126,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-374.png",
+      "blob_sha": "d00300a3b21f78b87c2da4458ee619016cf3b67c",
+      "size_bytes": 3577,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-375.png",
+      "blob_sha": "294c4e5d284c5ba69642f7a5230abc9b9a60f0d6",
+      "size_bytes": 3329,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-376.png",
+      "blob_sha": "1880e5c34d85737baf15357fbdbd945544208fc3",
+      "size_bytes": 4179,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-377.png",
+      "blob_sha": "66521710e8fc0f74a6a0d83891c4e862a1741d5f",
+      "size_bytes": 3683,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-378.png",
+      "blob_sha": "dc466a9dc87595e724f43292f15080d7626c7ae3",
+      "size_bytes": 4040,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-379.png",
+      "blob_sha": "12c27296719fffd8be101b5dcc95e646905f0795",
+      "size_bytes": 4182,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-380.png",
+      "blob_sha": "b44afa0862479ccee01cc582cbeacb988bcd1005",
+      "size_bytes": 5097,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-381.png",
+      "blob_sha": "bc035b49f70cac9d50efa7d88f65902d09226e88",
+      "size_bytes": 4299,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-382.png",
+      "blob_sha": "6c0292c7feb098bafa6a1d1bcdfd2460a5cdf9fb",
+      "size_bytes": 3969,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-383.png",
+      "blob_sha": "c53a37587c485d7d62e1bda49b5e3b38aca2c590",
+      "size_bytes": 4491,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-384.png",
+      "blob_sha": "1bbce71b515a65b1cede6cbbb1d768212ebc7eec",
+      "size_bytes": 3613,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-385.png",
+      "blob_sha": "363abf7c7182e131c394d29c23c18199031b9e25",
+      "size_bytes": 3887,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-386.png",
+      "blob_sha": "8ccf966db19d3a324f53e9a86e1259ae5d5cd856",
+      "size_bytes": 4107,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-387.png",
+      "blob_sha": "bdb53782077333e35be4933ef827036a8732d5d0",
+      "size_bytes": 3875,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-388.png",
+      "blob_sha": "4dd54ee771cf48ac521828bcfa0b3d98b3167f7b",
+      "size_bytes": 4110,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-389.png",
+      "blob_sha": "efe42ccdb7b478fc95327b662112421ae0da0767",
+      "size_bytes": 2917,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-390.png",
+      "blob_sha": "bc27acbea5a9bcee93242f712c1fd337c98c8eab",
+      "size_bytes": 3636,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-391.png",
+      "blob_sha": "76a52ea77eb45fb8c2175c21cef3f23af444830b",
+      "size_bytes": 2873,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-392.png",
+      "blob_sha": "5b3236a67fe61a19b77dbdbc1c12fc1456843152",
+      "size_bytes": 4276,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-393.png",
+      "blob_sha": "d63ea152b0907ae61531b961e5ac4ba02eae10f1",
+      "size_bytes": 3546,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-394.png",
+      "blob_sha": "52f85e694747e9421861dd1340b56d2b1e66bac8",
+      "size_bytes": 4136,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-395.png",
+      "blob_sha": "660441a377b18dc6efb1366c8ef79b3fb5b7af2f",
+      "size_bytes": 3606,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-396.png",
+      "blob_sha": "e4d7a314d3b52ab10a6b779eb94be10f3fb66e64",
+      "size_bytes": 3512,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-400.png",
+      "blob_sha": "624545832df140f429f320a5197309b338b94837",
+      "size_bytes": 89494,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-401.png",
+      "blob_sha": "51a3bca9960a378c1dcbda8b1694041324d41675",
+      "size_bytes": 112217,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-402.png",
+      "blob_sha": "1cb73782920243dcc937ae3a7cdb4cc266b93e3a",
+      "size_bytes": 87545,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-403.png",
+      "blob_sha": "5cd5e2fe2f087e63e06e9e38978b3bff04329754",
+      "size_bytes": 101820,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-404.png",
+      "blob_sha": "3588e446dcafe9ebccc0c29555b47c47ec7e9265",
+      "size_bytes": 105475,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-405.png",
+      "blob_sha": "cfc5c23457271e295a0b4bfaf3bf08154d8c385d",
+      "size_bytes": 88985,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-406.png",
+      "blob_sha": "df067b2bb54a3e359457e760f244bb0f36aba3ab",
+      "size_bytes": 91848,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-407.png",
+      "blob_sha": "628bc17c123e4733a4d1cad2bc95ba33a71a07c5",
+      "size_bytes": 94289,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-408.png",
+      "blob_sha": "dfe15cc4fb8350db1d7a754fa8ec852d83161d01",
+      "size_bytes": 90646,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-409.png",
+      "blob_sha": "1318248d759dd2802ff36f994895997eca89ccc2",
+      "size_bytes": 89713,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-410.png",
+      "blob_sha": "cb043f1f5d8fed04eb98e6075f8d388e9b2840c1",
+      "size_bytes": 94781,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-411.png",
+      "blob_sha": "64976e3d6a645e1553dfd64ba5dddac6d7e94666",
+      "size_bytes": 119113,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-517.png",
+      "blob_sha": "3936db891954799c810d7a96288680361a655621",
+      "size_bytes": 72420,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-518.png",
+      "blob_sha": "5766712efce1e0b7eccf2c9822c04b1ba0b04580",
+      "size_bytes": 71805,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-519.png",
+      "blob_sha": "f04841ed21242b25614f818b78cad0e3e310850f",
+      "size_bytes": 73751,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-520.png",
+      "blob_sha": "17d7514d3e8c1defbb8348ca6098095a17568a05",
+      "size_bytes": 71351,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-521.png",
+      "blob_sha": "83b9627fd3c1d2b122ccb168683b11e539ff1e22",
+      "size_bytes": 70632,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-522.png",
+      "blob_sha": "40a4b0fc93bd4894eabc37ebfca8ec6de2136d35",
+      "size_bytes": 72798,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-523.png",
+      "blob_sha": "8bf23dc115d67671c8c6f9501038b735f8f3384d",
+      "size_bytes": 74952,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-524.png",
+      "blob_sha": "d6c7b84ecc78ce4d6ff7a1adc15ed1a49c085177",
+      "size_bytes": 72025,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-525.png",
+      "blob_sha": "411f4caf7d32766ecbc9859eb654ef3df5cbe3df",
+      "size_bytes": 71235,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-526.png",
+      "blob_sha": "afee4a6271a71388a9efae85b666ad98a6e4f1fc",
+      "size_bytes": 76428,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-527.png",
+      "blob_sha": "ba176ba4c77b6d67bd1318e42f7746d9c8eddfd2",
+      "size_bytes": 77290,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-528.png",
+      "blob_sha": "e90e0bcb2f84f7d2f5c638cc6f63ca7d48ff8ef6",
+      "size_bytes": 73758,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-89.png",
+      "blob_sha": "16b75390a44a4ab81a429e375487c0b0799cb921",
+      "size_bytes": 80347,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-90.png",
+      "blob_sha": "001ad507ef7cda77b2bdb422d2c3304f4d480911",
+      "size_bytes": 83670,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-91.png",
+      "blob_sha": "348e1edd77f5dea421e7c43ffada6e4d475fadae",
+      "size_bytes": 82590,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-92.png",
+      "blob_sha": "b5196180a1f9522cd41147b1625d8c4a695a64bf",
+      "size_bytes": 89160,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-93.png",
+      "blob_sha": "6dfc48738afa5a24f4331d5f4756d41cb3315e07",
+      "size_bytes": 62652,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-94.png",
+      "blob_sha": "858f1243d58be561d2813105c24d9125bd05172e",
+      "size_bytes": 78365,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-95.png",
+      "blob_sha": "1ada900cd05370e9efd4d65391191f1cbdf32117",
+      "size_bytes": 76512,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-96.png",
+      "blob_sha": "5ad6a874278b1ab43b19afb7b5776cb7c6fef691",
+      "size_bytes": 49789,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-97.png",
+      "blob_sha": "9eda91a5264e92e6f0475bb0a8142529f33bc016",
+      "size_bytes": 128500,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-98.png",
+      "blob_sha": "b4762483b91d8b18288380406d38736ed7f77643",
+      "size_bytes": 86271,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia-99.png",
+      "blob_sha": "61cecb968a6eefcce2c6c2fb14cacd11b82901fa",
+      "size_bytes": 111666,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia.lua",
+      "blob_sha": "bfbb54fb61bade3c331f1668ab05e761f741f3ed",
+      "size_bytes": 45770,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia_bloodlust-1.png",
+      "blob_sha": "fa2c31fd9e607ea9c5551577156649d3fbbc4141",
+      "size_bytes": 760259,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia_thumbs-2.png",
+      "blob_sha": "28ba81112873b3d1055ed378355bc795f4b9c991",
+      "size_bytes": 358759,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia_thumbs-3.png",
+      "blob_sha": "200af8247fa4a681ae1a13427223b986ea09555c",
+      "size_bytes": 470854,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia_thumbs-4.png",
+      "blob_sha": "b82901e279d941d96d0babcc44457f65236650a2",
+      "size_bytes": 106235,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/encyclopedia_thumbs.lua",
+      "blob_sha": "5b869be2591c1357404256887c9e9f57923e302c",
+      "size_bytes": 83143,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_decals-1.png",
+      "blob_sha": "a1dcd6159f1d439a069fec54d4c52a5072fed29d",
+      "size_bytes": 725763,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_decals-2.png",
+      "blob_sha": "d7d359f3dd847a670cbd91e1d5726bc304b14f68",
+      "size_bytes": 823311,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_decals.lua",
+      "blob_sha": "b475de4d53c7c691030a146205ea11bc20cd0ca2",
+      "size_bytes": 92409,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_enemies_bloodlust-1.png",
+      "blob_sha": "bebaacbe279d7b07a42559744c67a730de9ec60a",
+      "size_bytes": 868944,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_enemies_bloodlust-3.png",
+      "blob_sha": "d29196079da2c83fbd8ae17f0a0305880a457285",
+      "size_bytes": 1200866,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_enemies_bloodlust.lua",
+      "blob_sha": "b8b28f281457190fba6273e73042955dd2df856d",
+      "size_bytes": 116032,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_enemies_common-1_origins.png",
+      "blob_sha": "aa676e765bb69fcec44dcce2eddb6b7aab7a9172",
+      "size_bytes": 4188405,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_dracolich-1.png",
+      "blob_sha": "afdfef72df1fe5d448d3de41f4bb180c5eec257f",
+      "size_bytes": 100186,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_dracolich-2.png",
+      "blob_sha": "e47f02c52be3bf7808c89a8101f2553beeb7d691",
+      "size_bytes": 218142,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_dracolich-3.png",
+      "blob_sha": "27892264be524e1238ed0c47b402cb17554ef905",
+      "size_bytes": 104661,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_dracolich.lua",
+      "blob_sha": "326886f95530a2b6d0ceaceb8604c022167d0f94",
+      "size_bytes": 75243,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_ember-1.png",
+      "blob_sha": "6dde37bbc1ec239f6fb3bc0e61cd2a91b2283a61",
+      "size_bytes": 933303,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_ember.lua",
+      "blob_sha": "77b05b1c0f2bded3adc5bd3a864c8adb36381a36",
+      "size_bytes": 51591,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_giant-1.png",
+      "blob_sha": "2511b0849557314b565c721bb73566396f5273c0",
+      "size_bytes": 63479,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_giant.lua",
+      "blob_sha": "449d7904e934e7f82467ed820acecc60318d10ad",
+      "size_bytes": 24470,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_oberon-1.png",
+      "blob_sha": "bf950f0b5455fbcb4a90a21ddc6e5140d9ce0acd",
+      "size_bytes": 683931,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_oberon.lua",
+      "blob_sha": "fbcc9d9140243593cc82de8a6afa360edf410253",
+      "size_bytes": 21165,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_penumbra-1.png",
+      "blob_sha": "4c152f0922c2b8b63be0d1fdd51bab00ec93d24d",
+      "size_bytes": 2054017,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_penumbra.lua",
+      "blob_sha": "dbdf307ff6e660e7c02b191c5a144503d37b9123",
+      "size_bytes": 45329,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_van_helsing-1.png",
+      "blob_sha": "373d2a8f0d6c84ef658dcd272b23052300629b77",
+      "size_bytes": 59902,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_van_helsing-2.png",
+      "blob_sha": "fb8950cd24648dd4f6ae573eddb1934316d63b7a",
+      "size_bytes": 42993,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_viper-1.png",
+      "blob_sha": "bcfa6d06a24bc39b55c4bb78082eef2225bf42dd",
+      "size_bytes": 415300,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_viper.lua",
+      "blob_sha": "6f1a9662ef02d75256cd124ec4f28b6e1304d0f5",
+      "size_bytes": 26076,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_voltaire-1.png",
+      "blob_sha": "0da03754011a00f374202c0f2f4333f427e32c47",
+      "size_bytes": 479125,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_hero_voltaire.lua",
+      "blob_sha": "2f4e8ee3abe161b31160a910088d789d89a585fc",
+      "size_bytes": 30375,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_reinforcement_skin_1-1.png",
+      "blob_sha": "54001846850d92bff86dfa28f6bcb7d8fe71bf5b",
+      "size_bytes": 199803,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_reinforcement_skin_1.lua",
+      "blob_sha": "2c5d4e9ec72c681d282f8816462ab04fa826f410",
+      "size_bytes": 17281,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_reinforcement_skin_2-1.png",
+      "blob_sha": "b21e4519833a70b28c7f7422a34f4cf33f4a33b2",
+      "size_bytes": 185443,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_reinforcement_skin_2.lua",
+      "blob_sha": "2b1dc283954cd17b8ea53170e6fe55bcfac47cc8",
+      "size_bytes": 18591,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_reinforcement_skin_3-1.png",
+      "blob_sha": "51dafcf96f54c87d0cae08f5b7088187183b4cf8",
+      "size_bytes": 201198,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_reinforcement_skin_3.lua",
+      "blob_sha": "888a752a1ce5b5c314fab703fad7a8b900468da8",
+      "size_bytes": 19022,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage05-2.png",
+      "blob_sha": "d142f0abe67be5297383f21935ccaa6a68d6c0e6",
+      "size_bytes": 140693,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage09-3.png",
+      "blob_sha": "7ac4624609f3658ffb1df42ce09b6ec3e60361bd",
+      "size_bytes": 256120,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage09-4.png",
+      "blob_sha": "b30ffdd23ce526ab728865afb77e67102e9fd656",
+      "size_bytes": 150069,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage09-5.png",
+      "blob_sha": "a90f330f88965ec5243e4b98bed26c6f855d1121",
+      "size_bytes": 87880,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage11-2.png",
+      "blob_sha": "c893d6efd9ec61dd735a291a41b5468e1484d170",
+      "size_bytes": 3961904,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage131-1.png",
+      "blob_sha": "81a113a662474c5b2dbc50c91a207f22d016c317",
+      "size_bytes": 1132890,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage27-1.png",
+      "blob_sha": "667a0ed05ed789faf52c0104bbd4b2767e72dfc0",
+      "size_bytes": 283702,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage27.lua",
+      "blob_sha": "f115fd0f4e6ffc6c8c3bee77fd94b1d16807930d",
+      "size_bytes": 857,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage27_bg.lua",
+      "blob_sha": "938cb015c87a31482bfd2bff35a2337231a8587a",
+      "size_bytes": 227,
+      "inspection": "text inspected",
+      "line_count": 27
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage27_bg.png",
+      "blob_sha": "548587b69ccacb84ba01e20ccfc8d22c84334f94",
+      "size_bytes": 2116023,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage28-1.png",
+      "blob_sha": "3275d459bdffaac50ed65003bf30463af7365d26",
+      "size_bytes": 394230,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage28-2.png",
+      "blob_sha": "510fc217c26a506e7ab2c6c66b50ca2c6b51cea1",
+      "size_bytes": 169171,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage28.lua",
+      "blob_sha": "b28ab97a298b6c175b5770e039e0fa4ec46452c9",
+      "size_bytes": 12074,
+      "inspection": "text inspected",
+      "line_count": 847
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage28_bg.lua",
+      "blob_sha": "8fa99fc12fae58e501ed87124cbcc9ef14b21a48",
+      "size_bytes": 227,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage28_bg.png",
+      "blob_sha": "6178c5f38f32296467a86b75582798d293405601",
+      "size_bytes": 1131008,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage29-1.png",
+      "blob_sha": "45e80a83a39a1563576b0fbc82a1bf65a1847570",
+      "size_bytes": 1370127,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage29.lua",
+      "blob_sha": "a4961a58a9c67ccd9394ade7afe5baeb3831542a",
+      "size_bytes": 54120,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage29_bg.lua",
+      "blob_sha": "6da5891e0213cc9f9901e3ef46a559830a1d2f8f",
+      "size_bytes": 227,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage29_bg.png",
+      "blob_sha": "bc5c78fdc56a6c78982cd19095f43e69dc37578d",
+      "size_bytes": 1243862,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage81-1.png",
+      "blob_sha": "a7c6f2ecf3dfd2b4ca63555d54fcebd3507e1963",
+      "size_bytes": 2151862,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage81.lua",
+      "blob_sha": "15eb451c2f02ae6c31f01e38e68dd576c9d17ea4",
+      "size_bytes": 42615,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage81_bg-1.png",
+      "blob_sha": "3050af5d0f0f773cebcc05d90cf0e02a196d8297",
+      "size_bytes": 2556594,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stage81_bg.lua",
+      "blob_sha": "d5c7940945eeb15a87232690b91766eefab82088",
+      "size_bytes": 150,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stages_elven_woods-1.png",
+      "blob_sha": "a585d2dd921567c21d643ecf19630974b64419a2",
+      "size_bytes": 235690,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stages_halloween-1.png",
+      "blob_sha": "7f18e0ada2191a80806efb4fc1ca73286bc369ea",
+      "size_bytes": 956301,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stages_halloween-2.png",
+      "blob_sha": "a78dc156c3c60013c873887072354cc71624e5e9",
+      "size_bytes": 1230123,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stages_hulking_rage-1.png",
+      "blob_sha": "9d8aeb71679d9b769c35b5ab31dc1f164a7dd9ff",
+      "size_bytes": 711665,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stages_jungle-1.png",
+      "blob_sha": "3a4b6da06623991166506716020aa38cea6b5624",
+      "size_bytes": 190436,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stages_rising_tides-1.png",
+      "blob_sha": "cbc130050ebf29cbc255d1e198bc115f19889b2a",
+      "size_bytes": 571625,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_stages_underground-1.png",
+      "blob_sha": "7feb727c851e6fc29309653217138bd8b77658fd",
+      "size_bytes": 508442,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers-114.png",
+      "blob_sha": "0f28afea00fea27c631c5f15bd3cd89397f4e773",
+      "size_bytes": 4261618,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers-1919.png",
+      "blob_sha": "67e946ff989664cd6d26bd26e79751673e802b4d",
+      "size_bytes": 1184368,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers-2.png",
+      "blob_sha": "6cbd739084346553a67a61fbfd21857eba30c860",
+      "size_bytes": 2486625,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers-4.png",
+      "blob_sha": "dd8cd4329aeca85810795316ab522ab221a63f91",
+      "size_bytes": 4138271,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers-5.png",
+      "blob_sha": "d6007daf3117645ce2edf0a003dff5dbe00edd6e",
+      "size_bytes": 4151824,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers-514.png",
+      "blob_sha": "4a0c4bf74194200686fd5f44043b6df362bceafa",
+      "size_bytes": 5168035,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers-6.png",
+      "blob_sha": "2be569e9b07f69883cb8356d9bc761d452a25bab",
+      "size_bytes": 1499628,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers.lua",
+      "blob_sha": "37c437854327df8c49249263113f820666db515c",
+      "size_bytes": 2467998,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers_bloodlust-1.png",
+      "blob_sha": "7e542276d1227fca4ddb87195c620d1ecd63a94c",
+      "size_bytes": 3760800,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers_desert-1.png",
+      "blob_sha": "725243f74fcac7d2202bef8f3a22ebeb6c57e503",
+      "size_bytes": 634099,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers_krv-1.png",
+      "blob_sha": "5bbcadd2a4b0323d809c0db62a90a95081ef8515",
+      "size_bytes": 5619201,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers_krv-2.png",
+      "blob_sha": "5c2757ba056c6e6da996cd4b9a80381e95569e3d",
+      "size_bytes": 5880740,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers_krv_basic.png",
+      "blob_sha": "6e2c6964546275a14da052f54083f34d5a32b517",
+      "size_bytes": 620335,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/go_towers_pirate_camp-1.png",
+      "blob_sha": "de77ceb54b6250d122e05b549cb61cb6cf48b7d1",
+      "size_bytes": 162714,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_common-1.png",
+      "blob_sha": "246046b70ec37a3c84b2e3a905014b2434cbcd64",
+      "size_bytes": 2518287,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_common-2.png",
+      "blob_sha": "8f8b931c6ecc7302cc0d6be3af99dd827bf991f9",
+      "size_bytes": 3134219,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_common-3.png",
+      "blob_sha": "8d669d72b8c13fac531276bf1c913d24dfe4974a",
+      "size_bytes": 1252939,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_common-4.png",
+      "blob_sha": "37b944da871b782634a0fe6068246b9244f9818e",
+      "size_bytes": 687807,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_common.lua",
+      "blob_sha": "71891856f7d57bbc649ec6354cef5962b28facf7",
+      "size_bytes": 221624,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_notifications_common.lua",
+      "blob_sha": "8a24f7a3daeed27b986d3973c0aca84cce97bb07",
+      "size_bytes": 20642,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_portraits-1.png",
+      "blob_sha": "51a1e3bab73a087f089f4b0c22ce74220d7190b1",
+      "size_bytes": 1130906,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_portraits-2.png",
+      "blob_sha": "cfc94abc5aca82dc3acc9e7ba3e5106ba97db246",
+      "size_bytes": 664891,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_portraits.lua",
+      "blob_sha": "d2f1dbfe9e488d8a7efd17da87c2f99aa37c7ffe",
+      "size_bytes": 53765,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/gui_portraits_bloodlust-1.png",
+      "blob_sha": "e9758b417d106d15bd7dff4fce4e3316eb97f5e3",
+      "size_bytes": 146223,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/loading_fa-1.png",
+      "blob_sha": "14adca9da82bb6aa7e351b53a0b3e871704a20c8",
+      "size_bytes": 1103383,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/loading_fa.lua",
+      "blob_sha": "74e64f37d2b48bfed9b0d9e6f2764080d5f06577",
+      "size_bytes": 301,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_credits-1.png",
+      "blob_sha": "81ba991c7ae645b7d25a3450ad9330aaff31543a",
+      "size_bytes": 568014,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_credits.lua",
+      "blob_sha": "948baffe2ae966a20849f31a01247d90191a0346",
+      "size_bytes": 1941,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map-1.png",
+      "blob_sha": "83f3cacf5f1341ca28940856d472b23f24047f32",
+      "size_bytes": 3330343,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map-2.png",
+      "blob_sha": "b617b0bc8c9fbd4007e71895a950c2286050ffd6",
+      "size_bytes": 1440066,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map-3.png",
+      "blob_sha": "97cb477d7864e895d9c7d51cdfe28a4ea0f78132",
+      "size_bytes": 1854551,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map-4.png",
+      "blob_sha": "55a7f157f7ccba7dde2d9386deafb6ecc3d30ba4",
+      "size_bytes": 5962881,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map.lua",
+      "blob_sha": "ee17660ac10a38253537ef556d1f098c7aa2c74e",
+      "size_bytes": 134174,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map_animations.lua",
+      "blob_sha": "5660d0d01c0267d873fb0201b4916e56e62fd32d",
+      "size_bytes": 935193,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map_animations_bloodlust-1.png",
+      "blob_sha": "93d8fa2cfebdcd693288796f805c4c38984f12dd",
+      "size_bytes": 417855,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map_hero_room.lua",
+      "blob_sha": "7015ad5de15e6afa378afa0ade55cbce0a0f09ee",
+      "size_bytes": 595749,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map_hero_room_ember-1.png",
+      "blob_sha": "639fcc79812932f9c28626c83c20f93fb1be7d17",
+      "size_bytes": 1446274,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map_hero_room_oberon-1.png",
+      "blob_sha": "ed148f80e4af038601ac299c0d1499fed8d22a2d",
+      "size_bytes": 31384,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map_hero_room_penumbra-1.png",
+      "blob_sha": "8c5b91c0b58033cc2f3d341315c38b04a85ebbef",
+      "size_bytes": 280326,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map_hero_room_viper-1.png",
+      "blob_sha": "822e9a53f8072b861bc53cbeff8821b741e27004",
+      "size_bytes": 88169,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map_hero_room_voltaire-1.png",
+      "blob_sha": "33a90c151ddc3694daffe334d710c3444e97f778",
+      "size_bytes": 56500,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_map_premium_content.png",
+      "blob_sha": "068d1aa56c8c3b84accef4afa2c8849e461638ff",
+      "size_bytes": 322062,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_splash-1.png",
+      "blob_sha": "04e73905725a0ed483700b30a4dde487eec9b778",
+      "size_bytes": 111712,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/screen_splash.lua",
+      "blob_sha": "201510ca90e0df7a87055ba976b3f31da4b4145e",
+      "size_bytes": 3999,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/view_options-1.png",
+      "blob_sha": "7ec5ea55dcc5e41958d86091bc9e63a4fc64b55b",
+      "size_bytes": 185814,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "ReBBBorn/Kingdom-Rush",
+      "path": "_assets/kr1-desktop/images/fullhd/view_options.lua",
+      "blob_sha": "3e7b95589b3615964b3701e02de38f8bb3a146b0",
+      "size_bytes": 4429,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Data/GameManager.cpp",
+      "blob_sha": "f7250ff3948e355439c533a4d764e18baae5f5a5",
+      "size_bytes": 1208,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Data/GameManager.h",
+      "blob_sha": "29f4a3cf72732d1777769c7a7e149d04b7f3cba6",
+      "size_bytes": 1160,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Data/MyAnimation.cpp",
+      "blob_sha": "f2e91a0afc1109490c653663e0ff573bd4cbae8f",
+      "size_bytes": 45264,
+      "inspection": "text inspected"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Data/MyAnimation.h",
+      "blob_sha": "3a3a87b87ce19bd4e2bed5a17192d365470e90a7",
+      "size_bytes": 1566,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Data/SoundManager.cpp",
+      "blob_sha": "987d469ef45a921abe70e930f82cdc897c58712e",
+      "size_bytes": 11521,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Data/SoundManager.h",
+      "blob_sha": "0a6e4ad0dc741d7b3dd3b17e58181d63cc15aa21",
+      "size_bytes": 2731,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/ArchMageTower.cpp",
+      "blob_sha": "ff3bacecc2f7a0443d3947667f8bb5b028f89bfc",
+      "size_bytes": 3758,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/ArchMageTower.h",
+      "blob_sha": "521a2c17f34fbb0cb148a289f87c10ea4c83981b",
+      "size_bytes": 499,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseArrowTower.cpp",
+      "blob_sha": "a3178883fa259c709b612a1527abd9869ba348de",
+      "size_bytes": 4315,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseArrowTower.h",
+      "blob_sha": "3ce10cd4ceb1ce3161d829ac46b0106a7fce1d11",
+      "size_bytes": 470,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseArtilleryTower.cpp",
+      "blob_sha": "c6a57863c3345acb437e131a176cb980273300f1",
+      "size_bytes": 4511,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseArtilleryTower.h",
+      "blob_sha": "5a06689e4d4b6b3d4f834cef8459b62ab2c0b257",
+      "size_bytes": 746,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseBarracksTower.cpp",
+      "blob_sha": "35b780e96aed5e23d822ef830568cea902d3bf82",
+      "size_bytes": 10914,
+      "inspection": "text inspected"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseBarracksTower.h",
+      "blob_sha": "039336437577846e0177a09b71f04e2c83fe2cca",
+      "size_bytes": 723,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseMageTower.cpp",
+      "blob_sha": "7495b1f5172a6c66f23c0716e00e38ad31ddb038",
+      "size_bytes": 2576,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseMageTower.h",
+      "blob_sha": "c8e601bf80beb15ca6019f87420fa9d9280ee14d",
+      "size_bytes": 382,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseTower.cpp",
+      "blob_sha": "bdc121820809908cbc2cd84e4114ea92e58e061e",
+      "size_bytes": 2417,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/BaseTower.h",
+      "blob_sha": "eaa668d87424938444912a1e86ac41ce0034be66",
+      "size_bytes": 1754,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/CossbowHunterTower.cpp",
+      "blob_sha": "84860181e1f3ccf6182c260bb670366274c1ca6e",
+      "size_bytes": 7148,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/CossbowHunterTower.h",
+      "blob_sha": "d6dd58b7dcad85c62d6e40d0d8d1d66763b75460",
+      "size_bytes": 408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/EarthquakeTower.cpp",
+      "blob_sha": "8acf9b3b6b2cead59a78bd9d91940ef5825c1d08",
+      "size_bytes": 5893,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/EarthquakeTower.h",
+      "blob_sha": "6565e11c97c8bd06d86deaa940085a2aa47b7c75",
+      "size_bytes": 627,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/MechsTower.cpp",
+      "blob_sha": "9b276093aad48d195c83a1ff4c5b7563053b111b",
+      "size_bytes": 3544,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/MechsTower.h",
+      "blob_sha": "c3da2153c3ef58765902c9dd556c1528380c4a92",
+      "size_bytes": 432,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/NecromancerTower.cpp",
+      "blob_sha": "e58fa2e31b80a7b38df49b74bd76ea303f78f15d",
+      "size_bytes": 3853,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/NecromancerTower.h",
+      "blob_sha": "9b91f6e5c183bda432027860a57d125dfa917f20",
+      "size_bytes": 498,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArrowTowerLvl2.cpp",
+      "blob_sha": "28cd21ac0a67414c64296e92d40e7326f597bfd9",
+      "size_bytes": 1605,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArrowTowerLvl2.h",
+      "blob_sha": "60e01188be81993eaa34b9260ef3710e2d8aeea2",
+      "size_bytes": 378,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArrowTowerLvl3.cpp",
+      "blob_sha": "d9e7993ab744fb1f48a14b50b2f5eb6c2e741a57",
+      "size_bytes": 2001,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArrowTowerLvl3.h",
+      "blob_sha": "36b3a6ee075ba900a100f627373a6b938c77476d",
+      "size_bytes": 433,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArrowTowerlvl1.cpp",
+      "blob_sha": "7363b0faae6ba1a3ffbf8efa05f77381c3a715f4",
+      "size_bytes": 3125,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArrowTowerlvl1.h",
+      "blob_sha": "e43556830f941773d69a322e6a24cb55f1b1c928",
+      "size_bytes": 448,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArtilleryTowerlvl1.cpp",
+      "blob_sha": "3a47c5ca0652d019e05f9fbda3b6a94f430da2b7",
+      "size_bytes": 2920,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArtilleryTowerlvl1.h",
+      "blob_sha": "3ffff3b6d3f81d5c7e54ce54a2e4941135366816",
+      "size_bytes": 435,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArtilleryTowerlvl2.cpp",
+      "blob_sha": "3db1fc1a54088838c158292ce15f3a731c2dc5fe",
+      "size_bytes": 1412,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArtilleryTowerlvl2.h",
+      "blob_sha": "d233f5109585612d6ba89ddbc281e3cda6a64b8f",
+      "size_bytes": 369,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArtilleryTowerlvl3.cpp",
+      "blob_sha": "5493cfec1f088fec79d09a7b2344fd52bf1b46f2",
+      "size_bytes": 1782,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleArtilleryTowerlvl3.h",
+      "blob_sha": "14cb9c1a3ae7d3381a2fc33b5fc51cdd5db0e491",
+      "size_bytes": 390,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleMageTowerlvl1.cpp",
+      "blob_sha": "f0485a5ac4288ee4dc39fc84b41ca4ad21c47f68",
+      "size_bytes": 3108,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleMageTowerlvl1.h",
+      "blob_sha": "e5f91b55643a3d97f8d63a1a18ecadf94bd2e9d4",
+      "size_bytes": 440,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleMageTowerlvl2.cpp",
+      "blob_sha": "c78a8492aca80da40654dedc8cc8bde28b01ac1f",
+      "size_bytes": 1581,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleMageTowerlvl2.h",
+      "blob_sha": "93b38f957987b78e019195bb7838faa03cdd296d",
+      "size_bytes": 374,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleMageTowerlvl3.cpp",
+      "blob_sha": "faf403a24781a65020d8e558ff882fbb9acfd8c3",
+      "size_bytes": 2279,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/SimpleMageTowerlvl3.h",
+      "blob_sha": "8c271e2ac19e4517a7f2e4ef5302e4bf6e661006",
+      "size_bytes": 423,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/Terrain.cpp",
+      "blob_sha": "14742584a42377a6ecd9b321dc6076016efc48d6",
+      "size_bytes": 2532,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/Terrain.h",
+      "blob_sha": "db571f2748dba026bc70e436ac54ef9d7b2e02e9",
+      "size_bytes": 425,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/TotemTower.cpp",
+      "blob_sha": "a1f012cc72555cb509795362aa1a195c6d5a3931",
+      "size_bytes": 5609,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Tower/TotemTower.h",
+      "blob_sha": "4919d8ef5dbdf23a975ce5df42d94938600d796e",
+      "size_bytes": 456,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/Assassin.cpp",
+      "blob_sha": "f51d1ccb951ef50eed099cd50081fb40f6fa1683",
+      "size_bytes": 5330,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/Assassin.h",
+      "blob_sha": "3918f41b56d69554e6a13291b451d6c02bcb36fc",
+      "size_bytes": 374,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/BarrackSoldier.cpp",
+      "blob_sha": "74ae3d80581e7928b7d407dfc5af675c4104c759",
+      "size_bytes": 4489,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/BarrackSoldier.h",
+      "blob_sha": "0f5e918ebdd98628dde4dad272364331bd0916c8",
+      "size_bytes": 440,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/BaseSoldier.cpp",
+      "blob_sha": "173e82fc0c19a1fc20c8b1b0c5ff1af2e41d4f10",
+      "size_bytes": 3928,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/BaseSoldier.h",
+      "blob_sha": "507483f673154e77fec3b34befed808fab00b045",
+      "size_bytes": 1492,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/DeathKnight.cpp",
+      "blob_sha": "3b48bbf8d2627e4573398195bd43baadd9c22b4c",
+      "size_bytes": 4536,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/DeathKnight.h",
+      "blob_sha": "7542186f30336c0c81b5fac1fbb13ce02d31767a",
+      "size_bytes": 374,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/Mecha.cpp",
+      "blob_sha": "7774e5fc004fb699410af038b349b12e5eead53b",
+      "size_bytes": 5695,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/Mecha.h",
+      "blob_sha": "864e5092317d3262c289b1f11b8ea81a40637110",
+      "size_bytes": 550,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/ReinforceSoldier1.cpp",
+      "blob_sha": "12c0e9f74582f41ccfc478ec5834fb37654cce07",
+      "size_bytes": 5627,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/ReinforceSoldier1.h",
+      "blob_sha": "10a5b1f384ca34b5d433a69f50b60ba936ca25c7",
+      "size_bytes": 487,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/ReinforceSoldier2.cpp",
+      "blob_sha": "ca78961693c6f22805de47723cefbb036c1837c9",
+      "size_bytes": 5627,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/ReinforceSoldier2.h",
+      "blob_sha": "25828de8c6e60900ca66b04825f7feee869e2796",
+      "size_bytes": 487,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/Skeleton.cpp",
+      "blob_sha": "d0feeb572bcde0d9428103f3adde915ab5fcb1bf",
+      "size_bytes": 6414,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/Skeleton.h",
+      "blob_sha": "ae4850d329a4bf6bf899330be7fd5e4bec16fca4",
+      "size_bytes": 466,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/Templar.cpp",
+      "blob_sha": "9efd216756f5eb40cb199c8b5cddc9b06805d75d",
+      "size_bytes": 5342,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Soldier/Templar.h",
+      "blob_sha": "34be323e10fbc9bd2d18d3a2d4ea483ad75088d5",
+      "size_bytes": 367,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Monster/BaseMonster.cpp",
+      "blob_sha": "c316287a0e44454cbfa3591e6f7713247f155239",
+      "size_bytes": 12073,
+      "inspection": "text inspected"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Monster/BaseMonster.h",
+      "blob_sha": "88b01d6a2eb2ceee953cd87f158a27a120b5632a",
+      "size_bytes": 2347,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Monster/GroupMonster.cpp",
+      "blob_sha": "afe1bd02b81e10201e08d9ce40edce6188829d23",
+      "size_bytes": 330,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Monster/GroupMonster.h",
+      "blob_sha": "51f4aadfbfe6e3c20d22c8bce058346f365dc09d",
+      "size_bytes": 416,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/Failure.cpp",
+      "blob_sha": "139c6e2d06352a62338625ef88056922db816b50",
+      "size_bytes": 8593,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/Failure.h",
+      "blob_sha": "7c16f3733c131cf32a26a0dc960542dee4e93ebd",
+      "size_bytes": 452,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/GameOption.cpp",
+      "blob_sha": "53543067c2f25595195613cf64bd0358127da06f",
+      "size_bytes": 11711,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/GameOption.h",
+      "blob_sha": "06b40a3803cd93a8e22e7145da6df4cad02a81c4",
+      "size_bytes": 523,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/GameViewMenu.cpp",
+      "blob_sha": "f4fe3d87425033ec30e360aa1599c8c6056866e3",
+      "size_bytes": 3320,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/GameViewMenu.h",
+      "blob_sha": "6d84267eeaf281e4d182ef16f71b28d927cf3031",
+      "size_bytes": 363,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/PlayerStateMenu.cpp",
+      "blob_sha": "f54470041d534132c58b39bb618a7339b6f164d4",
+      "size_bytes": 24567,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/PlayerStateMenu.h",
+      "blob_sha": "7dc12b314db7c6bb031618f6f53614625ba21c22",
+      "size_bytes": 1939,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/TouchLayer.cpp",
+      "blob_sha": "6455f5730d2210bd73e06a3b0dbf3c8a9e509e02",
+      "size_bytes": 10169,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/TouchLayer.h",
+      "blob_sha": "fa99bca1c6a1673ae5f9c060404b38ae9d4f6740",
+      "size_bytes": 1832,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/Victory.cpp",
+      "blob_sha": "d50dab5fb2a3014b02886d1e609ed49ca6c9bfa3",
+      "size_bytes": 6718,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Classes/Layer/Victory.h",
+      "blob_sha": "61e1a6629a34c64286693eecdf9eca3ee988fa8d",
+      "size_bytes": 647,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/Comic_Book.ttf",
+      "blob_sha": "cc1c91ca326f3cdcd66d5d7d8354f6d8617677c2",
+      "size_bytes": 28160,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/Default@2x.png",
+      "blob_sha": "f90ffa8acad02923ab1965dbd7d0369b816ccd24",
+      "size_bytes": 226847,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/Marker Felt.ttf",
+      "blob_sha": "e22daff413b0ffed42d08e0bb09e03ab15e01de6",
+      "size_bytes": 4105844,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/ObelixPro.ttf",
+      "blob_sha": "0353c6aa4954b7531898ab09ce1db35d54fd5035",
+      "size_bytes": 45088,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/SohoGothicProMedium.ttf",
+      "blob_sha": "33a980833d8e28c8bf4d3761baaeff0d994f0332",
+      "size_bytes": 112288,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/arial.ttf",
+      "blob_sha": "4ba94d112d2550359d90b24a3c478125d6320eb5",
+      "size_bytes": 773852,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/cinematics_comic1-hd.plist",
+      "blob_sha": "4a7bdecc5cf8ac66ee32eb6e39495d736f9f56a0",
+      "size_bytes": 3295,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/cinematics_comic1-hd.png",
+      "blob_sha": "5142195cc62d75f067642615fba6e7f7214cc8b1",
+      "size_bytes": 1223953,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/common_spritesheet_16_a_2-hd.plist",
+      "blob_sha": "90c0d6a8d5d1ecab00bc2547fe3e337117f9df9c",
+      "size_bytes": 29046,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/common_spritesheet_16_a_2-hd.png",
+      "blob_sha": "375ea0fdc0a82a9299d7d731a6b47828331c7c19",
+      "size_bytes": 273318,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/common_spritesheet_16_na-hd.plist",
+      "blob_sha": "a69fa6808b928ac3f1f8816075142fccf986e97a",
+      "size_bytes": 51687,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/common_spritesheet_16_na-hd.png",
+      "blob_sha": "c5275dd4aeca4040629eb9cacda4f737253b6cb2",
+      "size_bytes": 3525060,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/common_spritesheet_16_na_2_IPAD2-hd.plist",
+      "blob_sha": "c04facbff8a684384e9cebfd2fa05843477833b6",
+      "size_bytes": 40182,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/common_spritesheet_16_na_2_IPAD2-hd.png",
+      "blob_sha": "f86e750fd4e7188ddff420cf04efe8ab99633d05",
+      "size_bytes": 515249,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/common_spritesheet_32-hd.plist",
+      "blob_sha": "06a593339037747f89c3b786aaef17b0c9571d81",
+      "size_bytes": 20009,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/common_spritesheet_32-hd.png",
+      "blob_sha": "cf4fde953d8c2b5e949063e5ceb3a9296183ec09",
+      "size_bytes": 271281,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/credits_scene-hd.plist",
+      "blob_sha": "024963e6c033d4ace1dc039bf6b60d81fe2a1de5",
+      "size_bytes": 4359,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/credits_scene-hd.png",
+      "blob_sha": "163c484fd4adb2c8a93fc1d0604d9f78e755fe58",
+      "size_bytes": 240168,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/creep.xml",
+      "blob_sha": "75034f206f209531aae8e97d45735b1b8626e131",
+      "size_bytes": 23959,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_desert-hd.plist",
+      "blob_sha": "0330a780e7497abe593183099ae9d316a0d83624",
+      "size_bytes": 341828,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_desert-hd.png",
+      "blob_sha": "eb29655ae20401c0c52782272a9b89535e0efbd1",
+      "size_bytes": 1128128,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_desert_3-hd.plist",
+      "blob_sha": "ab925ec36dba9313bfd4ae6f055b6461e71b2fbf",
+      "size_bytes": 61978,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_desert_3-hd.png",
+      "blob_sha": "6a9f21fa66d2285a2d52c0a9b99b5ef987847803",
+      "size_bytes": 557476,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_jungle-hd.plist",
+      "blob_sha": "9cc1eddd927e8c2bb8cec301c0472e1430c88e23",
+      "size_bytes": 543218,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_jungle-hd.png",
+      "blob_sha": "ad0dc51ee2737d884d9316e74d23f690ba02e594",
+      "size_bytes": 2948289,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_jungle_2-hd.plist",
+      "blob_sha": "4b70e884549e787569405ab17435861a0bba6f63",
+      "size_bytes": 75294,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_jungle_2-hd.png",
+      "blob_sha": "611821e79a3a0b42e9dd9ae8c673deb8dea84288",
+      "size_bytes": 274871,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_underground-hd.plist",
+      "blob_sha": "8a5d7c93f18d75abddbfc0e08958b19d66f97642",
+      "size_bytes": 236337,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_underground-hd.png",
+      "blob_sha": "34885a06d0653a3fe6f62b10444a656ff16c8dab",
+      "size_bytes": 1510227,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_underground_2-hd.plist",
+      "blob_sha": "52827fe6deeaeb04d2636ede001ff452c9bf0eb4",
+      "size_bytes": 41430,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_underground_2-hd.png",
+      "blob_sha": "8dcd20e03642ba5ea62bd369ccef5141c0d31588",
+      "size_bytes": 541204,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_underground_3-hd.plist",
+      "blob_sha": "934b638fc1fc81c3e163fd45fd35b6921eeebb9a",
+      "size_bytes": 80675,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/enemies_underground_3-hd.png",
+      "blob_sha": "dabbfc4d559b3b4bc5d44643f73971225d1f06f0",
+      "size_bytes": 365232,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/gui_menu_sprite_campaign_32-hd.plist",
+      "blob_sha": "307655014f2ee955c0145c041810ce6c9a848b2d",
+      "size_bytes": 1099,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/gui_menu_sprite_campaign_32-hd.png",
+      "blob_sha": "134d8946c92fe843d2ae51b25085d04364bea1fb",
+      "size_bytes": 104377,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/gui_menu_sprite_heroic_32-hd.plist",
+      "blob_sha": "9ca0f532993f4cf10d90f79a1fe460e43a20e64a",
+      "size_bytes": 1094,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/gui_menu_sprite_heroic_32-hd.png",
+      "blob_sha": "a29acb6634e1131b193caf512de089c3a9360625",
+      "size_bytes": 102495,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/gui_menu_sprite_iron_32-hd.plist",
+      "blob_sha": "cac728233a7dfe3e2e8d31bcaee069ae90111acb",
+      "size_bytes": 1089,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/gui_menu_sprite_iron_32-hd.png",
+      "blob_sha": "fad9155edefae9bb1c6ec36be6387f6522bb1481",
+      "size_bytes": 91369,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/gui_menu_sprite_master_32-hd.plist",
+      "blob_sha": "6b95a56e40fd5ac4f7822f9793b50402871ef5b9",
+      "size_bytes": 1093,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/gui_menu_sprite_master_32-hd.png",
+      "blob_sha": "c3d02ce7bbbb8a3c409f42a50a9c8ebdb43f3bbe",
+      "size_bytes": 230026,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/ingame_gui-hd.plist",
+      "blob_sha": "201e38af7e523809420e5366e95abd233c0a0350",
+      "size_bytes": 221758,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/ingame_gui-hd.png",
+      "blob_sha": "a4a3c7c8849ae4739a79996186cd8c0a144b348f",
+      "size_bytes": 1709510,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level0_0_monsters.plist",
+      "blob_sha": "f5f6609406a8f8d5741851f9c86763c532ebc0c9",
+      "size_bytes": 6310,
+      "inspection": "text inspected"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level0_1_monsters.plist",
+      "blob_sha": "6b0ee5bf08ee49c739fc956a492a2b9a979740fd",
+      "size_bytes": 6310,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level0_2_monsters.plist",
+      "blob_sha": "859c5460ff70d113d4e698706d308427106435f3",
+      "size_bytes": 6309,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level0_description.xml",
+      "blob_sha": "7cdfe4d4d80b2abbcd0027c98f5f16dec9bfc977",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level0_paths.plist",
+      "blob_sha": "0fc2171828db8cd47293c8076efefbf7b5ca251e",
+      "size_bytes": 119116,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level10_0_monsters.plist",
+      "blob_sha": "72976ddef2a9cf1514aaf330ab60611d3404d745",
+      "size_bytes": 6409,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level10_1_monsters.plist",
+      "blob_sha": "072348531010b11e67fcaaeba674de9e0f4490af",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level10_2_monsters.plist",
+      "blob_sha": "072348531010b11e67fcaaeba674de9e0f4490af",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level10_description.xml",
+      "blob_sha": "fea4b1cc8e452dce30b18b31d085a4544b7b7f21",
+      "size_bytes": 870,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level10_paths.plist",
+      "blob_sha": "1faae7b4f70a59ba19d427cc29e7a8353daea348",
+      "size_bytes": 164615,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level11_0_monsters.plist",
+      "blob_sha": "56ccd0fe75546aa7581aeffa79060b2190083a4f",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level11_1_monsters.plist",
+      "blob_sha": "bffe4b5e363824c265ad1ad142c3b5384ef23cca",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level11_2_monsters.plist",
+      "blob_sha": "bffe4b5e363824c265ad1ad142c3b5384ef23cca",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level11_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level11_paths.plist",
+      "blob_sha": "1a0ef985b0db56c4017c584f5034a135d50cd5ff",
+      "size_bytes": 417509,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level12_0_monsters.plist",
+      "blob_sha": "bffe4b5e363824c265ad1ad142c3b5384ef23cca",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level12_1_monsters.plist",
+      "blob_sha": "bffe4b5e363824c265ad1ad142c3b5384ef23cca",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level12_2_monsters.plist",
+      "blob_sha": "bffe4b5e363824c265ad1ad142c3b5384ef23cca",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level12_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level12_paths.plist",
+      "blob_sha": "2ec8fc9aedceeef7138bf9333d170096e3e6a783",
+      "size_bytes": 305201,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level13_paths.plist",
+      "blob_sha": "510fe9c5c01fd187a9bb20b886e5ca99380aa743",
+      "size_bytes": 291857,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level1_0_monsters.plist",
+      "blob_sha": "8f8aa4b50fb98d5f861a1630d82451243779ed32",
+      "size_bytes": 34182,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level1_1_monsters.plist",
+      "blob_sha": "f2f9a568b9d2fa74803a127e3353cc78f18a767a",
+      "size_bytes": 34182,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level1_2_monsters.plist",
+      "blob_sha": "f4f08082f79b8e812939c56e4d5064aef8b957d7",
+      "size_bytes": 34181,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level1_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level1_paths.plist",
+      "blob_sha": "bd8be547449a1fb2b7a648cd7a3b4c89c4c7dc1e",
+      "size_bytes": 146351,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level2_0_monsters.plist",
+      "blob_sha": "8f0a53f7b6bb317fefc80339e612b23d19bacad3",
+      "size_bytes": 7828,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level2_1_monsters.plist",
+      "blob_sha": "0f8dd3e8462ee5d76db6a045b3f69f2f8f7cb297",
+      "size_bytes": 7828,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level2_2_monsters.plist",
+      "blob_sha": "671f92b943c9a100b484db9468dc150e9bd75b97",
+      "size_bytes": 7827,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level2_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level2_paths.plist",
+      "blob_sha": "2db19bc598740d8ff8f7afe91c2f6611f0d1c005",
+      "size_bytes": 120430,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level3_0_monsters.plist",
+      "blob_sha": "1f0ef47f9576b7224c7980b0bc4d9bd3c1e46b24",
+      "size_bytes": 23846,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level3_1_monsters.plist",
+      "blob_sha": "fe526d978e30f9f305919d64012a3975739dfcb7",
+      "size_bytes": 23846,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level3_2_monsters.plist",
+      "blob_sha": "1e957b30d0c0bca7f805eb37761776c8c85c9c80",
+      "size_bytes": 23845,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level3_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level3_paths.plist",
+      "blob_sha": "2888dbcb683c8c4ae9aa6c5501e49b069e76c331",
+      "size_bytes": 181516,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level4_0_monsters.plist",
+      "blob_sha": "e3495d1aec75eef880bfbae0eb9bf7436d6ff666",
+      "size_bytes": 36068,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level4_1_monsters.plist",
+      "blob_sha": "8e573e19f54471cc81d28128b47a43d130a39a45",
+      "size_bytes": 36067,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level4_2_monsters.plist",
+      "blob_sha": "7a5859dd593a4594e2bb1b6e2a0029e48b3f2e7f",
+      "size_bytes": 36066,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level4_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level4_paths.plist",
+      "blob_sha": "ffe78edd445793a931559f4786d5e3540eb97949",
+      "size_bytes": 178618,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level5_0_monsters.plist",
+      "blob_sha": "61524fddc9512f1f1a92178c72caede2d0071246",
+      "size_bytes": 6407,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level5_1_monsters.plist",
+      "blob_sha": "9a1550f4ea71fdb630ed86cd564ed4623f280251",
+      "size_bytes": 4911,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level5_2_monsters.plist",
+      "blob_sha": "3521ebff011552a36fd868880267cf85c401036e",
+      "size_bytes": 4911,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level5_description.xml",
+      "blob_sha": "47fa71c6b260a8e8b758a31fdc3d6b96e338ffa6",
+      "size_bytes": 938,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level5_paths.plist",
+      "blob_sha": "e251407006e434839e3301d8267f62d224728dac",
+      "size_bytes": 257169,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level6_0_monsters.plist",
+      "blob_sha": "072348531010b11e67fcaaeba674de9e0f4490af",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level6_1_monsters.plist",
+      "blob_sha": "cd5deeabb246bed0bee50b779636ad3090d78dd0",
+      "size_bytes": 6203,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level6_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level6_paths.plist",
+      "blob_sha": "be6e7db92d073c2ca429118226e44956ab466816",
+      "size_bytes": 216394,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level7_0_monsters.plist",
+      "blob_sha": "fa56dd4d354f182ea993f188eeb7fe884a593ed7",
+      "size_bytes": 20040,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level7_1_monsters.plist",
+      "blob_sha": "eb1e169dec78466082c1086848dcffd1d9a79f57",
+      "size_bytes": 20040,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level7_2_monsters.plist",
+      "blob_sha": "78567ae55198f194727583e3539929bd6b3f09c7",
+      "size_bytes": 20039,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level7_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level7_paths.plist",
+      "blob_sha": "ea68039e5f1fa5f7ba1384accd8fb1955e8abc98",
+      "size_bytes": 192311,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level8_0_monsters.plist",
+      "blob_sha": "072348531010b11e67fcaaeba674de9e0f4490af",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level8_1_monsters.plist",
+      "blob_sha": "072348531010b11e67fcaaeba674de9e0f4490af",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level8_2_monsters.plist",
+      "blob_sha": "072348531010b11e67fcaaeba674de9e0f4490af",
+      "size_bytes": 6408,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level8_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level8_paths.plist",
+      "blob_sha": "afd48e0bb67455d54ed7c9bc7a7bcdbacf87d9c3",
+      "size_bytes": 300573,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level9_0_monsters.plist",
+      "blob_sha": "fa56dd4d354f182ea993f188eeb7fe884a593ed7",
+      "size_bytes": 20040,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level9_1_monsters.plist",
+      "blob_sha": "78567ae55198f194727583e3539929bd6b3f09c7",
+      "size_bytes": 20039,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level9_2_monsters.plist",
+      "blob_sha": "78567ae55198f194727583e3539929bd6b3f09c7",
+      "size_bytes": 20039,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level9_description.xml",
+      "blob_sha": "3be67071b6b356d1cea3fc8f2fd7e463bf6a2309",
+      "size_bytes": 933,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level9_paths.plist",
+      "blob_sha": "6ac2fe477a1cadb69d4be7cefd798139c91d9bdd",
+      "size_bytes": 169665,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/level_choice.plist",
+      "blob_sha": "54337cdcdd70e4d75a2f97ff17c5e020348ae33f",
+      "size_bytes": 2355,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/mainmenu_spritesheet_32_1-hd.plist",
+      "blob_sha": "29421faf010e1e515de08befa957d388a611ceea",
+      "size_bytes": 26088,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/mainmenu_spritesheet_32_1-hd.png",
+      "blob_sha": "4e58d5d3e1c6a2e7d4d56d2341e370b221db4390",
+      "size_bytes": 477673,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/mainmenu_spritesheet_32_2-hd.plist",
+      "blob_sha": "492962722f2407c801aded4dccdd8768346394b4",
+      "size_bytes": 21243,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/mainmenu_spritesheet_32_2-hd.png",
+      "blob_sha": "e30f66cefb1aeb44de2355daa34b157599311782",
+      "size_bytes": 656869,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_16_a-hd.plist",
+      "blob_sha": "d8879a3b9d87d2c66539bf643da104b77ce68f6b",
+      "size_bytes": 37335,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_16_a-hd.png",
+      "blob_sha": "63a93ca23910c42068bb1610c5a1426244a17b16",
+      "size_bytes": 718762,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_16_a_3-hd.plist",
+      "blob_sha": "822bfadac11d1a46cd935f0f3df7c423a7682926",
+      "size_bytes": 37622,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_16_a_3-hd.png",
+      "blob_sha": "4fffbba1f8856f5d3500708d56f1014827af8c29",
+      "size_bytes": 2487921,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_16_na-hd.plist",
+      "blob_sha": "d73681fcebc58efcd00a87abe54147130c17ffa7",
+      "size_bytes": 45192,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_16_na-hd.png",
+      "blob_sha": "127f3bd6483362c6eba1a8c936afa8e5fa2d53b0",
+      "size_bytes": 3045755,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_16_na_2-hd.plist",
+      "blob_sha": "d538f3dac8d600de5263ea23e6ac1a545899fdde",
+      "size_bytes": 23711,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_16_na_2-hd.png",
+      "blob_sha": "77a09b3945bdbfe70c1f7b600f84d840c051338d",
+      "size_bytes": 867966,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_32-hd.plist",
+      "blob_sha": "60ee7d9a53f3b12cba7af064a4e8d55c259a6041",
+      "size_bytes": 179204,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_32-hd.png",
+      "blob_sha": "dd1ee4030575af9fa8e5bd3e1d8d7b356386e6c6",
+      "size_bytes": 2432216,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_32_2-hd.plist",
+      "blob_sha": "0e18de0864932811db57de5dbcf7c8b1a462f54a",
+      "size_bytes": 219919,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/map_spritesheet_32_2-hd.png",
+      "blob_sha": "0dc16c6bb5a47b5247903d51ace3f9c0238291a7",
+      "size_bytes": 2030934,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/savage_music_theme.mp3",
+      "blob_sha": "40d33d9f3fbbd796924d1a54d6f8328b7ba2bb3f",
+      "size_bytes": 232227,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level0-hd.plist",
+      "blob_sha": "18381102db53bc73d033e9573e60b4050710bfc1",
+      "size_bytes": 18758,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level0-hd.png",
+      "blob_sha": "369164e1f82ebd1607645705c87c643d643246f6",
+      "size_bytes": 928039,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level10-hd.plist",
+      "blob_sha": "fca3ad8b596afb5b9293f7269d2a30830a7f0b63",
+      "size_bytes": 320820,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level10-hd.png",
+      "blob_sha": "7a45d8c2570f21f1e4c3d3765bda2ef4eab1bb01",
+      "size_bytes": 4246911,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level10_2-hd.plist",
+      "blob_sha": "6d9edb1c620402eaaf00ddca8c4424695b410847",
+      "size_bytes": 1057,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level10_2-hd.png",
+      "blob_sha": "a533fce6b31ff4fe0e149763a1ee54210774686e",
+      "size_bytes": 1201132,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level11-hd.plist",
+      "blob_sha": "a9077da39ebf56e13a0575813333f6e855dcc0ef",
+      "size_bytes": 11387,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level11-hd.png",
+      "blob_sha": "a050f706ce94e410e715c22b78187e5305cd996d",
+      "size_bytes": 245008,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level11_2-hd.plist",
+      "blob_sha": "543d6320464eb119e02b6b80d2ea31e57de7b0f6",
+      "size_bytes": 3515,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level11_2-hd.png",
+      "blob_sha": "fe3820b5a92b5789b7fcc6f432848aedb0116e3a",
+      "size_bytes": 1394598,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level12-hd.plist",
+      "blob_sha": "7c966bc3ce9866f7119db4eb22232fbaaf5e7d70",
+      "size_bytes": 92758,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level12-hd.png",
+      "blob_sha": "f6db4ad63b0f75c284fd9e7fc007df4e633ad5dd",
+      "size_bytes": 1314772,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level12_2-hd.plist",
+      "blob_sha": "dd042b38eea322eab8a3987f67ac7e7c1f9d9a61",
+      "size_bytes": 3025,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level12_2-hd.png",
+      "blob_sha": "2473a9c99ee05d9f28773789afec4a797663f7c3",
+      "size_bytes": 1254073,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level13-hd.plist",
+      "blob_sha": "371469ac23a1c62ab539189c922f96b34519deb5",
+      "size_bytes": 142553,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level13-hd.png",
+      "blob_sha": "9f6d87a853bc74d2669165ec3b6b122140225767",
+      "size_bytes": 1388563,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level13_2-hd.plist",
+      "blob_sha": "64c0d55e58e7f989ead3640a3905cd6808724a19",
+      "size_bytes": 1386,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level13_2-hd.png",
+      "blob_sha": "4a9c196dcbe60dd9f1b45b90c9e3426c5ab5841a",
+      "size_bytes": 766371,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level1_2-hd.plist",
+      "blob_sha": "627d5c86b59862c844e39e0331a089cd961c3a24",
+      "size_bytes": 3515,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level1_2-hd.png",
+      "blob_sha": "49fbc85dd2e9f666cd5631c67328fbd69fc5ff94",
+      "size_bytes": 834508,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level2_2-hd.plist",
+      "blob_sha": "11ff5bc5b96c681c5fc8e9222c088af0fa43109e",
+      "size_bytes": 4008,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level2_2-hd.png",
+      "blob_sha": "89b4b0d60197017e6ce80d21ded1ca98cf120646",
+      "size_bytes": 1238219,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level3_2-hd.plist",
+      "blob_sha": "10d80a1721af1da28e5dbf94013ef713367e29b6",
+      "size_bytes": 4003,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level3_2-hd.png",
+      "blob_sha": "59fc621438aa0845baa7177c3154d65fb762e208",
+      "size_bytes": 1518846,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level4-hd.plist",
+      "blob_sha": "44ac31cb6263f1e4c6af250fb08ab69bf09fe331",
+      "size_bytes": 348884,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level4-hd.png",
+      "blob_sha": "ff69896340652ebe207075276f6ced6c7563b038",
+      "size_bytes": 1309880,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level4_2-hd.plist",
+      "blob_sha": "be0b24a6df751f47f16d38451a4c294dface09af",
+      "size_bytes": 2529,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level4_2-hd.png",
+      "blob_sha": "09eccdfb8ffc5a4c0acf6e82f76fb685c0a3b949",
+      "size_bytes": 1087577,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level5-hd.plist",
+      "blob_sha": "224917e668b4de6a4774fe316dbee0cab5e89f58",
+      "size_bytes": 192053,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level5-hd.png",
+      "blob_sha": "aab545bbdd42886fe0b95b50de6d5e082aa1795c",
+      "size_bytes": 2702779,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level5_2-hd.plist",
+      "blob_sha": "50ce482388720c2c1cd07bf77bd3d77d583a3eed",
+      "size_bytes": 2037,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level5_2-hd.png",
+      "blob_sha": "f288f7a3b52537351f49fa3909dddbef646c2539",
+      "size_bytes": 911113,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level5_3-hd.plist",
+      "blob_sha": "cd2adbe227b87b71bb027f9d6024481b16d855f0",
+      "size_bytes": 2923,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level5_3-hd.png",
+      "blob_sha": "077c2ba54a01418f3b57db99d2b1237d884c5e73",
+      "size_bytes": 73030,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level6-hd.plist",
+      "blob_sha": "8a389ab07bed96543145089219b6418240693cb5",
+      "size_bytes": 128035,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level6-hd.png",
+      "blob_sha": "c68169f161b5dd28f58135938b126ddbca246b72",
+      "size_bytes": 989819,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level6_2-hd.plist",
+      "blob_sha": "e1af24f0af2d8341717b1379af19a0aac0866887",
+      "size_bytes": 3513,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level6_2-hd.png",
+      "blob_sha": "519c54fc045e7a2a9a27504194a89fc87af4d299",
+      "size_bytes": 1962125,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level7-hd.plist",
+      "blob_sha": "30b3503cb3fc3871ee8197f7be4941db398e8993",
+      "size_bytes": 260131,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level7-hd.png",
+      "blob_sha": "0c8a63cfc66dc3f1085812497d40fde5c4abcf3b",
+      "size_bytes": 1669377,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level7_2-hd.plist",
+      "blob_sha": "d0bfc0c6f772a270498f645dd6f103d4dcb3771f",
+      "size_bytes": 3513,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level7_2-hd.png",
+      "blob_sha": "5b4be0ae5d3b355cd2dfb998d55875a50695d64d",
+      "size_bytes": 1806111,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level8-hd.plist",
+      "blob_sha": "f3d01db686b074892835f6ae9d33d1032f1ae3c1",
+      "size_bytes": 82265,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level8-hd.png",
+      "blob_sha": "d7b5c1e3d53721d227a57d8a86681abe30e8466a",
+      "size_bytes": 431980,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level8_2-hd.plist",
+      "blob_sha": "bf9c177484912502e6aa7892a3f09c76d8b26f1e",
+      "size_bytes": 3020,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level8_2-hd.png",
+      "blob_sha": "8fb70438d0e80982c2c171bc59ae998aa6e5fcd1",
+      "size_bytes": 1967180,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level9_2-hd.plist",
+      "blob_sha": "b0f0fef2bcf85f085272984e35429ce2f188a6b0",
+      "size_bytes": 2531,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level9_2-hd.png",
+      "blob_sha": "9a05fc18c58acd6670d1b26552f0565da7cdfdeb",
+      "size_bytes": 1432824,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level_0_2-hd.plist",
+      "blob_sha": "bc8d8e8eca4332e263d0d7aeed76778e10321dbc",
+      "size_bytes": 3037,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/sprite_level_0_2-hd.png",
+      "blob_sha": "0a0e396efe359cbd076af1b9d2c62de3f924a05b",
+      "size_bytes": 1109512,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/tower.xml",
+      "blob_sha": "2fa006d879cc3a160848e86eb39ab6680dff1c18",
+      "size_bytes": 7626,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/towers-hd.plist",
+      "blob_sha": "12bbe9e10394906e8a826798c2eee0e8c5d2d8bd",
+      "size_bytes": 1075898,
+      "inspection": "listing only"
+    },
+    {
+      "repository": "QinyangTan/KingdomRush-Hacked",
+      "path": "Resources/towers-hd.png",
+      "blob_sha": "f6b54a3bc8086a7ce7329c854d76e8f26516c033",
+      "size_bytes": 4790040,
+      "inspection": "listing only"
+    }
+  ]
+}

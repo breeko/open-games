@@ -10,6 +10,7 @@
     "test": "bun test ./tests",
     "audit": "bun run audit:garden-guard",
     "test:garden-guard": "bun test ./tests/games/garden-guard",
+    "test:kingdom-rush": "bun test ./tests/games/kingdom-rush",
     "check:art:garden-guard": "python3 scripts/games/garden-guard/verify-reference-sprites.py",
     "audit:garden-guard": "bun scripts/games/garden-guard/audit-reference.ts"
   },

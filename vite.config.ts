@@ -8,6 +8,7 @@ export default defineConfig({
       input: {
         library: fileURLToPath(new URL('./index.html', import.meta.url)),
         'garden-guard': fileURLToPath(new URL('./games/garden-guard/index.html', import.meta.url)),
+        'kingdom-rush': fileURLToPath(new URL('./games/kingdom-rush/index.html', import.meta.url)),
       },
     },
   },
