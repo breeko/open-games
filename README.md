@@ -2,6 +2,8 @@
 
 An ad-free, touch-friendly Plants vs. Zombies reference prototype. Ten daytime levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
 
+[Play Open Games](https://opengames-breeko.vercel.app)
+
 ## Play locally
 
 ```sh
@@ -61,7 +63,7 @@ The sprite check catches missing stems/leaves, inconsistent armor canvases, sun 
 
 Game code adapted from [Tino1234567/plants-vs-zombies-game](https://github.com/Tino1234567/plants-vs-zombies-game), commit `81071c0d81c83241bb99c57284f34e861fa0c2c3`, MIT, copyright 2026 ThanosTHINOS. License preserved in THIRD-PARTY-LICENSE.txt.
 
-Original EA/PopCap artwork is separate from the code license. See [asset provenance](docs/assets.md). This is a local reference prototype; no public deployment has been made.
+Original EA/PopCap artwork is separate from the code license. See [asset provenance](docs/assets.md). This reference prototype is deployed on the personal Vercel project documented below.
 
 ## Deploy to Vercel
 
@@ -82,7 +84,7 @@ To recreate the project, use your **personal Vercel account/scope** and import t
 
 `vercel.json` supplies the framework, install, build and output settings; `package.json` pins the Node major. There is no server, database or secret configuration. Game progress saves in browser storage per device and site address. A move from the local preview to the deployed site starts a separate save.
 
-Open the production HTTPS URL on the iPad once deployment is ready. Pushes to `main` deploy through the connected Vercel GitHub integration. No Vercel account or project IDs are committed; select the personal scope during import.
+The production deployment was verified ready on November 7, 2026. Open the HTTPS URL on the iPad. Pushes to `main` deploy through the connected Vercel GitHub integration. No Vercel account or project IDs are committed; select the personal scope during import.
 
 Configuration references: [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite) and [Node.js versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
 

@@ -10,7 +10,7 @@ The `public/assets/reference` PNG poses are flattened from selected tracks in `S
 Lawn images derive from `images/background1.jpg` and `background1unsodded.jpg`, cropped and mapped to the prototype's board. Seed packet and bank images come from the same source's `images` directory. Artwork covers the ten daytime levels. Shared pose canvases keep armor-loss states aligned; packet icons fit within a standard icon area independent of world sprite size. The inherited Threepeater is reserved for future work and is not offered in this campaign.
 
 EA's policy: https://help.ea.com/en/articles/security-and-rules/ea-content-policy/
-Public asset rights remain unresolved. The user authorized publishing this prototype to the public breeko/open-games GitHub repository; no Vercel deployment has been made. The original artwork is not covered by the inherited MIT code license.
+Public asset rights remain unresolved. The user authorized publishing this prototype to the public breeko/open-games GitHub repository; the prototype is deployed at https://opengames-breeko.vercel.app in the personal breekos-projects scope. The original artwork is not covered by the inherited MIT code license.
 
 ## Alternative implementation review
 
