@@ -30,6 +30,7 @@ export class SettingsScene extends Phaser.Scene {
   private sfxButton!: Button;
   private sfxVolumeButton!: Button;
   private gridButton!: Button;
+  private autoSunButton!:Button;
   private resetButton!: Button;
 
   private resetArmed = false;
@@ -41,6 +42,7 @@ export class SettingsScene extends Phaser.Scene {
 
   create(): void {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      settings.off('changed',this.refresh,this);
       this.input.removeAllListeners();
       this.input.keyboard?.removeAllListeners();
     });
@@ -65,6 +67,7 @@ export class SettingsScene extends Phaser.Scene {
       .setDepth(DEPTH.ui);
 
     this.buildControls();
+    settings.on('changed',this.refresh,this);
     this.refresh();
     this.wireKeyboard();
 
@@ -128,14 +131,22 @@ export class SettingsScene extends Phaser.Scene {
       },
     });
 
-    this.resetButton = new Button(this, cx, 512, {
+    this.autoSunButton=new Button(this,cx,496,{
+      label:'',width:360,
+      onClick:()=>{settings.toggle('autoCollectSuns');this.refresh();},
+    });
+    this.add.text(cx,548,'Suns still fall, then fly into your sun bank.',{
+      fontFamily:'Arial, sans-serif',fontSize:'18px',color:'#bfe0b0',
+    }).setOrigin(0.5).setDepth(DEPTH.ui);
+
+    this.resetButton = new Button(this, cx, 616, {
       label: '',
       fill: 0x6b2f2f,
       stroke: 0xff8a8a,
       onClick: () => this.resetProgress(),
     });
 
-    const back = new Button(this, cx, 596, {
+    const back = new Button(this, cx, 700, {
       label: '\u25c0   Back to Menu',
       width: 300,
       height: 50,
@@ -149,6 +160,7 @@ export class SettingsScene extends Phaser.Scene {
       this.sfxButton,
       this.sfxVolumeButton,
       this.gridButton,
+      this.autoSunButton,
       this.resetButton,
       back,
     ];
@@ -183,6 +195,8 @@ export class SettingsScene extends Phaser.Scene {
     this.sfxButton.setLabel(`Sound Effects:  ${current.sfx ? 'ON' : 'OFF'}`);
     this.sfxVolumeButton.setLabel(`SFX Volume:  ${formatVolume(current.sfxVolume)}`);
     this.gridButton.setLabel(`Lawn Grid Lines:  ${current.showGrid ? 'ON' : 'OFF'}`);
+
+    this.autoSunButton.setLabel(`Auto-collect Suns:  ${current.autoCollectSuns?'ON':'OFF'}`);
 
     if (!this.resetArmed) this.resetButton.setLabel('Reset Progress');
   }

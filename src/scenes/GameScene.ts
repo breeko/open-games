@@ -113,6 +113,7 @@ export class GameScene extends Phaser.Scene {
     this.zombies = this.physics.add.group();
 
     this.ctx = {
+      sunBank:this.level.id<=2?{x:89,y:76}:{x:70,y:60},
       scene: this,
       grid: this.grid,
       resources: this.resources,
@@ -460,7 +461,7 @@ export class GameScene extends Phaser.Scene {
 
   private spawnSun(x: number, y: number): void {
     // eslint-disable-next-line no-new
-    new Sun(this, x, y, SKY_SUN_VALUE, (value) => this.resources.add(value), y < GRID.originY ? Phaser.Math.Between(GRID.originY + 40, GRID.originY + GRID.tileHeight*4.4) : undefined);
+    new Sun(this, x, y, SKY_SUN_VALUE, (value) => this.resources.add(value), y < GRID.originY ? Phaser.Math.Between(GRID.originY + 40, GRID.originY + GRID.tileHeight*4.4) : undefined,this.ctx.sunBank);
   }
 
   private drawBackground(): void {

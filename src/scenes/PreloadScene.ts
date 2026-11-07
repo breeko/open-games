@@ -5,7 +5,7 @@ import { DEPTH } from '../constants';
  * Generates every texture the game needs with the Graphics API.
  *
  * Nothing is loaded from disk, so the project runs immediately after
- * `npm install`. When you have real art, drop it into `assets/` (or `public/`)
+ * `bun install`. When you have real art, drop it into `assets/` (or `public/`)
  * and replace these calls with `this.load.image('peashooter', '...')`.
  */
 export class PreloadScene extends Phaser.Scene {

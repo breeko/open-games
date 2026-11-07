@@ -14,6 +14,7 @@
 - Prioritize gameplay, challenge, and progression over animation fidelity.
 - Support touch and responsive layouts. Target device: iPad 6th generation running iPadOS 17.7.11 (confirmed by Branko). It is above the researched Safari 16.4 browser floor; performance and interaction compatibility still require testing on the device.
 - Prefer TypeScript and explicit types.
+- Use Bun for dependency installation, scripts, tests and Vercel builds. Commit bun.lock; do not introduce npm lockfiles.
 - See `docs/stack-and-game-research.md` for the stack recommendation, evidence, and open questions. Vite + TypeScript + Canvas was approved. The implementation reuses MIT-licensed Phaser code with Canvas rendering. See README.md for current behavior.
 
 ## Branko's email rule: drafts only

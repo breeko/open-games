@@ -102,6 +102,7 @@ export interface GridPosition {
  * that scenes can be restarted safely.
  */
 export interface GameContext {
+  readonly sunBank: Readonly<{x:number;y:number}>;
   scene: Phaser.Scene;
   grid: GridManager;
   resources: ResourceManager;

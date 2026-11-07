@@ -10,6 +10,8 @@ export interface Settings {
   sfxVolume: number;
   /** Draw the lawn tile guides. */
   showGrid: boolean;
+  /** Let suns land, then fly into the sun bank without tapping. */
+  autoCollectSuns: boolean;
 }
 
 const STORAGE_KEY = 'pvz.settings.v1';
@@ -20,6 +22,7 @@ const DEFAULTS: Settings = {
   sfx: true,
   sfxVolume: 0.6,
   showGrid: true,
+  autoCollectSuns: false,
 };
 
 function readStored(): Partial<Settings> {
@@ -41,7 +44,8 @@ class SettingsStore extends Phaser.Events.EventEmitter {
 
   constructor() {
     super();
-    this.values = { ...DEFAULTS, ...readStored() };
+    const stored=readStored() ?? {};
+    this.values = { ...DEFAULTS, ...stored, autoCollectSuns:stored.autoCollectSuns===true };
   }
 
   get current(): Readonly<Settings> {
@@ -55,7 +59,7 @@ class SettingsStore extends Phaser.Events.EventEmitter {
     this.emit('changed', key);
   }
 
-  toggle(key: 'music' | 'sfx' | 'showGrid'): void {
+  toggle(key: 'music' | 'sfx' | 'showGrid' | 'autoCollectSuns'): void {
     this.set(key, !this.values[key]);
   }
 

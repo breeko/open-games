@@ -171,3 +171,12 @@ document.querySelector<HTMLButtonElement>('#trace-export')!.onclick=()=>{
 };
 
 document.querySelectorAll<HTMLButtonElement>('.more-controls button').forEach(button=>button.addEventListener('click',()=>{document.querySelector<HTMLDetailsElement>('.more-controls')!.open=false;}));
+
+const autoSuns=document.querySelector<HTMLButtonElement>('#auto-suns')!;
+function refreshAutoSuns():void {
+  autoSuns.textContent=`Auto-collect suns: ${settings.current.autoCollectSuns?'On':'Off'}`;
+  autoSuns.setAttribute('aria-pressed',String(settings.current.autoCollectSuns));
+}
+autoSuns.onclick=()=>settings.toggle('autoCollectSuns');
+settings.on('changed',refreshAutoSuns);
+refreshAutoSuns();

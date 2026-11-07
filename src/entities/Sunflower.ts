@@ -6,8 +6,8 @@ import { Plant } from './Plant';
 import { Sun } from './Sun';
 
 /**
- * Produces a sun every few seconds. The sun must be clicked to be collected
- * (unless you later add auto-collect).
+ * Produces a sun every few seconds. Suns can be tapped or
+ * automatically collected after landing when that preference is enabled.
  */
 export class Sunflower extends Plant {
   private timer = 0;
@@ -43,6 +43,6 @@ export class Sunflower extends Plant {
     // eslint-disable-next-line no-new
     new Sun(this.ctx.scene, x, y, BALANCE.sunflowerSunValue, (value) => {
       this.ctx.resources.add(value);
-    });
+    },undefined,this.ctx.sunBank);
   }
 }

@@ -6,9 +6,11 @@ An ad-free, touch-friendly Plants vs. Zombies reference prototype. Ten daytime l
 
 ## Play locally
 
+Use Bun (the project package manager is pinned in `package.json`).
+
 ```sh
-npm ci
-npm run dev
+bun install --frozen-lockfile
+bun run dev
 ```
 
 Open the printed Network URL on an iPad on the same Wi-Fi as this Mac. Keep the Mac awake and the server running. Landscape is best; portrait keeps the complete board visible. The preview uses port 5173.
@@ -17,6 +19,7 @@ Open the printed Network URL on an iPad on the same Wi-Fi as this Mac. Keep the 
 
 - Tap a seed, then a lawn square. Dragging also works.
 - Tap suns to collect 25 sun. Cards show price, recharge, or available conveyor supply.
+- Enable **More → Auto-collect suns** (or use Settings) to collect automatically. With auto-collect enabled, sky suns fall for 1.8 seconds and sunflower suns for 0.7 seconds, rest for just 100 ms, then fly to the sun bank in 300 ms and credit once on arrival. The preference saves on this device and can change mid-level; it starts off to preserve manual collection by default. Pause freezes the fall and collection flight.
 - Pause/Resume freezes the game. Switching away pauses automatically. Space also pauses.
 - Shovel removes a plant without a refund. Cancel seed / Escape clears tools and selection.
 - Choose any level with the level menu or previous/next buttons. Each cleared level saves separately.
@@ -44,12 +47,12 @@ Wave composition, simultaneous spawns, huge-wave warnings, health-triggered coun
 ## Verification
 
 ```sh
-npm test
-npm run audit
-npm run build
+bun test
+bun run audit
+bun run build
 ```
 
-Eighteen tests cover the ten-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, and save migration. Diagnostics in the game show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build includes a bundle-size advisory for Phaser, approximately 355 KB gzipped for the main script.
+Twenty-three tests cover the ten-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, and single-credit sun pickup behavior. Diagnostics in the game show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build includes a bundle-size advisory for Phaser, approximately 355 KB gzipped for the main script.
 
 Artwork regression checks (requires Python and Pillow):
 
@@ -75,8 +78,8 @@ To recreate the project, use your **personal Vercel account/scope** and import t
 | --- | --- |
 | Framework preset | Vite |
 | Root directory | Repository root (`./`) |
-| Install command | `npm ci` |
-| Build command | `npm run build` |
+| Install command | `bun install --frozen-lockfile` |
+| Build command | `bun run build` |
 | Output directory | `dist` |
 | Node.js | `24.x` |
 | Production branch | `main` |

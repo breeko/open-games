@@ -7,12 +7,11 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "node --import tsx --test tests/*.test.ts",
-    "audit": "node --import tsx scripts/audit-reference.ts"
+    "test": "bun test ./tests",
+    "audit": "bun scripts/audit-reference.ts"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
-    "tsx": "^4.20.6",
     "typescript": "~5.9.3",
     "vite": "^7.2.2"
   },
@@ -21,5 +20,6 @@
   },
   "engines": {
     "node": "24.x"
-  }
+  },
+  "packageManager": "bun@1.3.6"
 }
