@@ -65,7 +65,9 @@ Original EA/PopCap artwork is separate from the code license. See [asset provena
 
 ## Deploy to Vercel
 
-Repository: [breeko/open-games](https://github.com/breeko/open-games). Use your **personal Vercel account/scope**, then import this GitHub repository as a new project.
+Repository: [breeko/open-games](https://github.com/breeko/open-games). The repository is connected to Vercel project **opengames-breeko** in the personal **breekos-projects** scope. Production address: [opengames-breeko.vercel.app](https://opengames-breeko.vercel.app). `opengames.vercel.app` was already occupied when checked.
+
+To recreate the project, use your **personal Vercel account/scope** and import this repository.
 
 | Setting | Value |
 | --- | --- |
@@ -80,7 +82,7 @@ Repository: [breeko/open-games](https://github.com/breeko/open-games). Use your 
 
 `vercel.json` supplies the framework, install, build and output settings; `package.json` pins the Node major. There is no server, database or secret configuration. Game progress saves in browser storage per device and site address. A move from the local preview to the deployed site starts a separate save.
 
-After importing, deploy and open the resulting HTTPS URL on the iPad. Subsequent pushes to `main` can deploy automatically through Vercel's GitHub integration. No Vercel account or project IDs are committed; select the personal scope during import.
+Open the production HTTPS URL on the iPad once deployment is ready. Pushes to `main` deploy through the connected Vercel GitHub integration. No Vercel account or project IDs are committed; select the personal scope during import.
 
 Configuration references: [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite) and [Node.js versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
 
