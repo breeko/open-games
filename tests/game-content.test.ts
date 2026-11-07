@@ -1,0 +1,41 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { LEVELS, plantsForLevel, rewardForLevel } from '../src/levels';
+import { PLANT_DEFS } from '../src/constants';
+import { DIFFICULTIES, isDifficulty } from '../src/difficulty';
+
+test('each selectable level has its introductory plants without relying on earlier saves', () => {
+  assert.deepEqual(plantsForLevel(1), ['peashooter']);
+  assert.deepEqual(plantsForLevel(4), ['peashooter', 'sunflower', 'cherrybomb', 'wallnut']);
+  assert.equal(rewardForLevel(4), undefined);
+  for (const level of LEVELS) {
+    assert.ok(level.activeRows.length > 0);
+    assert.ok(level.availablePlants.every(plant => PLANT_DEFS[plant]));
+    assert.ok(level.activeRows.every(row => row >= 0 && row < 5));
+    assert.ok(level.waves.every(wave => Object.values(wave.zombies).some(count => count! > 0)));
+  }
+});
+
+test('source starting resources and non-tutorial countdowns remain intact', () => {
+  assert.deepEqual(LEVELS.map(l=>l.startingSun),[150,50,50,50,50,50,50,50,50,50]);
+  assert.deepEqual(LEVELS.map(l=>l.waves[0].delayMs),[18000,50000,18000,18000,2000,18000,18000,18000,18000,2000]);
+});
+
+test('difficulty scales are ordered and baseline preserves base definitions', () => {
+  assert.equal(DIFFICULTIES.baseline.health, 1);
+  assert.equal(DIFFICULTIES.baseline.speed, 1);
+  assert.ok(DIFFICULTIES.relaxed.health < DIFFICULTIES.baseline.health);
+  assert.ok(DIFFICULTIES.hard.health > DIFFICULTIES.baseline.health);
+  assert.equal(isDifficulty('hard'), true);
+  assert.equal(isDifficulty('__proto__'), false);
+  assert.equal(isDifficulty(null), false);
+});
+
+test('ten-level campaign includes distinct special modes and correct later plants', () => {
+  assert.equal(LEVELS.length,10);
+  assert.equal(LEVELS[4].mode,'bowling');
+  assert.equal(LEVELS[9].mode,'conveyor');
+  assert.ok(plantsForLevel(8).includes('chomper'));
+  assert.ok(plantsForLevel(9).includes('repeater'));
+  assert.deepEqual(LEVELS.map(level=>level.waves.length),[4,6,8,10,8,10,20,10,20,20]);
+});

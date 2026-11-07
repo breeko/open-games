@@ -1,0 +1,99 @@
+{
+  "exportScale": 2,
+  "board": {
+    "width": 1280,
+    "height": 960,
+    "sourceCrop": [
+      220,
+      0,
+      1020,
+      600
+    ]
+  },
+  "sprites": {
+    "peashooter": {
+      "width": 108,
+      "height": 128
+    },
+    "repeater": {
+      "width": 108,
+      "height": 128
+    },
+    "snowpea": {
+      "width": 108,
+      "height": 128
+    },
+    "sunflower": {
+      "width": 108,
+      "height": 128
+    },
+    "wallnut": {
+      "width": 94,
+      "height": 118
+    },
+    "cherrybomb": {
+      "width": 128,
+      "height": 112
+    },
+    "chomper": {
+      "width": 128,
+      "height": 144
+    },
+    "chomper-digest": {
+      "width": 128,
+      "height": 144
+    },
+    "potatomine": {
+      "width": 96,
+      "height": 68
+    },
+    "potatomine-armed": {
+      "width": 96,
+      "height": 68
+    },
+    "sun": {
+      "width": 112,
+      "height": 112
+    },
+    "mower": {
+      "width": 94,
+      "height": 78
+    },
+    "wallnut-cracked": {
+      "width": 94,
+      "height": 118
+    },
+    "wallnut-broken": {
+      "width": 94,
+      "height": 118
+    },
+    "zombie": {
+      "width": 128,
+      "height": 240
+    },
+    "zombie-cone": {
+      "width": 128,
+      "height": 240
+    },
+    "zombie-bucket": {
+      "width": 128,
+      "height": 240
+    },
+    "zombie-pole": {
+      "width": 260,
+      "height": 280
+    },
+    "zombie-pole-walk": {
+      "width": 128,
+      "height": 240
+    },
+    "pea": {
+      "width": 22,
+      "height": 22
+    },
+    "icepea": {
+      "width": 22,
+      "height": 22
+    }
+  }
+}
