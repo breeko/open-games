@@ -4,7 +4,7 @@ import { battleSnapshotSchema, type BattleSnapshot } from './save-state';
 
 export interface Event { tick:number; type:string; [key:string]:string|number|boolean }
 export interface Enemy extends Point { id:number; kind:EnemyKind; route:number; lane:number; node:number; hp:number; maxHp:number; deadAt:number; escaped:boolean; nextAttack:number; hitAt:number; attackTarget:number; healAt:number; healUntil:number; nextHeal:number; animation:string; animAt:number; facing:number }
-export interface Soldier extends Point { id:number; kind:SoldierKind; towerId:number; activeAt:number; slot:number; rally:Point; hp:number; deadAt:number; respawnAt:number; expires:number; target:number; home:Point; destination:Point; meleeSlot:number; arrived:boolean; redeploying:boolean; nextAttack:number; hitAt:number; regenAt:number; animation:string; animAt:number; facing:number }
+export interface Soldier extends Point { id:number; kind:SoldierKind; towerId:number; activeAt:number; slot:number; rally:Point; hp:number; deadAt:number; respawnAt:number; expires:number; target:number; home:Point; destination:Point; meleeSlot:number; arrived:boolean; redeploying:boolean; nextAttack:number; hitAt:number; regenAt:number; idleTicks:number; regenTicks:number; animation:string; animAt:number; facing:number }
 export interface Tower extends Point { id:number; kind:TowerKind; level:number; readyAt:number; spent:number; rally:Point; targetId:number; nextAttack:number; fireAt:number; animAt:number; target:Point; shots:number }
 export interface Projectile { id:number; kind:DamageKind; from:Point; to:Point; start:number; impact:number; target:number; damage:number; radius:number; minDamage?:number; position?:Point; speed?:number }
 export interface Effect extends Point { type:'hit'|'heal'|'fire'|'death'; start:number; duration:number; radius:number }
@@ -104,7 +104,7 @@ export class Simulation {
     this.gold-=cost;t.spent+=cost;t.level++;
     if(t.kind==='barrack')for(const s of this.soldiers.filter(s=>s.towerId===t.id)){
       if(s.hp<=0){this.release(s);s.x=t.x;s.y=t.y;s.activeAt=this.tick+12;}
-      s.kind='footmen';s.hp=SOLDIERS.footmen.hp;s.deadAt=-1;s.respawnAt=0;s.hitAt=0;s.nextAttack=this.tick+30;
+      s.regenTicks=0;if(s.hp<=0)s.idleTicks=0;s.kind='footmen';s.hp=SOLDIERS.footmen.hp;s.deadAt=-1;s.respawnAt=0;s.hitAt=0;s.nextAttack=this.tick+30;
     }
     this.log('upgrade',{holder:id,level:t.level,gold:this.gold});return true;
   }
@@ -161,7 +161,7 @@ export class Simulation {
     const home={...(t?.rally??p??{x:0,y:0})};
     const rally=t?barracksFormation(home,slot):{x:home.x+(slot===0?8.96:-8.96),y:home.y+(slot===0?8.96:-8.96)};
     const kind:SoldierKind=t?(t.level===1?'militia':'footmen'):'farmer';
-    this.soldiers.push({id:this.nextId++,kind,towerId:t?.id??0,activeAt:t?this.tick+FPS+12:this.tick+7,slot,rally,hp:SOLDIERS[kind].hp,...(t?{x:t.x,y:t.y}:rally),deadAt:-1,respawnAt:0,expires:t?Infinity:this.tick+7+20*FPS,target:0,home,destination:{...rally},meleeSlot:-1,arrived:false,redeploying:false,nextAttack:this.tick+FPS,hitAt:0,regenAt:this.tick+FPS,animation:'running',animAt:this.tick,facing:1});
+    this.soldiers.push({id:this.nextId++,kind,towerId:t?.id??0,activeAt:t?this.tick+FPS+12:this.tick+7,slot,rally,hp:SOLDIERS[kind].hp,...(t?{x:t.x,y:t.y}:rally),deadAt:-1,respawnAt:0,expires:t?Infinity:this.tick+7+20*FPS,target:0,home,destination:{...rally},meleeSlot:-1,arrived:false,redeploying:false,nextAttack:this.tick+FPS,hitAt:0,regenAt:this.tick+FPS,idleTicks:0,regenTicks:0,animation:'running',animAt:this.tick,facing:1});
   }
   spawn(kind:EnemyKind,route=0,lane=0):Enemy {
     const path=this.level.paths[route];const start=path.lanes[lane][path.start],spec=ENEMIES[kind];
@@ -184,7 +184,7 @@ export class Simulation {
     if(e.hp===0){for(const s of this.soldiers.filter(s=>s.target===e.id))this.release(s);e.deadAt=this.tick;e.animation='death';e.animAt=this.tick;this.kills++;this.gold+=spec.gold;this.log('kill',{enemy:e.id,gold:this.gold});}
   }
   private hurtSoldier(s:Soldier,value:number):void {
-    if(s.hp<=0)return;const spec=SOLDIERS[s.kind];s.hp=Math.max(0,s.hp-damageAfterArmor(value,'physical',spec.armor,0,true));
+    if(s.hp<=0)return;const spec=SOLDIERS[s.kind];s.idleTicks=0;s.hp=Math.max(0,s.hp-damageAfterArmor(value,'physical',spec.armor,0,true));
     if(s.hp===0){this.release(s);s.deadAt=this.tick;s.respawnAt=s.towerId?this.tick+10*FPS:Infinity;s.target=0;s.animation='death';s.animAt=this.tick;this.log('soldier-death',{soldier:s.id});}
   }
   private release(s:Soldier):void {
@@ -213,7 +213,7 @@ export class Simulation {
       if(this.tick<s.respawnAt)return;
       const t=this.towers.find(t=>t.id===s.towerId);if(!t)return;
       s.hp=SOLDIERS[s.kind].hp;s.activeAt=this.tick+12;s.x=t.x;s.y=t.y;s.rally=barracksFormation(t.rally,s.slot);
-      s.deadAt=-1;this.release(s);s.nextAttack=this.tick;this.log('soldier-respawn',{soldier:s.id});return;
+      s.deadAt=-1;s.idleTicks=0;s.regenTicks=0;this.release(s);s.nextAttack=this.tick;this.log('soldier-respawn',{soldier:s.id});return;
     }
     const spec=SOLDIERS[s.kind];
     if(s.redeploying){this.animate(s,'running');s.facing=s.rally.x>=s.x?1:-1;s.redeploying=!this.move(s,s.rally,spec.speed);s.regenAt=this.tick+3*FPS;return;}
@@ -241,7 +241,12 @@ export class Simulation {
     } else {
       s.hitAt=0;
       if(distance(s,s.rally)>0){s.facing=s.rally.x>=s.x?1:-1;this.animate(s,'running');this.move(s,s.rally,spec.speed);s.regenAt=this.tick+3*FPS;}
-      else {this.animate(s,'idle');if(this.tick>=s.regenAt){s.hp=Math.min(spec.hp,s.hp+spec.regen);s.regenAt=this.tick+FPS;}}
+      else {
+        this.animate(s,'idle');
+        // Flash freezes these clocks while moving/fighting; only taking damage resets the idle delay.
+        s.idleTicks=Math.min(60,s.idleTicks+1);
+        if(s.idleTicks>=60&&++s.regenTicks>=FPS){s.hp=Math.min(spec.hp,s.hp+spec.regen);s.regenTicks=0;}
+      }
     }
   }
   private stepEnemy(e:Enemy):void {

@@ -51,3 +51,19 @@ bun run build
 ```
 
 Validation: **49 Kingdom Rush tests**, **4 game-boundary tests**, production build and whitespace checks pass. All changes are within Kingdom Rush folders.
+
+## Follow-up: soldier recovery and a fixed-defense control
+
+Continued November 7 with a deliberately weak Farmlands defense: **barracks 4 and artillery 7 before starting**, leaving 25 gold. No subsequent purchases, upgrades, powers, rally moves or early calls. Original remained on Normal with no hero or purchased star upgrades. This removes the purchase/cast timing differences from the previous comparison.
+
+The original browser run ended in **defeat during wave 7**. The corrected local browser run ended in **defeat during wave 6**, 325 gold / 66 kills at tick 6,336 (including preparation time). Its [actual browser trace](playtests/2026-11-07-farmlands-static-browser.json) is preserved, along with the [original final screen](playtests/2026-11-07-farmlands-static-original.jpg) and [local final screen](playtests/2026-11-07-farmlands-static-local.jpg). These are control failures, not new attempts at the earlier winning strategy.
+
+Auditing the original `Soldier` idle/damage routines found a recovery-clock difference. Taking damage resets a 60-frame idle counter. Once that reaches 60, each idle frame advances a separate 30-frame healing counter. Both clocks freeze during movement/combat; the second clock retains partial progress even when another hit resets the first. A newly wounded unit starting both clocks at zero first heals after 89 idle frames. Our former absolute deadline restarted the full delay on every movement/combat frame and discarded this progress. Corrected the clocks, upgrade behavior and fresh respawns. Saves retain both counters; older saves safely initialize missing counters to zero.
+
+No health, damage, armor, cash, spawn or cooldown values changed. The original enemy starts charging its first melee attack immediately after acquiring a soldier; that existing behavior was verified and retained.
+
+The [fixed-defense diagnostic](playtests/2026-11-07-farmlands-static-recovery-diagnostic.json) records the default seed and 20 alternate seeds under these recovery rules, with wave-entry lives/gold and a source fingerprint. All 21 lose: 18 during wave 6 and three during wave 7. A single original wave-seven defeat falls within that local range; it does not establish equal distributions. Default-seed replay ends at tick 5,961, wave 6, 325 gold, 66 kills. These are headless diagnostics, not 21 browser runs.
+
+The earlier failed-command replay still wins with 5 lives / 297 gold at tick 8,921; the historical Pagras command replay still wins with 13 lives / 361 gold at tick 16,538. Thus this authentic recovery correction alone does **not** close the previously observed Farmlands browser gap. Repeated original controls and precisely timed purchase/cast comparisons remain necessary before calling difficulty calibrated.
+
+Follow-up validation: **53 Kingdom Rush tests**, **4 boundary tests**, production build and whitespace checks pass. Four new recovery checks cover first/subsequent healing, movement/save continuity, damage and upgrade/older-save handling. All edits remain in Kingdom Rush folders.

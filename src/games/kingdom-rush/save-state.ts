@@ -23,7 +23,7 @@ const soldierSchema = point.extend({
   activeAt: tick, slot: z.number().int().min(0).max(2), rally: point, hp: health,
   deadAt, respawnAt: deadline, expires: deadline, target: id, nextAttack: tick,
   home: point, destination: point, meleeSlot: z.number().int().min(-1).max(2), arrived: z.boolean(), redeploying: z.boolean(),
-  hitAt: tick, regenAt: tick, animation, animAt: tick, facing,
+  hitAt: tick, regenAt: tick, idleTicks:z.number().int().min(0).max(60).default(0),regenTicks:z.number().int().min(0).max(29).default(0), animation, animAt: tick, facing,
 });
 const towerSchema = point.extend({
   id: id.positive(),

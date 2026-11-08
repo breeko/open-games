@@ -1,0 +1,1018 @@
+{
+  "kind": "headless diagnostic, not browser play",
+  "sourceSha256": "390ff8841f733ae1e5c94c1cd6a016f3240523a4194d71eed46a71b785221e32",
+  "sourceFiles": [
+    "src/games/kingdom-rush/simulation.ts",
+    "src/games/kingdom-rush/content.ts",
+    "src/games/kingdom-rush/save-state.ts"
+  ],
+  "level": 2,
+  "plan": "Before start: barracks site 4, artillery site 7. No later commands, powers, early calls or rally changes.",
+  "runs": [
+    {
+      "seed": 12648430,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 5961,
+      "lives": 0,
+      "gold": 325,
+      "kills": 66,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 118
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 17,
+          "gold": 184
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 14,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 8,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6353,
+      "lives": 0,
+      "gold": 383,
+      "kills": 74,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 124
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 19,
+          "gold": 187
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 17,
+          "gold": 212
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 12,
+          "gold": 250
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6225,
+      "lives": 0,
+      "gold": 364,
+      "kills": 71,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 124
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 19,
+          "gold": 178
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 17,
+          "gold": 212
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 12,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6074,
+      "lives": 0,
+      "gold": 337,
+      "kills": 68,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 124
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 19,
+          "gold": 172
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 16,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 11,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6043,
+      "lives": 0,
+      "gold": 337,
+      "kills": 68,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 121
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 16,
+          "gold": 178
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 13,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 7,
+          "gold": 250
+        }
+      ]
+    },
+    {
+      "seed": 5,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6287,
+      "lives": 0,
+      "gold": 373,
+      "kills": 72,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 121
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 16,
+          "gold": 166
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 13,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 8,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 6,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6074,
+      "lives": 0,
+      "gold": 328,
+      "kills": 67,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 115
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 15,
+          "gold": 181
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 13,
+          "gold": 203
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 7,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 7,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6358,
+      "lives": 0,
+      "gold": 374,
+      "kills": 73,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 19,
+          "gold": 121
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 18,
+          "gold": 178
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 16,
+          "gold": 203
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 9,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 8,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6103,
+      "lives": 0,
+      "gold": 355,
+      "kills": 70,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 121
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 18,
+          "gold": 178
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 15,
+          "gold": 217
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 10,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 9,
+      "phase": "lost",
+      "wave": 7,
+      "tick": 7131,
+      "lives": 0,
+      "gold": 430,
+      "kills": 87,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 124
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 20,
+          "gold": 181
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 18,
+          "gold": 203
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 13,
+          "gold": 259
+        },
+        {
+          "wave": 7,
+          "tick": 6691,
+          "lives": 4,
+          "gold": 393
+        }
+      ]
+    },
+    {
+      "seed": 10,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6348,
+      "lives": 0,
+      "gold": 379,
+      "kills": 74,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 121
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 20,
+          "gold": 178
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 17,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 11,
+          "gold": 250
+        }
+      ]
+    },
+    {
+      "seed": 11,
+      "phase": "lost",
+      "wave": 7,
+      "tick": 7121,
+      "lives": 0,
+      "gold": 430,
+      "kills": 87,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 124
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 20,
+          "gold": 175
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 18,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 12,
+          "gold": 259
+        },
+        {
+          "wave": 7,
+          "tick": 6691,
+          "lives": 3,
+          "gold": 388
+        }
+      ]
+    },
+    {
+      "seed": 12,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6246,
+      "lives": 0,
+      "gold": 373,
+      "kills": 72,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 118
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 18,
+          "gold": 172
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 15,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 8,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 13,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6333,
+      "lives": 0,
+      "gold": 369,
+      "kills": 72,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 19,
+          "gold": 130
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 19,
+          "gold": 175
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 17,
+          "gold": 203
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 12,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 14,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 5954,
+      "lives": 0,
+      "gold": 337,
+      "kills": 68,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 52
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 124
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 17,
+          "gold": 178
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 14,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 8,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 15,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6132,
+      "lives": 0,
+      "gold": 346,
+      "kills": 69,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 121
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 16,
+          "gold": 178
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 13,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 8,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 16,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6224,
+      "lives": 0,
+      "gold": 364,
+      "kills": 71,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 115
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 17,
+          "gold": 172
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 14,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 8,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 17,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6151,
+      "lives": 0,
+      "gold": 364,
+      "kills": 71,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 124
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 19,
+          "gold": 178
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 16,
+          "gold": 217
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 11,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 18,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6343,
+      "lives": 0,
+      "gold": 379,
+      "kills": 74,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 118
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 18,
+          "gold": 175
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 15,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 9,
+          "gold": 259
+        }
+      ]
+    },
+    {
+      "seed": 19,
+      "phase": "lost",
+      "wave": 7,
+      "tick": 6772,
+      "lives": 0,
+      "gold": 393,
+      "kills": 76,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 127
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 18,
+          "gold": 169
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 15,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 9,
+          "gold": 259
+        },
+        {
+          "wave": 7,
+          "tick": 6691,
+          "lives": 1,
+          "gold": 388
+        }
+      ]
+    },
+    {
+      "seed": 20,
+      "phase": "lost",
+      "wave": 6,
+      "tick": 6165,
+      "lives": 0,
+      "gold": 364,
+      "kills": 71,
+      "checkpoints": [
+        {
+          "wave": 1,
+          "tick": 1,
+          "lives": 20,
+          "gold": 25
+        },
+        {
+          "wave": 2,
+          "tick": 1191,
+          "lives": 20,
+          "gold": 55
+        },
+        {
+          "wave": 3,
+          "tick": 2297,
+          "lives": 20,
+          "gold": 124
+        },
+        {
+          "wave": 4,
+          "tick": 3403,
+          "lives": 18,
+          "gold": 169
+        },
+        {
+          "wave": 5,
+          "tick": 4027,
+          "lives": 15,
+          "gold": 208
+        },
+        {
+          "wave": 6,
+          "tick": 5243,
+          "lives": 9,
+          "gold": 259
+        }
+      ]
+    }
+  ]
+}
