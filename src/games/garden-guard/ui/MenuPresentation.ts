@@ -3,9 +3,10 @@ import {audio} from '../audio/AudioManager';
 import {DEPTH,GAME_WIDTH,GAME_HEIGHT} from '../constants';
 import type {Environment} from '../terrain';
 
-export function menuLawn(scene:Phaser.Scene,environment:Environment):void {
- scene.add.image(GAME_WIDTH/2,GAME_HEIGHT/2,environment==='pool'?'pool':environment==='night'?'night':'lawn3').setDisplaySize(GAME_WIDTH,GAME_HEIGHT).setDepth(0);
+export function menuLawn(scene:Phaser.Scene,environment:Environment):Phaser.GameObjects.Image {
+ const lawn=scene.add.image(GAME_WIDTH/2,GAME_HEIGHT/2,environment==='pool'?'pool':environment==='night'?'night':'lawn3').setDisplaySize(GAME_WIDTH,GAME_HEIGHT).setDepth(0);
  scene.add.rectangle(0,0,GAME_WIDTH,GAME_HEIGHT,0x102315,.62).setOrigin(0).setDepth(1);
+ return lawn;
 }
 export function menuPanel(scene:Phaser.Scene,x:number,y:number,width:number,height:number,paper=false):Phaser.GameObjects.Graphics {
  const g=scene.add.graphics().setDepth(DEPTH.ui-1);
@@ -22,7 +23,9 @@ export function fitMenuArt<T extends Phaser.GameObjects.Image>(image:T,width:num
 export class MenuButton extends Phaser.GameObjects.Container {
  private readonly stones:Phaser.GameObjects.Image[]=[];
  private readonly label:Phaser.GameObjects.Text;
+ private readonly selectedMark:Phaser.GameObjects.Rectangle;
  private enabled=true;
+ private selected=false;
  constructor(scene:Phaser.Scene,x:number,y:number,text:string,action:()=>void,primary=false,width=250){
   super(scene,x,y);scene.add.existing(this);this.setDepth(DEPTH.ui+2);
   const height=64,cap=height*36/46;
@@ -30,13 +33,15 @@ export class MenuButton extends Phaser.GameObjects.Container {
    const part=scene.add.image(px,0,key).setDisplaySize(w,height);this.stones.push(part);this.add(part);
   }
   this.label=scene.add.text(0,-1,text,{fontFamily:'Georgia, serif',fontStyle:'bold',fontSize:'27px',color:primary?'#e6ff9d':'#f6efd6',stroke:'#30352d',strokeThickness:3,resolution:2}).setOrigin(.5);this.add(this.label);
+  this.selectedMark=scene.add.rectangle(0,23,72,3,0xffdc76).setVisible(false);this.add(this.selectedMark);
   this.setSize(width,height).setInteractive(new Phaser.Geom.Rectangle(0,0,width,height),Phaser.Geom.Rectangle.Contains);
   this.input!.cursor='pointer';
   this.on('pointerover',()=>{if(this.enabled)this.stones.forEach(s=>s.setTint(0xdbeac9));});
-  this.on('pointerout',()=>this.stones.forEach(s=>s.clearTint()));
+  this.on('pointerout',()=>this.stones.forEach(s=>this.selected?s.setTint(0xdbeac9):s.clearTint()));
   this.on('pointerdown',(_p:Phaser.Input.Pointer,_x:number,_y:number,event:Phaser.Types.Input.EventData)=>{
    event.stopPropagation();if(!this.enabled)return;audio.unlock();audio.sfx('click');action();
   });
  }
+ setSelected(selected:boolean):void {this.selected=selected;this.selectedMark.setVisible(selected);this.stones.forEach(s=>selected?s.setTint(0xdbeac9):s.clearTint());this.label.setColor(selected?'#e6ff9d':'#f6efd6');}
  setEnabled(enabled:boolean):void {this.enabled=enabled;this.setAlpha(enabled?1:.45);}
 }

@@ -1,284 +1,84 @@
 import Phaser from 'phaser';
-import { audio } from '../audio/AudioManager';
-import { DEPTH, GAME_HEIGHT, GAME_WIDTH, PLANT_DEFS } from '../constants';
-import { LEVELS, TOTAL_LEVELS, rewardForLevel } from '../levels';
-import { progress } from '../state/progress';
-import { Button } from '../ui/Button';
+import {audio} from '../audio/AudioManager';
+import {DEPTH,PLANT_DEFS} from '../constants';
+import {LEVELS,TOTAL_LEVELS,rewardForLevel} from '../levels';
+import {progress} from '../state/progress';
+import {MenuButton,menuLawn,menuPanel,fitMenuArt} from '../ui/MenuPresentation';
 
-const CARD_W = 214;
-const CARD_H = 208;
-const CARD_GAP = 14;
-const COLS = 5;
-const GRID_TOP = 210;
+const COLS=5,CARD_W=190,CARD_H=202,STEP_X=212,STEP_Y=234;
+const WORLDS=['Day','Night','Pool'] as const;
+interface LevelCard {container:Phaser.GameObjects.Container;outline:Phaser.GameObjects.Graphics;levelId:number;}
 
-/**
- * Adventure level map — the original's world map, flattened into a grid.
- *
- * Cleared levels show a tick and the plant they awarded; the next level is
- * highlighted; everything beyond that is locked.
- *
- * Keyboard: arrows to move, Enter to play, `ESC`/Backspace to go back.
- */
+/** All levels stay open. Completion checks and keyboard focus are visual state only. */
 export class LevelSelectScene extends Phaser.Scene {
-  private cards: Phaser.GameObjects.Container[] = [];
-  private frames: Phaser.GameObjects.Rectangle[] = [];
-  private focusIndex = 0;
-  private page=0;
-  private worldButtons:Button[]=[];
-
-  constructor() {
-    super('levels');
-  }
-
-  create(): void {
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.input.removeAllListeners();
-      this.input.keyboard?.removeAllListeners();
-    });
-    this.cards = [];
-    this.frames = [];
-
-    this.add
-      .rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, 0x101c0d)
-      .setOrigin(0, 0)
-      .setDepth(DEPTH.lawn);
-
-    this.add
-      .text(GAME_WIDTH / 2, 54, 'ADVENTURE  \u00b7  DAY, NIGHT & POOL', {
-        fontFamily: 'Arial Black, Arial, sans-serif',
-        fontSize: '40px',
-        color: '#ffe066',
-        stroke: '#2b2016',
-        strokeThickness: 6,
-      })
-      .setOrigin(0.5)
-      .setDepth(DEPTH.ui);
-
-    this.add
-      .text(
-        GAME_WIDTH / 2,
-        100,
-        `Levels cleared ${progress.completedCount} / ${TOTAL_LEVELS}   \u00b7   All levels open · Tap any card to play`,
-        { fontFamily: 'Arial, sans-serif', fontSize: '18px', color: '#bfe0b0' },
-      )
-      .setOrigin(0.5)
-      .setDepth(DEPTH.ui);
-
-    this.page=Math.floor(Math.min(progress.unlockedLevel-1,LEVELS.length-1)/10);
-    this.worldButtons=[];
-    for(const [index,label] of ['Day','Night','Pool'].entries())this.worldButtons.push(new Button(this,400+index*240,155,{label,width:200,height:44,fontSize:22,onClick:()=>{this.page=index;this.focusIndex=index*10;this.buildCards();this.applyFocus();}}));
-    this.buildCards();
-    this.buildFooter();
-    this.wireKeyboard();
-
-    // Default the focus to the next level to play.
-    this.focusIndex = Math.min(progress.unlockedLevel - 1, LEVELS.length - 1);
-    this.applyFocus();
-
-    this.cameras.main.fadeIn(200, 0, 0, 0);
-  }
-
-  /* ------------------------------------------------------------------ */
-  /*  Layout                                                             */
-  /* ------------------------------------------------------------------ */
-
-  private buildCards(): void {
-    for(const card of this.cards)card.destroy(true);this.cards=[];this.frames=[];
-    const gridWidth = COLS * CARD_W + (COLS - 1) * CARD_GAP;
-    const startX = (GAME_WIDTH - gridWidth) / 2 + CARD_W / 2;
-
-    LEVELS.slice(this.page*10,this.page*10+10).forEach((level, index) => {
-      const col = index % COLS;
-      const row = Math.floor(index / COLS);
-
-      const x = startX + col * (CARD_W + CARD_GAP);
-      const y = GRID_TOP + row * (CARD_H + CARD_GAP) + CARD_H / 2;
-
-      this.cards.push(this.buildCard(level.id, x, y));
-    });
-  }
-
-  private buildCard(levelId: number, x: number, y: number): Phaser.GameObjects.Container {
-    const level = LEVELS[levelId - 1];
-    const completed = progress.isCompleted(levelId);
-    const unlocked = true;
-    const isNext = levelId === progress.unlockedLevel && !completed;
-
-    const container = this.add.container(x, y).setDepth(DEPTH.ui);
-
-    const frame = this.add
-      .rectangle(0, 0, CARD_W, CARD_H, unlocked ? 0x1e3a1a : 0x141a12)
-      .setStrokeStyle(isNext ? 3 : 2, isNext ? 0xffe066 : completed ? 0x6fbf5f : 0x3f6b39);
-
-    const name = this.add
-      .text(-CARD_W / 2 + 16, -CARD_H / 2 + 12, level.name, {
-        fontFamily: 'Arial Black, Arial, sans-serif',
-        fontSize: '30px',
-        color: unlocked ? '#ffe066' : '#5d6b57',
-      });
-
-    const title = this.add.text(-CARD_W / 2 + 16, -CARD_H / 2 + 50, level.title, {
-      fontFamily: 'Arial, sans-serif',
-      fontSize: '16px',
-      color: unlocked ? '#e8f5e0' : '#68765f',
-    });
-
-    const blurb = this.add.text(-CARD_W / 2 + 16, -CARD_H / 2 + 72, level.blurb, {
-      fontFamily: 'Arial, sans-serif',
-      fontSize: '13px',
-      color: '#9fb79a',
-      wordWrap: { width: CARD_W - 32 },
-    });
-
-    const pieces: Phaser.GameObjects.GameObject[] = [frame, name, title, blurb];
-
-    // Reward preview (the plant this level hands over).
-    const reward = rewardForLevel(levelId);
-    if (reward) {
-      const def = PLANT_DEFS[reward];
-      pieces.push(
-        this.add
-          .image(CARD_W / 2 - 34, CARD_H / 2 - 34, def.texture)
-          .setScale(0.24)
-          .setAlpha(unlocked ? 1 : 0.35),
-        this.add
-          .text(CARD_W / 2 - 34, CARD_H / 2 - 8, def.label, {
-            fontFamily: 'Arial, sans-serif',
-            fontSize: '11px',
-            color: '#bfe0b0',
-          })
-          .setOrigin(0.5),
-      );
-    }
-
-    // Status badge.
-    if (!unlocked) {
-      pieces.push(
-        this.add.rectangle(0, 0, CARD_W, CARD_H, 0x050a05, 0.55),
-        this.add
-          .text(-CARD_W / 2 + 16, CARD_H / 2 - 38, '\u25a0  LOCKED', {
-            fontFamily: 'Arial Black, Arial, sans-serif',
-            fontSize: '20px',
-            color: '#8a9683',
-          }),
-      );
-    } else if (completed) {
-      pieces.push(
-        this.add
-          .text(-CARD_W / 2 + 16, CARD_H / 2 - 30, '\u2714  CLEARED', {
-            fontFamily: 'Arial, sans-serif',
-            fontSize: '15px',
-            color: '#9ff07a',
-            fontStyle: 'bold',
-          }),
-      );
-    } else {
-      pieces.push(
-        this.add
-          .text(-CARD_W / 2 + 16, CARD_H / 2 - 30, isNext ? '\u25b6  PLAY' : '', {
-            fontFamily: 'Arial, sans-serif',
-            fontSize: '15px',
-            color: '#ffe066',
-            fontStyle: 'bold',
-          }),
-      );
-    }
-
-    container.add(pieces);
-    container.setSize(CARD_W, CARD_H);
-    container.setInteractive(
-      new Phaser.Geom.Rectangle(0, 0, CARD_W, CARD_H),
-      Phaser.Geom.Rectangle.Contains,
-    );
-
-    if (unlocked) {
-      container.on('pointerdown', (
-        _p: Phaser.Input.Pointer,
-        _lx: number,
-        _ly: number,
-        event: Phaser.Types.Input.EventData,
-      ) => {
-        event.stopPropagation();
-        audio.sfx('click');
-        this.play(levelId);
-      });
-    }
-
-    this.frames.push(frame);
-    return container;
-  }
-
-  private buildFooter(): void {
-    new Button(this, GAME_WIDTH / 2, GAME_HEIGHT - 52, {
-      label: '\u25c0   Back to Menu',
-      width: 300,
-      height: 50,
-      fontSize: 20,
-      onClick: () => this.goBack(),
-    });
-
-    this.add
-      .text(
-        24,
-        GAME_HEIGHT - 44,
-        'Arrows: move   \u00b7   Enter: play   \u00b7   Clear a level to unlock the next plant',
-        { fontFamily: 'Arial, sans-serif', fontSize: '16px', color: '#7f9679' },
-      )
-      .setDepth(DEPTH.ui);
-  }
-
-  private wireKeyboard(): void {
-    const keyboard = this.input.keyboard;
-    if (!keyboard) return;
-
-    keyboard.on('keydown-LEFT', () => this.moveFocus(-1));
-    keyboard.on('keydown-RIGHT', () => this.moveFocus(1));
-    keyboard.on('keydown-UP', () => this.moveFocus(-COLS));
-    keyboard.on('keydown-DOWN', () => this.moveFocus(COLS));
-    keyboard.on('keydown-ENTER', () => this.play(LEVELS[this.focusIndex].id));
-    keyboard.on('keydown-SPACE', () => this.play(LEVELS[this.focusIndex].id));
-    keyboard.on('keydown-ESC', () => this.goBack());
-    keyboard.on('keydown-BACKSPACE', () => this.goBack());
-  }
-
-  /* ------------------------------------------------------------------ */
-  /*  Behaviour                                                          */
-  /* ------------------------------------------------------------------ */
-
-  private moveFocus(delta: number): void {
-    this.focusIndex = Phaser.Math.Wrap(this.focusIndex + delta, 0, LEVELS.length);
-    this.applyFocus();
-  }
-
-  private applyFocus(): void {
-    if(Math.floor(this.focusIndex/10)!==this.page){this.page=Math.floor(this.focusIndex/10);this.buildCards();}
-    this.worldButtons.forEach((button,index)=>button.setLabel(`${index===this.page?'▶ ':''}${['Day','Night','Pool'][index]}`));
-    this.frames.forEach((frame, index) => {
-      const level = LEVELS[index+this.page*10];
-      const focused = index+this.page*10 === this.focusIndex;
-      const color = progress.isCompleted(level.id)
-        ? 0x6fbf5f
-        : level.id === progress.unlockedLevel
-          ? 0xffe066
-          : 0x3f6b39;
-
-      frame.setStrokeStyle(focused ? 4 : 2, color);
-    });
-  }
-
-  private play(levelId: number): void {
-
-    this.cameras.main.fadeOut(150, 0, 0, 0);
-    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-      this.scene.start('seeds', { levelId });
-    });
-  }
-
-  private goBack(): void {
-    audio.sfx('click');
-    this.cameras.main.fadeOut(150, 0, 0, 0);
-    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-      this.scene.start('menu');
-    });
-  }
+ private cards:LevelCard[]=[];
+ private panel?:Phaser.GameObjects.Graphics;
+ private focusIndex=0;
+ private page=0;
+ private tabs:MenuButton[]=[];
+ private lawn!:Phaser.GameObjects.Image;
+ private leaving=false;
+ constructor(){super('levels');}
+ create():void {
+  this.cards=[];this.panel=undefined;this.tabs=[];this.leaving=false;
+  this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>{this.input.removeAllListeners();this.input.keyboard?.removeAllListeners();});
+  this.focusIndex=Math.min(progress.unlockedLevel-1,LEVELS.length-1);this.page=Math.floor(this.focusIndex/10);
+  this.lawn=menuLawn(this,'day');
+  this.add.text(640,70,'Adventure',{fontFamily:'Georgia, serif',fontStyle:'bold',fontSize:'46px',color:'#fff1ba',stroke:'#38291e',strokeThickness:5,resolution:2}).setOrigin(.5).setDepth(DEPTH.ui);
+  this.add.text(640,115,`✓ ${progress.completedCount} / ${TOTAL_LEVELS}`,{fontFamily:'Arial, sans-serif',fontSize:'19px',color:'#d9e8c3',resolution:2}).setOrigin(.5).setDepth(DEPTH.ui);
+  WORLDS.forEach((label,index)=>this.tabs.push(new MenuButton(this,390+index*250,180,label,()=>{
+   if(this.leaving)return;this.page=index;this.focusIndex=index*10;this.buildCards();this.applyFocus();
+  },false,200)));
+  this.buildCards();this.applyFocus();
+  new MenuButton(this,640,816,'‹ Menu',()=>this.goBack(),false,250);
+  this.wireKeyboard();this.cameras.main.fadeIn(160);
+ }
+ private buildCards():void {
+  for(const card of this.cards)card.container.destroy(true);this.cards=[];this.panel?.destroy();
+  this.lawn.setTexture(this.page===2?'pool':this.page===1?'night':'lawn3');
+  const levels=LEVELS.slice(this.page*10,this.page*10+10),rows=Math.ceil(levels.length/COLS),columns=Math.min(COLS,levels.length);
+  this.panel=menuPanel(this,640,467,columns*STEP_X+36,rows*STEP_Y+12);
+  levels.forEach((level,index)=>{
+   const row=Math.floor(index/COLS),items=Math.min(COLS,levels.length-row*COLS);
+   const x=640+(index%COLS-(items-1)/2)*STEP_X,y=467+(row-(rows-1)/2)*STEP_Y;
+   const container=this.add.container(x,y).setDepth(DEPTH.ui);
+   const paper=menuPanel(this,0,0,CARD_W,CARD_H,true);
+   const number=this.add.text(0,-64,level.name,{fontFamily:'Georgia, serif',fontStyle:'bold',fontSize:'36px',color:'#3d4b2d',resolution:2}).setOrigin(.5);
+   const plant=rewardForLevel(level.id)??level.availablePlants[level.availablePlants.length-1];
+   const icon=fitMenuArt(this.add.image(0,23,PLANT_DEFS[plant].texture),108,104);
+   const outline=this.add.graphics();container.add([paper,number,icon,outline]);
+   if(progress.isCompleted(level.id)){
+    const badge=this.add.circle(68,-70,16,0x4e6b35);
+    const check=this.add.text(68,-71,'✓',{fontFamily:'Arial, sans-serif',fontStyle:'bold',fontSize:'23px',color:'#fff2ba',resolution:2}).setOrigin(.5);
+    container.add([badge,check]);
+   }
+   container.setSize(CARD_W,CARD_H).setInteractive(new Phaser.Geom.Rectangle(0,0,CARD_W,CARD_H),Phaser.Geom.Rectangle.Contains);container.input!.cursor='pointer';
+   container.on('pointerdown',(_p:Phaser.Input.Pointer,_x:number,_y:number,event:Phaser.Types.Input.EventData)=>{event.stopPropagation();this.play(level.id);});
+   container.on('pointerover',()=>this.paintOutline(outline,true));
+   container.on('pointerout',()=>this.paintOutline(outline,level.id-1===this.focusIndex));
+   this.cards.push({container,outline,levelId:level.id});
+  });
+ }
+ private paintOutline(outline:Phaser.GameObjects.Graphics,focused:boolean):void {
+  outline.clear();if(focused)outline.lineStyle(5,0xffdb76).strokeRoundedRect(-CARD_W/2-3,-CARD_H/2-3,CARD_W+6,CARD_H+6,19);
+ }
+ private applyFocus():void {
+  if(Math.floor(this.focusIndex/10)!==this.page){this.page=Math.floor(this.focusIndex/10);this.buildCards();}
+  this.tabs.forEach((tab,index)=>tab.setSelected(index===this.page));
+  this.cards.forEach(card=>this.paintOutline(card.outline,card.levelId-1===this.focusIndex));
+ }
+ private wireKeyboard():void {
+  const keyboard=this.input.keyboard;if(!keyboard)return;
+  keyboard.on('keydown-LEFT',()=>this.moveFocus(-1));keyboard.on('keydown-RIGHT',()=>this.moveFocus(1));
+  keyboard.on('keydown-UP',()=>this.moveFocus(-COLS));keyboard.on('keydown-DOWN',()=>this.moveFocus(COLS));
+  keyboard.on('keydown-ENTER',()=>this.play(LEVELS[this.focusIndex].id));keyboard.on('keydown-SPACE',()=>this.play(LEVELS[this.focusIndex].id));
+  keyboard.on('keydown-ESC',()=>this.goBack());keyboard.on('keydown-BACKSPACE',()=>this.goBack());
+ }
+ private moveFocus(delta:number):void {if(this.leaving)return;this.focusIndex=Phaser.Math.Wrap(this.focusIndex+delta,0,LEVELS.length);this.applyFocus();}
+ private play(levelId:number):void {audio.sfx('click');this.navigate('seeds',{levelId});}
+ private goBack():void {this.navigate('menu');}
+ private navigate(key:string,data?:{levelId:number}):void {
+  if(this.leaving)return;this.leaving=true;
+  this.cameras.main.fadeOut(120);this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE,()=>this.scene.start(key,data));
+ }
 }

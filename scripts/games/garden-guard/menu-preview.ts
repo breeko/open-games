@@ -10,9 +10,10 @@ const screen=document.querySelector<HTMLSelectElement>('#screen')!,level=documen
 const game=new Phaser.Game({type:Phaser.CANVAS,parent:'game-root',width:1280,height:960,audio:{noAudio:true},scale:{mode:Phaser.Scale.FIT},physics:{default:'arcade',arcade:{gravity:{x:0,y:0}}},scene:[PreloadScene,MainMenuScene,SeedSelectScene,RewardScene,LevelSelectScene,GameScene]});
 function show(){
  for(const scene of game.scene.getScenes(true))game.scene.stop(scene.scene.key);
- game.scene.start(screen.value==='seeds'?'seeds':'reward',{levelId:Number(level.value),firstClear:screen.value==='reward'});
+ game.scene.start(screen.value==='levels'?'levels':screen.value==='seeds'?'seeds':'reward',{levelId:Number(level.value),firstClear:screen.value==='reward'});
  document.querySelector('#status')!.textContent='Preview · gameplay and saves use the existing rules';
 }
 screen.onchange=show;level.onchange=show;
 size.onchange=()=>{const root=document.querySelector<HTMLDivElement>('#game-root')!;root.style.width=size.value+'px';root.style.height=Number(size.value)*.75+'px';game.scale.setParentSize(Number(size.value),Number(size.value)*.75);};
-game.events.once('assets-ready',show);
+// Let the title scene finish creating before stopping it for the preview.
+game.events.once('assets-ready',()=>setTimeout(show,0));
