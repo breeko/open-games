@@ -1,3 +1,4 @@
+import {SKILLS,SKILL_IDS,NO_POWER_UPGRADES,fireStats,soldierSpec,type PowerLoadout} from './upgrades';
 import {barracksSoldier,maxTowerTier,POWERS,SOLDIERS,TOWERS,TOWER_KINDS,type Level,type TowerKind} from './content';
 
 const number=(value:number):string=>Number(value.toFixed(2)).toString();
@@ -19,8 +20,8 @@ function table(parent:HTMLElement,headings:string[]):HTMLTableSectionElement {
   for(const text of headings){const th=node('th',text);th.scope='col';row.append(th);}head.append(row);const body=node('tbody');table.append(head,body);wrapper.append(table);parent.append(wrapper);return body;
 }
 
-export type GuideTopic='all'|TowerKind|'powers';
-export function renderFieldGuide(parent:HTMLElement,topic:GuideTopic,level:Level,wave:number,selected?:{kind:TowerKind;level:number}):void {
+export type GuideTopic='all'|TowerKind|'powers'|'training';
+export function renderFieldGuide(parent:HTMLElement,topic:GuideTopic,level:Level,wave:number,selected?:{kind:TowerKind;level:number;poison:number;thorns:number;deathRay:number;teleport:number},powerUpgrades:PowerLoadout=NO_POWER_UPGRADES):void {
   parent.replaceChildren();parent.dataset.topic=topic;
   for(const kind of TOWER_KINDS){
     if(topic!=='all'&&topic!==kind)continue;
@@ -46,16 +47,17 @@ export function renderFieldGuide(parent:HTMLElement,topic:GuideTopic,level:Level
       body.append(row);
     }
     paragraph(section,`Available here now: tiers 1–${cap}. Cost is the price of this purchase / total gold invested. Upgrades add the listed cost; selling returns 60% of gold invested.`);
+    if(kind==='archer'||kind==='mage'){for(const skill of SKILL_IDS){const spec=SKILLS[skill];if(spec.kind!==kind)continue;const title=node('h4',`${spec.name}${selected?.kind===kind&&selected.level===4?` · ${selected[skill]}/3`:''}`);section.append(title);paragraph(section,`${spec.description} Purchase costs: ${spec.costs.join(' / ')} gold. Requires ${kind==='archer'?'Rangers':'Arcane Wizard'}.`);}}
     if(kind==='barrack')paragraph(section,`Rally radius: ${spec.range[0]}. Idle recovery: ${SOLDIERS.militia.regen} / ${SOLDIERS.footmen.regen} / ${SOLDIERS.knight.regen} HP per second at tiers 1 / 2 / 3, after the idle delay. Upgrading restores soldier health.`);
     if(kind==='engineer')paragraph(section,'Fires every 3 seconds. Shell release takes about 0.33s, then flight takes 0.9s. These delays are part of the attack sequence, not extra time added to the firing interval.');
   }
   if(topic==='all'||topic==='powers'){
-    const troops=card(parent,'⚑ Reinforcements'),farmer=SOLDIERS.farmer;
+    const troops=card(parent,`⚑ Reinforcements · upgrade ${powerUpgrades.reinforcements}/5`),farmer=soldierSpec('farmer',powerUpgrades.reinforcements),stats=fireStats(powerUpgrades.fire);
     paragraph(troops,`Free · ${POWERS.reinforcements.cooldown}s cooldown · ${POWERS.reinforcements.count} soldiers · ${POWERS.reinforcements.lifetime}s lifetime, or until killed.`);
-    paragraph(troops,`Each soldier: ${farmer.hp} HP, ${damage(farmer.damage)} physical damage every ${number(farmer.cooldown)}s, ${farmer.armor*100}% armor. Recovers ${farmer.regen} HP per second while idle after the recovery delay. Place on a road to block ground enemies; cannot attack flying enemies.`);
-    const fire=card(parent,'☄ Rain of Fire');
-    paragraph(fire,`Free · ${POWERS.fire.cooldown}s cooldown · ${POWERS.fire.count} fireballs · ${POWERS.fire.minDamage}–${POWERS.fire.maxDamage} damage per fireball to every enemy hit · blast radius ${POWERS.fire.radius}.`);
-    paragraph(fire,`Ignores physical armor and magic resistance. Hits ground and flying enemies. A target hit by all three takes ${POWERS.fire.count*POWERS.fire.minDamage}–${POWERS.fire.count*POWERS.fire.maxDamage} damage; scattered impacts can miss. There is no burning ground upgrade in this version.`);
+    paragraph(troops,`Each soldier: ${farmer.hp} HP, ${damage(farmer.damage)} physical damage every ${number(farmer.cooldown)}s, ${farmer.armor*100}% armor. Recovers ${farmer.regen} HP per second while idle after the recovery delay. Place on a road to block ground enemies; ${powerUpgrades.reinforcements===5?'also throws 24–40 damage spears at distant ground and flying enemies (range 166.4).':'cannot attack flying enemies.'}`);
+    const fire=card(parent,`☄ Rain of Fire · upgrade ${powerUpgrades.fire}/5`);
+    paragraph(fire,`Free · ${stats.cooldown}s cooldown · ${stats.count} targeted fireballs${powerUpgrades.fire===5?' + 5 across the roads':''} · ${stats.minDamage}–${stats.maxDamage} damage per fireball to every enemy hit · blast radius ${stats.radius}.`);
+    paragraph(fire,`Ignores physical armor and magic resistance. Hits ground and flying enemies. A target hit by all targeted fireballs takes ${stats.count*stats.minDamage}–${stats.count*stats.maxDamage} damage; scattered impacts can miss. ${powerUpgrades.fire>=2?`Ground patches deal ${powerUpgrades.fire>=4?'20–30':'10–20'} physical damage per pulse for ${powerUpgrades.fire>=4?'10':'5'}s, affecting ground enemies only.`:'Train Scorched Earth to leave burning ground.'}`);
     paragraph(fire,'Calling a wave early advances both power cooldowns by the remaining countdown. Southport unlocks reinforcements in wave 3 and Rain of Fire in wave 7; other maps unlock both when battle starts.');
     if(level.elfCamp){const elf=card(parent,'Silveroak elves'),spec=SOLDIERS.elf;paragraph(elf,`Repair the camp: 100 gold. Hire: 100 per elf, up to four living elves. Each has ${spec.hp} HP and ${damage(spec.damage)} physical melee/bow damage; melee every ${number(spec.cooldown)}s, bow every 1.5s. Bow range 204.8. Elves are not automatically replaced when killed.`);}
   }

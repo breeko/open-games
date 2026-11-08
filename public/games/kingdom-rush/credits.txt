@@ -46,3 +46,7 @@ See level05-manifest.json and silveroak-forest.md in the source documentation.
 The Citadel (map 6) uses the same pinned visual source. Original paths, sites,
 waves, advanced mage and enemy/boss numeric facts target Flash v1.13.
 See level06-manifest.json and the-citadel.md in the source documentation.
+
+Ranger/Arcane skills and the power star-upgrade chains use factual numeric
+research from the same Flash v1.13 binary. See skills-manifest.json and
+skills-and-power-upgrades.md in the source documentation for rules and limits.

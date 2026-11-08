@@ -2,6 +2,7 @@ import { projectilePose } from './collision';
 import rawVisuals from './reference/visuals.json';
 import rawDecorations from './reference/decorations.json';
 import { ASPECT, ENEMIES, SOLDIERS, TOWERS, type Point, type TowerKind } from './content';
+import {soldierSpec,fireStats} from './upgrades';
 import { Simulation, type Enemy, type Soldier, type Tower } from './simulation';
 
 interface Frame { page:number; region:number[]; original:number[]; trim:number[] }
@@ -72,14 +73,19 @@ export class Renderer {
   private enemy(e:Enemy,sim:Simulation):void {
     if(e.escaped||e.deadAt>=0&&sim.tick-e.deadAt>60)return;
     const spec=ENEMIES[e.kind],dead=e.hp===0;
-    this.template(spec.template,e,sim.tick-e.animAt,e.animation,e.facing<0,dead?Math.min(1,(60-(sim.tick-e.deadAt))/20):1);
+    this.template(spec.template,e,sim.tick-e.animAt,e.rootTicks>0||e.teleportTicks>0?'idle':e.animation,e.facing<0,dead?Math.min(1,(60-(sim.tick-e.deadAt))/20):1);
+    if(!dead&&e.poisonTicks>0){this.ctx.fillStyle='#9fe246';this.ctx.beginPath();this.ctx.arc(e.x,e.y-24,4,0,Math.PI*2);this.ctx.fill();}
+    if(!dead&&e.rootTicks>0){this.ctx.strokeStyle='#75af48';this.ctx.lineWidth=3;this.ctx.beginPath();this.ctx.ellipse(e.x,e.y-3,19,8,0,0,Math.PI*2);this.ctx.moveTo(e.x-15,e.y);this.ctx.lineTo(e.x-9,e.y-23);this.ctx.moveTo(e.x+15,e.y);this.ctx.lineTo(e.x+7,e.y-20);this.ctx.stroke();}
+    if(!dead&&e.teleportTicks>0){this.ctx.strokeStyle='#c699ff';this.ctx.lineWidth=4;this.ctx.beginPath();this.ctx.ellipse(e.x,e.y,25,12,0,0,Math.PI*2);this.ctx.stroke();}
     if(!dead)this.health(e,e.hp,e.maxHp,e.kind==='juggernaut'?120:e.kind==='gargoyle'?78:e.kind==='ogre'||e.kind==='marauder'?55:34);
   }
   private soldier(s:Soldier,sim:Simulation):void {
     if(s.hp===0&&sim.tick-s.deadAt>45)return;
     const bowAge=sim.tick-(s.nextShot-45),bow=s.kind==='elf'&&bowAge>=0&&bowAge<15;
-    this.template(SOLDIERS[s.kind].template,s,bow?bowAge:sim.tick-s.animAt,bow?'shoot':s.animation,s.facing<0,s.hp===0?Math.min(1,(45-(sim.tick-s.deadAt))/15):1);
-    if(s.hp>0)this.health(s,s.hp,SOLDIERS[s.kind].hp,30);
+    const spec=soldierSpec(s.kind,s.reinforcementRank);
+    this.template(spec.template,s,bow?bowAge:sim.tick-s.animAt,bow?'shoot':s.kind==='farmer'&&s.spearCast>0?'idle':s.animation,s.facing<0,s.hp===0?Math.min(1,(45-(sim.tick-s.deadAt))/15):1);
+    if(s.hp>0)this.health(s,s.hp,spec.hp,30);
+    if(s.hp>0&&s.reinforcementRank>0){const c=this.ctx;c.fillStyle=['','#deb66f','#a8bdcd','#bdcc82','#c4a0e1','#f5cf68'][s.reinforcementRank];c.fillRect(s.x-4,s.y-7,8,9);}
   }
   draw(sim:Simulation,selected:number|null,mode:'none'|'rally'|'fire'|'reinforcements',pointer:Point|null,debug=false):void {
     const c=this.ctx,dpr=Math.min(1.5,window.devicePixelRatio||1);
@@ -97,6 +103,8 @@ export class Renderer {
       if(h.id===selected){c.strokeStyle='#ffe6a0';c.lineWidth=3;c.beginPath();c.ellipse(h.pos.x,h.pos.y-8,42,24,0,0,Math.PI*2);c.stroke();}
       if(debug){c.fillStyle='#fff';c.font='bold 13px sans-serif';c.fillText(String(h.id),h.pos.x-4,h.pos.y+16);}
     }
+    for(const burn of sim.burns){c.fillStyle='rgba(224,88,28,.22)';c.strokeStyle='#e6a052';c.beginPath();c.ellipse(burn.x,burn.y,64,44.8,0,0,Math.PI*2);c.fill();c.stroke();}
+    for(const portal of sim.portals){c.strokeStyle='#b88bf2';c.lineWidth=4;c.beginPath();c.ellipse(portal.x,portal.y,32,22.4,0,0,Math.PI*2);c.stroke();}
     const objects:({kind:'tower';value:Tower}|{kind:'enemy';value:Enemy}|{kind:'soldier';value:Soldier})[]=[...sim.towers.map(value=>({kind:'tower' as const,value})),...sim.enemies.map(value=>({kind:'enemy' as const,value})),...sim.soldiers.filter(s=>sim.tick>=s.activeAt).map(value=>({kind:'soldier' as const,value}))];
     objects.sort((a,b)=>a.value.y-b.value.y);
     for(const object of objects){
@@ -112,16 +120,16 @@ export class Renderer {
     }
     for(const p of sim.projectiles){
       if(sim.tick<p.start)continue;
-      if(p.beam!==undefined){c.strokeStyle='#df95ff';c.lineWidth=5;c.beginPath();c.moveTo(p.from.x,p.from.y);c.lineTo(p.to.x,p.to.y);c.stroke();continue;}
+      if(p.beam!==undefined){c.strokeStyle=p.disintegrate?'#fff0b3':'#df95ff';c.lineWidth=5;c.beginPath();c.moveTo(p.from.x,p.from.y);c.lineTo(p.to.x,p.to.y);c.stroke();continue;}
       const {x,y,angle}=projectilePose(p,sim.tick);
       c.save();c.translate(x,y);
-      if(p.kind==='physical'){c.rotate(angle);c.strokeStyle='#3b281a';c.lineWidth=2;c.beginPath();c.moveTo(-7,0);c.lineTo(7,0);c.stroke();}
+      if(p.kind==='physical'){c.rotate(angle);c.strokeStyle=p.poison?'#8db843':p.spear?'#cad5d7':'#3b281a';c.lineWidth=p.spear?3:2;c.beginPath();c.moveTo(-7,0);c.lineTo(7,0);c.stroke();}
       else {c.shadowColor=p.kind==='magic'?'#71d7ff':'#ff8b3f';c.shadowBlur=10;c.fillStyle=p.kind==='magic'?'#aff6ff':p.kind==='true'?'#ffb54e':'#333535';c.beginPath();c.arc(0,0,p.kind==='true'?10:5,0,Math.PI*2);c.fill();}
       c.restore();
     }
     for(const shot of sim.hostileProjectiles){c.fillStyle=shot.kind==='arrow'?'#d2a173':shot.kind==='missile'?'#ef804a':'#8d9c82';c.beginPath();c.arc(shot.position.x,shot.position.y,shot.kind==='arrow'?3:8,0,Math.PI*2);c.fill();}
     for(const effect of sim.effects){if(effect.type==='egg'){this.template('enemy_spider_egg',effect,sim.tick-effect.start);continue;}const fraction=(sim.tick-effect.start)/effect.duration;c.globalAlpha=1-fraction;c.strokeStyle=effect.type==='heal'?'#95f979':effect.type==='fire'?'#ffc36a':'#e7d5ac';c.lineWidth=effect.type==='fire'?7:3;c.beginPath();c.ellipse(effect.x,effect.y,effect.radius*(.3+fraction*.7),effect.radius*ASPECT*(.3+fraction*.7),0,0,Math.PI*2);c.stroke();c.globalAlpha=1;}
-    if(pointer&&mode!=='none'){c.fillStyle=mode==='fire'?'rgba(255,111,53,.2)':'rgba(149,217,237,.25)';c.strokeStyle=mode==='fire'?'#ffd09d':'#cbf4ff';c.lineWidth=2;c.beginPath();c.ellipse(pointer.x,pointer.y,mode==='fire'?60:35,(mode==='fire'?60:35)*ASPECT,0,0,Math.PI*2);c.fill();c.stroke();}
+    if(pointer&&mode!=='none'){c.fillStyle=mode==='fire'?'rgba(255,111,53,.2)':'rgba(149,217,237,.25)';c.strokeStyle=mode==='fire'?'#ffd09d':'#cbf4ff';c.lineWidth=2;c.beginPath();c.ellipse(pointer.x,pointer.y,mode==='fire'?fireStats(sim.powerUpgrades.fire).radius:35,(mode==='fire'?fireStats(sim.powerUpgrades.fire).radius:35)*ASPECT,0,0,Math.PI*2);c.fill();c.stroke();}
     if(sim.paused||sim.phase==='won'||sim.phase==='lost'){
       c.fillStyle='rgba(20,30,22,.68)';c.fillRect(0,0,1024,768);c.save();c.translate(512,0);c.scale(this.spriteAspect,1);c.textAlign='center';c.fillStyle='#fff1c8';c.font='bold 56px Georgia';c.fillText(sim.paused?'Paused':sim.phase==='won'?'Victory!':'The road has fallen',0,350);c.font='23px Georgia';c.fillText(sim.paused?'Resume when you’re ready.':sim.phase==='won'?`${sim.lives} lives saved · ${sim.kills} enemies defeated`:'Try a different defense. Barracks buy your towers time.',0,398);c.restore();
     }

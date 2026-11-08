@@ -3,7 +3,9 @@ import { maxTowerTier, distance, FPS, getLevel, LEVELS, TOWER_KINDS, TOWERS, typ
 import { Renderer } from './render';
 import {renderFieldGuide,towerName,towerSummary,type GuideTopic} from './field-guide';
 import { Simulation } from './simulation';
-import { gameStores } from './persistence';
+import { gameStores,powerUpgradeStore } from './persistence';
+import {SKILLS,SKILL_IDS,NO_POWER_UPGRADES,starsForLives,purchasePower,type PowerLoadout,type PowerBranch} from './upgrades';
+import {renderPowerTraining} from './power-training';
 import { startAutosave } from '../../shared/persistence/autosave';
 
 function element<T extends HTMLElement>(id:string,kind:{new():T}):T {const node=document.getElementById(id);if(!(node instanceof kind))throw new Error(`Missing ${id}`);return node;}
@@ -18,7 +20,10 @@ const currentLevel=getLevel(LEVELS.some(level=>level.level===requestedLevel)?req
 document.title=`Kingdom Rush · ${currentLevel.title} — Open Games`;
 element('level-title',HTMLElement).textContent=currentLevel.title;
 element('game',HTMLElement).querySelector('.battle')?.setAttribute('aria-label',`${currentLevel.title} battlefield`);
-let sim=new Simulation(undefined,currentLevel.level),renderer:Renderer,selected:number|null=null,mode:'none'|'rally'|'fire'|'reinforcements'='none',pointer:Point|null=null,multiplier:1|2=1;
+const trainingStore=powerUpgradeStore(),savedTraining=trainingStore.read();
+let trainingReadable=savedTraining.status==='valid'||savedTraining.status==='missing';
+let powerProfile:PowerLoadout=savedTraining.status==='valid'?savedTraining.value:{...NO_POWER_UPGRADES};
+let sim=new Simulation(undefined,currentLevel.level,powerProfile),renderer:Renderer,selected:number|null=null,mode:'none'|'rally'|'fire'|'reinforcements'='none',pointer:Point|null=null,multiplier:1|2=1;
 let contextKey='',messageUntil=0,recorded=false;
 const stores=gameStores(undefined,currentLevel.level),savedSession=stores.session.read();
 const saveStatus=element('save-status',HTMLParagraphElement);
@@ -52,14 +57,14 @@ function saveSession():void {
 }
 function setText(node:HTMLElement,text:string):void {if(node.textContent!==text)node.textContent=text;}
 function notify(text:string):void {message.textContent=text;messageUntil=performance.now()+3000;message.classList.add('visible');}
-function reset():void {const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level);selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();}
+function reset():void {const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level,powerProfile);selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();}
 function setMode(value:typeof mode):void {mode=mode===value?'none':value;contextKey='';if(mode==='rally')notify('Tap a nearby road to move your soldiers.');if(mode==='fire')notify('Tap the battlefield to call down fire.');if(mode==='reinforcements')notify('Tap a road to summon two reinforcements.');}
 function renderContext():void {
-  const tower=sim.towers.find(t=>t.id===selected),key=`${selected}/${tower?.kind}/${tower?.level}/${mode}/${sim.phase}/${sim.paused}/${sim.wave}/${sim.elfCampRepaired}/${sim.soldiers.filter(s=>s.kind==='elf'&&s.hp>0).length}`;
+  const tower=sim.towers.find(t=>t.id===selected),key=`${selected}/${tower?.kind}/${tower?.level}/${tower?.poison}/${tower?.thorns}/${tower?.deathRay}/${tower?.teleport}/${mode}/${sim.phase}/${sim.paused}/${sim.wave}/${sim.elfCampRepaired}/${sim.soldiers.filter(s=>s.kind==='elf'&&s.hp>0).length}`;
   if(key===contextKey){context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=b.dataset.unavailable==='true'||Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');return;}
   contextKey=key;context.dataset.active=String(selected!==null||mode!=='none'||sim.phase==='won'||sim.phase==='lost');context.replaceChildren();
   const button=(label:string,action:()=>void,price?:number):HTMLButtonElement=>{const b=document.createElement('button');b.textContent=label;b.disabled=sim.paused||sim.phase==='won'||sim.phase==='lost';b.onclick=()=>{action();contextKey='';};if(price!==undefined)b.dataset.price=String(price);context.append(b);return b;};
-  if(sim.phase==='won'||sim.phase==='lost') {const p=document.createElement('p');p.textContent=sim.phase==='won'?`${currentLevel.title} defended!`:'Try another defense.';context.append(p);const b=document.createElement('button');b.textContent=sim.phase==='won'&&currentLevel.level<LEVELS.length?'Next map →':'Choose map';b.onclick=()=>{const nextLevel=LEVELS.find(level=>level.level===currentLevel.level+1);if(sim.phase==='won'&&nextLevel)goToMap(nextLevel.level);else openMaps();};context.append(b);return;}
+  if(sim.phase==='won'||sim.phase==='lost') {const p=document.createElement('p');p.textContent=sim.phase==='won'?`${currentLevel.title} defended! ★ ${starsForLives(sim.lives)}/3`:'Try another defense.';context.append(p);const b=document.createElement('button');b.textContent=sim.phase==='won'&&currentLevel.level<LEVELS.length?'Next map →':'Choose map';b.onclick=()=>{const nextLevel=LEVELS.find(level=>level.level===currentLevel.level+1);if(sim.phase==='won'&&nextLevel)goToMap(nextLevel.level);else openMaps();};context.append(b);return;}
   if(mode!=='none') {const p=document.createElement('p');p.textContent=mode==='rally'?'Choose a rally point':mode==='fire'?'Choose where the fire falls':'Choose a road for your troops';context.append(p);if(mode==='fire'||mode==='reinforcements'){const info=button('ⓘ Stats',()=>openGuide('powers'));info.disabled=false;}button('Cancel',()=>{mode='none';});return;}
   if(selected===currentLevel.elfCamp?.id){
     const label=document.createElement('span');label.className='tower-label';label.textContent='Sylvan elves';context.append(label);
@@ -77,6 +82,11 @@ function renderContext():void {
     const label=document.createElement('span');label.className='tower-label';label.textContent=towerName(tower.kind,tower.level);context.append(label);
     const info=button('ⓘ Stats',()=>openGuide(tower.kind));info.disabled=false;info.title=towerSummary(tower.kind,tower.level);
     if(tower.level<maxTowerTier(currentLevel,tower.kind,sim.wave)){const upgrade=button(`Upgrade ◆ ${TOWERS[tower.kind].price[tower.level]}`,()=>{if(!sim.upgrade(tower.id))notify('You need more gold.');},TOWERS[tower.kind].price[tower.level]);upgrade.title=`Next: ${towerName(tower.kind,tower.level+1)} — ${towerSummary(tower.kind,tower.level+1)}`;upgrade.setAttribute('aria-description',upgrade.title);}
+    if(tower.level===4)for(const skill of SKILL_IDS){const spec=SKILLS[skill];if(tower.kind!==spec.kind)continue;
+      const rank=tower[skill],cost=spec.costs[rank],name=skill==='poison'?'Poison':skill==='thorns'?'Thorns':spec.name;
+      const purchase=button(`${name} ${rank}/3${rank<3?` ◆ ${cost}`:''}`,()=>{if(!sim.buySkill(tower.id,skill))notify('You need more gold.');},rank<3?cost:undefined);
+      purchase.title=spec.description;purchase.setAttribute('aria-label',rank<3?`Buy ${spec.name} rank ${rank+1}, ${cost} gold`:`${spec.name} fully upgraded`);purchase.className='skill-purchase';if(rank===3)purchase.disabled=true;
+    }
     if(tower.kind==='barrack')button('Rally ⚑',()=>setMode('rally'));
     button(`Sell ◆ ${Math.floor(tower.spent*.6)}`,()=>{sim.sell(tower.id);});button('Done',()=>{selected=null;});
   } else {
@@ -111,10 +121,20 @@ function updateHud():void {
 const guideDialog=element('guide-dialog',HTMLDialogElement),guideTopic=element('guide-topic',HTMLSelectElement),guideContent=element('guide-content',HTMLDivElement);
 let resumeAfterGuide=false;
 function refreshGuide():void {
-  const value=guideTopic.value,kind=TOWER_KINDS.find(kind=>kind===value),topic:GuideTopic=kind??(value==='powers'?'powers':'all');
-  guideDialog.dataset.focused=String(topic!=='all'&&topic!=='powers');
-  renderFieldGuide(guideContent,topic,currentLevel,sim.wave,sim.towers.find(t=>t.id===selected));
+  const value=guideTopic.value,kind=TOWER_KINDS.find(kind=>kind===value),topic:GuideTopic=kind??(value==='powers'?'powers':value==='training'?'training':'all');
+  guideDialog.dataset.focused=String(topic!=='all'&&topic!=='powers'&&topic!=='training');
+  if(topic==='training'){
+    const results=LEVELS.map(level=>gameStores(undefined,level.level).results.read()),available=trainingReadable&&results.every(r=>r.status==='valid'||r.status==='missing');
+    const earned=results.reduce((n,r)=>n+(r.status==='valid'?starsForLives(r.value):0),0);
+    renderPowerTraining(guideContent,{profile:powerProfile,active:sim.powerUpgrades,earned,available,canChange:sim.phase==='ready'&&sim.wave===0,buy:branch=>changePowerProfile(branch,earned),reset:()=>savePowerProfile({...NO_POWER_UPGRADES})});
+  }else renderFieldGuide(guideContent,topic,currentLevel,sim.wave,sim.towers.find(t=>t.id===selected),sim.powerUpgrades);
 }
+function savePowerProfile(profile:PowerLoadout):void {
+  if(sim.phase!=='ready'||sim.wave!==0)return;
+  const result=trainingStore.write(profile);if(result.status!=='saved'){notify('Power upgrades could not be saved. Your previous upgrades have been kept.');return;}
+  trainingReadable=true;powerProfile=profile;sim.configurePowers(profile);saveSession();refreshGuide();
+}
+function changePowerProfile(branch:PowerBranch,earned:number):void {const next=purchasePower(powerProfile,branch,earned);if(next)savePowerProfile(next);}
 function openGuide(topic:GuideTopic='all'):void {
   resumeAfterGuide=!sim.paused&&(sim.phase==='ready'||sim.phase==='running');
   if(resumeAfterGuide)sim.setPaused(true);accumulator=0;saveSession();guideTopic.value=topic;refreshGuide();guideDialog.showModal();guideDialog.scrollTop=0;
@@ -132,7 +152,7 @@ function openMaps():void {
     const card=document.createElement('button');card.className='map-card';card.setAttribute('aria-label',`Play ${level.title}`);
     const image=document.createElement('img');image.src=level.level===3?'/games/kingdom-rush/assets/pagras.png':`/games/kingdom-rush/assets/level${String(level.level).padStart(2,'0')}/background.png`;image.alt='';
     const name=document.createElement('strong');name.textContent=`${level.level}. ${level.title}`;
-    const detail=document.createElement('span');const result=gameStores(undefined,level.level).results.read();detail.textContent=`${level.groups.length} waves · ${result.status==='valid'&&result.value>0?`Best: ${result.value} lives`:'Not yet defended'}`;
+    const detail=document.createElement('span');const result=gameStores(undefined,level.level).results.read();detail.textContent=`${level.groups.length} waves · ${result.status==='valid'&&result.value>0?`★ ${starsForLives(result.value)}/3 · Best: ${result.value} lives`:'Not yet defended'}`;
     if(level.level===currentLevel.level)card.setAttribute('aria-current','true');
     card.append(image,name,detail);card.onclick=()=>{if(level.level===currentLevel.level){mapDialog.close();return;}goToMap(level.level);};list.append(card);
   }
@@ -142,7 +162,7 @@ element('campaign',HTMLButtonElement).onclick=openMaps;
 element('close-maps',HTMLButtonElement).onclick=()=>mapDialog.close();
 function showBest():void {
   const result=stores.results.read();
-  element('best',HTMLElement).textContent=result.status==='valid'&&result.value>0?`Best defense on this device: ${result.value} lives remaining.`:result.status==='invalid'?'Your previous completed record could not be read and has been kept.':result.status==='unavailable'?'Progress saving is unavailable in this browser.':'Progress stays on this device. Your best completed defense is saved separately from your current battle.';
+  element('best',HTMLElement).textContent=result.status==='valid'&&result.value>0?`Best defense on this device: ${result.value} lives remaining · ★ ${starsForLives(result.value)}/3.`:result.status==='invalid'?'Your previous completed record could not be read and has been kept.':result.status==='unavailable'?'Progress saving is unavailable in this browser.':'Progress stays on this device. Your best completed defense is saved separately from your current battle.';
 }
 function point(event:PointerEvent):Point {const rect=canvas.getBoundingClientRect();return{x:(event.clientX-rect.left)*1024/rect.width,y:(event.clientY-rect.top)*768/rect.height};}
 canvas.addEventListener('pointermove',event=>{pointer=point(event);});
@@ -188,6 +208,6 @@ const practiceWave=element('practice-wave',HTMLSelectElement);
 for(let i=1;i<=currentLevel.groups.length;i++){const option=document.createElement('option');option.value=String(i);option.textContent=`Wave ${i}`;practiceWave.append(option);}
 element('practice-start',HTMLButtonElement).onclick=()=>{
   saveSession();
-  const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level);sim.preparePractice(Number(practiceWave.value));
+  const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level,powerProfile);sim.preparePractice(Number(practiceWave.value));
   selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();
 };

@@ -39,7 +39,7 @@ Phone landscape fills the viewport with the map and overlays compact controls. T
 
 Pagras has two entrances, three subpaths per route, twelve fixed tower sites, eleven wave groups and 329 enemies. The roster includes goblins, armored orcs, wulves, shamans and ogres. The prototype includes four tower families with source-based base costs, two tiers, separate physical/magic/explosion damage handling, attack wind-ups, projectile travel, soldiers, blocking, rally commands, death/respawn, shaman healing, wulf melee dodging and both powers.
 
-Southport and The Farmlands now use the original Flash numeric paths and placements; Pagras retains pinned desktop geometry. Campaign spacing now follows the original Armor Games Flash v1.13, compared in the browser on November 7. See [original comparison](original-comparison.md) for observations, corrected rules and remaining limitations. Normal base health/speed settings are used. Heroes, star upgrades and consumable items are excluded so comparisons have a defined starting point. That starting point can differ from a normal campaign player's upgrade state.
+Southport and The Farmlands now use the original Flash numeric paths and placements; Pagras retains pinned desktop geometry. Campaign spacing now follows the original Armor Games Flash v1.13, compared in the browser on November 7. See [original comparison](original-comparison.md) for observations, corrected rules and remaining limitations. Normal base health/speed settings are used. Heroes, tower star-upgrade branches and consumable items are excluded. Power star training is optional and defaults to zero; traces identify the active loadout. That starting point can differ from a normal campaign player's upgrade state.
 
 ## Sources and asset preparation
 
@@ -87,7 +87,7 @@ Original Ironhide art is separate from code provenance. Community availability a
 | Shamans and wulves | Healing range, cooldown/cast delay, heal amount and melee dodge chance implemented. Shamans can heal themselves, heal on tick fourteen, remain stationary for twenty-eight ticks and recharge after casting. Healing cannot interrupt a melee wind-up. Flash dictionary ordering and subtle tick ordering remain approximate. |
 | Powers | Three fireballs, damage/radius/spread and cooldown, two temporary reinforcements and cooldown. Early calls recharge both powers by the remaining countdown. Fireballs launch ten ticks apart from the top edge with height-dependent travel; exact particle trajectories, placement walkability and advanced upgrades remain approximate. |
 | Art | Animated reference units, layered towers and stage decorations. Community-export pixels have not been checked against an unmodified installation; background crop alignment needs comparison. Projectiles and impact effects currently use simple Canvas drawings. |
-| Audio, heroes, star upgrades, story, achievements and stages beyond 6 / alternate modes | Omitted from this bounded proof. |
+| Audio, heroes, tower star-upgrade branches, story, achievements and stages beyond 6 / alternate modes | Omitted from this bounded proof. Power star upgrades and the current advanced tower skills are now available. |
 | Retail balance | Original Flash Normal/no-hero/no-upgrade play comparison performed; source-verified corrections implemented. Exact same-command outcome parity is not certified; see the comparison report. |
 | iPad 6th generation / iPadOS 17.7.11 | Desktop viewport checks performed; physical-device interaction, frame pacing and memory remain untested. |
 
@@ -116,3 +116,5 @@ Twin Rivers Pass uses original Flash v1.13 paths, tower/rally sites, 680 startin
 Silveroak Forest adds the fifth map, 15 original waves and three entrances, matriarch nests, worgs, marauders and hired elves. See [the map and calibration report](silveroak-forest.md) for browser evidence, source corrections and limitations. It is available with `?level=5`.
 
 The Citadel adds stage six, flying Gargoyles, Dark Knights, Shadow Archers, Arcane Wizards and the Juggernaut encounter. The [map and calibration report](the-citadel.md) distinguishes source facts, browser boss-practice evidence and unresolved full-campaign difficulty. Tools → Practice wave tests later encounters without changing the campaign save or completed record.
+
+Rangers and Arcane Wizards now have all four three-rank skills. Optional campaign-star training adds the five original upgrades for each power; use **Guide → ★ Power upgrades** before battle. Existing completed records supply stars, and Reset refunds them. See [skills and power upgrades](skills-and-power-upgrades.md) for behavior, source quirks, validation and remaining visual/parity limits.

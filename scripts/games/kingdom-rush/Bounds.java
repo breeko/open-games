@@ -13,8 +13,8 @@ import com.jpexs.decompiler.flash.exporters.commonshape.Matrix;
 
 public class Bounds {
     private static final String SHA = "7b5467a3eccc17f6dd001ff2d41bdf1b03d79fd515a2a9586c42bfd982bb1e23";
-    private static final String[] NAMES = {"goblin", "orc", "wolf", "shaman", "ogre", "bandit", "brigand", "worg", "spider", "matriarch", "spiderling", "marauder", "gargoyle", "darkKnight", "shadowArcher", "juggernaut", "golemHead", "arrow", "barSmall", "barMedium", "barBig"};
-    private static final String[] CLASSES = {"EnemyGoblin", "EnemyFatOrc", "EnemyWolfSmall", "EnemyShaman", "EnemyOgre", "EnemyBandit", "EnemyBrigand", "EnemyWolf", "EnemySpiderSmall", "EnemySpider", "EnemySpiderTiny", "EnemyMarauder", "EnemyGargoyle", "EnemyDarkKnight", "EnemyShadowArcher", "EnemyJuggernaut", "EnemyGolemHead", "Arrow", "LifeBarSmall", "LifeBarMedium", "LifeBarBig"};
+    private static final String[] NAMES = {"goblin", "orc", "wolf", "shaman", "ogre", "bandit", "brigand", "worg", "spider", "matriarch", "spiderling", "marauder", "gargoyle", "darkKnight", "shadowArcher", "juggernaut", "golemHead", "arrow", "spear", "barSmall", "barMedium", "barBig"};
+    private static final String[] CLASSES = {"EnemyGoblin", "EnemyFatOrc", "EnemyWolfSmall", "EnemyShaman", "EnemyOgre", "EnemyBandit", "EnemyBrigand", "EnemyWolf", "EnemySpiderSmall", "EnemySpider", "EnemySpiderTiny", "EnemyMarauder", "EnemyGargoyle", "EnemyDarkKnight", "EnemyShadowArcher", "EnemyJuggernaut", "EnemyGolemHead", "Arrow", "Spear", "LifeBarSmall", "LifeBarMedium", "LifeBarBig"};
 
     // Compose transforms before measuring leaves, avoiding repeated rotated-AABB expansion.
     private static Rectangle2D bounds(CharacterTag character, int age, AffineTransform transform, int depth) {

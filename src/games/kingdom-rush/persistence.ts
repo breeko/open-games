@@ -2,6 +2,9 @@ import { z } from 'zod';
 import { createStore, type StorageAccess } from '../../shared/persistence/store';
 import { LEVEL, type LevelId } from './content';
 import { sessionSchema } from './save-state';
+import {powerLoadoutSchema} from './upgrades';
+
+export function powerUpgradeStore(storage?:StorageAccess){return createStore({key:'open-games.kingdom-rush.power-upgrades.v1',schema:powerLoadoutSchema,storage});}
 
 export function gameStores(storage?: StorageAccess,level:LevelId=3) {
   return {

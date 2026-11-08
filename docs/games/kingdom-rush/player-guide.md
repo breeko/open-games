@@ -1,6 +1,6 @@
 # Kingdom Rush player stats
 
-Current Open Games values, November 8, 2026. The in-game **ⓘ Guide** reads the live combat definitions; a selected tower's **ⓘ Stats** opens its family and highlights the current tier. The battle pauses while the guide is open and resumes only if it was running before. Existing manual/background pauses remain respected.
+Current Open Games values, November 8, 2026. The tables below show base, zero-star stats; the in-game power cards show your active training. The in-game **ⓘ Guide** reads the live combat definitions; a selected tower's **ⓘ Stats** opens its family and highlights the current tier. The battle pauses while the guide is open and resumes only if it was running before. Existing manual/background pauses remain respected.
 
 Times below are at 1× speed. Range and blast size are horizontal radii in fixed battlefield units (1024 × 768 board), not device pixels. Vertical range is compressed to fit the map perspective. Damage is before armor and resistance. The blast column is a radius, not a diameter.
 
@@ -13,7 +13,7 @@ Times below are at 1× speed. Range and blast size are horizontal radii in fixed
 | 3 | 10–16 | 179.2 | 0.5s | — | 160 | 340 |
 | Rangers | 13–19 | 198.4 | 0.4s | — | 230 | 570 |
 
-Physical damage; enemy armor reduces it. Targets ground and flying enemies. Arrows can miss moving targets. Ranger poison and root skills are unavailable.
+Physical damage; enemy armor reduces it. Targets ground and flying enemies. Arrows can miss moving targets. Rangers can buy Poison Arrows (250 / 250 / 250) and Wrath of the Forest (300 / 150 / 150).
 
 ## Barracks
 
@@ -36,7 +36,7 @@ Idle healing is 5 / 7 / 10 HP per second at tiers 1 / 2 / 3 after the recovery d
 | 3 | 40–74 | 179.2 | 1.5s | — | 240 | 500 |
 | Arcane Wizard | 76–140 | 198.4 | 2s | — | 300 | 800 |
 
-Magic ignores physical armor but is reduced by magic resistance. Targets ground and flying enemies. Arcane damage is a roll resolved in ten integer-rounded pulses, so actual full-health damage can be lower than the nominal range. Death ray and teleport skills are unavailable.
+Magic ignores physical armor but is reduced by magic resistance. Targets ground and flying enemies. Arcane damage is a roll resolved in ten integer-rounded pulses, so actual full-health damage can be lower than the nominal range. Arcane Wizards can buy Death Ray (350 / 200 / 200) and Teleport (300 / 100 / 100).
 
 ## Artillery
 
@@ -60,7 +60,7 @@ Damage falls from the maximum at the center to the minimum at the edge. Physical
 - Free; 80s cooldown. Launches 3 scattered fireballs.
 - Each deals 30–60 damage to every enemy in its 64-unit blast radius.
 - A target struck by all three takes 90–180 damage. A scattered fireball can miss.
-- Ignores physical armor and magic resistance; hits ground and flying enemies. No burning-ground upgrade.
+- Ignores physical armor and magic resistance; hits ground and flying enemies. Scorched Earth and Blazing Earth add burning ground when trained.
 
 Calling waves early advances both spell cooldowns by the remaining wave countdown. Southport unlocks reinforcements in wave 3 and fire in wave 7; both unlock at battle start on the other maps.
 
@@ -74,6 +74,8 @@ Gold in the purchase column is an additional cost, not the cumulative price. Sel
 - Silveroak Forest: tiers 1–3, Rangers from wave 5; an existing tier-three archer and the elf camp.
 - The Citadel: tiers 1–3 plus Rangers and Arcane Wizards from preparation.
 
-Heroes, purchased star upgrades, and additional tower skills are unavailable. Available and locked tiers are labeled for the current map and wave.
+Tower skills are purchased with battle gold. Power star upgrades are available through Guide → ★ Power upgrades, before the first wave. Heroes and tower star-upgrade branches remain unavailable. Available and locked tiers are labeled for the current map and wave.
 
 Silveroak elves: repair 100 gold, hire 100 gold each, maximum four living. Each has 200 HP and 25–50 physical melee/bow damage. Melee interval 1.6s; bow interval 1.5s and range 204.8. Elves have no automatic replacement.
+
+See [all skill ranks and power training](skills-and-power-upgrades.md) for costs, effects, source quirks, star earning/refunds and validation evidence.

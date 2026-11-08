@@ -1,0 +1,219 @@
+{
+  "format": "open-games.kingdom-rush.trace.v1",
+  "seed": 12648430,
+  "level": 6,
+  "practice": true,
+  "reference": "Armor Games Flash v1.13 / geometry fa84f20 / visual 3e4eac4",
+  "completeHistory": true,
+  "tick": 1141,
+  "phase": "running",
+  "powerUpgrades": {
+    "fire": 1,
+    "reinforcements": 1
+  },
+  "gold": 1472,
+  "lives": 14,
+  "wave": 5,
+  "kills": 0,
+  "events": [
+    {
+      "tick": 0,
+      "type": "start",
+      "seed": 12648430
+    },
+    {
+      "tick": 0,
+      "type": "practice",
+      "wave": 5,
+      "gold": 1400
+    },
+    {
+      "tick": 19,
+      "type": "early-recharge",
+      "ticks": 0
+    },
+    {
+      "tick": 19,
+      "type": "wave",
+      "wave": 5,
+      "bonus": 0,
+      "gold": 1400,
+      "spawnEnd": 521
+    },
+    {
+      "tick": 37,
+      "type": "cast",
+      "kind": "reinforcements",
+      "x": 509.47088939772055,
+      "y": 499.9251496492462
+    },
+    {
+      "tick": 119,
+      "type": "spawn",
+      "enemy": 3,
+      "kind": "gargoyle",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 119,
+      "type": "spawn",
+      "enemy": 4,
+      "kind": "gargoyle",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 219,
+      "type": "spawn",
+      "enemy": 5,
+      "kind": "gargoyle",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 219,
+      "type": "spawn",
+      "enemy": 6,
+      "kind": "gargoyle",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 319,
+      "type": "spawn",
+      "enemy": 7,
+      "kind": "gargoyle",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 319,
+      "type": "spawn",
+      "enemy": 8,
+      "kind": "gargoyle",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 337,
+      "type": "cast",
+      "kind": "fire",
+      "x": 499.3544469886027,
+      "y": 499.9251496492462
+    },
+    {
+      "tick": 347,
+      "type": "fireball",
+      "rank": 1,
+      "x": 508.3144469886027,
+      "y": 493.5251496492462
+    },
+    {
+      "tick": 357,
+      "type": "fireball",
+      "rank": 1,
+      "x": 482.71444698860273,
+      "y": 482.00514964924616
+    },
+    {
+      "tick": 367,
+      "type": "fireball",
+      "rank": 1,
+      "x": 492.95444698860274,
+      "y": 498.6451496492462
+    },
+    {
+      "tick": 377,
+      "type": "fireball",
+      "rank": 1,
+      "x": 483.9944469886027,
+      "y": 502.4851496492462
+    },
+    {
+      "tick": 387,
+      "type": "fireball",
+      "rank": 1,
+      "x": 485.27444698860273,
+      "y": 483.2851496492462
+    },
+    {
+      "tick": 419,
+      "type": "spawn",
+      "enemy": 14,
+      "kind": "gargoyle",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 419,
+      "type": "spawn",
+      "enemy": 15,
+      "kind": "gargoyle",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 519,
+      "type": "spawn",
+      "enemy": 16,
+      "kind": "gargoyle",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 519,
+      "type": "spawn",
+      "enemy": 17,
+      "kind": "gargoyle",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 882,
+      "type": "leak",
+      "enemy": 3,
+      "lives": 19,
+      "gold": 1412
+    },
+    {
+      "tick": 888,
+      "type": "leak",
+      "enemy": 4,
+      "lives": 18,
+      "gold": 1424
+    },
+    {
+      "tick": 943,
+      "type": "leak",
+      "enemy": 5,
+      "lives": 17,
+      "gold": 1436
+    },
+    {
+      "tick": 949,
+      "type": "leak",
+      "enemy": 6,
+      "lives": 16,
+      "gold": 1448
+    },
+    {
+      "tick": 1043,
+      "type": "leak",
+      "enemy": 7,
+      "lives": 15,
+      "gold": 1460
+    },
+    {
+      "tick": 1069,
+      "type": "leak",
+      "enemy": 8,
+      "lives": 14,
+      "gold": 1472
+    },
+    {
+      "tick": 1141,
+      "type": "pause"
+    }
+  ]
+}

@@ -90,7 +90,7 @@
 .guide-help{color:#b9c8ad;font-size:12px;line-height:1.6;margin:12px 0}
 #guide-content{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 #guide-dialog[data-focused=true]{width:min(760px,calc(100% - 24px))}
-#guide-content:not([data-topic=all]):not([data-topic=powers]){grid-template-columns:1fr}
+#guide-content:not([data-topic=all]):not([data-topic=powers]):not([data-topic=training]){grid-template-columns:1fr}
 .guide-card{min-width:0;padding:14px;border:1px solid #526b49;border-radius:10px;background:#233c2d}
 .guide-card h3{margin:0 0 8px;color:#f2d494;font:21px Georgia,serif}
 .guide-card p{margin:8px 0;color:#d1dcc4;font-size:12px;line-height:1.6}
@@ -103,3 +103,5 @@
 .guide-locked{color:#a8b59f}
 @media(max-width:760px){#guide-content{grid-template-columns:1fr}#guide-dialog{padding:12px}.guide-heading{top:-12px}.guide-card{padding:12px}.guide-card th,.guide-card td{padding:9px 4px;font-size:11px}.guide-heading h2{font-size:22px}}
 @media (max-height:600px) and (orientation:landscape),(max-width:650px){#guide{font-size:0}#guide::before{content:'ⓘ';font-size:24px}}
+
+.training-balance{grid-column:1/-1;color:#e2e4cf;font-size:13px;line-height:1.6}.training-row{padding:12px 0;border-top:1px solid #526b49}.training-row strong{font-size:13px;color:#f3d993}.training-row button{font-size:12px;min-height:44px}.guide-card h4{margin:15px 0 5px;color:#ecd29b;font-size:13px}.context .skill-purchase{max-width:125px}

@@ -1,0 +1,4253 @@
+{
+  "format": "open-games.kingdom-rush.trace.v1",
+  "seed": 12648430,
+  "level": 6,
+  "practice": true,
+  "reference": "Armor Games Flash v1.13 / geometry fa84f20 / visual 3e4eac4",
+  "completeHistory": true,
+  "tick": 8267,
+  "phase": "lost",
+  "powerUpgrades": {
+    "fire": 2,
+    "reinforcements": 0
+  },
+  "gold": 1848,
+  "lives": 0,
+  "wave": 17,
+  "kills": 142,
+  "events": [
+    {
+      "tick": 0,
+      "type": "start",
+      "seed": 12648430
+    },
+    {
+      "tick": 0,
+      "type": "practice",
+      "wave": 16,
+      "gold": 5290
+    },
+    {
+      "tick": 26,
+      "type": "build",
+      "holder": 9,
+      "kind": "archer",
+      "gold": 5220
+    },
+    {
+      "tick": 35,
+      "type": "upgrade",
+      "holder": 9,
+      "level": 2,
+      "gold": 5110
+    },
+    {
+      "tick": 45,
+      "type": "upgrade",
+      "holder": 9,
+      "level": 3,
+      "gold": 4950
+    },
+    {
+      "tick": 54,
+      "type": "upgrade",
+      "holder": 9,
+      "level": 4,
+      "gold": 4720
+    },
+    {
+      "tick": 63,
+      "type": "skill",
+      "holder": 9,
+      "skill": "poison",
+      "rank": 1,
+      "gold": 4470
+    },
+    {
+      "tick": 73,
+      "type": "skill",
+      "holder": 9,
+      "skill": "poison",
+      "rank": 2,
+      "gold": 4220
+    },
+    {
+      "tick": 82,
+      "type": "skill",
+      "holder": 9,
+      "skill": "poison",
+      "rank": 3,
+      "gold": 3970
+    },
+    {
+      "tick": 92,
+      "type": "skill",
+      "holder": 9,
+      "skill": "thorns",
+      "rank": 1,
+      "gold": 3670
+    },
+    {
+      "tick": 101,
+      "type": "skill",
+      "holder": 9,
+      "skill": "thorns",
+      "rank": 2,
+      "gold": 3520
+    },
+    {
+      "tick": 110,
+      "type": "skill",
+      "holder": 9,
+      "skill": "thorns",
+      "rank": 3,
+      "gold": 3370
+    },
+    {
+      "tick": 129,
+      "type": "build",
+      "holder": 10,
+      "kind": "mage",
+      "gold": 3270
+    },
+    {
+      "tick": 137,
+      "type": "upgrade",
+      "holder": 10,
+      "level": 2,
+      "gold": 3110
+    },
+    {
+      "tick": 147,
+      "type": "upgrade",
+      "holder": 10,
+      "level": 3,
+      "gold": 2870
+    },
+    {
+      "tick": 158,
+      "type": "upgrade",
+      "holder": 10,
+      "level": 4,
+      "gold": 2570
+    },
+    {
+      "tick": 166,
+      "type": "skill",
+      "holder": 10,
+      "skill": "deathRay",
+      "rank": 1,
+      "gold": 2220
+    },
+    {
+      "tick": 175,
+      "type": "skill",
+      "holder": 10,
+      "skill": "deathRay",
+      "rank": 2,
+      "gold": 2020
+    },
+    {
+      "tick": 184,
+      "type": "skill",
+      "holder": 10,
+      "skill": "deathRay",
+      "rank": 3,
+      "gold": 1820
+    },
+    {
+      "tick": 194,
+      "type": "skill",
+      "holder": 10,
+      "skill": "teleport",
+      "rank": 1,
+      "gold": 1520
+    },
+    {
+      "tick": 204,
+      "type": "skill",
+      "holder": 10,
+      "skill": "teleport",
+      "rank": 2,
+      "gold": 1420
+    },
+    {
+      "tick": 213,
+      "type": "skill",
+      "holder": 10,
+      "skill": "teleport",
+      "rank": 3,
+      "gold": 1320
+    },
+    {
+      "tick": 229,
+      "type": "build",
+      "holder": 14,
+      "kind": "mage",
+      "gold": 1220
+    },
+    {
+      "tick": 238,
+      "type": "upgrade",
+      "holder": 14,
+      "level": 2,
+      "gold": 1060
+    },
+    {
+      "tick": 247,
+      "type": "upgrade",
+      "holder": 14,
+      "level": 3,
+      "gold": 820
+    },
+    {
+      "tick": 257,
+      "type": "upgrade",
+      "holder": 14,
+      "level": 4,
+      "gold": 520
+    },
+    {
+      "tick": 272,
+      "type": "build",
+      "holder": 12,
+      "kind": "mage",
+      "gold": 420
+    },
+    {
+      "tick": 281,
+      "type": "upgrade",
+      "holder": 12,
+      "level": 2,
+      "gold": 260
+    },
+    {
+      "tick": 290,
+      "type": "upgrade",
+      "holder": 12,
+      "level": 3,
+      "gold": 20
+    },
+    {
+      "tick": 299,
+      "type": "early-recharge",
+      "ticks": 0
+    },
+    {
+      "tick": 299,
+      "type": "wave",
+      "wave": 16,
+      "bonus": 0,
+      "gold": 20,
+      "spawnEnd": 1367
+    },
+    {
+      "tick": 329,
+      "type": "spawn",
+      "enemy": 1,
+      "kind": "darkKnight",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 329,
+      "type": "spawn",
+      "enemy": 2,
+      "kind": "darkKnight",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 359,
+      "type": "spawn",
+      "enemy": 3,
+      "kind": "darkKnight",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 359,
+      "type": "spawn",
+      "enemy": 4,
+      "kind": "darkKnight",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 389,
+      "type": "spawn",
+      "enemy": 5,
+      "kind": "darkKnight",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 389,
+      "type": "spawn",
+      "enemy": 6,
+      "kind": "darkKnight",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 591,
+      "type": "spawn",
+      "enemy": 7,
+      "kind": "marauder",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 591,
+      "type": "spawn",
+      "enemy": 8,
+      "kind": "marauder",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 691,
+      "type": "spawn",
+      "enemy": 9,
+      "kind": "marauder",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 691,
+      "type": "spawn",
+      "enemy": 10,
+      "kind": "marauder",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 733,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 1
+    },
+    {
+      "tick": 742,
+      "type": "poison",
+      "enemy": 2,
+      "rank": 3
+    },
+    {
+      "tick": 742,
+      "type": "kill",
+      "enemy": 1,
+      "gold": 45
+    },
+    {
+      "tick": 754,
+      "type": "poison",
+      "enemy": 2,
+      "rank": 3
+    },
+    {
+      "tick": 766,
+      "type": "poison",
+      "enemy": 2,
+      "rank": 3
+    },
+    {
+      "tick": 778,
+      "type": "poison",
+      "enemy": 2,
+      "rank": 3
+    },
+    {
+      "tick": 790,
+      "type": "poison",
+      "enemy": 2,
+      "rank": 3
+    },
+    {
+      "tick": 791,
+      "type": "spawn",
+      "enemy": 18,
+      "kind": "marauder",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 791,
+      "type": "spawn",
+      "enemy": 19,
+      "kind": "marauder",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 801,
+      "type": "poison",
+      "enemy": 2,
+      "rank": 3
+    },
+    {
+      "tick": 820,
+      "type": "root",
+      "holder": 9,
+      "enemy": 4
+    },
+    {
+      "tick": 820,
+      "type": "root",
+      "holder": 9,
+      "enemy": 6
+    },
+    {
+      "tick": 820,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 832,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 839,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 844,
+      "type": "poison",
+      "enemy": 4,
+      "rank": 3
+    },
+    {
+      "tick": 845,
+      "type": "teleport",
+      "enemy": 3,
+      "node": 15
+    },
+    {
+      "tick": 845,
+      "type": "teleport",
+      "enemy": 5,
+      "node": 14
+    },
+    {
+      "tick": 856,
+      "type": "poison",
+      "enemy": 4,
+      "rank": 3
+    },
+    {
+      "tick": 868,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 880,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 892,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 904,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 915,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 928,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 940,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 952,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 963,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 975,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 988,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1000,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 1012,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 1023,
+      "type": "poison",
+      "enemy": 4,
+      "rank": 3
+    },
+    {
+      "tick": 1036,
+      "type": "poison",
+      "enemy": 4,
+      "rank": 3
+    },
+    {
+      "tick": 1047,
+      "type": "poison",
+      "enemy": 6,
+      "rank": 3
+    },
+    {
+      "tick": 1060,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1071,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1084,
+      "type": "poison",
+      "enemy": 4,
+      "rank": 3
+    },
+    {
+      "tick": 1092,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 1095,
+      "type": "poison",
+      "enemy": 4,
+      "rank": 3
+    },
+    {
+      "tick": 1096,
+      "type": "root",
+      "holder": 9,
+      "enemy": 2
+    },
+    {
+      "tick": 1096,
+      "type": "root",
+      "holder": 9,
+      "enemy": 4
+    },
+    {
+      "tick": 1098,
+      "type": "teleport",
+      "enemy": 9,
+      "node": 21
+    },
+    {
+      "tick": 1107,
+      "type": "poison",
+      "enemy": 2,
+      "rank": 3
+    },
+    {
+      "tick": 1119,
+      "type": "poison",
+      "enemy": 2,
+      "rank": 3
+    },
+    {
+      "tick": 1123,
+      "type": "spawn",
+      "enemy": 53,
+      "kind": "darkKnight",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 1123,
+      "type": "spawn",
+      "enemy": 54,
+      "kind": "darkKnight",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 1126,
+      "type": "kill",
+      "enemy": 2,
+      "gold": 70
+    },
+    {
+      "tick": 1143,
+      "type": "poison",
+      "enemy": 4,
+      "rank": 3
+    },
+    {
+      "tick": 1153,
+      "type": "spawn",
+      "enemy": 58,
+      "kind": "darkKnight",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 1153,
+      "type": "spawn",
+      "enemy": 59,
+      "kind": "darkKnight",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 1155,
+      "type": "poison",
+      "enemy": 4,
+      "rank": 3
+    },
+    {
+      "tick": 1168,
+      "type": "poison",
+      "enemy": 19,
+      "rank": 3
+    },
+    {
+      "tick": 1180,
+      "type": "poison",
+      "enemy": 19,
+      "rank": 3
+    },
+    {
+      "tick": 1183,
+      "type": "spawn",
+      "enemy": 63,
+      "kind": "darkKnight",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 1183,
+      "type": "spawn",
+      "enemy": 64,
+      "kind": "darkKnight",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 1186,
+      "type": "kill",
+      "enemy": 4,
+      "gold": 95
+    },
+    {
+      "tick": 1204,
+      "type": "poison",
+      "enemy": 19,
+      "rank": 3
+    },
+    {
+      "tick": 1216,
+      "type": "poison",
+      "enemy": 19,
+      "rank": 3
+    },
+    {
+      "tick": 1218,
+      "type": "kill",
+      "enemy": 6,
+      "gold": 120
+    },
+    {
+      "tick": 1227,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 18
+    },
+    {
+      "tick": 1236,
+      "type": "kill",
+      "enemy": 18,
+      "gold": 160
+    },
+    {
+      "tick": 1239,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1251,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1263,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1275,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1287,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1299,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1305,
+      "type": "spawn",
+      "enemy": 81,
+      "kind": "shadowArcher",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 1305,
+      "type": "spawn",
+      "enemy": 82,
+      "kind": "shadowArcher",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 1311,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1323,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1325,
+      "type": "spawn",
+      "enemy": 86,
+      "kind": "shadowArcher",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 1325,
+      "type": "spawn",
+      "enemy": 87,
+      "kind": "shadowArcher",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 1327,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 1333,
+      "type": "teleport",
+      "enemy": 7,
+      "node": 68
+    },
+    {
+      "tick": 1335,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1345,
+      "type": "spawn",
+      "enemy": 91,
+      "kind": "shadowArcher",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 1345,
+      "type": "spawn",
+      "enemy": 92,
+      "kind": "shadowArcher",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 1347,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1359,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1365,
+      "type": "spawn",
+      "enemy": 94,
+      "kind": "shadowArcher",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 1365,
+      "type": "spawn",
+      "enemy": 95,
+      "kind": "shadowArcher",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 1371,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1372,
+      "type": "root",
+      "holder": 9,
+      "enemy": 8
+    },
+    {
+      "tick": 1372,
+      "type": "root",
+      "holder": 9,
+      "enemy": 10
+    },
+    {
+      "tick": 1383,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1395,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1407,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1419,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1431,
+      "type": "poison",
+      "enemy": 8,
+      "rank": 3
+    },
+    {
+      "tick": 1443,
+      "type": "poison",
+      "enemy": 19,
+      "rank": 3
+    },
+    {
+      "tick": 1452,
+      "type": "kill",
+      "enemy": 3,
+      "gold": 185
+    },
+    {
+      "tick": 1455,
+      "type": "poison",
+      "enemy": 19,
+      "rank": 3
+    },
+    {
+      "tick": 1458,
+      "type": "kill",
+      "enemy": 8,
+      "gold": 225
+    },
+    {
+      "tick": 1479,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1491,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1503,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1515,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1527,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1539,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1551,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1563,
+      "type": "poison",
+      "enemy": 19,
+      "rank": 3
+    },
+    {
+      "tick": 1575,
+      "type": "poison",
+      "enemy": 19,
+      "rank": 3
+    },
+    {
+      "tick": 1576,
+      "type": "kill",
+      "enemy": 5,
+      "gold": 250
+    },
+    {
+      "tick": 1588,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 1588,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 1594,
+      "type": "teleport",
+      "enemy": 86,
+      "node": 30
+    },
+    {
+      "tick": 1596,
+      "type": "teleport",
+      "enemy": 53,
+      "node": 21
+    },
+    {
+      "tick": 1600,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 1612,
+      "type": "poison",
+      "enemy": 82,
+      "rank": 3
+    },
+    {
+      "tick": 1623,
+      "type": "poison",
+      "enemy": 82,
+      "rank": 3
+    },
+    {
+      "tick": 1636,
+      "type": "poison",
+      "enemy": 87,
+      "rank": 3
+    },
+    {
+      "tick": 1647,
+      "type": "poison",
+      "enemy": 87,
+      "rank": 3
+    },
+    {
+      "tick": 1648,
+      "type": "root",
+      "holder": 9,
+      "enemy": 10
+    },
+    {
+      "tick": 1648,
+      "type": "root",
+      "holder": 9,
+      "enemy": 19
+    },
+    {
+      "tick": 1648,
+      "type": "root",
+      "holder": 9,
+      "enemy": 54
+    },
+    {
+      "tick": 1648,
+      "type": "root",
+      "holder": 9,
+      "enemy": 87
+    },
+    {
+      "tick": 1648,
+      "type": "root",
+      "holder": 9,
+      "enemy": 92
+    },
+    {
+      "tick": 1648,
+      "type": "root",
+      "holder": 9,
+      "enemy": 95
+    },
+    {
+      "tick": 1653,
+      "type": "kill",
+      "enemy": 7,
+      "gold": 290
+    },
+    {
+      "tick": 1659,
+      "type": "poison",
+      "enemy": 10,
+      "rank": 3
+    },
+    {
+      "tick": 1667,
+      "type": "kill",
+      "enemy": 10,
+      "gold": 330
+    },
+    {
+      "tick": 1683,
+      "type": "poison",
+      "enemy": 54,
+      "rank": 3
+    },
+    {
+      "tick": 1695,
+      "type": "poison",
+      "enemy": 54,
+      "rank": 3
+    },
+    {
+      "tick": 1704,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 19
+    },
+    {
+      "tick": 1707,
+      "type": "poison",
+      "enemy": 92,
+      "rank": 3
+    },
+    {
+      "tick": 1713,
+      "type": "kill",
+      "enemy": 19,
+      "gold": 370
+    },
+    {
+      "tick": 1719,
+      "type": "poison",
+      "enemy": 92,
+      "rank": 3
+    },
+    {
+      "tick": 1731,
+      "type": "poison",
+      "enemy": 95,
+      "rank": 3
+    },
+    {
+      "tick": 1743,
+      "type": "poison",
+      "enemy": 82,
+      "rank": 3
+    },
+    {
+      "tick": 1755,
+      "type": "poison",
+      "enemy": 82,
+      "rank": 3
+    },
+    {
+      "tick": 1767,
+      "type": "poison",
+      "enemy": 82,
+      "rank": 3
+    },
+    {
+      "tick": 1779,
+      "type": "kill",
+      "enemy": 82,
+      "gold": 386
+    },
+    {
+      "tick": 1799,
+      "type": "kill",
+      "enemy": 87,
+      "gold": 402
+    },
+    {
+      "tick": 1800,
+      "type": "kill",
+      "enemy": 92,
+      "gold": 418
+    },
+    {
+      "tick": 1815,
+      "type": "kill",
+      "enemy": 95,
+      "gold": 434
+    },
+    {
+      "tick": 1839,
+      "type": "poison",
+      "enemy": 9,
+      "rank": 3
+    },
+    {
+      "tick": 1849,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 1851,
+      "type": "poison",
+      "enemy": 9,
+      "rank": 3
+    },
+    {
+      "tick": 1855,
+      "type": "teleport",
+      "enemy": 9,
+      "node": 92
+    },
+    {
+      "tick": 1863,
+      "type": "poison",
+      "enemy": 54,
+      "rank": 3
+    },
+    {
+      "tick": 1875,
+      "type": "poison",
+      "enemy": 54,
+      "rank": 3
+    },
+    {
+      "tick": 1887,
+      "type": "poison",
+      "enemy": 54,
+      "rank": 3
+    },
+    {
+      "tick": 1910,
+      "type": "poison",
+      "enemy": 81,
+      "rank": 3
+    },
+    {
+      "tick": 1914,
+      "type": "kill",
+      "enemy": 81,
+      "gold": 450
+    },
+    {
+      "tick": 1922,
+      "type": "poison",
+      "enemy": 91,
+      "rank": 3
+    },
+    {
+      "tick": 1924,
+      "type": "root",
+      "holder": 9,
+      "enemy": 54
+    },
+    {
+      "tick": 1924,
+      "type": "root",
+      "holder": 9,
+      "enemy": 59
+    },
+    {
+      "tick": 1924,
+      "type": "root",
+      "holder": 9,
+      "enemy": 91
+    },
+    {
+      "tick": 1934,
+      "type": "poison",
+      "enemy": 91,
+      "rank": 3
+    },
+    {
+      "tick": 1946,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 1958,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 1964,
+      "type": "kill",
+      "enemy": 91,
+      "gold": 466
+    },
+    {
+      "tick": 1970,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 1982,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 1994,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2006,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2018,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2023,
+      "type": "kill",
+      "enemy": 94,
+      "gold": 482
+    },
+    {
+      "tick": 2030,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2039,
+      "type": "kill",
+      "enemy": 54,
+      "gold": 507
+    },
+    {
+      "tick": 2042,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2054,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2066,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2078,
+      "type": "poison",
+      "enemy": 86,
+      "rank": 3
+    },
+    {
+      "tick": 2084,
+      "type": "kill",
+      "enemy": 86,
+      "gold": 523
+    },
+    {
+      "tick": 2090,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2094,
+      "type": "kill",
+      "enemy": 9,
+      "gold": 563
+    },
+    {
+      "tick": 2110,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 2114,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2116,
+      "type": "teleport",
+      "enemy": 58,
+      "node": 85
+    },
+    {
+      "tick": 2116,
+      "type": "teleport",
+      "enemy": 63,
+      "node": 82
+    },
+    {
+      "tick": 2126,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 2138,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 2150,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2162,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2174,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2182,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 53
+    },
+    {
+      "tick": 2186,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2191,
+      "type": "kill",
+      "enemy": 53,
+      "gold": 588
+    },
+    {
+      "tick": 2198,
+      "type": "poison",
+      "enemy": 64,
+      "rank": 3
+    },
+    {
+      "tick": 2200,
+      "type": "root",
+      "holder": 9,
+      "enemy": 59
+    },
+    {
+      "tick": 2200,
+      "type": "root",
+      "holder": 9,
+      "enemy": 64
+    },
+    {
+      "tick": 2204,
+      "type": "kill",
+      "enemy": 64,
+      "gold": 613
+    },
+    {
+      "tick": 2222,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 2234,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 2246,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 2258,
+      "type": "poison",
+      "enemy": 59,
+      "rank": 3
+    },
+    {
+      "tick": 2260,
+      "type": "kill",
+      "enemy": 59,
+      "gold": 638
+    },
+    {
+      "tick": 2311,
+      "type": "kill",
+      "enemy": 58,
+      "gold": 663
+    },
+    {
+      "tick": 2345,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 2351,
+      "type": "teleport",
+      "enemy": 63,
+      "node": 71
+    },
+    {
+      "tick": 2526,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 2532,
+      "type": "teleport",
+      "enemy": 63,
+      "node": 59
+    },
+    {
+      "tick": 2816,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 63
+    },
+    {
+      "tick": 2825,
+      "type": "kill",
+      "enemy": 63,
+      "gold": 688
+    },
+    {
+      "tick": 3367,
+      "type": "wave",
+      "wave": 17,
+      "bonus": 0,
+      "gold": 688,
+      "spawnEnd": 3519
+    },
+    {
+      "tick": 3517,
+      "type": "spawn",
+      "enemy": 222,
+      "kind": "juggernaut",
+      "route": 5,
+      "lane": 3
+    },
+    {
+      "tick": 3788,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 2,
+      "node": 61
+    },
+    {
+      "tick": 3847,
+      "type": "spawn",
+      "enemy": 224,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 3854,
+      "type": "spawn",
+      "enemy": 225,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 3861,
+      "type": "spawn",
+      "enemy": 227,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 3868,
+      "type": "spawn",
+      "enemy": 229,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 3872,
+      "type": "root",
+      "holder": 9,
+      "enemy": 224
+    },
+    {
+      "tick": 3872,
+      "type": "root",
+      "holder": 9,
+      "enemy": 225
+    },
+    {
+      "tick": 3872,
+      "type": "root",
+      "holder": 9,
+      "enemy": 227
+    },
+    {
+      "tick": 3872,
+      "type": "root",
+      "holder": 9,
+      "enemy": 229
+    },
+    {
+      "tick": 3875,
+      "type": "spawn",
+      "enemy": 230,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 3882,
+      "type": "spawn",
+      "enemy": 232,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 3889,
+      "type": "spawn",
+      "enemy": 233,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 3932,
+      "type": "kill",
+      "enemy": 225,
+      "gold": 698
+    },
+    {
+      "tick": 3962,
+      "type": "kill",
+      "enemy": 224,
+      "gold": 708
+    },
+    {
+      "tick": 4017,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 4,
+      "node": 16
+    },
+    {
+      "tick": 4046,
+      "type": "spawn",
+      "enemy": 248,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 1
+    },
+    {
+      "tick": 4053,
+      "type": "spawn",
+      "enemy": 250,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 2
+    },
+    {
+      "tick": 4060,
+      "type": "spawn",
+      "enemy": 252,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 3
+    },
+    {
+      "tick": 4062,
+      "type": "kill",
+      "enemy": 229,
+      "gold": 718
+    },
+    {
+      "tick": 4067,
+      "type": "spawn",
+      "enemy": 253,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 1
+    },
+    {
+      "tick": 4074,
+      "type": "spawn",
+      "enemy": 255,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 2
+    },
+    {
+      "tick": 4074,
+      "type": "kill",
+      "enemy": 227,
+      "gold": 728
+    },
+    {
+      "tick": 4081,
+      "type": "spawn",
+      "enemy": 256,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 3
+    },
+    {
+      "tick": 4088,
+      "type": "spawn",
+      "enemy": 258,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 1
+    },
+    {
+      "tick": 4098,
+      "type": "kill",
+      "enemy": 232,
+      "gold": 738
+    },
+    {
+      "tick": 4159,
+      "type": "kill",
+      "enemy": 233,
+      "gold": 748
+    },
+    {
+      "tick": 4224,
+      "type": "kill",
+      "enemy": 230,
+      "gold": 758
+    },
+    {
+      "tick": 4246,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 0,
+      "node": 96
+    },
+    {
+      "tick": 4283,
+      "type": "spawn",
+      "enemy": 266,
+      "kind": "golemHead",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 4288,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 4290,
+      "type": "spawn",
+      "enemy": 267,
+      "kind": "golemHead",
+      "route": 1,
+      "lane": 2
+    },
+    {
+      "tick": 4294,
+      "type": "teleport",
+      "enemy": 266,
+      "node": 58
+    },
+    {
+      "tick": 4294,
+      "type": "teleport",
+      "enemy": 267,
+      "node": 58
+    },
+    {
+      "tick": 4297,
+      "type": "spawn",
+      "enemy": 269,
+      "kind": "golemHead",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 4298,
+      "type": "teleport",
+      "enemy": 269,
+      "node": 57
+    },
+    {
+      "tick": 4304,
+      "type": "spawn",
+      "enemy": 270,
+      "kind": "golemHead",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 4308,
+      "type": "root",
+      "holder": 9,
+      "enemy": 270
+    },
+    {
+      "tick": 4311,
+      "type": "spawn",
+      "enemy": 272,
+      "kind": "golemHead",
+      "route": 1,
+      "lane": 2
+    },
+    {
+      "tick": 4318,
+      "type": "spawn",
+      "enemy": 274,
+      "kind": "golemHead",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 4325,
+      "type": "spawn",
+      "enemy": 275,
+      "kind": "golemHead",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 4344,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 274
+    },
+    {
+      "tick": 4353,
+      "type": "kill",
+      "enemy": 274,
+      "gold": 768
+    },
+    {
+      "tick": 4368,
+      "type": "kill",
+      "enemy": 270,
+      "gold": 778
+    },
+    {
+      "tick": 4415,
+      "type": "kill",
+      "enemy": 272,
+      "gold": 788
+    },
+    {
+      "tick": 4473,
+      "type": "kill",
+      "enemy": 275,
+      "gold": 798
+    },
+    {
+      "tick": 4475,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 2,
+      "node": 89
+    },
+    {
+      "tick": 4523,
+      "type": "spawn",
+      "enemy": 298,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 4530,
+      "type": "spawn",
+      "enemy": 299,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 4537,
+      "type": "spawn",
+      "enemy": 301,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 4544,
+      "type": "spawn",
+      "enemy": 302,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 4551,
+      "type": "spawn",
+      "enemy": 305,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 4557,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 4558,
+      "type": "spawn",
+      "enemy": 307,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 4563,
+      "type": "teleport",
+      "enemy": 269,
+      "node": 55
+    },
+    {
+      "tick": 4565,
+      "type": "spawn",
+      "enemy": 308,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 4572,
+      "type": "teleport",
+      "enemy": 266,
+      "node": 53
+    },
+    {
+      "tick": 4584,
+      "type": "root",
+      "holder": 9,
+      "enemy": 267
+    },
+    {
+      "tick": 4584,
+      "type": "root",
+      "holder": 9,
+      "enemy": 298
+    },
+    {
+      "tick": 4584,
+      "type": "root",
+      "holder": 9,
+      "enemy": 301
+    },
+    {
+      "tick": 4584,
+      "type": "root",
+      "holder": 9,
+      "enemy": 302
+    },
+    {
+      "tick": 4584,
+      "type": "root",
+      "holder": 9,
+      "enemy": 307
+    },
+    {
+      "tick": 4584,
+      "type": "root",
+      "holder": 9,
+      "enemy": 308
+    },
+    {
+      "tick": 4614,
+      "type": "kill",
+      "enemy": 298,
+      "gold": 808
+    },
+    {
+      "tick": 4644,
+      "type": "kill",
+      "enemy": 267,
+      "gold": 818
+    },
+    {
+      "tick": 4677,
+      "type": "kill",
+      "enemy": 299,
+      "gold": 828
+    },
+    {
+      "tick": 4704,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 2,
+      "node": 80
+    },
+    {
+      "tick": 4737,
+      "type": "kill",
+      "enemy": 305,
+      "gold": 838
+    },
+    {
+      "tick": 4748,
+      "type": "spawn",
+      "enemy": 328,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 4755,
+      "type": "spawn",
+      "enemy": 330,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 4762,
+      "type": "spawn",
+      "enemy": 332,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 4763,
+      "type": "kill",
+      "enemy": 301,
+      "gold": 848
+    },
+    {
+      "tick": 4769,
+      "type": "spawn",
+      "enemy": 333,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 4776,
+      "type": "spawn",
+      "enemy": 335,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 4783,
+      "type": "spawn",
+      "enemy": 336,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 4787,
+      "type": "kill",
+      "enemy": 302,
+      "gold": 858
+    },
+    {
+      "tick": 4790,
+      "type": "spawn",
+      "enemy": 339,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 4797,
+      "type": "kill",
+      "enemy": 307,
+      "gold": 868
+    },
+    {
+      "tick": 4823,
+      "type": "kill",
+      "enemy": 308,
+      "gold": 878
+    },
+    {
+      "tick": 4846,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 269
+    },
+    {
+      "tick": 4855,
+      "type": "kill",
+      "enemy": 269,
+      "gold": 888
+    },
+    {
+      "tick": 4860,
+      "type": "root",
+      "holder": 9,
+      "enemy": 248
+    },
+    {
+      "tick": 4860,
+      "type": "root",
+      "holder": 9,
+      "enemy": 250
+    },
+    {
+      "tick": 4860,
+      "type": "root",
+      "holder": 9,
+      "enemy": 252
+    },
+    {
+      "tick": 4860,
+      "type": "root",
+      "holder": 9,
+      "enemy": 253
+    },
+    {
+      "tick": 4860,
+      "type": "root",
+      "holder": 9,
+      "enemy": 256
+    },
+    {
+      "tick": 4860,
+      "type": "root",
+      "holder": 9,
+      "enemy": 258
+    },
+    {
+      "tick": 4860,
+      "type": "root",
+      "holder": 9,
+      "enemy": 266
+    },
+    {
+      "tick": 4860,
+      "type": "root",
+      "holder": 9,
+      "enemy": 328
+    },
+    {
+      "tick": 4890,
+      "type": "kill",
+      "enemy": 328,
+      "gold": 898
+    },
+    {
+      "tick": 4917,
+      "type": "kill",
+      "enemy": 332,
+      "gold": 908
+    },
+    {
+      "tick": 4920,
+      "type": "kill",
+      "enemy": 266,
+      "gold": 918
+    },
+    {
+      "tick": 4933,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 1,
+      "node": 65
+    },
+    {
+      "tick": 4969,
+      "type": "spawn",
+      "enemy": 360,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 4976,
+      "type": "spawn",
+      "enemy": 361,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 4979,
+      "type": "kill",
+      "enemy": 336,
+      "gold": 928
+    },
+    {
+      "tick": 4983,
+      "type": "spawn",
+      "enemy": 363,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 4990,
+      "type": "spawn",
+      "enemy": 365,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 4996,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 4997,
+      "type": "spawn",
+      "enemy": 366,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 5002,
+      "type": "teleport",
+      "enemy": 360,
+      "node": 28
+    },
+    {
+      "tick": 5002,
+      "type": "teleport",
+      "enemy": 361,
+      "node": 34
+    },
+    {
+      "tick": 5002,
+      "type": "teleport",
+      "enemy": 363,
+      "node": 25
+    },
+    {
+      "tick": 5002,
+      "type": "teleport",
+      "enemy": 365,
+      "node": 31
+    },
+    {
+      "tick": 5002,
+      "type": "teleport",
+      "enemy": 366,
+      "node": 27
+    },
+    {
+      "tick": 5004,
+      "type": "spawn",
+      "enemy": 368,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 5005,
+      "type": "teleport",
+      "enemy": 368,
+      "node": 28
+    },
+    {
+      "tick": 5011,
+      "type": "spawn",
+      "enemy": 369,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 5037,
+      "type": "kill",
+      "enemy": 333,
+      "gold": 938
+    },
+    {
+      "tick": 5064,
+      "type": "kill",
+      "enemy": 252,
+      "gold": 948
+    },
+    {
+      "tick": 5097,
+      "type": "kill",
+      "enemy": 339,
+      "gold": 958
+    },
+    {
+      "tick": 5136,
+      "type": "root",
+      "holder": 9,
+      "enemy": 248
+    },
+    {
+      "tick": 5136,
+      "type": "root",
+      "holder": 9,
+      "enemy": 250
+    },
+    {
+      "tick": 5136,
+      "type": "root",
+      "holder": 9,
+      "enemy": 253
+    },
+    {
+      "tick": 5136,
+      "type": "root",
+      "holder": 9,
+      "enemy": 255
+    },
+    {
+      "tick": 5136,
+      "type": "root",
+      "holder": 9,
+      "enemy": 256
+    },
+    {
+      "tick": 5136,
+      "type": "root",
+      "holder": 9,
+      "enemy": 258
+    },
+    {
+      "tick": 5136,
+      "type": "root",
+      "holder": 9,
+      "enemy": 330
+    },
+    {
+      "tick": 5136,
+      "type": "root",
+      "holder": 9,
+      "enemy": 335
+    },
+    {
+      "tick": 5157,
+      "type": "kill",
+      "enemy": 330,
+      "gold": 968
+    },
+    {
+      "tick": 5162,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 1,
+      "node": 3
+    },
+    {
+      "tick": 5166,
+      "type": "kill",
+      "enemy": 248,
+      "gold": 978
+    },
+    {
+      "tick": 5166,
+      "type": "kill",
+      "enemy": 250,
+      "gold": 988
+    },
+    {
+      "tick": 5166,
+      "type": "kill",
+      "enemy": 253,
+      "gold": 998
+    },
+    {
+      "tick": 5166,
+      "type": "kill",
+      "enemy": 256,
+      "gold": 1008
+    },
+    {
+      "tick": 5166,
+      "type": "kill",
+      "enemy": 258,
+      "gold": 1018
+    },
+    {
+      "tick": 5184,
+      "type": "kill",
+      "enemy": 369,
+      "gold": 1028
+    },
+    {
+      "tick": 5206,
+      "type": "spawn",
+      "enemy": 394,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 5207,
+      "type": "kill",
+      "enemy": 335,
+      "gold": 1038
+    },
+    {
+      "tick": 5213,
+      "type": "spawn",
+      "enemy": 395,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 5220,
+      "type": "spawn",
+      "enemy": 397,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 5227,
+      "type": "spawn",
+      "enemy": 398,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 5231,
+      "type": "kill",
+      "enemy": 255,
+      "gold": 1048
+    },
+    {
+      "tick": 5234,
+      "type": "spawn",
+      "enemy": 400,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 5241,
+      "type": "spawn",
+      "enemy": 401,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 5248,
+      "type": "spawn",
+      "enemy": 402,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 5279,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 5285,
+      "type": "teleport",
+      "enemy": 361,
+      "node": 34
+    },
+    {
+      "tick": 5293,
+      "type": "teleport",
+      "enemy": 365,
+      "node": 33
+    },
+    {
+      "tick": 5359,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 360
+    },
+    {
+      "tick": 5368,
+      "type": "kill",
+      "enemy": 360,
+      "gold": 1058
+    },
+    {
+      "tick": 5391,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 1,
+      "node": 97
+    },
+    {
+      "tick": 5427,
+      "type": "spawn",
+      "enemy": 417,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 5434,
+      "type": "spawn",
+      "enemy": 418,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 5441,
+      "type": "spawn",
+      "enemy": 420,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 5448,
+      "type": "spawn",
+      "enemy": 421,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 5452,
+      "type": "root",
+      "holder": 9,
+      "enemy": 417
+    },
+    {
+      "tick": 5452,
+      "type": "root",
+      "holder": 9,
+      "enemy": 418
+    },
+    {
+      "tick": 5452,
+      "type": "root",
+      "holder": 9,
+      "enemy": 420
+    },
+    {
+      "tick": 5452,
+      "type": "root",
+      "holder": 9,
+      "enemy": 421
+    },
+    {
+      "tick": 5455,
+      "type": "spawn",
+      "enemy": 423,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 5462,
+      "type": "spawn",
+      "enemy": 425,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 5469,
+      "type": "spawn",
+      "enemy": 426,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 5485,
+      "type": "kill",
+      "enemy": 420,
+      "gold": 1068
+    },
+    {
+      "tick": 5514,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 5520,
+      "type": "teleport",
+      "enemy": 425,
+      "node": 72
+    },
+    {
+      "tick": 5542,
+      "type": "kill",
+      "enemy": 417,
+      "gold": 1078
+    },
+    {
+      "tick": 5578,
+      "type": "kill",
+      "enemy": 426,
+      "gold": 1088
+    },
+    {
+      "tick": 5605,
+      "type": "kill",
+      "enemy": 423,
+      "gold": 1098
+    },
+    {
+      "tick": 5620,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 3,
+      "node": 15
+    },
+    {
+      "tick": 5633,
+      "type": "kill",
+      "enemy": 421,
+      "gold": 1108
+    },
+    {
+      "tick": 5674,
+      "type": "spawn",
+      "enemy": 449,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 5681,
+      "type": "spawn",
+      "enemy": 451,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 5688,
+      "type": "spawn",
+      "enemy": 454,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 5690,
+      "type": "kill",
+      "enemy": 366,
+      "gold": 1118
+    },
+    {
+      "tick": 5695,
+      "type": "spawn",
+      "enemy": 457,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 5696,
+      "type": "kill",
+      "enemy": 368,
+      "gold": 1128
+    },
+    {
+      "tick": 5702,
+      "type": "spawn",
+      "enemy": 459,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 5709,
+      "type": "spawn",
+      "enemy": 460,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 5716,
+      "type": "spawn",
+      "enemy": 462,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 5716,
+      "type": "kill",
+      "enemy": 418,
+      "gold": 1138
+    },
+    {
+      "tick": 5728,
+      "type": "root",
+      "holder": 9,
+      "enemy": 361
+    },
+    {
+      "tick": 5728,
+      "type": "root",
+      "holder": 9,
+      "enemy": 363
+    },
+    {
+      "tick": 5728,
+      "type": "root",
+      "holder": 9,
+      "enemy": 425
+    },
+    {
+      "tick": 5750,
+      "type": "kill",
+      "enemy": 363,
+      "gold": 1148
+    },
+    {
+      "tick": 5775,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 5781,
+      "type": "teleport",
+      "enemy": 365,
+      "node": 50
+    },
+    {
+      "tick": 5781,
+      "type": "teleport",
+      "enemy": 425,
+      "node": 59
+    },
+    {
+      "tick": 5808,
+      "type": "kill",
+      "enemy": 425,
+      "gold": 1158
+    },
+    {
+      "tick": 5818,
+      "type": "kill",
+      "enemy": 361,
+      "gold": 1168
+    },
+    {
+      "tick": 5849,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 3,
+      "node": 12
+    },
+    {
+      "tick": 5891,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 395
+    },
+    {
+      "tick": 5899,
+      "type": "spawn",
+      "enemy": 484,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 5900,
+      "type": "kill",
+      "enemy": 395,
+      "gold": 1178
+    },
+    {
+      "tick": 5906,
+      "type": "spawn",
+      "enemy": 486,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 5913,
+      "type": "spawn",
+      "enemy": 487,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 5920,
+      "type": "spawn",
+      "enemy": 489,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 5927,
+      "type": "spawn",
+      "enemy": 490,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 5934,
+      "type": "spawn",
+      "enemy": 492,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 5941,
+      "type": "spawn",
+      "enemy": 493,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 5960,
+      "type": "kill",
+      "enemy": 400,
+      "gold": 1188
+    },
+    {
+      "tick": 6004,
+      "type": "root",
+      "holder": 9,
+      "enemy": 394
+    },
+    {
+      "tick": 6004,
+      "type": "root",
+      "holder": 9,
+      "enemy": 397
+    },
+    {
+      "tick": 6004,
+      "type": "root",
+      "holder": 9,
+      "enemy": 398
+    },
+    {
+      "tick": 6004,
+      "type": "root",
+      "holder": 9,
+      "enemy": 401
+    },
+    {
+      "tick": 6004,
+      "type": "root",
+      "holder": 9,
+      "enemy": 402
+    },
+    {
+      "tick": 6019,
+      "type": "kill",
+      "enemy": 394,
+      "gold": 1198
+    },
+    {
+      "tick": 6036,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 6042,
+      "type": "teleport",
+      "enemy": 398,
+      "node": 66
+    },
+    {
+      "tick": 6042,
+      "type": "teleport",
+      "enemy": 402,
+      "node": 60
+    },
+    {
+      "tick": 6078,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 3,
+      "node": 102
+    },
+    {
+      "tick": 6088,
+      "type": "kill",
+      "enemy": 397,
+      "gold": 1208
+    },
+    {
+      "tick": 6094,
+      "type": "kill",
+      "enemy": 401,
+      "gold": 1218
+    },
+    {
+      "tick": 6108,
+      "type": "spawn",
+      "enemy": 511,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 6114,
+      "type": "kill",
+      "enemy": 398,
+      "gold": 1228
+    },
+    {
+      "tick": 6115,
+      "type": "spawn",
+      "enemy": 512,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 6122,
+      "type": "spawn",
+      "enemy": 514,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 6129,
+      "type": "spawn",
+      "enemy": 515,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 6136,
+      "type": "spawn",
+      "enemy": 517,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 6143,
+      "type": "spawn",
+      "enemy": 518,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 6150,
+      "type": "spawn",
+      "enemy": 520,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 6161,
+      "type": "kill",
+      "enemy": 365,
+      "gold": 1238
+    },
+    {
+      "tick": 6220,
+      "type": "kill",
+      "enemy": 512,
+      "gold": 1248
+    },
+    {
+      "tick": 6281,
+      "type": "kill",
+      "enemy": 511,
+      "gold": 1258
+    },
+    {
+      "tick": 6294,
+      "type": "root",
+      "holder": 9,
+      "enemy": 517
+    },
+    {
+      "tick": 6297,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 6303,
+      "type": "teleport",
+      "enemy": 515,
+      "node": 90
+    },
+    {
+      "tick": 6303,
+      "type": "teleport",
+      "enemy": 517,
+      "node": 87
+    },
+    {
+      "tick": 6304,
+      "type": "teleport",
+      "enemy": 520,
+      "node": 81
+    },
+    {
+      "tick": 6307,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 1,
+      "node": 41
+    },
+    {
+      "tick": 6341,
+      "type": "spawn",
+      "enemy": 532,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 6348,
+      "type": "spawn",
+      "enemy": 534,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 6355,
+      "type": "spawn",
+      "enemy": 537,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 6358,
+      "type": "kill",
+      "enemy": 514,
+      "gold": 1268
+    },
+    {
+      "tick": 6362,
+      "type": "spawn",
+      "enemy": 539,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 6369,
+      "type": "spawn",
+      "enemy": 541,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 6376,
+      "type": "spawn",
+      "enemy": 542,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 6382,
+      "type": "kill",
+      "enemy": 402,
+      "gold": 1278
+    },
+    {
+      "tick": 6383,
+      "type": "spawn",
+      "enemy": 544,
+      "kind": "golemHead",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 6404,
+      "type": "kill",
+      "enemy": 517,
+      "gold": 1288
+    },
+    {
+      "tick": 6413,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 451
+    },
+    {
+      "tick": 6422,
+      "type": "kill",
+      "enemy": 451,
+      "gold": 1298
+    },
+    {
+      "tick": 6424,
+      "type": "kill",
+      "enemy": 518,
+      "gold": 1308
+    },
+    {
+      "tick": 6482,
+      "type": "kill",
+      "enemy": 449,
+      "gold": 1318
+    },
+    {
+      "tick": 6536,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 2,
+      "node": 73
+    },
+    {
+      "tick": 6539,
+      "type": "kill",
+      "enemy": 459,
+      "gold": 1328
+    },
+    {
+      "tick": 6558,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 6564,
+      "type": "teleport",
+      "enemy": 454,
+      "node": 83
+    },
+    {
+      "tick": 6564,
+      "type": "teleport",
+      "enemy": 457,
+      "node": 84
+    },
+    {
+      "tick": 6564,
+      "type": "teleport",
+      "enemy": 462,
+      "node": 85
+    },
+    {
+      "tick": 6564,
+      "type": "teleport",
+      "enemy": 515,
+      "node": 84
+    },
+    {
+      "tick": 6571,
+      "type": "teleport",
+      "enemy": 460,
+      "node": 84
+    },
+    {
+      "tick": 6589,
+      "type": "spawn",
+      "enemy": 557,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 6596,
+      "type": "spawn",
+      "enemy": 558,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 6603,
+      "type": "spawn",
+      "enemy": 560,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 6610,
+      "type": "spawn",
+      "enemy": 562,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 6614,
+      "type": "root",
+      "holder": 9,
+      "enemy": 560
+    },
+    {
+      "tick": 6614,
+      "type": "root",
+      "holder": 9,
+      "enemy": 562
+    },
+    {
+      "tick": 6617,
+      "type": "spawn",
+      "enemy": 565,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 6624,
+      "type": "spawn",
+      "enemy": 567,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 6631,
+      "type": "spawn",
+      "enemy": 568,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 6670,
+      "type": "kill",
+      "enemy": 520,
+      "gold": 1338
+    },
+    {
+      "tick": 6674,
+      "type": "kill",
+      "enemy": 560,
+      "gold": 1348
+    },
+    {
+      "tick": 6704,
+      "type": "kill",
+      "enemy": 562,
+      "gold": 1358
+    },
+    {
+      "tick": 6714,
+      "type": "kill",
+      "enemy": 484,
+      "gold": 1368
+    },
+    {
+      "tick": 6753,
+      "type": "kill",
+      "enemy": 567,
+      "gold": 1378
+    },
+    {
+      "tick": 6760,
+      "type": "kill",
+      "enemy": 486,
+      "gold": 1388
+    },
+    {
+      "tick": 6765,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 4,
+      "node": 206
+    },
+    {
+      "tick": 6790,
+      "type": "spawn",
+      "enemy": 591,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 1
+    },
+    {
+      "tick": 6797,
+      "type": "spawn",
+      "enemy": 594,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 2
+    },
+    {
+      "tick": 6803,
+      "type": "kill",
+      "enemy": 534,
+      "gold": 1398
+    },
+    {
+      "tick": 6803,
+      "type": "kill",
+      "enemy": 489,
+      "gold": 1408
+    },
+    {
+      "tick": 6804,
+      "type": "spawn",
+      "enemy": 596,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 3
+    },
+    {
+      "tick": 6811,
+      "type": "spawn",
+      "enemy": 598,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 1
+    },
+    {
+      "tick": 6818,
+      "type": "spawn",
+      "enemy": 600,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 2
+    },
+    {
+      "tick": 6819,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 6825,
+      "type": "teleport",
+      "enemy": 487,
+      "node": 88
+    },
+    {
+      "tick": 6825,
+      "type": "teleport",
+      "enemy": 492,
+      "node": 82
+    },
+    {
+      "tick": 6825,
+      "type": "teleport",
+      "enemy": 493,
+      "node": 84
+    },
+    {
+      "tick": 6825,
+      "type": "spawn",
+      "enemy": 602,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 3
+    },
+    {
+      "tick": 6832,
+      "type": "spawn",
+      "enemy": 603,
+      "kind": "golemHead",
+      "route": 5,
+      "lane": 1
+    },
+    {
+      "tick": 6863,
+      "type": "kill",
+      "enemy": 490,
+      "gold": 1418
+    },
+    {
+      "tick": 6873,
+      "type": "kill",
+      "enemy": 557,
+      "gold": 1428
+    },
+    {
+      "tick": 6890,
+      "type": "root",
+      "holder": 9,
+      "enemy": 457
+    },
+    {
+      "tick": 6890,
+      "type": "root",
+      "holder": 9,
+      "enemy": 462
+    },
+    {
+      "tick": 6890,
+      "type": "root",
+      "holder": 9,
+      "enemy": 515
+    },
+    {
+      "tick": 6890,
+      "type": "root",
+      "holder": 9,
+      "enemy": 532
+    },
+    {
+      "tick": 6890,
+      "type": "root",
+      "holder": 9,
+      "enemy": 537
+    },
+    {
+      "tick": 6890,
+      "type": "root",
+      "holder": 9,
+      "enemy": 539
+    },
+    {
+      "tick": 6890,
+      "type": "root",
+      "holder": 9,
+      "enemy": 541
+    },
+    {
+      "tick": 6890,
+      "type": "root",
+      "holder": 9,
+      "enemy": 542
+    },
+    {
+      "tick": 6895,
+      "type": "kill",
+      "enemy": 462,
+      "gold": 1438
+    },
+    {
+      "tick": 6933,
+      "type": "kill",
+      "enemy": 457,
+      "gold": 1448
+    },
+    {
+      "tick": 6935,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 460
+    },
+    {
+      "tick": 6944,
+      "type": "kill",
+      "enemy": 460,
+      "gold": 1458
+    },
+    {
+      "tick": 6980,
+      "type": "kill",
+      "enemy": 515,
+      "gold": 1468
+    },
+    {
+      "tick": 6980,
+      "type": "kill",
+      "enemy": 541,
+      "gold": 1478
+    },
+    {
+      "tick": 6993,
+      "type": "kill",
+      "enemy": 454,
+      "gold": 1488
+    },
+    {
+      "tick": 6994,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 2,
+      "node": 64
+    },
+    {
+      "tick": 7003,
+      "type": "kill",
+      "enemy": 544,
+      "gold": 1498
+    },
+    {
+      "tick": 7019,
+      "type": "kill",
+      "enemy": 532,
+      "gold": 1508
+    },
+    {
+      "tick": 7043,
+      "type": "kill",
+      "enemy": 539,
+      "gold": 1518
+    },
+    {
+      "tick": 7052,
+      "type": "spawn",
+      "enemy": 635,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 7059,
+      "type": "spawn",
+      "enemy": 638,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 7064,
+      "type": "kill",
+      "enemy": 568,
+      "gold": 1528
+    },
+    {
+      "tick": 7066,
+      "type": "spawn",
+      "enemy": 641,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 7073,
+      "type": "spawn",
+      "enemy": 642,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 7080,
+      "type": "spawn",
+      "enemy": 644,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 7080,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 7086,
+      "type": "teleport",
+      "enemy": 591,
+      "node": 207
+    },
+    {
+      "tick": 7086,
+      "type": "teleport",
+      "enemy": 596,
+      "node": 203
+    },
+    {
+      "tick": 7086,
+      "type": "teleport",
+      "enemy": 602,
+      "node": 198
+    },
+    {
+      "tick": 7087,
+      "type": "spawn",
+      "enemy": 645,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 7091,
+      "type": "teleport",
+      "enemy": 598,
+      "node": 206
+    },
+    {
+      "tick": 7094,
+      "type": "spawn",
+      "enemy": 647,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 7113,
+      "type": "kill",
+      "enemy": 558,
+      "gold": 1538
+    },
+    {
+      "tick": 7139,
+      "type": "kill",
+      "enemy": 537,
+      "gold": 1548
+    },
+    {
+      "tick": 7166,
+      "type": "root",
+      "holder": 9,
+      "enemy": 493
+    },
+    {
+      "tick": 7166,
+      "type": "root",
+      "holder": 9,
+      "enemy": 594
+    },
+    {
+      "tick": 7166,
+      "type": "root",
+      "holder": 9,
+      "enemy": 600
+    },
+    {
+      "tick": 7166,
+      "type": "root",
+      "holder": 9,
+      "enemy": 603
+    },
+    {
+      "tick": 7166,
+      "type": "root",
+      "holder": 9,
+      "enemy": 641
+    },
+    {
+      "tick": 7166,
+      "type": "root",
+      "holder": 9,
+      "enemy": 645
+    },
+    {
+      "tick": 7170,
+      "type": "kill",
+      "enemy": 565,
+      "gold": 1558
+    },
+    {
+      "tick": 7175,
+      "type": "kill",
+      "enemy": 542,
+      "gold": 1568
+    },
+    {
+      "tick": 7205,
+      "type": "kill",
+      "enemy": 487,
+      "gold": 1578
+    },
+    {
+      "tick": 7223,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 2,
+      "node": 96
+    },
+    {
+      "tick": 7226,
+      "type": "kill",
+      "enemy": 603,
+      "gold": 1588
+    },
+    {
+      "tick": 7256,
+      "type": "kill",
+      "enemy": 594,
+      "gold": 1598
+    },
+    {
+      "tick": 7271,
+      "type": "kill",
+      "enemy": 600,
+      "gold": 1608
+    },
+    {
+      "tick": 7274,
+      "type": "spawn",
+      "enemy": 674,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 7281,
+      "type": "spawn",
+      "enemy": 676,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 7288,
+      "type": "spawn",
+      "enemy": 678,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 7293,
+      "type": "kill",
+      "enemy": 492,
+      "gold": 1618
+    },
+    {
+      "tick": 7295,
+      "type": "spawn",
+      "enemy": 681,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 7295,
+      "type": "kill",
+      "enemy": 493,
+      "gold": 1628
+    },
+    {
+      "tick": 7302,
+      "type": "spawn",
+      "enemy": 682,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 2
+    },
+    {
+      "tick": 7309,
+      "type": "spawn",
+      "enemy": 684,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 3
+    },
+    {
+      "tick": 7316,
+      "type": "spawn",
+      "enemy": 685,
+      "kind": "golemHead",
+      "route": 3,
+      "lane": 1
+    },
+    {
+      "tick": 7341,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 7345,
+      "type": "kill",
+      "enemy": 591,
+      "gold": 1638
+    },
+    {
+      "tick": 7347,
+      "type": "teleport",
+      "enemy": 598,
+      "node": 202
+    },
+    {
+      "tick": 7406,
+      "type": "kill",
+      "enemy": 596,
+      "gold": 1648
+    },
+    {
+      "tick": 7442,
+      "type": "root",
+      "holder": 9,
+      "enemy": 602
+    },
+    {
+      "tick": 7442,
+      "type": "root",
+      "holder": 9,
+      "enemy": 635
+    },
+    {
+      "tick": 7442,
+      "type": "root",
+      "holder": 9,
+      "enemy": 638
+    },
+    {
+      "tick": 7442,
+      "type": "root",
+      "holder": 9,
+      "enemy": 641
+    },
+    {
+      "tick": 7442,
+      "type": "root",
+      "holder": 9,
+      "enemy": 642
+    },
+    {
+      "tick": 7442,
+      "type": "root",
+      "holder": 9,
+      "enemy": 644
+    },
+    {
+      "tick": 7442,
+      "type": "root",
+      "holder": 9,
+      "enemy": 645
+    },
+    {
+      "tick": 7442,
+      "type": "root",
+      "holder": 9,
+      "enemy": 647
+    },
+    {
+      "tick": 7452,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 3,
+      "node": 8
+    },
+    {
+      "tick": 7457,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 602
+    },
+    {
+      "tick": 7466,
+      "type": "kill",
+      "enemy": 602,
+      "gold": 1658
+    },
+    {
+      "tick": 7472,
+      "type": "kill",
+      "enemy": 641,
+      "gold": 1668
+    },
+    {
+      "tick": 7472,
+      "type": "kill",
+      "enemy": 645,
+      "gold": 1678
+    },
+    {
+      "tick": 7487,
+      "type": "kill",
+      "enemy": 674,
+      "gold": 1688
+    },
+    {
+      "tick": 7501,
+      "type": "spawn",
+      "enemy": 713,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 7508,
+      "type": "spawn",
+      "enemy": 714,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 7515,
+      "type": "spawn",
+      "enemy": 717,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 7522,
+      "type": "spawn",
+      "enemy": 720,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 7524,
+      "type": "kill",
+      "enemy": 678,
+      "gold": 1698
+    },
+    {
+      "tick": 7529,
+      "type": "spawn",
+      "enemy": 722,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 7536,
+      "type": "spawn",
+      "enemy": 724,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 7543,
+      "type": "spawn",
+      "enemy": 725,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 7583,
+      "type": "kill",
+      "enemy": 676,
+      "gold": 1708
+    },
+    {
+      "tick": 7587,
+      "type": "kill",
+      "enemy": 681,
+      "gold": 1718
+    },
+    {
+      "tick": 7602,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 7608,
+      "type": "teleport",
+      "enemy": 684,
+      "node": 98
+    },
+    {
+      "tick": 7608,
+      "type": "teleport",
+      "enemy": 685,
+      "node": 92
+    },
+    {
+      "tick": 7631,
+      "type": "kill",
+      "enemy": 635,
+      "gold": 1728
+    },
+    {
+      "tick": 7653,
+      "type": "kill",
+      "enemy": 682,
+      "gold": 1738
+    },
+    {
+      "tick": 7655,
+      "type": "kill",
+      "enemy": 642,
+      "gold": 1748
+    },
+    {
+      "tick": 7681,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 3,
+      "node": 67
+    },
+    {
+      "tick": 7705,
+      "type": "kill",
+      "enemy": 598,
+      "gold": 1758
+    },
+    {
+      "tick": 7718,
+      "type": "root",
+      "holder": 9,
+      "enemy": 638
+    },
+    {
+      "tick": 7718,
+      "type": "root",
+      "holder": 9,
+      "enemy": 644
+    },
+    {
+      "tick": 7718,
+      "type": "root",
+      "holder": 9,
+      "enemy": 647
+    },
+    {
+      "tick": 7718,
+      "type": "root",
+      "holder": 9,
+      "enemy": 684
+    },
+    {
+      "tick": 7718,
+      "type": "root",
+      "holder": 9,
+      "enemy": 685
+    },
+    {
+      "tick": 7720,
+      "type": "spawn",
+      "enemy": 752,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 7727,
+      "type": "spawn",
+      "enemy": 754,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 7727,
+      "type": "kill",
+      "enemy": 638,
+      "gold": 1768
+    },
+    {
+      "tick": 7727,
+      "type": "kill",
+      "enemy": 647,
+      "gold": 1778
+    },
+    {
+      "tick": 7734,
+      "type": "spawn",
+      "enemy": 755,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 7741,
+      "type": "spawn",
+      "enemy": 758,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 7748,
+      "type": "spawn",
+      "enemy": 759,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 7748,
+      "type": "kill",
+      "enemy": 644,
+      "gold": 1788
+    },
+    {
+      "tick": 7755,
+      "type": "spawn",
+      "enemy": 761,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 7762,
+      "type": "spawn",
+      "enemy": 763,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 7799,
+      "type": "kill",
+      "enemy": 684,
+      "gold": 1798
+    },
+    {
+      "tick": 7823,
+      "type": "kill",
+      "enemy": 685,
+      "gold": 1808
+    },
+    {
+      "tick": 7863,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 7869,
+      "type": "teleport",
+      "enemy": 754,
+      "node": 58
+    },
+    {
+      "tick": 7869,
+      "type": "teleport",
+      "enemy": 759,
+      "node": 52
+    },
+    {
+      "tick": 7910,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 3,
+      "node": 50
+    },
+    {
+      "tick": 7956,
+      "type": "spawn",
+      "enemy": 781,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 7963,
+      "type": "spawn",
+      "enemy": 782,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 7970,
+      "type": "spawn",
+      "enemy": 784,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 7977,
+      "type": "spawn",
+      "enemy": 785,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 7979,
+      "type": "death-ray",
+      "holder": 10,
+      "enemy": 752
+    },
+    {
+      "tick": 7984,
+      "type": "spawn",
+      "enemy": 787,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 7988,
+      "type": "kill",
+      "enemy": 752,
+      "gold": 1818
+    },
+    {
+      "tick": 7991,
+      "type": "spawn",
+      "enemy": 788,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 7998,
+      "type": "spawn",
+      "enemy": 789,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 8108,
+      "type": "kill",
+      "enemy": 758,
+      "gold": 1828
+    },
+    {
+      "tick": 8124,
+      "type": "portal",
+      "holder": 10
+    },
+    {
+      "tick": 8130,
+      "type": "teleport",
+      "enemy": 763,
+      "node": 74
+    },
+    {
+      "tick": 8139,
+      "type": "golem-launch",
+      "enemy": 222,
+      "route": 3,
+      "node": 37
+    },
+    {
+      "tick": 8189,
+      "type": "kill",
+      "enemy": 755,
+      "gold": 1838
+    },
+    {
+      "tick": 8194,
+      "type": "spawn",
+      "enemy": 801,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 1
+    },
+    {
+      "tick": 8201,
+      "type": "spawn",
+      "enemy": 802,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 2
+    },
+    {
+      "tick": 8208,
+      "type": "spawn",
+      "enemy": 803,
+      "kind": "golemHead",
+      "route": 4,
+      "lane": 3
+    },
+    {
+      "tick": 8248,
+      "type": "kill",
+      "enemy": 761,
+      "gold": 1848
+    },
+    {
+      "tick": 8267,
+      "type": "leak",
+      "enemy": 222,
+      "lives": 0,
+      "gold": 1848
+    },
+    {
+      "tick": 8267,
+      "type": "defeat"
+    }
+  ]
+}

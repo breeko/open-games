@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import {powerLoadoutSchema} from './upgrades';
 import { battleCompatibility, maxTowerTier, getLevel } from './content';
 
 const tick = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
@@ -17,10 +18,12 @@ const enemySchema = point.extend({
   lane: z.number().int().min(0).max(2), node: tick, hp: health, maxHp: health.positive(),
   deadAt, escaped: z.boolean(), nextAttack: tick, hitAt: tick, attackTarget: id,
   rangedEngaged:z.boolean().default(false),rangedTarget:id.default(0),powerCounter:tick.default(0),missileCounter:tick.default(0),special:z.enum(['none','arrow','missile','summon']).default('none'),specialAt:tick.default(0),
+  poisonRank:tick.max(3).default(0),poisonTicks:tick.max(90).default(0),poisonCounter:tick.max(30).default(0),rootTicks:tick.max(90).default(0),rootCounter:tick.max(29).default(0),rootCount:tick.max(3).default(0),teleports:tick.max(3).default(0),teleportTicks:tick.max(20).default(0),
   healAt: tick, healUntil: tick, nextHeal: tick, healCounter:tick.max(240).default(0), eggAt:tick.default(0),eggsLaid:tick.max(3).default(0),eggInterval:tick.default(0), animation, animAt: tick, facing,
 });
 const soldierSchema = point.extend({
   id: id.positive(), kind: z.enum(['militia', 'footmen', 'knight', 'farmer', 'elf']), towerId: id,
+  reinforcementRank:tick.max(5).default(0),spearCounter:tick.default(0),spearCast:tick.default(0),spearTarget:id.default(0),
   activeAt: tick, slot: z.number().int().min(0).max(3), rally: point, hp: health,
   deadAt, respawnAt: deadline, expires: deadline, target: id, nextAttack: tick,
   home: point, destination: point, meleeSlot: z.number().int().min(-1).max(2), arrived: z.boolean(), redeploying: z.boolean(),
@@ -29,12 +32,14 @@ const soldierSchema = point.extend({
 const towerSchema = point.extend({
   id: id.positive(),
   kind: z.enum(['archer', 'barrack', 'mage', 'engineer']), level: z.number().int().min(1).max(4),
+  poison:tick.max(3).default(0),thorns:tick.max(3).default(0),deathRay:tick.max(3).default(0),teleport:tick.max(3).default(0),poisonCounter:tick.default(0),thornCounter:tick.default(0),thornCast:tick.default(0),deathCounter:tick.default(0),teleportCounter:tick.default(0),teleportCast:tick.default(0),portalTarget:point.default({x:0,y:0}),
   readyAt: tick, spent: tick, rally: point, targetId: id, nextAttack: tick,
   fireAt: tick, animAt: z.number().int(), target: point, shots: tick,
 });
 const projectileSchema = z.object({
   id: id.positive(), kind: z.enum(['physical', 'magic', 'explosion', 'true']),
   from: point, to: point, start: tick, impact: tick, target: id,
+  poison:tick.max(3).optional(),disintegrate:z.boolean().optional(),spear:z.boolean().optional(),burnRank:tick.max(5).optional(),
   beamExtra:health.optional(),beam:z.number().int().min(0).max(9).optional(),damage: health, radius: health, minDamage: health.optional(), position: point.optional(), speed:z.number().positive().max(10).optional(),
 });
 const effectSchema = point.extend({
@@ -48,6 +53,10 @@ const spawnSchema = z.object({
 /** Bump compatibility when changed rules cannot safely resume an older battle. */
 export const battleSnapshotSchema = z.object({
   compatibility: z.enum(['pagras-flash-v1.13-r2','opening-flash-v1.13-r1','twin-rivers-flash-v1.13-r1','silveroak-flash-v1.13-r1','citadel-flash-v1.13-r1']), level: z.union([z.literal(1),z.literal(2),z.literal(3),z.literal(4),z.literal(5),z.literal(6)]),
+  powerUpgrades:powerLoadoutSchema.default({fire:0,reinforcements:0}),
+  storms:z.array(point.extend({start:tick,rank:tick.min(1).max(5)})).max(32).default([]),
+  burns:z.array(point.extend({start:tick,rank:tick.min(2).max(5),damage:health})).max(512).default([]),
+  portals:z.array(point.extend({start:tick,nodes:tick,left:tick.max(18)})).max(64).default([]),
   practice:z.boolean().default(false),elfCampRepaired:z.boolean().default(false),elfRally:point.nullable().default(null),
   tick, gold: tick, lives: tick.max(20), wave: tick.max(99),
   kills: tick, leaked: tick, phase: z.enum(['ready', 'running', 'won', 'lost']), paused: z.boolean(),
@@ -63,6 +72,7 @@ export const battleSnapshotSchema = z.object({
   const level=getLevel(battle.level);
   if(battle.compatibility!==battleCompatibility(level.level))ctx.addIssue({code:'custom',message:'Saved battle uses an older map path revision'});
   if(battle.wave>level.groups.length||battle.towers.length>level.holders.length||battle.towers.some(tower=>tower.level>maxTowerTier(level,tower.kind,battle.wave)||!level.holders.some(holder=>holder.id===tower.id))||battle.pending.some(spawn=>!level.paths[spawn.route]))ctx.addIssue({code:'custom',message:'Invalid map wave, tower or pending route'});
+  if(battle.towers.some(t=>(t.poison>0||t.thorns>0)&&(t.kind!=='archer'||t.level!==4)||(t.deathRay>0||t.teleport>0)&&(t.kind!=='mage'||t.level!==4)))ctx.addIssue({code:'custom',message:'Invalid tower skills'});
   for(const enemy of battle.enemies){const route=level.paths[enemy.route];if(!route||enemy.node<route.start||enemy.node>route.end||enemy.hp>enemy.maxHp)ctx.addIssue({code:'custom',message:'Invalid enemy path position or health'});}
   const entityIds = [...battle.enemies, ...battle.soldiers, ...battle.projectiles, ...battle.hostileProjectiles].map(entity => entity.id);
   if (new Set(entityIds).size !== entityIds.length || entityIds.some(value => value >= battle.nextId)) {

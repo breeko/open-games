@@ -1,0 +1,68 @@
+{
+  "edition": "Armor Games Flash v1.13",
+  "swfSHA256": "7b5467a3eccc17f6dd001ff2d41bdf1b03d79fd515a2a9586c42bfd982bb1e23",
+  "factsOnly": true,
+  "researchOnly": true,
+  "sourceFiles": {
+    "GameSettings.as": "f0223cf3f5a2eac1e1bf94535e7f9024e1296d4d93a90bf75c2e98dee26be3ed",
+    "GameUpgrades.as": "48d4fc9166352ab05265dd62c6b75f17c574c2cf8d7728a60986b65e663be433",
+    "MenuUpgrades.as": "443912b41e4c634dec125d87ab5a9da21d95b1487a9877c6121802f1b69acf30",
+    "Level.as": "7c1d484c3dc32b60e67c2e6163b8ccad206d6c6fdb46268abc7976d3267ef2a5",
+    "TowerArcherRanger.as": "6a87da6addd0e6f449b92cda4ed428e31e83d990444e7feb5fb589d1ce58e445",
+    "TowerArcherDruid.as": "60c5e782331119e25277c708199f1d0bbdd02c974e6f94fc38ee790cef89beb3",
+    "DebuffPoison.as": "b1efbb4810a392a739f4f53ccd14bdb0e339f6416b02ec381031fd7244f119c5",
+    "TowerMageArcane.as": "4d59fa3427b47a319d061b7a76d8258e092575a588f18b1e4fbcc93e6ed3fd78",
+    "RayArcane.as": "f06ddf735c7cdb73334d96d0e6fdefde9b2322daf2c5c1f167aa15f6a15067a2",
+    "TeleportPortal.as": "8abe39deb9e8e7076c2c821c53cb525d3d3184b82693cafff4cd46299a7237d8",
+    "EnemyCommon.as": "246e2059522e56b65d68bf437502dae84ce875fdd3acec0edfa1cc51a66d9d4d",
+    "FireballControler.as": "d8d963b7dc38aab5a13ab06d1b1626fa99c38d2b768645d4c2502a7590c1d173",
+    "Fireball.as": "1961229432caaa48fc3585e727f1c0bd3e131904996631ee86f20249e449a48a",
+    "ScorchedEarth.as": "74697281f62eb2ab69ad57fb873bbb00d049cf547cc826724836c25e74c81df6",
+    "SoldierReinforcementLevel4.as": "a0603021f47dbbe9159942635b7ab04af11a2fb44529b639ae2c9c6d588d53ae",
+    "Spear.as": "9c4d229bbb9d815e91a6ce55d5f0aa08dd1432c485fbb167df1b73a580d0fc6e",
+    "Enemy.as": "d17807098f60e8be3078636c7e818920809e626ff0d8b5627658f30dae8d7d3f",
+    "\u00a7_-8l\u00a7.as": "c5d51a76fd15e5f1ebb653bb317ea9e043d6a91e7cef61d6da4903c5ec483fce",
+    "\u00a7_-Mh\u00a7.as": "87e973549bc3876a5852a5c5c0c0b88861f9ad2ddad394f5ac3af9642ee91e3f"
+  },
+  "skillCosts": {
+    "poison": [
+      250,
+      250,
+      250
+    ],
+    "thorns": [
+      300,
+      150,
+      150
+    ],
+    "deathRay": [
+      350,
+      200,
+      200
+    ],
+    "teleport": [
+      300,
+      100,
+      100
+    ]
+  },
+  "fireStarCosts": [
+    1,
+    1,
+    2,
+    2,
+    3
+  ],
+  "reinforcementStarCosts": [
+    2,
+    3,
+    3,
+    3,
+    4
+  ],
+  "sourceQuirks": {
+    "poison": "90 eligible updates, damage every 31 updates: two pulses on an uninterrupted application. Roots and teleport suspend its duration and pulse clocks; weaker applications cannot replace stronger poison.",
+    "teleport": "Portal cap is (3 + rank) * rank: 4 / 10 / 18, not the tooltip 4 / 5 / 6.",
+    "burningGround": "Physical damage; no flying targets; expiration update skips its damage pulse."
+  }
+}

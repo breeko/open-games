@@ -1,12 +1,13 @@
 import { POWERS, towerWindup, maxTowerTier, barracksSoldier, battleCompatibility, ASPECT, blastDamage, damageAfterArmor, distance, ENEMIES, enemyKind, FPS, inRange, getLevel, LEVEL, rollDamage, SOLDIERS, STEP, TOWERS, type DamageKind, type EnemyKind, type Point, type Level, type LevelId, type SoldierKind, type TowerKind } from './content';
 import { projectilePose, arrowHits, barracksFormation } from './collision';
+import {SKILLS,canPoison,fireStats,soldierSpec,powerLoadoutSchema,NO_POWER_UPGRADES,type SkillId,type PowerLoadout} from './upgrades';
 import { battleSnapshotSchema, type BattleSnapshot } from './save-state';
 
 export interface Event { tick:number; type:string; [key:string]:string|number|boolean }
-export interface Enemy extends Point { id:number; kind:EnemyKind; route:number; lane:number; node:number; hp:number; maxHp:number; deadAt:number; escaped:boolean; nextAttack:number; hitAt:number; attackTarget:number; healAt:number; healUntil:number; nextHeal:number; healCounter:number;rangedEngaged:boolean;rangedTarget:number;powerCounter:number;missileCounter:number;special:'none'|'arrow'|'missile'|'summon';specialAt:number; eggAt:number;eggsLaid:number;eggInterval:number; animation:string; animAt:number; facing:number }
-export interface Soldier extends Point { id:number; kind:SoldierKind; towerId:number; activeAt:number; slot:number; rally:Point; hp:number; deadAt:number; respawnAt:number; expires:number; target:number; home:Point; destination:Point; meleeSlot:number; arrived:boolean; redeploying:boolean; nextAttack:number; shotAt:number;nextShot:number; hitAt:number; regenAt:number; idleTicks:number; regenTicks:number; animation:string; animAt:number; facing:number }
-export interface Tower extends Point { id:number; kind:TowerKind; level:number; readyAt:number; spent:number; rally:Point; targetId:number; nextAttack:number; fireAt:number; animAt:number; target:Point; shots:number }
-export interface Projectile { id:number; kind:DamageKind; from:Point; to:Point; start:number; impact:number; target:number; damage:number; radius:number; minDamage?:number; beam?:number;beamExtra?:number; position?:Point; speed?:number }
+export interface Enemy extends Point { poisonRank:number;poisonTicks:number;poisonCounter:number;rootTicks:number;rootCounter:number;rootCount:number;teleports:number;teleportTicks:number; id:number; kind:EnemyKind; route:number; lane:number; node:number; hp:number; maxHp:number; deadAt:number; escaped:boolean; nextAttack:number; hitAt:number; attackTarget:number; healAt:number; healUntil:number; nextHeal:number; healCounter:number;rangedEngaged:boolean;rangedTarget:number;powerCounter:number;missileCounter:number;special:'none'|'arrow'|'missile'|'summon';specialAt:number; eggAt:number;eggsLaid:number;eggInterval:number; animation:string; animAt:number; facing:number }
+export interface Soldier extends Point {reinforcementRank:number;spearCounter:number;spearCast:number;spearTarget:number; id:number; kind:SoldierKind; towerId:number; activeAt:number; slot:number; rally:Point; hp:number; deadAt:number; respawnAt:number; expires:number; target:number; home:Point; destination:Point; meleeSlot:number; arrived:boolean; redeploying:boolean; nextAttack:number; shotAt:number;nextShot:number; hitAt:number; regenAt:number; idleTicks:number; regenTicks:number; animation:string; animAt:number; facing:number }
+export interface Tower extends Point {poison:number;thorns:number;deathRay:number;teleport:number;poisonCounter:number;thornCounter:number;thornCast:number;deathCounter:number;teleportCounter:number;teleportCast:number;portalTarget:Point; id:number; kind:TowerKind; level:number; readyAt:number; spent:number; rally:Point; targetId:number; nextAttack:number; fireAt:number; animAt:number; target:Point; shots:number }
+export interface Projectile {poison?:number;disintegrate?:boolean;spear?:boolean;burnRank?:number; id:number; kind:DamageKind; from:Point; to:Point; start:number; impact:number; target:number; damage:number; radius:number; minDamage?:number; beam?:number;beamExtra?:number; position?:Point; speed?:number }
 export interface HostileProjectile {id:number;kind:'arrow'|'missile'|'summon';from:Point;to:Point;position:Point;start:number;impact:number;target:number;owner:number;speed:number;stage:number}
 export interface Effect extends Point { type:'hit'|'heal'|'fire'|'death'|'egg'; start:number; duration:number; radius:number }
 export interface SpawnEvent { tick:number; kind:EnemyKind; route:number; lane:number;node?:number;position?:Point;owner?:number }
@@ -33,7 +34,10 @@ export function planWave(groupIndex:number,startTick:number,level:Level=LEVEL):S
   return {events:events.sort((a,b)=>a.tick-b.tick),end};
 }
 
+const towerSkills=()=>({poison:0,thorns:0,deathRay:0,teleport:0,poisonCounter:0,thornCounter:0,thornCast:0,deathCounter:0,teleportCounter:0,teleportCast:0,portalTarget:{x:0,y:0}});
 export class Simulation {
+  powerUpgrades:PowerLoadout;
+  storms:(Point&{start:number;rank:number})[]=[];burns:(Point&{start:number;rank:number;damage:number})[]=[];portals:(Point&{start:number;nodes:number;left:number})[]=[];
   tick=0; gold:number; lives:number; wave=0; kills=0; leaked=0;
   phase:'ready'|'running'|'won'|'lost'='ready'; paused=false;
   readonly enemies:Enemy[]=[]; readonly soldiers:Soldier[]=[]; readonly towers:Tower[]=[];
@@ -42,16 +46,17 @@ export class Simulation {
   private groupEnd=0; private nextWaveTick=Infinity;
   practice=false;elfCampRepaired=false;elfRally:Point|null=null;
   fireReady=0; reinforcementsReady=0;
-  constructor(seed=0xc0ffee,levelId:LevelId=3) {this.level=getLevel(levelId);this.gold=this.level.cash;this.lives=this.level.lives;this.seed=seed>>>0;this.rng=this.seed || 1;this.log('start',{seed:this.seed});
+  constructor(seed=0xc0ffee,levelId:LevelId=3,powerUpgrades:PowerLoadout=NO_POWER_UPGRADES) {this.powerUpgrades=powerLoadoutSchema.parse(powerUpgrades);this.level=getLevel(levelId);this.gold=this.level.cash;this.lives=this.level.lives;this.seed=seed>>>0;this.rng=this.seed || 1;this.log('start',{seed:this.seed});
     for(const initial of this.level.initialTowers??[]){
       if(initial.kind!=='archer')throw new Error('Unsupported prebuilt tower');
       const holder=this.level.holders.find(h=>h.id===initial.id);if(!holder)throw new Error('Missing prebuilt site');
-      this.towers.push({id:holder.id,kind:'archer',level:initial.level,readyAt:0,spent:TOWERS.archer.price.slice(0,initial.level).reduce((a,b)=>a+b,0),...holder.pos,rally:{...holder.rally},targetId:0,nextAttack:0,fireAt:0,animAt:-100,target:{...holder.rally},shots:0});
+      this.towers.push({...towerSkills(),id:holder.id,kind:'archer',level:initial.level,readyAt:0,spent:TOWERS.archer.price.slice(0,initial.level).reduce((a,b)=>a+b,0),...holder.pos,rally:{...holder.rally},targetId:0,nextAttack:0,fireAt:0,animAt:-100,target:{...holder.rally},shots:0});
     }
   }
   /** Capture gameplay data only, detached from the live simulation and renderer. */
   snapshot(): BattleSnapshot {
     const data: BattleSnapshot = {
+      powerUpgrades:this.powerUpgrades,storms:this.storms,burns:this.burns,portals:this.portals,
       compatibility: battleCompatibility(this.level.level), level: this.level.level,
       practice:this.practice,elfCampRepaired:this.elfCampRepaired,elfRally:this.elfRally,events:this.events,
       tick: this.tick, gold: this.gold, lives: this.lives, wave: this.wave,
@@ -73,7 +78,8 @@ export class Simulation {
   /** Validation also protects callers that restore imported or development snapshots. */
   static restore(input: unknown, options: { paused?: boolean } = {}): Simulation {
     const data = battleSnapshotSchema.parse(input);
-    const sim = new Simulation(data.seed,data.level);
+    const sim = new Simulation(data.seed,data.level,data.powerUpgrades);
+    sim.storms=data.storms;sim.burns=data.burns;sim.portals=data.portals;
     sim.practice=data.practice;sim.elfCampRepaired=data.elfCampRepaired;sim.elfRally=data.elfRally;
     sim.towers.length=0;
     sim.tick = data.tick; sim.gold = data.gold; sim.lives = data.lives; sim.wave = data.wave;
@@ -105,11 +111,27 @@ export class Simulation {
   random():number {let x=this.rng;x^=x<<13;x^=x>>>17;x^=x<<5;this.rng=x>>>0;return this.rng/4294967296;}
   private roll(range:readonly [number,number]):number {return rollDamage(range,this.random());}
   setPaused(value:boolean):void {if(this.paused!==value){this.paused=value;this.log(value?'pause':'resume');}}
+  configurePowers(loadout:PowerLoadout):boolean {
+    if(this.phase!=='ready'||this.wave!==0)return false;
+    const parsed=powerLoadoutSchema.safeParse(loadout);if(!parsed.success)return false;
+    if(this.powerUpgrades.fire===parsed.data.fire&&this.powerUpgrades.reinforcements===parsed.data.reinforcements)return true;
+    this.powerUpgrades=parsed.data;this.log('power-upgrades',{...this.powerUpgrades});return true;
+  }
+  buySkill(id:number,skill:SkillId):boolean {
+    const tower=this.towers.find(t=>t.id===id),spec=SKILLS[skill];
+    if(!tower||tower.kind!==spec.kind||tower.level!==4||tower[skill]>=3||this.paused||this.phase==='won'||this.phase==='lost')return false;
+    const cost=spec.costs[tower[skill]];if(this.gold<cost)return false;
+    this.gold-=cost;tower.spent+=cost;tower[skill]++;
+    if(skill==='thorns'){tower.thornCounter=0;tower.thornCast=0;}
+    if(skill==='deathRay')tower.deathCounter=0;
+    if(skill==='teleport'){tower.teleportCounter=0;tower.teleportCast=0;}
+    this.log('skill',{holder:id,skill,rank:tower[skill],gold:this.gold});return true;
+  }
   build(holderId:number,kind:TowerKind):boolean {
     const h=this.level.holders.find(h=>h.id===holderId), cost=TOWERS[kind].price[0];
     if(!h||this.towers.some(t=>t.id===holderId)||this.gold<cost||this.phase==='won'||this.phase==='lost'||this.paused)return false;
     this.gold-=cost;
-    const t:Tower={id:h.id,kind,level:1,readyAt:this.tick+FPS,spent:cost,...h.pos,rally:{...h.rally},targetId:0,nextAttack:this.tick+Math.round(TOWERS[kind].cooldown[0]*FPS),fireAt:0,animAt:-100,target:{...h.rally},shots:0};
+    const t:Tower={...towerSkills(),id:h.id,kind,level:1,readyAt:this.tick+FPS,spent:cost,...h.pos,rally:{...h.rally},targetId:0,nextAttack:this.tick+Math.round(TOWERS[kind].cooldown[0]*FPS),fireAt:0,animAt:-100,target:{...h.rally},shots:0};
     this.towers.push(t);if(kind==='barrack')for(let i=0;i<3;i++)this.createSoldier(t,i);
     this.log('build',{holder:holderId,kind,gold:this.gold});return true;
   }
@@ -173,8 +195,9 @@ export class Simulation {
     if(this.paused||this.phase!=='running'||p.x<0||p.x>1024||p.y<0||p.y>768)return false;
     if(kind==='fire') {
       if(this.tick<this.fireReady)return false;
-      this.fireReady=this.tick+POWERS.fire.cooldown*FPS;
-      for(let i=0;i<POWERS.fire.count;i++) {
+      const rank=this.powerUpgrades.fire;this.fireReady=this.tick+fireStats(rank).cooldown*FPS;
+      if(rank>0)this.storms.push({...p,start:this.tick,rank});
+      else for(let i=0;i<POWERS.fire.count;i++) {
         const to={x:p.x+(this.random()*2-1)*POWERS.fire.spread,y:p.y+(this.random()*2-1)*POWERS.fire.spread};
         this.projectiles.push({id:this.nextId++,kind:'true',from:{x:to.x,y:0},to,start:this.tick+10+i*10,impact:this.tick+10+i*10+this.fireFlightTicks(to),target:0,damage:this.roll([POWERS.fire.minDamage,POWERS.fire.maxDamage]),radius:POWERS.fire.radius});
       }
@@ -191,20 +214,44 @@ export class Simulation {
     while(remaining>speed*1.28&&ticks<100){speed=Math.min(15,speed+Math.ceil(speed*.05));remaining-=speed*1.28;ticks++;}
     return Math.max(1,ticks+1);
   }
+  private stepPowerEffects():void {
+    for(const storm of this.storms){
+      const age=this.tick-storm.start;if(age<=0||age>50||age%10!==0)continue;
+      const spec=fireStats(storm.rank),sx=this.random()>=.5?1:-1,sy=this.random()>=.5?1:-1;
+      const from={x:storm.x+sx*Math.round(this.random()*spec.spread/1.28)*1.28,y:0};
+      const to={x:storm.x+sx*Math.round(this.random()*spec.spread/1.28)*1.28,y:storm.y+sy*Math.round(this.random()*spec.spread/1.28)*1.28};
+      const launch=(from:Point,to:Point)=>{this.projectiles.push({id:this.nextId++,kind:'true',from,to,start:this.tick,impact:this.tick+this.fireFlightTicks(to),target:0,damage:this.roll([spec.minDamage,spec.maxDamage]),radius:spec.radius,burnRank:storm.rank});this.log('fireball',{rank:storm.rank,x:to.x,y:to.y});};
+      launch(from,to);
+      if(storm.rank===5){const route=this.level.paths[Math.round(this.random()*(this.level.paths.length-1))],road=route.lanes[0],point=road[Math.round(this.random()*(road.length-1))];launch({x:point.x,y:0},{...point});}
+    }
+    this.storms=this.storms.filter(s=>this.tick-s.start<50);
+    for(const burn of this.burns){const age=this.tick-burn.start,duration=burn.rank>=4?300:150;
+      if(age>0&&age<duration&&age%30===0)for(const e of this.targets())if(!ENEMIES[e.kind].flying&&inRange(burn,e,64))this.hurtEnemy(e,burn.damage,'physical');
+    }
+    this.burns=this.burns.filter(b=>this.tick-b.start<(b.rank>=4?300:150));
+    for(const portal of this.portals){const age=this.tick-portal.start;if(age<6||age>15||portal.left===0)continue;
+      for(const e of this.targets())if(e.kind!=='juggernaut'&&e.teleports<3&&inRange(portal,e,32)){
+        for(const unit of this.soldiers.filter(s=>s.target===e.id))this.release(unit);
+        e.node=Math.max(10,e.node-portal.nodes-(Math.round(this.random()*9)-3));e.teleportTicks=20;e.teleports++;e.hitAt=0;e.attackTarget=0;e.healAt=0;e.healUntil=0;e.special='none';e.rangedEngaged=false;e.animation='teleport';e.animAt=this.tick;
+        this.log('teleport',{enemy:e.id,node:e.node});if(--portal.left===0)break;
+      }
+    }
+    this.portals=this.portals.filter(p=>this.tick-p.start<40);
+  }
   private createSoldier(t:Tower|undefined,slot:number,p?:Point):void {
     const home={...(t?.rally??p??{x:0,y:0})};
     const rally=t?barracksFormation(home,slot):{x:home.x+(slot===0?8.96:-8.96),y:home.y+(slot===0?8.96:-8.96)};
     const kind:SoldierKind=t?barracksSoldier(t.level):'farmer';
-    this.soldiers.push({id:this.nextId++,kind,towerId:t?.id??0,activeAt:t?this.tick+FPS+12:this.tick+POWERS.reinforcements.spawnTicks,slot,rally,shotAt:0,nextShot:0,hp:SOLDIERS[kind].hp,...(t?{x:t.x,y:t.y}:rally),deadAt:-1,respawnAt:0,expires:t?Infinity:this.tick+POWERS.reinforcements.spawnTicks+POWERS.reinforcements.lifetime*FPS,target:0,home,destination:{...rally},meleeSlot:-1,arrived:false,redeploying:false,nextAttack:this.tick+FPS,hitAt:0,regenAt:this.tick+FPS,idleTicks:0,regenTicks:0,animation:'running',animAt:this.tick,facing:1});
+    this.soldiers.push({reinforcementRank:t?0:this.powerUpgrades.reinforcements,spearCounter:0,spearCast:0,spearTarget:0,id:this.nextId++,kind,towerId:t?.id??0,activeAt:t?this.tick+FPS+12:this.tick+POWERS.reinforcements.spawnTicks,slot,rally,shotAt:0,nextShot:0,hp:soldierSpec(kind,t?0:this.powerUpgrades.reinforcements).hp,...(t?{x:t.x,y:t.y}:rally),deadAt:-1,respawnAt:0,expires:t?Infinity:this.tick+POWERS.reinforcements.spawnTicks+POWERS.reinforcements.lifetime*FPS,target:0,home,destination:{...rally},meleeSlot:-1,arrived:false,redeploying:false,nextAttack:this.tick+FPS,hitAt:0,regenAt:this.tick+FPS,idleTicks:0,regenTicks:0,animation:'running',animAt:this.tick,facing:1});
   }
   spawn(kind:EnemyKind,route=0,lane=0):Enemy {
     const path=this.level.paths[route];const start=path.lanes[lane][path.start],spec=ENEMIES[kind];
-    const e:Enemy={id:this.nextId++,kind,route,lane,node:path.start,hp:spec.hp,maxHp:spec.hp,...start,deadAt:-1,escaped:false,nextAttack:this.tick,hitAt:0,attackTarget:0,healAt:0,healUntil:0,nextHeal:this.tick+8*FPS,healCounter:0,rangedEngaged:false,rangedTarget:0,powerCounter:0,missileCounter:0,special:'none',specialAt:0,eggInterval:kind==='matriarch'?120+Math.round(this.random()*120):0,eggAt:0,eggsLaid:0,animation:'walkingRightLeft',animAt:this.tick,facing:-1};
+    const e:Enemy={poisonRank:0,poisonTicks:0,poisonCounter:0,rootTicks:0,rootCounter:0,rootCount:0,teleports:0,teleportTicks:0,id:this.nextId++,kind,route,lane,node:path.start,hp:spec.hp,maxHp:spec.hp,...start,deadAt:-1,escaped:false,nextAttack:this.tick,hitAt:0,attackTarget:0,healAt:0,healUntil:0,nextHeal:this.tick+8*FPS,healCounter:0,rangedEngaged:false,rangedTarget:0,powerCounter:0,missileCounter:0,special:'none',specialAt:0,eggInterval:kind==='matriarch'?120+Math.round(this.random()*120):0,eggAt:0,eggsLaid:0,animation:'walkingRightLeft',animAt:this.tick,facing:-1};
     this.enemies.push(e);this.log('spawn',{enemy:e.id,kind,route:route+1,lane:lane+1});return e;
   }
   remaining(e:Enemy):number {return this.level.paths[e.route].end-e.node;}
   private living():Enemy[] {return this.enemies.filter(e=>e.hp>0&&!e.escaped);}
-  private active(e:Enemy):boolean {const route=this.level.paths[e.route];return e.hp>0&&!e.escaped&&e.node>=(e.kind==='juggernaut'?5:route.activeStart??route.start)&&e.node<(route.activeEnd??route.end+1);}
+  private active(e:Enemy):boolean {const route=this.level.paths[e.route];return e.hp>0&&!e.escaped&&e.teleportTicks===0&&e.node>=(e.kind==='juggernaut'?5:route.activeStart??route.start)&&e.node<(route.activeEnd??route.end+1);}
   private targets():Enemy[] {return this.living().filter(e=>this.active(e));}
   private animate(unit:Enemy|Soldier,animation:string):void {if(unit.animation!==animation){unit.animation=animation;unit.animAt=this.tick;}}
   private move(p:Point,to:Point,speed:number):boolean {
@@ -228,7 +275,7 @@ export class Simulation {
     e.deadAt=this.tick;e.animation='death';e.animAt=this.tick;this.kills++;this.gold+=ENEMIES[e.kind].gold;this.log('kill',{enemy:e.id,gold:this.gold});
   }
   private hurtSoldier(s:Soldier,value:number):void {
-    if(s.hp<=0)return;const spec=SOLDIERS[s.kind];s.idleTicks=0;s.hp=Math.max(0,s.hp-damageAfterArmor(value,'physical',spec.armor,0,true));
+    if(s.hp<=0)return;const spec=soldierSpec(s.kind,s.reinforcementRank);s.idleTicks=0;s.hp=Math.max(0,s.hp-damageAfterArmor(value,'physical',spec.armor,0,true));
     if(s.hp===0){this.release(s);s.deadAt=this.tick;s.respawnAt=s.towerId?this.tick+10*FPS:Infinity;s.target=0;s.animation='death';s.animAt=this.tick;this.log('soldier-death',{soldier:s.id});}
   }
   private release(s:Soldier):void {
@@ -259,8 +306,9 @@ export class Simulation {
       s.hp=SOLDIERS[s.kind].hp;s.activeAt=this.tick+12;s.x=t.x;s.y=t.y;s.rally=barracksFormation(t.rally,s.slot);
       s.deadAt=-1;s.idleTicks=0;s.regenTicks=0;this.release(s);s.nextAttack=this.tick;this.log('soldier-respawn',{soldier:s.id});return;
     }
-    const spec=SOLDIERS[s.kind];
+    const spec=soldierSpec(s.kind,s.reinforcementRank);
     if(s.kind==='elf')this.stepElfBow(s);
+    if(s.kind==='farmer'&&s.reinforcementRank===5&&this.stepSpear(s))return;
     if(s.redeploying){this.animate(s,'running');s.facing=s.rally.x>=s.x?1:-1;s.redeploying=!this.move(s,s.rally,spec.speed);s.regenAt=this.tick+3*FPS;return;}
     let target=this.enemies.find(e=>e.id===s.target&&this.active(e));
     if(target&&!this.blocker(target)){this.release(s);target=undefined;}
@@ -302,6 +350,16 @@ export class Simulation {
       s.shotAt=0;
     }
     if(target&&this.tick>=s.nextShot){s.shotAt=this.tick+7;s.nextShot=this.tick+45;s.animation='shoot';s.animAt=this.tick;}
+  }
+  private stepSpear(s:Soldier):boolean {
+    if(s.spearCast>0){const age=this.tick-s.spearCast;
+      if(age===5){const target=this.enemies.find(e=>e.id===s.spearTarget&&this.active(e));if(target){const from={x:s.x+7.68,y:s.y-12.8};this.projectiles.push({id:this.nextId++,kind:'physical',spear:true,from,to:this.arrowAim(target,12),start:this.tick,impact:this.tick+12,target:target.id,damage:this.roll([24,40]),radius:0});this.log('spear',{soldier:s.id,enemy:target.id});}}
+      if(age<=10)return true;s.spearCast=0;s.spearCounter=0;return false;
+    }
+    if(s.spearCounter<30){s.spearCounter++;return false;}
+    if(s.target||s.redeploying||distance(s,s.rally)>0)return false;
+    const target=this.targets().find(e=>inRange(s,e,166.4)&&distance(s,e)>51.2);
+    if(!target)return false;s.spearTarget=target.id;s.spearCast=this.tick;s.animation='shoot';s.animAt=this.tick;s.facing=target.x>=s.x?1:-1;return true;
   }
   private stepRangedEnemy(e:Enemy):boolean {
     const units=()=>this.soldiers.filter(s=>s.hp>0&&this.tick>=s.activeAt&&this.tick<s.expires);
@@ -369,6 +427,10 @@ export class Simulation {
   }
   private stepEnemy(e:Enemy):void {
     if(e.hp<=0||e.escaped)return;const spec=ENEMIES[e.kind];
+    // Teleport has two ten-update phases; affected enemies cannot be acquired.
+    if(e.teleportTicks>0){e.teleportTicks--;if(e.teleportTicks===10)Object.assign(e,this.level.paths[e.route].lanes[e.lane][e.node]);if(e.teleportTicks===0){e.animation='walkingRightLeft';e.animAt=this.tick;}return;}
+    if(e.rootTicks>0){e.rootTicks--;if(++e.rootCounter===30){this.hurtEnemy(e,40,'true');e.rootCounter=0;}if(e.rootTicks===0){e.animation='walkingRightLeft';e.animAt=this.tick;}return;}
+    if(e.poisonTicks>0){e.poisonTicks--;if(e.poisonCounter<30)e.poisonCounter++;else{this.hurtEnemy(e,5*e.poisonRank,'true');e.poisonCounter=0;}if(e.hp<=0)return;}
     if(e.kind==='matriarch'&&e.eggsLaid<3){
       if(e.eggAt<e.eggInterval)e.eggAt++;
       else if(!this.blocked(e)){
@@ -422,7 +484,7 @@ export class Simulation {
   private enemyAim(e:Enemy):Point {return {x:e.x+(e.kind==='ogre'||e.kind==='gargoyle'?3.84:e.kind==='shadowArcher'||e.kind==='golemHead'||e.kind==='spider'||e.kind==='matriarch'||e.kind==='spiderling'?1.28:0),y:e.y-(e.kind==='gargoyle'?57.6:e.kind==='juggernaut'?38.4:e.kind==='ogre'||e.kind==='marauder'?23.04:e.kind==='darkKnight'?12.8:e.kind==='spiderling'?5.12:10.24)};}
   private arrowAim(e:Enemy,ticks:number):Point {
     const p=this.enemyAim(e);
-    if(!this.blocked(e)&&this.tick>=e.healUntil){
+    if(!this.blocked(e)&&e.rootTicks===0&&this.tick>=e.healUntil){
       const lane=this.level.paths[e.route].lanes[e.lane],next=lane[Math.min(e.node+1,lane.length-1)],d=distance(e,next);
       if(d>0){const travel=ENEMIES[e.kind].speed*1.28*ticks/FPS;p.x+=(next.x-e.x)*travel/d;p.y+=(next.y-e.y)*travel/d;}
       p.x+=this.random()*12.8;p.y+=this.random()*12.8-12.8;
@@ -431,31 +493,77 @@ export class Simulation {
   }
   private stepTower(t:Tower):void {
     if(t.kind==='barrack'||this.tick<t.readyAt)return;const spec=TOWERS[t.kind],idx=t.level-1;
+    if(t.level===4){
+      if(t.kind==='archer'){t.poisonCounter++;this.stepThorns(t);}
+      if(t.kind==='mage'){
+        if(t.deathRay>0)t.deathCounter++;
+        if(t.teleport>0)t.teleportCounter++;
+        if(this.stepTeleport(t))return;
+      }
+    }
     if(t.fireAt>0&&this.tick>=t.fireAt){
       const target=this.enemies.find(e=>e.id===t.targetId&&this.active(e))??this.target(t);t.fireAt=0;
       if(target||t.kind==='engineer'){
         if(target){if(t.kind!=='engineer'||this.blocked(target))t.target={x:target.x,y:target.y};else if(t.targetId!==target.id)t.target=this.bombAim(target);}
         const aim=target??t.target;
         const up=aim.y<t.y;
-        if(t.kind==='mage'&&t.level===4&&target){const rolled=this.roll(spec.damage[idx]),damage=Math.min(rolled,target.hp);this.projectiles.push({id:this.nextId++,kind:'magic',from:{x:t.x+1.28,y:t.y-75.52},to:this.enemyAim(target),start:this.tick,impact:this.tick+9,target:target.id,damage,radius:0,beam:0,beamExtra:rolled-damage});t.shots++;return;}
+        if(t.kind==='mage'&&t.level===4&&target){const rolled=this.roll(spec.damage[idx]),damage=Math.min(rolled,target.hp),ready=t.deathRay>0&&t.deathCounter>=(22-2*t.deathRay)*FPS;
+          if(t.deathRay>0&&!ready)t.deathCounter++;
+          const disintegrate=ready&&target.kind!=='juggernaut';if(disintegrate){t.deathCounter=0;this.log('death-ray',{holder:t.id,enemy:target.id});}
+          this.projectiles.push({id:this.nextId++,kind:'magic',from:{x:t.x+1.28,y:t.y-75.52},to:this.enemyAim(target),start:this.tick,impact:this.tick+9,target:target.id,damage,radius:0,beam:0,beamExtra:rolled-damage,...(disintegrate?{disintegrate:true}:{})});t.shots++;return;}
+        let poison=0;
+        if(t.kind==='archer'&&t.level===4&&t.poison>0){
+          if(t.poisonCounter>=12){t.poisonCounter=0;const eligible=this.targets().filter(e=>canPoison(e.kind)&&inRange({x:t.x,y:t.y-12.8},e,spec.range[idx])).sort((a,b)=>this.remaining(a)-this.remaining(b));
+            const next=eligible.find(e=>e.poisonTicks===0)??eligible[0];if(next){t.targetId=next.id;t.target={x:next.x,y:next.y};return this.firePoisonArrow(t,next);}
+            if(target&&canPoison(target.kind))poison=t.poison;
+          }else t.poisonCounter++;
+        }
         const from=t.kind==='mage'?{x:t.x+(t.level===3?(up?7.68:-8.96):(up?7.68:-7.68)),y:t.y-(t.level===3?(up?65.28:67.84):61.44)}:{x:t.x+(t.kind==='archer'?(t.level===3?(t.shots%2===0?10.24:-8.96):(t.shots%2===0?6.4:-11.52)):0),y:t.y-(t.kind==='archer'?(t.level===4?67.84:t.level===3?64:57.6):57.6)};
         const flight=t.kind==='mage'?Math.max(.15,distance(from,aim)/300):spec.flight;
         const to=t.kind==='engineer'?{...t.target}:t.kind==='archer'&&target?this.arrowAim(target,Math.round(flight*FPS)):{x:aim.x,y:aim.y-10.24};
-        this.projectiles.push({id:this.nextId++,kind:spec.damageKind,from,to,start:this.tick,impact:this.tick+(t.kind==='mage'?300:Math.round(flight*FPS)),target:target?.id??0,...(t.kind==='mage'?{position:{...from},speed:1}:{}),damage:t.kind==='engineer'?spec.damage[idx][1]:this.roll(spec.damage[idx]),radius:spec.radius[idx],...(t.kind==='engineer'?{minDamage:spec.damage[idx][0]}:{})});t.shots++;
+        this.projectiles.push({id:this.nextId++,kind:spec.damageKind,from,to,start:this.tick,impact:this.tick+(t.kind==='mage'?300:Math.round(flight*FPS)),target:target?.id??0,...(poison?{poison}:{}),...(t.kind==='mage'?{position:{...from},speed:1}:{}),damage:t.kind==='engineer'?spec.damage[idx][1]:this.roll(spec.damage[idx]),radius:spec.radius[idx],...(t.kind==='engineer'?{minDamage:spec.damage[idx][0]}:{})});t.shots++;
       }
     }
     if(this.tick>=t.nextAttack&&t.fireAt===0){const target=this.target(t);if(target){t.targetId=target.id;t.target=t.kind==='engineer'?this.bombAim(target):{x:target.x,y:target.y};t.animAt=this.tick;t.fireAt=this.tick+Math.round(towerWindup(t.kind,t.level));t.nextAttack=this.tick+Math.round(spec.cooldown[idx]*FPS);}}
   }
+  private firePoisonArrow(t:Tower,target:Enemy):void {
+    const from={x:t.x+(t.shots%2===0?6.4:-11.52),y:t.y-67.84};
+    this.projectiles.push({id:this.nextId++,kind:'physical',from,to:this.arrowAim(target,17),start:this.tick,impact:this.tick+17,target:target.id,damage:this.roll(TOWERS.archer.damage[3]),radius:0,poison:t.poison});t.shots++;
+  }
+  private stepThorns(t:Tower):void {
+    if(t.thorns===0)return;
+    if(t.thornCast>0){const age=this.tick-t.thornCast;
+      if(age===18){let count=0;for(const e of this.thornTargets(t)){
+        if(ENEMIES[e.kind].dodge>0&&this.random()<ENEMIES[e.kind].dodge)continue;
+        e.rootTicks=30*t.thorns;e.rootCounter=0;e.rootCount++;e.hitAt=0;e.healAt=0;e.healUntil=0;e.special='none';e.rangedEngaged=false;e.animation='thorn';e.animAt=this.tick;this.log('root',{holder:t.id,enemy:e.id});if(++count===2+2*t.thorns)break;
+      }}
+      if(age>=35){t.thornCast=0;t.thornCounter=0;}return;
+    }
+    if(t.thornCounter<240){t.thornCounter++;return;}
+    if(this.thornTargets(t).length>=2)t.thornCast=this.tick;
+  }
+  private thornTargets(t:Tower):Enemy[] {return this.targets().filter(e=>e.kind!=='juggernaut'&&!ENEMIES[e.kind].flying&&e.rootCount<3&&!this.blocker(e)?.arrived&&inRange({x:t.x,y:t.y-12.8},e,TOWERS.archer.range[3]));}
+  private stepTeleport(t:Tower):boolean {
+    if(t.teleport===0)return false;
+    if(t.teleportCast>0){const age=this.tick-t.teleportCast;
+      if(age===5){this.portals.push({...t.portalTarget,start:this.tick,nodes:20+5*t.teleport,left:(3+t.teleport)*t.teleport});this.log('portal',{holder:t.id});}
+      if(age<=20)return true;t.teleportCast=0;t.teleportCounter=0;t.nextAttack=this.tick+22;return false;
+    }
+    if(t.fireAt>0||this.tick<t.animAt+38)return false;
+    if(t.teleportCounter<300){t.teleportCounter++;return false;}
+    const target=this.targets().filter(e=>e.kind!=='juggernaut'&&e.teleports<3&&inRange({x:t.x,y:t.y-12.8},e,TOWERS.mage.range[3])).sort((a,b)=>this.remaining(a)-this.remaining(b))[0];
+    if(!target)return false;t.portalTarget={x:target.x,y:target.y};t.teleportCast=this.tick;t.fireAt=0;t.animAt=this.tick;return true;
+  }
   step():void {
     if(this.paused||this.phase==='won'||this.phase==='lost')return;
-    this.tick++;
+    this.tick++;this.stepPowerEffects();
     while(this.pending.length&&this.pending[0].tick<=this.tick){const s=this.pending.shift()!;if(s.owner&&!this.enemies.some(e=>e.id===s.owner&&this.active(e)))continue;const e=this.spawn(s.kind,s.route,s.lane<0?Math.floor(this.random()*3):s.lane);if(s.node!==undefined)e.node=s.node;if(s.position){e.x=s.position.x;e.y=s.position.y;}}
     for(const s of this.soldiers)this.stepSoldier(s);
     for(const e of this.enemies)this.stepEnemy(e);
     for(const t of this.towers)this.stepTower(t);
     const arrowsHit=new Set<number>();
     for(const p of this.projectiles){
-      if(p.beam!==undefined){const target=this.enemies.find(e=>e.id===p.target&&this.active(e));if(!target){arrowsHit.add(p.id);continue;}p.to=this.enemyAim(target);this.hurtEnemy(target,Math.floor(p.damage/10)+(p.beam===9?(p.beamExtra??0):0),'magic');if(p.beam===9)arrowsHit.add(p.id);else p.beam++;continue;}
+      if(p.beam!==undefined){const target=this.enemies.find(e=>e.id===p.target&&this.active(e));if(!target){arrowsHit.add(p.id);continue;}p.to=this.enemyAim(target);if(p.disintegrate){if(p.beam===9)this.hurtEnemy(target,target.hp,'true');}else this.hurtEnemy(target,Math.floor(p.damage/10)+(p.beam===9?(p.beamExtra??0):0),'magic');if(p.beam===9)arrowsHit.add(p.id);else p.beam++;continue;}
       if(p.kind==='magic'&&p.position){
         const target=this.enemies.find(e=>e.id===p.target&&this.active(e));
         if(target)p.to=this.enemyAim(target);
@@ -469,11 +577,12 @@ export class Simulation {
       }
       if(p.kind!=='physical' ||this.tick<p.impact-2||this.tick>p.impact)continue;
       const e=this.enemies.find(e=>e.id===p.target&&e.hp>0&&!e.escaped);
-      if(e&&arrowHits(e,p,this.tick)){this.hurtEnemy(e,p.damage,p.kind);arrowsHit.add(p.id);}
+      if(e&&this.active(e)&&arrowHits(e,p,this.tick)){this.hurtEnemy(e,p.damage,p.kind);if(p.poison&&e.hp>0&&canPoison(e.kind)&&(e.poisonTicks===0||p.poison>=e.poisonRank)){e.poisonRank=p.poison;e.poisonTicks=90;e.poisonCounter=0;this.log('poison',{enemy:e.id,rank:p.poison});}arrowsHit.add(p.id);}
     }
     this.projectiles=this.projectiles.filter(p=>!arrowsHit.has(p.id));
     const arrived=this.projectiles.filter(p=>p.beam===undefined&&p.impact<=this.tick);this.projectiles=this.projectiles.filter(p=>p.beam!==undefined||p.impact>this.tick);
     for(const p of arrived){
+      if(p.burnRank&&p.burnRank>=2)this.burns.push({...p.to,start:this.tick,rank:p.burnRank,damage:this.roll(p.burnRank>=4?[20,30]:[10,20])});
       if(p.radius>0){for(const e of this.living())if((e.x-p.to.x)**2+((e.y-p.to.y)/(p.kind==='explosion'?2/3:ASPECT))**2<=p.radius**2)this.hurtEnemy(e,p.minDamage===undefined?p.damage:blastDamage(p.minDamage,p.damage,p.to,e,p.radius),p.kind);this.effects.push({...p.to,type:p.kind==='true'?'fire':'hit',start:this.tick,duration:18,radius:p.radius});}
       else {const e=this.enemies.find(e=>e.id===p.target);if(e&&e.hp>0&&!e.escaped&&p.kind!=='physical'){this.hurtEnemy(e,p.damage,p.kind);this.effects.push({x:e.x,y:e.y-8,type:'hit',start:this.tick,duration:7,radius:10});}}
     }
@@ -481,9 +590,9 @@ export class Simulation {
     this.effects=this.effects.filter(e=>this.tick<e.start+e.duration);
     if(this.lives===0){this.phase='lost';this.log('defeat');return;}
     if(this.phase==='running'&&this.tick>=this.groupEnd&&this.pending.length===0){
-      if(this.wave===this.level.groups.length&&this.living().length===0&&this.projectiles.length===0&&this.pending.length===0){this.phase='won';this.log('victory',{lives:this.lives});}
+      if(this.wave===this.level.groups.length&&this.living().length===0&&this.projectiles.length===0&&this.pending.length===0&&this.storms.length===0){this.phase='won';this.log('victory',{lives:this.lives});}
       else if(this.wave<this.level.groups.length&&this.tick>=this.nextWaveTick)this.callWave(false);
     }
   }
-  export():string {return JSON.stringify({format:'open-games.kingdom-rush.trace.v1',seed:this.seed,level:this.level.level,practice:this.practice,reference:'Armor Games Flash v1.13 / geometry fa84f20 / visual 3e4eac4',completeHistory:this.events[0]?.type==='start',tick:this.tick,phase:this.phase,gold:this.gold,lives:this.lives,wave:this.wave,kills:this.kills,events:this.events},null,2);}
+  export():string {return JSON.stringify({format:'open-games.kingdom-rush.trace.v1',seed:this.seed,level:this.level.level,practice:this.practice,reference:'Armor Games Flash v1.13 / geometry fa84f20 / visual 3e4eac4',completeHistory:this.events[0]?.type==='start',tick:this.tick,phase:this.phase,powerUpgrades:this.powerUpgrades,gold:this.gold,lives:this.lives,wave:this.wave,kills:this.kills,events:this.events},null,2);}
 }

@@ -23,7 +23,7 @@ export function enemyBounds(enemy:Point&{kind:EnemyKind;animation:string;animAt:
 }
 
 /** One ballistic equation supplies both drawing and hit testing. */
-export function projectilePose(p:{from:Point;to:Point;start:number;impact:number;kind:string;position?:Point},tick:number):Point&{angle:number} {
+export function projectilePose(p:{from:Point;to:Point;start:number;impact:number;kind:string;position?:Point;spear?:boolean},tick:number):Point&{angle:number} {
   if(p.position)return {...p.position,angle:Math.atan2(p.to.y-p.position.y,p.to.x-p.position.x)};
   const duration=Math.max(1,p.impact-p.start),t=Math.max(0,Math.min(duration,tick-p.start));
   const vx=(p.to.x-p.from.x)/duration,vy=(p.to.y-p.from.y)/duration;
@@ -33,7 +33,7 @@ export function projectilePose(p:{from:Point;to:Point;start:number;impact:number
 }
 
 export function arrowHits(enemy:Parameters<typeof enemyBounds>[0],p:Parameters<typeof projectilePose>[0],tick:number):boolean {
-  const pose=projectilePose(p,tick),b=symbols.arrow.frames[0],c=Math.cos(pose.angle),s=Math.sin(pose.angle);
+  const pose=projectilePose(p,tick),b=symbols[p.spear?'spear':'arrow'].frames[0],c=Math.cos(pose.angle),s=Math.sin(pose.angle);
   const corners=[[b[0],b[1]],[b[2],b[1]],[b[0],b[3]],[b[2],b[3]]].map(([x,y])=>({x:pose.x+SCALE*(c*x-s*y),y:pose.y+SCALE*(s*x+c*y)}));
   const target=enemyBounds(enemy,tick);
   return Math.max(...corners.map(p=>p.x))>=target.left&&Math.min(...corners.map(p=>p.x))<=target.right&&
