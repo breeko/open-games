@@ -62,7 +62,7 @@
   ],
   "sourceQuirks": {
     "poison": "90 eligible updates, damage every 31 updates: two pulses on an uninterrupted application. Roots and teleport suspend its duration and pulse clocks; weaker applications cannot replace stronger poison.",
-    "teleport": "Portal cap is (3 + rank) * rank: 4 / 10 / 18, not the tooltip 4 / 5 / 6.",
+    "teleport": "Portal cap is (3 + rank) * rank: 4 / 10 / 18, not the tooltip 4 / 5 / 6. Reappearance clears an existing root without resetting its application count.",
     "burningGround": "Physical damage; no flying targets; expiration update skips its damage pulse."
   }
 }

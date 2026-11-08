@@ -42,6 +42,12 @@ test('root and teleport movement suspend poison duration and pulse clocks as in 
   steps(s,20);assert.deepEqual([e.poisonTicks,e.poisonCounter],[70,10]);e.teleportTicks=20;steps(s,20);assert.deepEqual([e.poisonTicks,e.poisonCounter],[70,10]);s.step();assert.deepEqual([e.poisonTicks,e.poisonCounter],[69,11]);
 });
 
+test('reappearing from teleport clears an old root while preserving its application count and poison clock',()=>{
+  const s=new Simulation(1,6),e=place(s,s.spawn('ogre'));e.rootTicks=80;e.rootCounter=12;e.rootCount=2;e.teleportTicks=1;e.poisonTicks=70;e.poisonCounter=10;e.poisonRank=3;
+  const restored=Simulation.restore(s.snapshot(),{paused:false});s.step();restored.step();assert.deepEqual(restored.snapshot(),s.snapshot());
+  assert.deepEqual([e.rootTicks,e.rootCounter,e.rootCount,e.teleportTicks,e.poisonTicks,e.poisonCounter],[0,0,2,0,70,10]);s.step();assert.deepEqual([e.poisonTicks,e.poisonCounter],[69,11]);
+});
+
 test('ranger thorns independently root eight targets at rank three and deal true damage while holding position',()=>{
   const {s,t}=advanced('archer');for(let i=0;i<3;i++)s.buySkill(9,'thorns');t.thornCounter=240;
   const enemies=Array.from({length:9},()=>{const e=place(s,s.spawn('orc'));e.hp=e.maxHp=200;return e;});s.step();assert.ok(t.thornCast);
@@ -117,7 +123,7 @@ test('power loadouts are frozen after battle starts; old saves default to zero a
   const legacy=Simulation.restore({...s.snapshot(),powerUpgrades:undefined,storms:undefined,burns:undefined,portals:undefined,towers:[{...t,teleport:undefined}]});assert.deepEqual(legacy.powerUpgrades,{fire:0,reinforcements:0});assert.equal(legacy.towers[0].teleport,0);
 });
 
-for(const [file,tick,label] of [['2026-11-08-skills-browser.json',8914,'historical browser skill commands replay under the corrected root/poison update order'],['2026-11-08-skills-final-browser.json',8267,'final browser skill commands reproduce the complete observed encounter']] as const)test(label,async()=>{
+for(const [file,tick,label] of [['2026-11-08-skills-browser.json',8914,'historical browser skill commands replay under the corrected root/poison update order'],['2026-11-08-skills-final-browser.json',8267,'later browser skill commands replay under final teleport/root cleanup']] as const)test(label,async()=>{
   const trace=await Bun.file(new URL(`../../../docs/games/kingdom-rush/playtests/${file}`,import.meta.url)).json();
   assert.equal(trace.completeHistory,true);assert.equal(trace.practice,true);const s=new Simulation(trace.seed,6,powerLoadoutSchema.parse(trace.powerUpgrades));
   for(const event of trace.events){while(s.tick<event.tick&&s.phase!=='won'&&s.phase!=='lost')s.step();if(s.phase==='won'||s.phase==='lost')break;
@@ -128,8 +134,8 @@ for(const [file,tick,label] of [['2026-11-08-skills-browser.json',8914,'historic
     else if(event.type==='cast')assert.ok(s.cast(event.kind,{x:event.x,y:event.y}));
     else if(event.type==='wave'&&(s.phase==='ready'||event.bonus>0))assert.ok(s.callWave());
   }
-  assert.deepEqual([s.phase,s.tick,s.wave,s.gold,s.kills,s.lives],['lost',tick,17,1848,142,0]);
-  for(const [type,count] of [['poison',114],['root',86],['teleport',50],['death-ray',13]] as const)assert.equal(s.events.filter(e=>e.type===type).length,count);
+  assert.deepEqual([s.phase,s.tick,s.wave,s.gold,s.kills,s.lives],['lost',tick,17,1898,141,0]);
+  for(const [type,count] of [['poison',114],['root',95],['teleport',59],['death-ray',12]] as const)assert.equal(s.events.filter(e=>e.type===type).length,count);
 });
 
 for(const [file,tick,gold,kills,lives] of [['2026-11-08-upgraded-powers-browser.json',1141,1472,0,14],['2026-11-08-burning-ground-browser.json',493,254,24,20]] as const)test(`actual browser power commands replay through ${file}`,async()=>{

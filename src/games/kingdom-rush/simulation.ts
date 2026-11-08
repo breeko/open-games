@@ -428,7 +428,7 @@ export class Simulation {
   private stepEnemy(e:Enemy):void {
     if(e.hp<=0||e.escaped)return;const spec=ENEMIES[e.kind];
     // Teleport has two ten-update phases; affected enemies cannot be acquired.
-    if(e.teleportTicks>0){e.teleportTicks--;if(e.teleportTicks===10)Object.assign(e,this.level.paths[e.route].lanes[e.lane][e.node]);if(e.teleportTicks===0){e.animation='walkingRightLeft';e.animAt=this.tick;}return;}
+    if(e.teleportTicks>0){e.teleportTicks--;if(e.teleportTicks===10)Object.assign(e,this.level.paths[e.route].lanes[e.lane][e.node]);if(e.teleportTicks===0){e.rootTicks=0;e.rootCounter=0;e.animation='walkingRightLeft';e.animAt=this.tick;}return;}
     if(e.rootTicks>0){e.rootTicks--;if(++e.rootCounter===30){this.hurtEnemy(e,40,'true');e.rootCounter=0;}if(e.rootTicks===0){e.animation='walkingRightLeft';e.animAt=this.tick;}return;}
     if(e.poisonTicks>0){e.poisonTicks--;if(e.poisonCounter<30)e.poisonCounter++;else{this.hurtEnemy(e,5*e.poisonRank,'true');e.poisonCounter=0;}if(e.hp<=0)return;}
     if(e.kind==='matriarch'&&e.eggsLaid<3){
