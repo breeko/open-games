@@ -1,6 +1,7 @@
 import './style.css';
 import { maxTowerTier, distance, FPS, getLevel, LEVELS, TOWER_KINDS, TOWERS, type Point, type LevelId } from './content';
 import { Renderer } from './render';
+import {renderFieldGuide,towerName,towerSummary,type GuideTopic} from './field-guide';
 import { Simulation } from './simulation';
 import { gameStores } from './persistence';
 import { startAutosave } from '../../shared/persistence/autosave';
@@ -59,7 +60,7 @@ function renderContext():void {
   contextKey=key;context.dataset.active=String(selected!==null||mode!=='none'||sim.phase==='won'||sim.phase==='lost');context.replaceChildren();
   const button=(label:string,action:()=>void,price?:number):HTMLButtonElement=>{const b=document.createElement('button');b.textContent=label;b.disabled=sim.paused||sim.phase==='won'||sim.phase==='lost';b.onclick=()=>{action();contextKey='';};if(price!==undefined)b.dataset.price=String(price);context.append(b);return b;};
   if(sim.phase==='won'||sim.phase==='lost') {const p=document.createElement('p');p.textContent=sim.phase==='won'?`${currentLevel.title} defended!`:'Try another defense.';context.append(p);const b=document.createElement('button');b.textContent=sim.phase==='won'&&currentLevel.level<LEVELS.length?'Next map →':'Choose map';b.onclick=()=>{const nextLevel=LEVELS.find(level=>level.level===currentLevel.level+1);if(sim.phase==='won'&&nextLevel)goToMap(nextLevel.level);else openMaps();};context.append(b);return;}
-  if(mode!=='none') {const p=document.createElement('p');p.textContent=mode==='rally'?'Choose a rally point':mode==='fire'?'Choose where the fire falls':'Choose a road for your troops';context.append(p);button('Cancel',()=>{mode='none';});return;}
+  if(mode!=='none') {const p=document.createElement('p');p.textContent=mode==='rally'?'Choose a rally point':mode==='fire'?'Choose where the fire falls':'Choose a road for your troops';context.append(p);if(mode==='fire'||mode==='reinforcements'){const info=button('ⓘ Stats',()=>openGuide('powers'));info.disabled=false;}button('Cancel',()=>{mode='none';});return;}
   if(selected===currentLevel.elfCamp?.id){
     const label=document.createElement('span');label.className='tower-label';label.textContent='Sylvan elves';context.append(label);
     if(!sim.elfCampRepaired)button('Repair ◆ 100',()=>{sim.repairElves();},100);
@@ -70,11 +71,12 @@ function renderContext():void {
     for(const kind of TOWER_KINDS){
       const b=button('',()=>{if(!sim.build(selected!,kind))notify('You need more gold.');},TOWERS[kind].price[0]);
       const icon=document.createElement('canvas');icon.width=140;icon.height=108;icon.setAttribute('aria-hidden','true');renderer.towerIcon(icon,kind);
-      const name=document.createElement('span');name.textContent=TOWERS[kind].name;const cost=document.createElement('small');cost.textContent=`◆ ${TOWERS[kind].price[0]}`;b.append(icon,name,cost);b.setAttribute('aria-label',`Build ${TOWERS[kind].name}, ${TOWERS[kind].price[0]} gold`);
+      const name=document.createElement('span');name.textContent=TOWERS[kind].name;const cost=document.createElement('small');cost.textContent=`◆ ${TOWERS[kind].price[0]}`;b.append(icon,name,cost);b.setAttribute('aria-label',`Build ${TOWERS[kind].name}, ${TOWERS[kind].price[0]} gold`);b.title=towerSummary(kind,1);b.setAttribute('aria-description',towerSummary(kind,1));
     }
   } else if(tower){
-    const label=document.createElement('span');label.className='tower-label';label.textContent=tower.kind==='mage'&&tower.level===4?'Arcane Wizard':tower.kind==='archer'&&tower.level===4?'Rangers':`${TOWERS[tower.kind].name} · ${tower.level}`;context.append(label);
-    if(tower.level<maxTowerTier(currentLevel,tower.kind,sim.wave))button(`Upgrade ◆ ${TOWERS[tower.kind].price[tower.level]}`,()=>{if(!sim.upgrade(tower.id))notify('You need more gold.');},TOWERS[tower.kind].price[tower.level]);
+    const label=document.createElement('span');label.className='tower-label';label.textContent=towerName(tower.kind,tower.level);context.append(label);
+    const info=button('ⓘ Stats',()=>openGuide(tower.kind));info.disabled=false;info.title=towerSummary(tower.kind,tower.level);
+    if(tower.level<maxTowerTier(currentLevel,tower.kind,sim.wave)){const upgrade=button(`Upgrade ◆ ${TOWERS[tower.kind].price[tower.level]}`,()=>{if(!sim.upgrade(tower.id))notify('You need more gold.');},TOWERS[tower.kind].price[tower.level]);upgrade.title=`Next: ${towerName(tower.kind,tower.level+1)} — ${towerSummary(tower.kind,tower.level+1)}`;upgrade.setAttribute('aria-description',upgrade.title);}
     if(tower.kind==='barrack')button('Rally ⚑',()=>setMode('rally'));
     button(`Sell ◆ ${Math.floor(tower.spent*.6)}`,()=>{sim.sell(tower.id);});button('Done',()=>{selected=null;});
   } else {
@@ -106,6 +108,21 @@ function updateHud():void {
     showBest();
   }
 }
+const guideDialog=element('guide-dialog',HTMLDialogElement),guideTopic=element('guide-topic',HTMLSelectElement),guideContent=element('guide-content',HTMLDivElement);
+let resumeAfterGuide=false;
+function refreshGuide():void {
+  const value=guideTopic.value,kind=TOWER_KINDS.find(kind=>kind===value),topic:GuideTopic=kind??(value==='powers'?'powers':'all');
+  guideDialog.dataset.focused=String(topic!=='all'&&topic!=='powers');
+  renderFieldGuide(guideContent,topic,currentLevel,sim.wave,sim.towers.find(t=>t.id===selected));
+}
+function openGuide(topic:GuideTopic='all'):void {
+  resumeAfterGuide=!sim.paused&&(sim.phase==='ready'||sim.phase==='running');
+  if(resumeAfterGuide)sim.setPaused(true);accumulator=0;saveSession();guideTopic.value=topic;refreshGuide();guideDialog.showModal();guideDialog.scrollTop=0;
+}
+element('guide',HTMLButtonElement).onclick=()=>openGuide();
+element('close-guide',HTMLButtonElement).onclick=()=>guideDialog.close();
+guideTopic.onchange=refreshGuide;
+guideDialog.addEventListener('close',()=>{if(resumeAfterGuide)sim.setPaused(false);resumeAfterGuide=false;accumulator=0;contextKey='';saveSession();});
 const mapDialog=element('map-dialog',HTMLDialogElement);
 function goToMap(level:LevelId):void {saveSession();const url=new URL(location.href);url.searchParams.set('level',String(level));location.assign(url);}
 function openMaps():void {
@@ -147,8 +164,8 @@ speed.onclick=()=>{multiplier=multiplier===1?2:1;speed.textContent=`${multiplier
 element('restart',HTMLButtonElement).onclick=reset;element('apply-seed',HTMLButtonElement).onclick=reset;
 next.onclick=()=>{if(sim.callWave()){mode='none';contextKey='';}};
 fire.onclick=()=>setMode('fire');reinforce.onclick=()=>setMode('reinforcements');
-document.addEventListener('keydown',event=>{if(event.target instanceof HTMLInputElement)return;if(event.code==='Space'){event.preventDefault();if(sim.phase==='running'||sim.phase==='ready'){sim.setPaused(!sim.paused);saveSession();}}if(event.code==='Escape'){mode='none';selected=null;contextKey='';}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){sim.setPaused(true);accumulator=0;contextKey='';}});
+document.addEventListener('keydown',event=>{if(guideDialog.open||mapDialog.open||event.target instanceof HTMLInputElement||event.target instanceof HTMLSelectElement)return;if(event.code==='Space'){event.preventDefault();if(sim.phase==='running'||sim.phase==='ready'){sim.setPaused(!sim.paused);saveSession();}}if(event.code==='Escape'){mode='none';selected=null;contextKey='';}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){resumeAfterGuide=false;sim.setPaused(true);accumulator=0;contextKey='';}});
 // Runs after button actions, including dynamically created build/upgrade controls.
 document.addEventListener('click',event=>{if(event.target instanceof Element&&event.target.closest('button'))saveSession();});
 element('export',HTMLButtonElement).onclick=()=>{const url=URL.createObjectURL(new Blob([sim.export()],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`level${currentLevel.level}-${sim.seed}-${sim.tick}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};

@@ -26,6 +26,10 @@ export function getLevel(id:number):Level {const level=LEVELS.find(level=>level.
 export const FPS = 30;
 export const STEP = 1 / FPS;
 export const ASPECT = 0.7;
+export const POWERS = {
+  fire:{cooldown:80,count:3,minDamage:30,maxDamage:60,radius:64,spread:19.2},
+  reinforcements:{cooldown:10,count:2,lifetime:20,spawnTicks:7},
+};
 export const TOWER_KINDS: readonly TowerKind[] = ['archer', 'barrack', 'mage', 'engineer'];
 export const TOWERS: Readonly<Record<TowerKind, { name: string; price: readonly number[]; range: readonly number[]; cooldown: number[]; windup: number; damage: readonly (readonly [number, number])[]; damageKind: DamageKind; flight: number; radius: readonly number[] }>> = {
   archer: { name: 'Archers', price: [70, 110,160,230], range: [140.8, 160,179.2,198.4], cooldown: [0.8, 0.6,0.5,0.4], windup: 7/30, damage: [[4,6],[7,11],[10,16],[13,19]], damageKind: 'physical', flight: 17/30, radius: [0,0,0,0] },

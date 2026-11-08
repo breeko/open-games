@@ -78,3 +78,28 @@
   .map-hint{margin-top:10px}
 }
 @media(max-width:500px) and (orientation:portrait){#map-list{grid-template-columns:1fr}.map-card img{max-height:150px}}
+
+#guide-dialog{width:min(1020px,calc(100% - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:20px;border:1px solid #9c926a;border-radius:16px;color:#f5edd8;background:#1b3228;box-shadow:0 20px 80px #0009}
+#guide-dialog::backdrop{background:#06110bd9}
+.guide-heading{position:sticky;top:-20px;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;background:#1b3228}
+.guide-heading p{margin:0 0 4px;color:#c5cdaf;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.guide-heading h2{margin:0;color:#ffe2a4;font:26px Georgia,serif}
+#close-guide{min-width:44px;width:44px;padding:0;font-size:24px}
+.guide-filter{display:flex;align-items:center;gap:10px;color:#dce3cd;font-size:13px}
+.guide-filter select{max-width:100%;min-height:44px;padding:8px;border:1px solid #81936b;border-radius:6px;color:#f5edd8;background:#243f2f;font:inherit}
+.guide-help{color:#b9c8ad;font-size:12px;line-height:1.6;margin:12px 0}
+#guide-content{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#guide-dialog[data-focused=true]{width:min(760px,calc(100% - 24px))}
+#guide-content:not([data-topic=all]):not([data-topic=powers]){grid-template-columns:1fr}
+.guide-card{min-width:0;padding:14px;border:1px solid #526b49;border-radius:10px;background:#233c2d}
+.guide-card h3{margin:0 0 8px;color:#f2d494;font:21px Georgia,serif}
+.guide-card p{margin:8px 0;color:#d1dcc4;font-size:12px;line-height:1.6}
+.guide-table{overflow:auto}
+.guide-card table{width:100%;border-collapse:collapse;text-align:left;font-size:12px;font-variant-numeric:tabular-nums}
+.guide-card th,.guide-card td{padding:10px 6px;border-bottom:1px solid #536447;white-space:nowrap}
+.guide-card thead th{color:#d9cba4;font-size:10px;font-weight:600}
+.guide-card th small{display:block;white-space:normal;color:#c3cfb5;font-size:9px;font-weight:400;margin-top:4px}
+.guide-current{background:#3e5330;outline:1px solid #e2c779;outline-offset:-1px}
+.guide-locked{color:#a8b59f}
+@media(max-width:760px){#guide-content{grid-template-columns:1fr}#guide-dialog{padding:12px}.guide-heading{top:-12px}.guide-card{padding:12px}.guide-card th,.guide-card td{padding:9px 4px;font-size:11px}.guide-heading h2{font-size:22px}}
+@media (max-height:600px) and (orientation:landscape),(max-width:650px){#guide{font-size:0}#guide::before{content:'ⓘ';font-size:24px}}

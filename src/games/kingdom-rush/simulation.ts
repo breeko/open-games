@@ -1,4 +1,4 @@
-import { towerWindup, maxTowerTier, barracksSoldier, battleCompatibility, ASPECT, blastDamage, damageAfterArmor, distance, ENEMIES, enemyKind, FPS, inRange, getLevel, LEVEL, rollDamage, SOLDIERS, STEP, TOWERS, type DamageKind, type EnemyKind, type Point, type Level, type LevelId, type SoldierKind, type TowerKind } from './content';
+import { POWERS, towerWindup, maxTowerTier, barracksSoldier, battleCompatibility, ASPECT, blastDamage, damageAfterArmor, distance, ENEMIES, enemyKind, FPS, inRange, getLevel, LEVEL, rollDamage, SOLDIERS, STEP, TOWERS, type DamageKind, type EnemyKind, type Point, type Level, type LevelId, type SoldierKind, type TowerKind } from './content';
 import { projectilePose, arrowHits, barracksFormation } from './collision';
 import { battleSnapshotSchema, type BattleSnapshot } from './save-state';
 
@@ -173,16 +173,16 @@ export class Simulation {
     if(this.paused||this.phase!=='running'||p.x<0||p.x>1024||p.y<0||p.y>768)return false;
     if(kind==='fire') {
       if(this.tick<this.fireReady)return false;
-      this.fireReady=this.tick+80*FPS;
-      for(let i=0;i<3;i++) {
-        const to={x:p.x+(this.random()*2-1)*19.2,y:p.y+(this.random()*2-1)*19.2};
-        this.projectiles.push({id:this.nextId++,kind:'true',from:{x:to.x,y:0},to,start:this.tick+10+i*10,impact:this.tick+10+i*10+this.fireFlightTicks(to),target:0,damage:this.roll([30,60]),radius:64});
+      this.fireReady=this.tick+POWERS.fire.cooldown*FPS;
+      for(let i=0;i<POWERS.fire.count;i++) {
+        const to={x:p.x+(this.random()*2-1)*POWERS.fire.spread,y:p.y+(this.random()*2-1)*POWERS.fire.spread};
+        this.projectiles.push({id:this.nextId++,kind:'true',from:{x:to.x,y:0},to,start:this.tick+10+i*10,impact:this.tick+10+i*10+this.fireFlightTicks(to),target:0,damage:this.roll([POWERS.fire.minDamage,POWERS.fire.maxDamage]),radius:POWERS.fire.radius});
       }
     } else {
       if(this.tick<this.reinforcementsReady)return false;
       const road=this.nearestRoad(p);if(distance(road,p)>38.4)return false;
-      this.reinforcementsReady=this.tick+10*FPS;
-      for(let i=0;i<2;i++)this.createSoldier(undefined,i,p);
+      this.reinforcementsReady=this.tick+POWERS.reinforcements.cooldown*FPS;
+      for(let i=0;i<POWERS.reinforcements.count;i++)this.createSoldier(undefined,i,p);
     }
     this.log('cast',{kind,x:p.x,y:p.y});return true;
   }
@@ -195,7 +195,7 @@ export class Simulation {
     const home={...(t?.rally??p??{x:0,y:0})};
     const rally=t?barracksFormation(home,slot):{x:home.x+(slot===0?8.96:-8.96),y:home.y+(slot===0?8.96:-8.96)};
     const kind:SoldierKind=t?barracksSoldier(t.level):'farmer';
-    this.soldiers.push({id:this.nextId++,kind,towerId:t?.id??0,activeAt:t?this.tick+FPS+12:this.tick+7,slot,rally,shotAt:0,nextShot:0,hp:SOLDIERS[kind].hp,...(t?{x:t.x,y:t.y}:rally),deadAt:-1,respawnAt:0,expires:t?Infinity:this.tick+7+20*FPS,target:0,home,destination:{...rally},meleeSlot:-1,arrived:false,redeploying:false,nextAttack:this.tick+FPS,hitAt:0,regenAt:this.tick+FPS,idleTicks:0,regenTicks:0,animation:'running',animAt:this.tick,facing:1});
+    this.soldiers.push({id:this.nextId++,kind,towerId:t?.id??0,activeAt:t?this.tick+FPS+12:this.tick+POWERS.reinforcements.spawnTicks,slot,rally,shotAt:0,nextShot:0,hp:SOLDIERS[kind].hp,...(t?{x:t.x,y:t.y}:rally),deadAt:-1,respawnAt:0,expires:t?Infinity:this.tick+POWERS.reinforcements.spawnTicks+POWERS.reinforcements.lifetime*FPS,target:0,home,destination:{...rally},meleeSlot:-1,arrived:false,redeploying:false,nextAttack:this.tick+FPS,hitAt:0,regenAt:this.tick+FPS,idleTicks:0,regenTicks:0,animation:'running',animAt:this.tick,facing:1});
   }
   spawn(kind:EnemyKind,route=0,lane=0):Enemy {
     const path=this.level.paths[route];const start=path.lanes[lane][path.start],spec=ENEMIES[kind];

@@ -11,6 +11,7 @@ bun run dev
 Open `/games/kingdom-rush/` at the printed address, or choose Kingdom Rush from the library. For the preview started during implementation, use [the local level](http://localhost:5174/games/kingdom-rush/). On an iPad on the same Wi-Fi, use the printed Network address with the same path. Keep the Mac and preview running.
 
 - Tap a foundation, then choose Archers, Barracks, Mages or Artillery.
+- Open **ⓘ Guide** for every tower tier, upgrade cost, damage, range, firing interval, soldier stats and powers. **ⓘ Stats** on a selected tower opens its family and highlights the current tier. The guide pauses the battle while reading and respects an existing pause. The [player reference](player-guide.md) also lists current values.
 - Tap a tower to upgrade, sell or change a barracks' rally point. Southport caps towers at tier 1; The Farmlands and Pagras allow tier 2; Twin Rivers Pass unlocks tier 3. Silveroak Forest adds a wave-five base ranger upgrade, an existing archer tower and a repairable elf camp. The Citadel offers base Rangers and Arcane Wizards.
 - Tap Reinforcements, then a road; tap Rain of Fire, then a target. Tap Cancel or press Escape to cancel targeting.
 - Prepare with 265 / 220 / 300 / 680 / 700 / 700 gold in Southport / The Farmlands / Pagras / Twin Rivers Pass / Silveroak Forest / The Citadel and 20 lives, then start the battle. Later waves can be called early for extra gold and spell recharge after the wave flag appears (50 ticks after the spawners finish).

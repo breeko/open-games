@@ -138,3 +138,10 @@ See [the detailed comparison](original-comparison.md#melee-and-collision-follow-
 - All changes remain within Kingdom Rush folders. Garden Guard work belongs to the concurrent agent and is excluded from this change.
 
 Validation: 81 Kingdom Rush tests and four game-boundary checks pass, as do the production build and scoped whitespace check. Phone landscape at 844 × 390 fills the board with no horizontal overflow; purchases, both powers, practice marking and pause were checked through the browser UI. This is not a physical-device benchmark.
+
+
+## November 8, 2026 — player field guide
+
+- Added a compact on-map ⓘ Guide button for all four tower families and both powers. Tables show damage, range, firing interval, blast radius, incremental upgrade cost and cumulative investment. Barracks show each soldier's health, attack interval and armor; notes explain healing, replacements, targeting and armor behavior. Available tiers follow the selected map and wave. Current tower Stats opens its family and highlights its tier; build and upgrade controls also expose descriptive tooltips/accessibility text.
+- The guide pauses while open, resumes a previously running battle on close, preserves an existing manual pause, and respects backgrounding. Compact mobile controls keep the board full screen. Desktop, 844 × 390 landscape and 390 × 844 portrait were checked through the browser; tables fit portrait without horizontal overflow. Artillery purchase and promotion charged the expected 125 + 220 gold and highlighted tier two correctly. Powers and pause preservation were also verified. [Desktop guide screen](playtests/2026-11-08-artillery-guide.jpg), [landscape screen](playtests/2026-11-08-artillery-guide-mobile.jpg).
+- Power values now live in the same Kingdom Rush content definitions used by combat and the guide, with no numeric balance changes. All 81 Kingdom Rush tests and four boundary checks still pass, including the historical browser command outcomes. Production build and scoped whitespace checks pass. No Garden Guard files were edited or included. Full numbers and behavior are in [the player guide](player-guide.md).
