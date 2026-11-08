@@ -5,6 +5,7 @@ import type { ResourceManager } from '../managers/ResourceManager';
 /** Every plant the player can place on the lawn. */
 export type PlantType =
   | 'puffshroom' | 'sunshroom' | 'fumeshroom' | 'gravebuster' | 'hypnoshroom' | 'scaredyshroom' | 'iceshroom' | 'doomshroom'
+  | 'lilypad' | 'squash'
   | 'sunflower'
   | 'peashooter'
   | 'wallnut'
@@ -107,6 +108,7 @@ export interface GridPosition {
 export interface GameContext {
   onProjectileSpawn?:(pea:Phaser.Physics.Arcade.Image)=>void;
   readonly random: () => number;
+  readonly mushroomsSleep:boolean;
   readonly sunBank: Readonly<{x:number;y:number}>;
   scene: Phaser.Scene;
   grid: GridManager;

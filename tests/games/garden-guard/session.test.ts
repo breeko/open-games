@@ -11,7 +11,7 @@ import { FinalGraveRise } from '../../../src/games/garden-guard/night';
 import { SunPickup } from '../../../src/games/garden-guard/sun-pickup';
 import { busyNightSession, freshSession } from './fixtures/session';
 
-test('all twenty levels, including both supply modes and whack, have valid JSON session representations', () => {
+test('all twenty-two levels, including both supply modes and whack, have valid JSON session representations', () => {
   for (const level of LEVELS) assert.deepEqual(gardenSessionSchema.parse(JSON.parse(JSON.stringify(freshSession(level.id)))), freshSession(level.id));
   const busy = busyNightSession();
   assert.deepEqual(gardenSessionSchema.parse(JSON.parse(JSON.stringify(busy))), busy);

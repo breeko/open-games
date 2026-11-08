@@ -50,7 +50,7 @@ export function explode(
   for (const child of ctx.zombies.getChildren()) {
     const zombie = child as Zombie;
     if (!zombie.active || !zombie.isHostile || (radius<=120&&!zombie.canBeShot)) continue;
-    if (inBlast(zombie.x - x,zombie.y - y,radius)) {
+    if (inBlast(zombie.x - x,zombie.y - y,radius,ctx.grid.tileHeight)) {
       zombie.takeDamage(damage);
     }
   }

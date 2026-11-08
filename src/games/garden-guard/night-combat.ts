@@ -47,6 +47,6 @@ export class DanceRoutine {
   return summon;
  }
 }
-export function backupPositions(x:number,row:number):{x:number;row:number;slot:number}[] {
- return [{x,row:row-1,slot:0},{x,row:row+1,slot:1},{x:x-160,row,slot:2},{x:x+160,row,slot:3}].filter(p=>p.row>=0&&p.row<5);
+export function backupPositions(x:number,row:number,rows=5):{x:number;row:number;slot:number}[] {
+ return [{x,row:row-1,slot:0},{x,row:row+1,slot:1},{x:x-160,row,slot:2},{x:x+160,row,slot:3}].filter(p=>p.row>=0&&p.row<rows);
 }

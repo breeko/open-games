@@ -36,90 +36,93 @@ def save_pose(key, image, size, crop=None):
  dest.alpha_composite(image,((size[0]-image.width)//2,size[1]-image.height))
  dest.save(out/(key+'.png'))
 
-# Stalk/leaf tracks end before the separately animated heads begin.
-body_tracks=['backleaf','backleaf_left_tip','backleaf_right_tip','stalk_bottom','stalk_top','frontleaf','frontleaf_right_tip','frontleaf_tip_left']
-for key,source in [('peashooter','PeaShooter'),('repeater','PeaShooter'),('snowpea','SnowPea')]:
- body=pose(source,11,only=body_tracks)
- head=pose(source,35,exclude=tuple(body_tracks)+('blink',)+(() if key=='repeater' else ('eyebrow',)))
- body.alpha_composite(head)
- save_pose(key,body,(108,128))
-for key,name,frame,excluded,size in [
- ('sunflower','SunFlower',11,('blink',),(108,128)),
- ('wallnut','Wallnut',0,('blink',),(94,118)),
- ('cherrybomb','CherryBomb',0,(),(128,112)),
- ('chomper','Chomper',0,('Zombie_',),(128,144)),
- ('chomper-digest','Chomper',79,('Zombie_',),(128,144)),
- ('potatomine','PotatoMine',0,('blink','mashed'),(96,68)),
- ('potatomine-armed','PotatoMine',15,('blink','mashed'),(96,68)),
- ('sun','Sun',0,(),(112,112)),
- ('mower','LawnMower',0,('tricked',),(94,78))]:
- save_pose(key,pose(name,frame,excluded),size)
-# Damage-state artwork keeps the same footprint as the healthy nut.
-for key,source in [('wallnut-cracked','Wallnut_cracked1'),('wallnut-broken','Wallnut_cracked2')]:
- im=Image.open(files[source.upper()]).convert('RGBA')
- save_pose(key,im,(94,118))
-exclude=('flag','screendoor','duck','whitewater','mustache','tongue','bucket','cone','hair')
-zombie_poses=[]
-for key,gear in [('zombie',None),('zombie-cone','anim_cone'),('zombie-bucket','anim_bucket')]:
- im=pose('Zombie',11,exclude)
- if gear: im.alpha_composite(pose('Zombie',11,only=[gear]))
- zombie_poses.append((key,im))
-# One shared crop and scale keeps feet and body size identical after armor drops.
-boxes=[im.getbbox() for _,im in zombie_poses]
-shared=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
-for key,im in zombie_poses:save_pose(key,im,(128,240),shared)
-save_pose('zombie-pole',pose('Zombie_polevaulter',0),(260,280))
-save_pose('zombie-pole-walk',pose('Zombie_polevaulter',0,exclude_exact=('Zombie_polevaulter_pole','Zombie_polevaulter_pole2')),(128,240))
-# Night plants and shield states, from the original Reanim tracks.
-for key,name,frame,size in [('puffshroom','PuffShroom',4,(72,72)),('fumeshroom','FumeShroom',4,(112,140)),('gravebuster','Gravebuster',11,(112,136))]:
- save_pose(key,pose(name,frame,('blink','sleep')),size)
-small=pose('SunShroom',5,('blink','sleep'));big=pose('SunShroom',39,('blink','sleep'))
-b=big.getbbox();a=small.getbbox();crop=(min(a[0],b[0]),min(a[1],b[1]),max(a[2],b[2]),max(a[3],b[3]))
-for key,im in [('sunshroom',small),('sunshroom-grown',big)]:
- save_pose(key,im,(96,128),crop)
- exported=Image.open(out/(key+'.png')).convert('RGBA');dy=exported.height-exported.getbbox()[3]
- aligned=Image.new('RGBA',exported.size);aligned.alpha_composite(exported,(0,dy));aligned.save(out/(key+'.png'))
-paper=[pose('Zombie_paper',f) for f in [25,145]]
-boxes=[im.getbbox() for im in paper];crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
-for key,im in zip(['zombie-paper','zombie-paper-angry'],paper):save_pose(key,im,(160,224),crop)
-door=pose('Zombie',11,tuple(x for x in exclude if x!='screendoor'))
-save_pose('zombie-door',door,(160,240),(131,100,318,384))
-for key,name,frame,size in [('hypnoshroom','HypnoShroom',0,(104,104)),('scaredyshroom','ScaredyShroom',5,(88,128)),('scaredyshroom-hidden','ScaredyShroom',49,(88,128))]:
- save_pose(key,pose(name,frame,('sleep','blink','eye2')),size)
-football=[pose('Zombie_football',21),pose('Zombie_football',21,exclude_exact=('zombie_football_helmet',))]
-boxes=[im.getbbox() for im in football];crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
-for key,im in zip(['zombie-football','zombie-football-bare'],football):save_pose(key,im,(160,240),crop)
-for key,name,frame,size in [('iceshroom','IceShroom',4,(100,110)),('doomshroom','DoomShroom',0,(112,128)),('zombie-dancer','Zombie_disco',46,(144,240)),('zombie-backup','Zombie_backup',0,(128,224))]:
- save_pose(key,pose(name,frame,('blink','sleep','eye2')),size)
-for key,source in [('ice-front','icetrap.png'),('ice-back','icetrap2.png')]:Image.open(base/'images'/source).save(out/(key+'.png'))
-crater=Image.open(base/'images/crater.png');crater.crop((0,0,crater.width//2,crater.height)).save(out/'crater.png')
-# Original projectiles, sized in board coordinates rather than their source canvas.
-for key,source,size in [('pea','ProjectilePea',(45,45)),('icepea','ProjectileSnowPea',(45,45))]:
- manifest[key]={'width':size[0],'height':size[1]}
- Image.open(base/'images'/(source+'.png')).convert('RGBA').resize((size[0]*2,size[1]*2),Image.Resampling.LANCZOS).save(out/(key+'.png'))
-save_pose('puff',Image.open(layers/'puff_1.png').convert('RGBA'),(40,36))
-# Native 800×600 view: original camera shows source X 220..1020.
-# Never stretch the lawn independently in X/Y or add out-of-bounds black padding.
-for name in ['background1.jpg','background1unsodded.jpg','background2.jpg']:
- im=Image.open(base/'images'/name).crop((220,0,1020,600)).resize((1280,960),Image.Resampling.LANCZOS)
- im.save(out/(Path(name).stem+'.png'))
-for name in ['SeedBank.png','SeedPacket_Larger.png','SunBank.png','FlagMeter.png','FlagMeterParts.png','FlagMeterLevelProgress.png','ShovelBank.png','Shovel_hi_res.png','button_left.png','button_middle.png','button_right.png']:
- Image.open(base/'images'/name).save(out/name)
-Image.open(base/'images/Night_grave_graphic.png').save(out/'grave.png')
-Image.open(base/'images/plantshadow.png').save(out/'plant-shadow.png')
-full=Image.open(out/'background1.png');dirt=Image.open(out/'background1unsodded.png')
-for n,rows in [(1,[2]),(2,[1,2,3]),(3,list(range(5)))]:
- im=dirt.copy()
- for row in rows:im.paste(full.crop((64,128+row*160,1216,288+row*160)),(64,128+row*160))
- im.save(out/f'lawn{n}.png')
-Path('src/games/garden-guard/reference/art-manifest.json').write_text(json.dumps({'exportScale':EXPORT_SCALE,'board':{'width':1280,'height':960,'sourceCrop':[220,0,1020,600]},'sprites':manifest},indent=2)+'\n')
-# Contact sheet displays game sizes, not the oversampled texture dimensions.
-keys=['peashooter','sunflower','snowpea','repeater','chomper','wallnut','potatomine-armed','cherrybomb','sun','zombie','zombie-cone','zombie-pole']
-sheet=Image.new('RGB',(900,520),'#466d35')
-from PIL import ImageDraw
-labels=ImageDraw.Draw(sheet)
-for i,key in enumerate(keys):
- im=Image.open(out/(key+'.png'));im.thumbnail((130,210),Image.Resampling.LANCZOS);x=(i%6)*150;y=(i//6)*260
- sheet.paste(im,(x+(150-im.width)//2,y+8),im)
- labels.text((x+5,y+235),key,fill='white')
-sheet.save('/tmp/open-games-garden-guard-sprites.png')
+def main():
+ # Stalk/leaf tracks end before the separately animated heads begin.
+ body_tracks=['backleaf','backleaf_left_tip','backleaf_right_tip','stalk_bottom','stalk_top','frontleaf','frontleaf_right_tip','frontleaf_tip_left']
+ for key,source in [('peashooter','PeaShooter'),('repeater','PeaShooter'),('snowpea','SnowPea')]:
+  body=pose(source,11,only=body_tracks)
+  head=pose(source,35,exclude=tuple(body_tracks)+('blink',)+(() if key=='repeater' else ('eyebrow',)))
+  body.alpha_composite(head)
+  save_pose(key,body,(108,128))
+ for key,name,frame,excluded,size in [
+  ('sunflower','SunFlower',11,('blink',),(108,128)),
+  ('wallnut','Wallnut',0,('blink',),(94,118)),
+  ('cherrybomb','CherryBomb',0,(),(128,112)),
+  ('chomper','Chomper',0,('Zombie_',),(128,144)),
+  ('chomper-digest','Chomper',79,('Zombie_',),(128,144)),
+  ('potatomine','PotatoMine',0,('blink','mashed'),(96,68)),
+  ('potatomine-armed','PotatoMine',15,('blink','mashed'),(96,68)),
+  ('sun','Sun',0,(),(112,112)),
+  ('mower','LawnMower',0,('tricked',),(94,78))]:
+  save_pose(key,pose(name,frame,excluded),size)
+ # Damage-state artwork keeps the same footprint as the healthy nut.
+ for key,source in [('wallnut-cracked','Wallnut_cracked1'),('wallnut-broken','Wallnut_cracked2')]:
+  im=Image.open(files[source.upper()]).convert('RGBA')
+  save_pose(key,im,(94,118))
+ exclude=('flag','screendoor','duck','whitewater','mustache','tongue','bucket','cone','hair')
+ zombie_poses=[]
+ for key,gear in [('zombie',None),('zombie-cone','anim_cone'),('zombie-bucket','anim_bucket')]:
+  im=pose('Zombie',11,exclude)
+  if gear: im.alpha_composite(pose('Zombie',11,only=[gear]))
+  zombie_poses.append((key,im))
+ # One shared crop and scale keeps feet and body size identical after armor drops.
+ boxes=[im.getbbox() for _,im in zombie_poses]
+ shared=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
+ for key,im in zombie_poses:save_pose(key,im,(128,240),shared)
+ save_pose('zombie-pole',pose('Zombie_polevaulter',0),(260,280))
+ save_pose('zombie-pole-walk',pose('Zombie_polevaulter',0,exclude_exact=('Zombie_polevaulter_pole','Zombie_polevaulter_pole2')),(128,240))
+ # Night plants and shield states, from the original Reanim tracks.
+ for key,name,frame,size in [('puffshroom','PuffShroom',4,(72,72)),('fumeshroom','FumeShroom',4,(112,140)),('gravebuster','Gravebuster',11,(112,136))]:
+  save_pose(key,pose(name,frame,('blink','sleep')),size)
+ small=pose('SunShroom',5,('blink','sleep'));big=pose('SunShroom',39,('blink','sleep'))
+ b=big.getbbox();a=small.getbbox();crop=(min(a[0],b[0]),min(a[1],b[1]),max(a[2],b[2]),max(a[3],b[3]))
+ for key,im in [('sunshroom',small),('sunshroom-grown',big)]:
+  save_pose(key,im,(96,128),crop)
+  exported=Image.open(out/(key+'.png')).convert('RGBA');dy=exported.height-exported.getbbox()[3]
+  aligned=Image.new('RGBA',exported.size);aligned.alpha_composite(exported,(0,dy));aligned.save(out/(key+'.png'))
+ paper=[pose('Zombie_paper',f) for f in [25,145]]
+ boxes=[im.getbbox() for im in paper];crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
+ for key,im in zip(['zombie-paper','zombie-paper-angry'],paper):save_pose(key,im,(160,224),crop)
+ door=pose('Zombie',11,tuple(x for x in exclude if x!='screendoor'))
+ save_pose('zombie-door',door,(160,240),(131,100,318,384))
+ for key,name,frame,size in [('hypnoshroom','HypnoShroom',0,(104,104)),('scaredyshroom','ScaredyShroom',5,(88,128)),('scaredyshroom-hidden','ScaredyShroom',49,(88,128))]:
+  save_pose(key,pose(name,frame,('sleep','blink','eye2')),size)
+ football=[pose('Zombie_football',21),pose('Zombie_football',21,exclude_exact=('zombie_football_helmet',))]
+ boxes=[im.getbbox() for im in football];crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
+ for key,im in zip(['zombie-football','zombie-football-bare'],football):save_pose(key,im,(160,240),crop)
+ for key,name,frame,size in [('iceshroom','IceShroom',4,(100,110)),('doomshroom','DoomShroom',0,(112,128)),('zombie-dancer','Zombie_disco',46,(144,240)),('zombie-backup','Zombie_backup',0,(128,224))]:
+  save_pose(key,pose(name,frame,('blink','sleep','eye2')),size)
+ for key,source in [('ice-front','icetrap.png'),('ice-back','icetrap2.png')]:Image.open(base/'images'/source).save(out/(key+'.png'))
+ crater=Image.open(base/'images/crater.png');crater.crop((0,0,crater.width//2,crater.height)).save(out/'crater.png')
+ # Original projectiles, sized in board coordinates rather than their source canvas.
+ for key,source,size in [('pea','ProjectilePea',(45,45)),('icepea','ProjectileSnowPea',(45,45))]:
+  manifest[key]={'width':size[0],'height':size[1]}
+  Image.open(base/'images'/(source+'.png')).convert('RGBA').resize((size[0]*2,size[1]*2),Image.Resampling.LANCZOS).save(out/(key+'.png'))
+ save_pose('puff',Image.open(layers/'puff_1.png').convert('RGBA'),(40,36))
+ # Native 800×600 view: original camera shows source X 220..1020.
+ # Never stretch the lawn independently in X/Y or add out-of-bounds black padding.
+ for name in ['background1.jpg','background1unsodded.jpg','background2.jpg']:
+  im=Image.open(base/'images'/name).crop((220,0,1020,600)).resize((1280,960),Image.Resampling.LANCZOS)
+  im.save(out/(Path(name).stem+'.png'))
+ for name in ['SeedBank.png','SeedPacket_Larger.png','SunBank.png','FlagMeter.png','FlagMeterParts.png','FlagMeterLevelProgress.png','ShovelBank.png','Shovel_hi_res.png','button_left.png','button_middle.png','button_right.png']:
+  Image.open(base/'images'/name).save(out/name)
+ Image.open(base/'images/Night_grave_graphic.png').save(out/'grave.png')
+ Image.open(base/'images/plantshadow.png').save(out/'plant-shadow.png')
+ full=Image.open(out/'background1.png');dirt=Image.open(out/'background1unsodded.png')
+ for n,rows in [(1,[2]),(2,[1,2,3]),(3,list(range(5)))]:
+  im=dirt.copy()
+  for row in rows:im.paste(full.crop((64,128+row*160,1216,288+row*160)),(64,128+row*160))
+  im.save(out/f'lawn{n}.png')
+ Path('src/games/garden-guard/reference/art-manifest.json').write_text(json.dumps({'exportScale':EXPORT_SCALE,'board':{'width':1280,'height':960,'sourceCrop':[220,0,1020,600]},'sprites':manifest},indent=2)+'\n')
+ # Contact sheet displays game sizes, not the oversampled texture dimensions.
+ keys=['peashooter','sunflower','snowpea','repeater','chomper','wallnut','potatomine-armed','cherrybomb','sun','zombie','zombie-cone','zombie-pole']
+ sheet=Image.new('RGB',(900,520),'#466d35')
+ from PIL import ImageDraw
+ labels=ImageDraw.Draw(sheet)
+ for i,key in enumerate(keys):
+  im=Image.open(out/(key+'.png'));im.thumbnail((130,210),Image.Resampling.LANCZOS);x=(i%6)*150;y=(i//6)*260
+  sheet.paste(im,(x+(150-im.width)//2,y+8),im)
+  labels.text((x+5,y+235),key,fill='white')
+ sheet.save('/tmp/open-games-garden-guard-sprites.png')
+
+if __name__=='__main__':main()

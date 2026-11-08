@@ -100,7 +100,7 @@ export abstract class Shooter extends Plant {
     // Muzzle measured in the flattened texture; transform follows recoil and planting scale.
     const muzzleY=this.def.type==='scaredyshroom'?0.5:this.def.type==='puffshroom'?0.75:0.35;
     const point=this.getWorldTransformMatrix().transformPoint((plantMuzzleX(this.texture.key)-this.originX)*this.width,(muzzleY-this.originY)*this.height);
-    const y=point.y+(laneRow-this.row)*160;
+    const y=point.y+(laneRow-this.row)*this.ctx.grid.tileHeight;
     const texture = this.def.projectile ?? 'pea';
 
     const pea = this.ctx.peas.create(point.x, y, texture) as Phaser.Physics.Arcade.Image;

@@ -7,7 +7,7 @@ import { PreloadScene } from '../../../src/games/garden-guard/scenes/PreloadScen
 import { MainMenuScene } from '../../../src/games/garden-guard/scenes/MainMenuScene';
 import { GameScene } from '../../../src/games/garden-guard/scenes/GameScene';
 import { gardenSessionSchema, type GardenSession } from '../../../src/games/garden-guard/state/session-data';
-import { busyNightSession, freshSession, exampleZombie } from '../../../tests/games/garden-guard/fixtures/session';
+import { busyPoolSession,busyNightSession, freshSession, exampleZombie } from '../../../tests/games/garden-guard/fixtures/session';
 import {nightDiagnostic} from '../../../src/games/garden-guard/diagnostics/night-scenarios';
 import { GRID } from '../../../src/games/garden-guard/constants';
 import { LEVELS } from '../../../src/games/garden-guard/levels';
@@ -68,6 +68,64 @@ function run(): void {
     catch (error) { results.textContent += `FAIL ${name}\n${error instanceof Error ? error.stack : String(error)}\n`;failed++; }
   };
   for (const level of LEVELS) check(`level ${level.name}: ${level.mode} round trip and 2s continuation`, () => roundTrip(freshSession(level.id), 100));
+  check('pool: stacked Lily Pads, six lanes, swim gait and Squash mid-jump continue identically',()=>roundTrip(busyPoolSession(),300));
+  check('pool: bare water rejects plants without spending sun; Lily Pad supports one defender',()=>{
+    const data=freshSession(21);data.sun=300;const scene=open(data);
+    equal(scene.plantAt('peashooter',0,2),false,'bare water rejection');equal(capture(scene).sun,300,'rejection costs nothing');
+    equal(scene.plantAt('lilypad',0,0),false,'land rejects Lily Pad');
+    equal(scene.plantAt('lilypad',0,2),true,'pad placement');equal(capture(scene).sun,275,'pad cost');
+    equal(scene.plantAt('peashooter',0,2),true,'defender on pad');equal(capture(scene).sun,175,'defender cost');
+    equal(scene.plantAt('wallnut',0,2),false,'one main defender per pad');
+    const defender=scene.children.list.find((p):p is Plant=>p instanceof Plant&&p.plantType==='peashooter');defender?.remove();
+    equal(capture(scene).plants.map(p=>p.type),['lilypad'],'removing top leaves pad');
+  });
+  check('pool: zombies eat the defender first, then the Lily Pad',()=>{
+    const data=freshSession(21);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.countdown=100000;
+    data.plants=[{type:'lilypad',col:1,row:2,hp:4,behavior:{kind:'idle'}},{type:'wallnut',col:1,row:2,hp:4,behavior:{kind:'idle'}}];
+    data.zombies=[{...exampleZombie('basic',2,'pool'),x:256}];const scene=open(data);step(2);
+    equal(capture(scene).plants.map(p=>p.type),['lilypad'],'defender consumed first');step(2);equal(capture(scene).plants.length,0,'pad consumed second');
+  });
+  check('pool: destroying a support removes its defender and cannot leave a floating plant',()=>{
+    const scene=open(busyPoolSession());const pad=scene.children.list.find((p):p is Plant=>p instanceof Plant&&p.plantType==='lilypad'&&p.col===0&&p.row===2);pad?.takeDamage(9999);
+    if(capture(scene).plants.some(p=>p.col===0&&p.row===2))throw new Error('Unsupported defender survived');
+  });
+  check('pool: Squash waits for its jump, crushes nearby armor once, and leaves the Lily Pad',()=>{
+    const data=freshSession(22);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.countdown=100000;
+    data.plants=[{type:'lilypad',col:3,row:2,hp:300,behavior:{kind:'idle'}},{type:'squash',col:3,row:2,hp:300,behavior:{kind:'squash',phase:'idle',remainingMs:0,targetX:0}}];
+    data.zombies=[{...exampleZombie('buckethead',2,'pool'),x:600},{...exampleZombie('basic',2,'pool'),x:600}];
+    const scene=open(data);step(80);equal(capture(scene).zombies.length,2,'jump preparation does no premature damage');
+    step(14);equal(capture(scene).zombies.length,0,'one area crush');equal(capture(scene).plants.map(p=>p.type),['lilypad'],'Squash consumed, support retained');
+    roundTrip(capture(scene),100);
+  });
+  check('pool: no water spawns in the first five waves, and water eligibility survives save/restore',()=>{
+    let data=freshSession(22);let scene:GameScene|undefined;
+    for(let wave=0;wave<6;wave++){
+      if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.countdown=1;
+      scene=open(data);step(1);data=capture(scene);
+      if(data.zombies.some(z=>(z.row===2||z.row===3)&&z.wave<5))throw new Error('Early swimmer');
+    }
+    roundTrip(data,100);
+  });
+  check('pool: water freezing lasts three seconds and water mowers sink near the edge',()=>{
+    const data=freshSession(21);data.zombies=[exampleZombie('basic',2,'pool')];
+    data.mowers[2]={row:2,x:120,used:true,moving:true,visible:true};const scene=open(data);
+    const z=scene.children.list.find((p):p is Zombie=>p instanceof Zombie);if(!z)throw new Error('No swimmer');z.freeze();
+    equal(z.freezeRemainingMs,3000,'source pool freeze');step(1);equal(capture(scene).mowers[2].visible,false,'unupgraded water mower sinks');
+    roundTrip(capture(scene),160);
+  });
+  check('pool: pending final emergence creates exactly two eligible swimmers after two seconds',()=>{
+    const data=freshSession(22);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.index=19;data.waves.riseTicks=200;
+    const scene=open(data);step(99);equal(capture(scene).zombies.length,0,'emergence waits');step(1);
+    const after=capture(scene);equal(after.zombies.length,2,'two swimmers');equal(after.zombies.map(z=>z.emergenceTotal),[500,500],'pool emergence is 50 ticks');
+    if(after.zombies.some(z=>z.row!==2&&z.row!==3||!['basic','conehead','buckethead'].includes(z.type)||z.x<704||z.x>1216))throw new Error('Wrong pool emergence');
+    roundTrip(after,150);
+  });
+  check('pool: daytime mushrooms remain asleep while sky sun and supported defenders continue',()=>{
+    const data=freshSession(21);data.seeds=['lilypad','puffshroom','sunshroom','peashooter'];data.seedBank=data.seeds.map(type=>({type,stock:0,remainingMs:0,totalMs:7500}));
+    data.plants=[{type:'puffshroom',col:0,row:0,hp:300,behavior:{kind:'shooter',cooldown:1,remainder:0,shots:[]}},{type:'sunshroom',col:0,row:1,hp:300,behavior:{kind:'sunshroom',age:0,timer:0,next:500}}];
+    data.zombies=[exampleZombie('basic',0)];const scene=open(data);step(100);
+    equal(capture(scene).plants,data.plants,'sleeping mushroom timers');equal(capture(scene).projectiles.length,0,'no sleeping shots');
+  });
   check('busy night: plant timers, vault, hypnosis allies, slowing, sun flight, projectiles and cooldowns', () => roundTrip(busyNightSession(), 80));
   check('bowling: rolling hit history and partial lane bounce', () => {
     const data = freshSession(5);data.zombies = [exampleZombie('buckethead', 1)];
@@ -151,7 +209,7 @@ function run(): void {
     if(zombies[1].hp>=270||zombies[2].hp!==270)throw new Error('Enemy selected the wrong ally');
     roundTrip(capture(scene),40);
   });
-  for(const [name,data] of [['day',freshSession(4)],['bowling',freshSession(5)],['conveyor',freshSession(10)],['night finale',freshSession(20)],['whack',freshSession(15)],['busy night',busyNightSession()],['frozen dancers',nightDiagnostic(true)]] as const){
+  for(const [name,data] of [['day',freshSession(4)],['bowling',freshSession(5)],['conveyor',freshSession(10)],['night finale',freshSession(20)],['pool',busyPoolSession()],['whack',freshSession(15)],['busy night',busyNightSession()],['frozen dancers',nightDiagnostic(true)]] as const){
     check(`2× ${name}: half as many rendered frames produces identical gameplay`,()=>{
       const prior=settings.current.gameSpeed;
       try {
@@ -172,7 +230,7 @@ function run(): void {
     }finally{settings.set('gameSpeed',prior);}
   });
   check('manual zombie bodies preserve collision outcomes without velocity integration',()=>{
-    for(const data of [busyNightSession(),nightDiagnostic(true)]){
+    for(const data of [busyNightSession(),nightDiagnostic(true),busyPoolSession()]){
       const reference=open(data);
       for(const z of reference.children.list)if(z instanceof Zombie&&z.body instanceof Phaser.Physics.Arcade.Body)z.body.moves=true;
       const expected:GardenSession[]=[];for(let frame=0;frame<200;frame++){step(1);expected.push(capture(reference));}

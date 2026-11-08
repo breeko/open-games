@@ -152,7 +152,7 @@ export class RewardScene extends Phaser.Scene {
     const cx = GAME_WIDTH / 2;
 
     this.add
-      .text(cx, 250, 'DAY AND NIGHT COMPLETE!', {
+      .text(cx, 250, 'POOL PREVIEW COMPLETE!', {
         fontFamily: 'Arial Black, Arial, sans-serif',
         fontSize: '40px',
         color: '#ffe066',
@@ -163,7 +163,7 @@ export class RewardScene extends Phaser.Scene {
       .setDepth(DEPTH.ui);
 
     this.add
-      .text(cx, 320, 'Night finale cleared. The pool adventure is next.', {
+      .text(cx, 320, 'Day, night and the first two pool levels are ready to replay.', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '19px',
         color: '#bfe0b0',

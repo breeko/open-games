@@ -59,3 +59,7 @@ fonts or external requests are added to the menu.
 ### Grounded presentation
 
 The existing exported PNGs are unchanged. `sprite-presentation.ts` records lower-silhouette stem/foot X positions (measured from alpha pixels, visually reviewed) so transparent padding, noses and held objects do not determine the pivot. Normal/cone/bucket, football helmet states and Wall-nut damage states share anchors. Artwork transforms are temporary during Canvas batching; plant/zombie world anchors and collision-body offsets remain unchanged. Shooter muzzle X incorporates the corresponding static drawing offset. Decorative sway/recoil is approximate, not original skeletal animation. Cherry Bomb swell uses the same 0.5 export scale as all other plants.
+
+### Pool assets
+
+`prepare-pool-assets.py` extracts Lily Pad, Squash, three attached Threepeater heads plus stems, and shared normal/cone/bucket duck-tube poses from the same pinned Reanim source. It imports the common exporter without rewriting earlier assets. The pool board combines the original `background3.jpg` and the Canvas pool surface at native (34,278), then uses the existing 800×600 crop/1.6 board scale. The waterline is a simplified static clip; splash, animated caustics and emergence clipping are not reproduced. Swimming uses exported `_ground` values for `Zombie`'s `anim_swim` frames 250–291. No generated replacement art is used. Existing MIT code and EA/PopCap art provenance remain separate.

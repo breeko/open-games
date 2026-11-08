@@ -37,3 +37,11 @@ for key in ['iceshroom','doomshroom','zombie-dancer','zombie-backup','ice-front'
 assert Image.open(base/'crater.png').size==(90,61), 'crater must be one frame, not both side by side'
 assert Image.open(base/'zombie-dancer.png').tobytes()!=Image.open(base/'zombie-backup.png').tobytes(), 'leader and backups need distinct original art'
 print('Ice, Doom, Dancing Zombie, backup, freeze overlay and crater checks passed.')
+
+for key in ['lilypad','squash','threepeater','zombie-swim','zombie-swim-cone','zombie-swim-bucket']:
+    assert Image.open(base/(key+'.png')).getbbox(), key+' is empty'
+assert Image.open(base/'pool.png').size==(1280,960)
+assert all(Image.open(base/(key+'.png')).size==(256,480) for key in ['zombie-swim','zombie-swim-cone','zombie-swim-bucket']), 'swimming armor states must share their crop'
+assert Image.open(base/'lilypad.png').getbbox()[2]-Image.open(base/'lilypad.png').getbbox()[0]>200, 'Lily Pad must remain visible beneath a defender'
+assert Image.open(base/'threepeater.png').getbbox()[3]-Image.open(base/'threepeater.png').getbbox()[1]>220, 'Threepeater needs its full stem and all heads'
+print('Pool board, Lily Pad, Squash, Threepeater reward and shared duck-tube states passed.')

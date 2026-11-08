@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import {poolLaneAllowed,canSwim,finalPoolCells} from '../terrain';
+import {ZOMBIE_RULES} from '../reference/rules';
 import { DIFFICULTIES, getDifficulty } from '../difficulty';
 import { BALANCE, ZOMBIE_DEFS } from '../constants';
 import { Zombie } from '../entities/Zombie';
@@ -49,7 +51,7 @@ export class WaveManager {
       spawn: (type,wave) => this.spawnZombie(type,wave),
       health: wave => this.zombies.getChildren().reduce((sum,child) => child instanceof Zombie && child.active && child.isHostile && child.waveIndex === wave ? sum + child.waveHealth : sum,0),
       liveCount: () => this.hostileCount()+(this.rise.pending?1:0),
-      start: (wave,total,flag)=>{if(this.level.environment==='night'&&wave===total)this.rise.schedule();hooks.onWaveStart(wave,total,flag);}, warning:hooks.onWarning, complete: hooks.onComplete,
+      start: (wave,total,flag)=>{if(this.level.environment!=='day'&&wave===total)this.rise.schedule();hooks.onWaveStart(wave,total,flag);}, warning:hooks.onWarning, complete: hooks.onComplete,
     },this.random,level.mode==='bowling');
   }
   get diagnostics() { return { ...this.director.snapshot,events:this.director.events,plan:this.level.waves }; }
@@ -76,15 +78,24 @@ export class WaveManager {
     this.tickRemainder-=10;
     // A rise scheduled on the final-wave tick holds completion until every grave is checked.
     if(this.rise.step()){
-      const cone=allowedZombies(this.level.id).includes('conehead');
-      for(const grave of this.hooks.graves())this.spawnZombie(cone&&this.random()<0.5?'conehead':'basic',this.totalWaves-1,grave);
+      if(this.level.environment==='pool'){
+        const types=allowedZombies(this.level.id).filter(type=>type==='basic'||type==='conehead'||type==='buckethead');
+        for(const cell of finalPoolCells(this.random)){
+          let roll=this.random()*types.reduce((sum,t)=>sum+ZOMBIE_RULES[t].weight,0);let pick:ZombieType='basic';
+          for(const type of types){roll-=ZOMBIE_RULES[type].weight;if(roll<0){pick=type;break;}}
+          this.spawnZombie(pick,this.totalWaves-1,cell);
+        }
+      }else{
+        const cone=allowedZombies(this.level.id).includes('conehead');
+        for(const grave of this.hooks.graves())this.spawnZombie(cone&&this.random()<0.5?'conehead':'basic',this.totalWaves-1,grave);
+      }
     }
     this.director.update(10);
     }
   }
   private spawnBackup(leader:Zombie,slot:number):Zombie|null {
     if(this.playgroundTick!==null&&this.zombies.getLength()>=160)return null;
-    const point=backupPositions(leader.x,leader.row).find(p=>p.slot===slot);if(!point)return null;
+    const point=backupPositions(leader.x,leader.row,this.grid.rows).filter(p=>!this.grid.isWaterRow(p.row)).find(p=>p.slot===slot);if(!point)return null;
     const difficulty=DIFFICULTIES[getDifficulty()];
     const zombie=new Zombie(this.scene,point.x,point.row,this.grid,{type:'backup',wave:leader.waveIndex,hp:270*difficulty.health,armorHp:0,
       parameter:0.45*difficulty.speed,speed:35*difficulty.speed,speedMultiplier:difficulty.speed,dps:BALANCE.zombieEatDps,
@@ -95,13 +106,15 @@ export class WaveManager {
   private spawnZombie(type: ZombieType, wave: number,grave?:GridPosition,whackParameter?:number,manual?:{row:number;x:number}): number {
     const def = ZOMBIE_DEFS[type]; const difficulty = DIFFICULTIES[getDifficulty()];
     // Prefer lanes not used in the last two spawns, while keeping randomness.
-    const candidates = this.level.activeRows.filter(row => !this.laneHistory.includes(row));
-    const row = manual?.row ?? grave?.row ?? (candidates.length ? candidates : [...this.level.activeRows])[Math.floor(this.random()*(candidates.length || this.level.activeRows.length))];
+    const eligible=this.level.activeRows.filter(row=>this.level.environment!=='pool'||(manual?(!this.grid.isWaterRow(row)||canSwim(type)):poolLaneAllowed(type,row,wave)));
+    if(manual&&!eligible.includes(manual.row))return 0;
+    const candidates = eligible.filter(row => !this.laneHistory.includes(row));
+    const row = manual?.row ?? grave?.row ?? (candidates.length ? candidates : [...eligible])[Math.floor(this.random()*(candidates.length || eligible.length))];
     this.laneHistory.push(row); if (this.laneHistory.length > 2) this.laneHistory.shift();
     const parameter=whackParameter??(type==='polevaulter'||type==='football'?0.66+this.random()*0.02:type==='flag'||type==='dancer'||type==='backup'?0.45:0.23+this.random()*0.14);
     const sourceX=type==='flag'?800:type==='polevaulter'?870+Math.floor(this.random()*10):780+Math.floor(this.random()*40)+(this.level.waves[wave].flag?40:0);
     const zombie = new Zombie(this.scene,manual?.x ?? (grave?this.grid.cellToWorld(grave.col,row).x-12.8:sourceToWorldX(sourceX+57)),row,this.grid, {
-      parameter:parameter*difficulty.speed, speedMultiplier:difficulty.speed, shieldHp:(def.shieldHp??0)*difficulty.health, emergenceMs:grave?(this.level.mode==='whack'?500:1500):0, group:this.zombies, random:this.random, danceClock:()=>this.battleTick,summonBackup:(leader,slot)=>this.spawnBackup(leader,slot),
+      parameter:parameter*difficulty.speed, speedMultiplier:difficulty.speed, shieldHp:(def.shieldHp??0)*difficulty.health, emergenceMs:grave?(this.level.mode==='whack'||this.level.environment==='pool'?500:1500):0, group:this.zombies, random:this.random, danceClock:()=>this.battleTick,summonBackup:(leader,slot)=>this.spawnBackup(leader,slot),
       onDeath:this.level.mode==='whack'?z=>this.hooks.onWhackKill(z):undefined,
       hp: def.hp * difficulty.health, armorHp: def.armorHp * difficulty.health,
       speed: def.speed * difficulty.speed, dps: BALANCE.zombieEatDps, texture: def.texture, type, wave,

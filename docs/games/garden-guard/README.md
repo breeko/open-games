@@ -1,6 +1,6 @@
 # Open Games — Garden Guard
 
-An ad-free, touch-friendly Plants vs. Zombies reference prototype. Twenty day and night levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
+An ad-free, touch-friendly Plants vs. Zombies reference prototype. Twenty-two day, night and pool levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
 
 [Play Garden Guard](https://opengames-breeko.vercel.app/games/garden-guard/)
 
@@ -45,7 +45,7 @@ Open the printed Network URL on an iPad on the same Wi-Fi as this Mac. Keep the 
 
 Plants use complete static original poses, including stems and leaves. Wall-nuts show damage; mines show arming states; Chompers show digestion; pole vaulters jump once and lose their poles. Story scenes are omitted.
 
-Wave composition, simultaneous spawns, huge-wave warnings, health-triggered countdowns, and walking ground tracks now follow pinned PC reconstruction rules. See the [accuracy audit](audit/accuracy.md) for evidence, edition differences, and remaining approximations. **Baseline does not claim exact retail difficulty**; tutorial gates and special-mode supply still differ. Pool/fog/roof, full skeletal animation, and most original side modes are not implemented.
+Wave composition, simultaneous spawns, huge-wave warnings, health-triggered countdowns, and walking ground tracks now follow pinned PC reconstruction rules. See the [accuracy audit](audit/accuracy.md) for evidence, edition differences, and remaining approximations. **Baseline does not claim exact retail difficulty**; tutorial gates and special-mode supply still differ. Later pool levels, fog/roof, full skeletal animation, and most original side modes are not implemented.
 
 ## Verification
 
@@ -55,7 +55,7 @@ bun run audit
 bun run build
 ```
 
-Seventy-four tests cover the twenty-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, single-credit sun pickup behavior, validated sessions and restored director/random/motion state. A developer browser check also exercises real Phaser entities, all twenty levels and detailed mid-action restoration. Diagnostics show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build retains a bundle-size advisory for Phaser.
+Eighty tests cover the twenty-two-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, single-credit sun pickup behavior, validated sessions and restored director/random/motion state. A developer browser check also exercises real Phaser entities, all twenty-two levels and detailed mid-action restoration. Diagnostics show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build retains a bundle-size advisory for Phaser.
 
 Artwork regression checks (requires Python and Pillow):
 
@@ -236,3 +236,17 @@ Verification: 74 unit tests, 50 real-entity browser checks, original-art checks,
 Sprites are grounded by measured stem/foot anchors instead of their entire canvas (important for poles, newspapers, football gear and asymmetric mushrooms). Drag previews use the planted stem/feet baseline. Subtle plant sway/breathing, shot recoil and walking/chewing motion are drawn without changing saved positions or hitboxes. **Menu → Sprite motion** toggles this and saves the preference. Cherry Bomb swelling respects the original-art export scale.
 
 Large screens choose a sharper backing canvas at page load, capped at twice the logical board resolution. The iPad-sized layout keeps its original drawing budget. Physics and tween costs are broken out in **Menu → Performance**; the crowded-board desktop measurement still averages about 60 FPS, but the physical iPad hitch is not reproduced. See [performance evidence and limits](performance.md).
+
+## First pool levels: 3-1 and 3-2
+
+Both boards use six lanes with two central water lanes, 50 starting sun, daytime falling suns, and no graves. **3-1: Across the water** has 10 waves, basic/cone eligibility and a final flag. **3-2: A squash for the rush** has 20 waves, flags at 10/20, and adds buckets, newspapers and football enemies. Water lanes stay empty in the first five waves; from wave six, basic/flag/cone/bucket enemies may enter with duck tubes. Newspapers and football enemies stay on land.
+
+Plant **Lily Pads** on water for 25 sun (7.5-second recharge), then add a defender on top. Each pad has 300 HP. A zombie eats the defender before the pad. Shoveling/removing a defender keeps its pad; removing a pad takes its defender with it. Potato Mines remain land-only. Daytime mushrooms sleep, visibly marked Zz; use sunflowers for the pool economy. The original first-Adventure water-edge lawn mowers sink instead of clearing the entire pool lane; shop upgrades are not implemented.
+
+**Squash**, earned after 3-1 and available in 3-2, costs 50 sun with a 30-second recharge. It waits, jumps onto nearby enemies, deals 1800 area damage in its lane once and disappears. On water it leaves the Lily Pad behind. Its targeting rectangles/prediction and motion are simplified, but use source-backed 80/45/50/10-tick phase counters. The 3-2 reward is Threepeater; its original three-head artwork is prepared and it is available in Playground, while 3-3 is not yet implemented. Lily Pad is now the 2-10 reward.
+
+Two extra eligible enemies emerge from distinct water cells in columns 5–8 two seconds after the final wave. Their emergence lasts 0.5 seconds and blocks premature victory. Swimmers use the original swimming ground track, armor durability and baseline speed parameters. Both waves and the extra pool rise participate in save/restore.
+
+The existing versioned storage keys and r1 marker are preserved. Saves allow separate support/defender layers, six lanes, swimming phases and Squash mid-jump, while validating against each level's terrain. All earlier 20 levels continue through the same browser regression suite. The map is paged into Day, Night and Pool so the extra levels remain touch-sized. Pool is also exposed as a Playground lawn.
+
+See [source rules and difficulty evidence](audit/accuracy.md) and [save compatibility](saves.md). Baseline is source-backed, not a claim of exact original execution or measured retail-equivalent difficulty.

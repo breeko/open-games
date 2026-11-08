@@ -21,7 +21,10 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
   protected readonly def: PlantDefinition;
   protected hp: number;
 
-  private shadow?:Phaser.GameObjects.Image;
+  private sleepMarker?:Phaser.GameObjects.Text;
+  get isSleeping():boolean {return this.ctx.mushroomsSleep&&this.def.type.endsWith('shroom');}
+  get canBeEaten():boolean {return !this.dying;}
+  protected shadow?:Phaser.GameObjects.Image;
   private dying = false;
   private hitFlash = 0;
   private recoilMs=0;
@@ -47,6 +50,10 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
     const small=def.type==='puffshroom'||def.type==='sunshroom'||def.type==='potatomine';
     this.shadow=ctx.scene.add.image(x,y+62,'plant-shadow').setDisplaySize(small?65:104,small?20:28).setAlpha(0.35).setDepth(DEPTH.plants-1);
 
+    if(ctx.grid.isWaterRow(row)){this.shadow?.destroy();this.shadow=undefined;}
+    if(def.type==='lilypad')this.setDepth(DEPTH.plants-1);
+    if(this.isSleeping)this.sleepMarker=ctx.scene.add.text(x,this.y-this.height*ART_SCALE*.72-12,'Zz',{fontFamily:'Arial',fontSize:'18px',color:'#e6dbff',resolution:2}).setOrigin(.5).setDepth(DEPTH.plants+1);
+
     // Small "pop" when planted.
     this.setScale(ART_SCALE*0.7);
     ctx.scene.tweens.add({
@@ -63,18 +70,19 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
     if (this.dying || !this.active) return;
     if (this.hitFlash > 0) { this.hitFlash -= delta; if (this.hitFlash <= 0) this.setAlpha(1); }
     this.recoilMs=Math.max(0,this.recoilMs-delta);
-    this.onTick(delta);
+    if(!this.isSleeping)this.onTick(delta);
   }
 
   protected recoil():void {this.recoilMs=120;}
   renderCanvas(renderer:Phaser.Renderer.Canvas.CanvasRenderer,_src:Plant,camera:Phaser.Cameras.Scene2D.Camera,parent?:Phaser.GameObjects.Components.TransformMatrix):void {
     const t=this.scene.time.now*.002+this.col*.83+this.row*1.4;
-    const moving=settings.current.spriteMotion&&!this.dying;
-    const rooted=this.def.type==='gravebuster'||this.def.type==='potatomine'||this.def.type==='cherrybomb'||this.def.type==='doomshroom'||this.def.type==='iceshroom';
+    const moving=settings.current.spriteMotion&&!this.dying&&!this.isSleeping;
+    const rooted=this.def.type==='gravebuster'||this.def.type==='potatomine'||this.def.type==='cherrybomb'||this.def.type==='doomshroom'||this.def.type==='iceshroom'||this.def.type==='squash'||this.def.type==='lilypad';
     const sway=moving&&!rooted?Math.sin(t)*.014:0;
     const breath=moving&&!rooted?1+Math.sin(t*1.3)*.012:1;
     const kick=moving?-4*Math.sin(this.recoilMs/120*Math.PI):0;
-    renderGroundedArt(renderer,this,camera,parent,this.height*ART_SCALE*(1-this.originY),sway,breath,kick);
+    const floating=settings.current.spriteMotion&&!this.dying&&this.ctx.grid.isWaterRow(this.row)?Math.sin(this.scene.time.now*Math.PI/1000+this.row*Math.PI+this.col*Math.PI/4)*3.2:0;
+    renderGroundedArt(renderer,this,camera,parent,this.height*ART_SCALE*(1-this.originY)+floating,sway,breath,kick);
   }
 
   /** Subclass behaviour. Called once per frame. */
@@ -124,8 +132,8 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
   }
 
   override destroy(fromScene?: boolean): void {
-    this.shadow?.destroy();this.shadow=undefined;
-    this.ctx.grid.removePlant(this.col, this.row, this);
+    this.shadow?.destroy();this.shadow=undefined;this.sleepMarker?.destroy();this.sleepMarker=undefined;
+    this.ctx.grid.removePlant(this.col, this.row, this,!fromScene);
     super.destroy(fromScene);
   }
 }

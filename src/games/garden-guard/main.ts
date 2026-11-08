@@ -405,14 +405,14 @@ function playgroundScene():GameScene|null {const scene=game.scene.getScene('game
 function openPlayground():void {
  saveSession();setPaused(false);
  for(const scene of game.scene.getScenes(true))game.scene.stop(scene.scene.key);
- playgroundToolsVisible=true;game.scene.start('game',{playground:true,playgroundMode:document.querySelector<HTMLSelectElement>('#playground-mode')!.value==='night'?'night':'day'});
+ playgroundToolsVisible=true;game.scene.start('game',{playground:true,playgroundMode:document.querySelector<HTMLSelectElement>('#playground-mode')!.value==='pool'?'pool':document.querySelector<HTMLSelectElement>('#playground-mode')!.value==='night'?'night':'day'});
  showSaveStatus('Playground is temporary. Your campaign save is kept.');
 }
 document.querySelector<HTMLButtonElement>('#playground-open')!.onclick=openPlayground;
 game.events.on('request-playground',openPlayground);
 playgroundTools.onclick=()=>{playgroundToolsVisible=!playgroundToolsVisible;refreshPlayground();};
 document.querySelector<HTMLButtonElement>('#playground-hide')!.onclick=()=>{playgroundToolsVisible=false;refreshPlayground();};
-document.querySelector<HTMLSelectElement>('#playground-mode')!.value=new URLSearchParams(location.search).get('lawn')==='night'?'night':'day';
+document.querySelector<HTMLSelectElement>('#playground-mode')!.value=new URLSearchParams(location.search).get('lawn')==='pool'?'pool':new URLSearchParams(location.search).get('lawn')==='night'?'night':'day';
 const playgroundPlant=document.querySelector<HTMLSelectElement>('#playground-plant')!;
 for(const type of SEED_ORDER)playgroundPlant.add(new Option(PLANT_DEFS[type].label,type));
 const zombieTypes:readonly ZombieType[]=['basic','conehead','buckethead','polevaulter','newspaper','screendoor','football','dancer','backup','flag'];
@@ -442,6 +442,7 @@ function refreshPlayground():void {
  continuous.textContent=`Repeat waves: ${scene.playgroundContinuous?'On':'Off'}`;continuous.setAttribute('aria-pressed',String(scene.playgroundContinuous));
  if(playgroundPanel.hidden)return;
  const r=scene.playgroundReport,p=r.projectiles;
+ const gravesButton=document.querySelector<HTMLButtonElement>('#playground-graves')!;gravesButton.disabled=r.mode==='pool';gravesButton.title=r.mode==='pool'?'Pool lawns do not have graves.':'';
  document.querySelector('#playground-readout')!.textContent=`${(r.elapsedMs/1000).toFixed(1)}s · ${r.plants} plants · ${r.zombies} zombies
 Shootable targets: ${r.targets} · dying: ${r.dying}
 Peas alive: ${p?.live??0}

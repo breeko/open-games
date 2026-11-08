@@ -27,6 +27,7 @@ import { Sun } from '../entities/Sun';
 import { Zombie } from '../entities/Zombie';
 import {NIGHT_COMBAT} from '../night-combat';
 import {whackLoot} from '../whack-director';
+import {canPlantTerrain} from '../terrain';
 import {groundX,PLANT_GROUND_OFFSET} from '../sprite-presentation';
 import {initialGraves} from '../night';
 import {NIGHT_CONVEYOR,conveyorInterval,nightConveyorWeights,pickNightConveyor} from '../night-conveyor';
@@ -43,7 +44,7 @@ import { SeedBank } from '../ui/SeedBank';
 
 export interface GameSceneData {
   playground?:boolean;
-  playgroundMode?:'day'|'night';
+  playgroundMode?:'day'|'night'|'pool';
   levelId?: number;
   seeds?: PlantType[];
   resume?: GardenSession;
@@ -71,12 +72,12 @@ export class GameScene extends Phaser.Scene {
   addPlaygroundZombies(type:ZombieType,row:number|null,count:number):void {if(!this.playground)return;for(const lane of row===null?this.level.activeRows:[row])this.waves.addPlaygroundZombies(type,lane,count);}
   fillPlayground():void {
     if(!this.playground)return;
-    for(let row=0;row<4;row++)for(let col=0;col<7;col++)if(!this.grid.getPlant(col,row)&&!this.ctx.graveAt(col,row)&&!this.ctx.craterAt(col,row))this.spawnPlant('peashooter',col,row);
+    for(let row=0;row<4;row++)for(let col=0;col<7;col++)if(!this.grid.getMainPlant(col,row)&&!this.ctx.graveAt(col,row)&&!this.ctx.craterAt(col,row)){if(this.grid.isWaterRow(row)&&!this.grid.getSupport(col,row))this.spawnPlant('lilypad',col,row);this.spawnPlant('peashooter',col,row);}
     this.playgroundContinuous=true;this.playgroundSpawnMs=0;
     for(let row=0;row<4;row++)this.addPlaygroundZombies(this.playgroundZombie,row,2);
   }
   clearPlaygroundZombies():void {if(this.playground)for(const z of [...this.zombies.getChildren()])z.destroy();}
-  addPlaygroundGraves():void {if(!this.playground)return;for(let row=0;row<5;row++){const col=6,key=`${col},${row}`;if(this.grid.getPlant(col,row)||this.graves.has(key))continue;const p=this.grid.cellToWorld(col,row);this.graves.set(key,this.add.image(p.x,p.y+25,'grave').setScale(1.6).setOrigin(.5,.72).setDepth(9));}}
+  addPlaygroundGraves():void {if(!this.playground||this.level.environment==='pool')return;for(let row=0;row<5;row++){const col=6,key=`${col},${row}`;if(this.grid.getPlant(col,row)||this.graves.has(key))continue;const p=this.grid.cellToWorld(col,row);this.graves.set(key,this.add.image(p.x,p.y+25,'grave').setScale(1.6).setOrigin(.5,.72).setDepth(9));}}
   private resumeData?:GardenSession;
   private random=randomSource(67890);
   private grid!: GridManager;
@@ -94,7 +95,7 @@ export class GameScene extends Phaser.Scene {
 
   private level!: LevelDefinition;
   get levelId(): number { return this.level.id; }
-  get summary(): string { if(this.playground)return `Playground · ${this.level.environment} · ${this.plants.filter(p=>p.active).length} plants`;return `Level ${this.level.name} · Wave ${this.waves.currentWave}/${this.waves.totalWaves} · ${this.level.mode === 'standard'||this.level.mode==='whack' ? this.resources.sun + ' sun' : 'Conveyor supply'} · ${this.plants.filter(p => p.active).length} plants`; }
+  get summary(): string { if(this.playground)return `Playground · ${this.level.environment} · ${this.plants.filter(p=>p.active&&!p.isDying).length} plants`;return `Level ${this.level.name} · Wave ${this.waves.currentWave}/${this.waves.totalWaves} · ${this.level.mode === 'standard'||this.level.mode==='whack' ? this.resources.sun + ' sun' : 'Conveyor supply'} · ${this.plants.filter(p => p.active&&!p.isDying).length} plants`; }
   private seeds: PlantType[] = [];
 
   private selected: PlantType | null = null;
@@ -119,7 +120,7 @@ export class GameScene extends Phaser.Scene {
   toggleShovel(): void { this.deselect(); this.shoveling = !this.shoveling; }
 
   private mowers = new Map<number, { image: Phaser.GameObjects.Image; used: boolean; moving: boolean }>();
-  private gridY(row: number): number { return GRID.originY + (row + 0.5) * GRID.tileHeight; }
+  private gridY(row: number): number { return this.grid.cellToWorld(0,row).y; }
 
   backgroundDriven=false;
   private backgroundStepping=false;
@@ -155,7 +156,7 @@ export class GameScene extends Phaser.Scene {
     this.level = getLevel(this.resumeData?.levelId ?? data.levelId ?? this.level?.id ?? 1);
     this.seeds = this.level.mode==='whack'?[...this.level.availablePlants]:this.level.mode === 'standard' ? data.seeds && data.seeds.length > 0 ? [...data.seeds] : defaultSeedsForLevel(this.level.id) : [...new Set(this.level.conveyorSeeds)];
     if(this.resumeData)this.seeds=[...this.resumeData.seeds];
-    if(this.playground){this.level={...getLevel(data.playgroundMode==='night'?18:9),title:'Playground',blurb:'Unlimited sun and instant recharge. Campaign saves are safe.',startingSun:999,availablePlants:[...SEED_ORDER]};this.seeds=['peashooter','repeater','snowpea','wallnut','sunflower','cherrybomb','puffshroom','iceshroom'];}
+    if(this.playground){this.level={...getLevel(data.playgroundMode==='pool'?22:data.playgroundMode==='night'?18:9),title:'Playground',blurb:'Unlimited sun and instant recharge. Campaign saves are safe.',startingSun:999,availablePlants:[...SEED_ORDER]};this.seeds=data.playgroundMode==='pool'?defaultSeedsForLevel(22):['peashooter','repeater','snowpea','wallnut','sunflower','cherrybomb','puffshroom','iceshroom'];}
   }
 
   create(): void {
@@ -178,7 +179,7 @@ export class GameScene extends Phaser.Scene {
     this.diagnosticGraphics=this.add.graphics().setDepth(290);
     this.physics.resume();
     this.mowers = new Map();
-    this.grid = new GridManager();
+    this.grid = new GridManager(this.level.environment);
     this.drawBackground();
     this.graves=new Map();this.craters=new Map();
     for(const {col,row} of this.playground?[]:initialGraves(this.level.id)){
@@ -198,6 +199,7 @@ export class GameScene extends Phaser.Scene {
 
     this.ctx = {
       onProjectileSpawn:this.projectileProbe?pea=>this.projectileProbe?.track(pea):undefined,
+      mushroomsSleep:this.level.environment!=='night',
       random:this.random,
       craterAt:(col,row)=>this.craters.has(`${col},${row}`),
       addCrater:(col,row)=>this.addCrater(col,row,NIGHT_COMBAT.craterMs),
@@ -259,7 +261,7 @@ export class GameScene extends Phaser.Scene {
 
     sizeArt(this.dragGhost,'sunflower');
     this.dropHighlight = this.add
-      .rectangle(0, 0, GRID.tileWidth - 10, GRID.tileHeight - 10, 0xffffff, 0.16)
+      .rectangle(0, 0, GRID.tileWidth - 10, this.grid.tileHeight - 10, 0xffffff, 0.16)
       .setStrokeStyle(3, 0xffffff, 0.9)
       .setDepth(DEPTH.dropHighlight)
       .setVisible(false);
@@ -396,7 +398,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.updateRolling(delta);
     // Falling sun
-    if (this.level.mode === 'standard'&&this.level.environment==='day') this.skySunTimer += delta;
+    if (this.level.mode === 'standard'&&this.level.environment!=='night') this.skySunTimer += delta;
     if (this.skySunTimer >= this.skyNext) {
       this.skySunTimer -= this.skyNext;this.skyNext=sampleSkySunTicks(++this.skyFallen,this.random)*10;
       const col = this.randomBetween(0, GRID.cols - 1);
@@ -421,12 +423,12 @@ export class GameScene extends Phaser.Scene {
         const enemy = child as Zombie;
         if (enemy.active && enemy.isHostile && enemy.row === row && Math.abs(enemy.x - mower.image.x) < 60) enemy.takeDamage(99999);
       }
-      if (mower.image.x > GAME_WIDTH + 80) { mower.moving = false; mower.image.setVisible(false); }
+      if (mower.image.x > GAME_WIDTH + 80||(this.grid.isWaterRow(row)&&mower.image.x>128)) { mower.moving = false; mower.image.setVisible(false); }
     }
     this.diagnosticGraphics?.clear();
     if(this.diagnosticsVisible){
       const g=this.diagnosticGraphics!;g.lineStyle(1,0xffff00,0.8);
-      for(let row=0;row<5;row++)for(let col=0;col<9;col++)g.strokeRect(GRID.originX+col*GRID.tileWidth,GRID.originY+row*GRID.tileHeight,GRID.tileWidth,GRID.tileHeight);
+      for(let row=0;row<this.grid.rows;row++)for(let col=0;col<9;col++)g.strokeRect(GRID.originX+col*GRID.tileWidth,GRID.originY+row*this.grid.tileHeight,GRID.tileWidth,this.grid.tileHeight);
       for(const z of this.diagnostics.zombies){g.lineStyle(2,0xff4050,1);if(z.body)g.strokeRect(z.body.x,z.body.y,z.body.width,z.body.height);g.lineBetween(z.x-6,z.y,z.x+6,z.y);g.lineBetween(z.x,z.y-6,z.x,z.y+6);}
       for(const p of this.plants){g.lineStyle(2,0x00ffff,1);const b=p.getBounds();g.strokeRect(b.x,b.y,b.width,b.height);const cell=this.grid.cellToWorld(p.col,p.row);g.lineStyle(2,0xffffff,1);g.lineBetween(cell.x-9,cell.y+PLANT_GROUND_OFFSET,cell.x+9,cell.y+PLANT_GROUND_OFFSET);g.lineBetween(cell.x,cell.y+PLANT_GROUND_OFFSET-6,cell.x,cell.y+PLANT_GROUND_OFFSET+6);}
       for(const child of this.peas.getChildren())if(child instanceof Phaser.Physics.Arcade.Image){g.lineStyle(2,0xff99ff,1);g.strokeCircle(child.x,child.y,child.displayWidth*12/28);}
@@ -470,7 +472,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    if (this.tryPlant(this.selected, col, row)) {
+    if (this.plantAt(this.selected, col, row)) {
       if(!this.playground)this.deselect();
     }
   }
@@ -502,7 +504,7 @@ export class GameScene extends Phaser.Scene {
 
     if (!type || this.finished) return;
 
-    const planted = this.tryPlant(
+    const planted = this.plantAt(
       type,
       this.grid.worldToCol(pointer.worldX),
       this.grid.worldToRow(pointer.worldY),
@@ -528,7 +530,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    const blocked = this.level.mode === 'bowling' ? col > 2 : Boolean(this.grid.getPlant(col,row)) || this.ctx.craterAt(col,row) || (this.selected==='gravebuster'?!this.ctx.graveAt(col,row):this.ctx.graveAt(col,row));
+    const blocked = this.level.mode === 'bowling' ? col > 2 : !canPlantTerrain(this.selected??this.draggingType??'peashooter',this.grid.isWaterRow(row),Boolean(this.grid.getSupport(col,row)),Boolean(this.grid.getMainPlant(col,row))) || this.ctx.craterAt(col,row) || (this.selected==='gravebuster'?!this.ctx.graveAt(col,row):this.ctx.graveAt(col,row));
     const color = blocked ? 0xff6b6b : 0x7cff6b;
     const centre = this.grid.cellToWorld(col, row);
     if(this.draggingType)this.dragGhost.setPosition(centre.x,centre.y+PLANT_GROUND_OFFSET);
@@ -559,7 +561,7 @@ export class GameScene extends Phaser.Scene {
    * affordable. Returns `true` only when a plant was actually placed, so
    * callers can decide whether to clear the current selection.
    */
-  private tryPlant(type: PlantType, col: number, row: number): boolean {
+  plantAt(type: PlantType, col: number, row: number): boolean {
     if (!this.grid.isInside(col, row) || !this.level.activeRows.includes(row)) return false;
     if (!this.playground&&!this.seedBank.isPlantable(type)) return false;
     if (this.level.mode === 'bowling') {
@@ -568,7 +570,7 @@ export class GameScene extends Phaser.Scene {
       const image = this.add.image(point.x,point.y + 14,'wallnut').setDisplaySize(94,118).setDepth(DEPTH.plants);
       this.rolling.push({image,row,hits:new Set()}); this.seedBank.startCooldown(type); audio.sfx('plant');this.game.events.emit('session-dirty'); return true;
     }
-    if (this.grid.getPlant(col, row)||this.ctx.craterAt(col,row)) return false;
+    if (!canPlantTerrain(type,this.grid.isWaterRow(row),Boolean(this.grid.getSupport(col,row)),Boolean(this.grid.getMainPlant(col,row)))||this.ctx.craterAt(col,row)) return false;
     if(type==='gravebuster'?!this.ctx.graveAt(col,row):this.ctx.graveAt(col,row))return false;
     if (!this.playground&&(this.level.mode === 'standard'||this.level.mode==='whack') && !this.resources.spend(PLANT_DEFS[type].cost)) return false;
 
@@ -581,6 +583,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private addCrater(col:number,row:number,remainingMs:number):void {
+    if(this.grid.isWaterRow(row))this.grid.getSupport(col,row)?.remove();
     const key=`${col},${row}`,point=this.grid.cellToWorld(col,row);this.craters.get(key)?.image.destroy();
     this.craters.set(key,{remainingMs,image:this.add.image(point.x,point.y+43,'crater').setDisplaySize(144,98).setDepth(8)});
   }
@@ -626,7 +629,7 @@ export class GameScene extends Phaser.Scene {
 
   private spawnSun(x: number, y: number): void {
     // eslint-disable-next-line no-new
-    new Sun(this, x, y, SKY_SUN_VALUE, (value) => this.resources.add(value), y < GRID.originY ? this.randomBetween(GRID.originY + 40, GRID.originY + GRID.tileHeight*4.4) : undefined,this.ctx.sunBank);
+    new Sun(this, x, y, SKY_SUN_VALUE, (value) => this.resources.add(value), y < GRID.originY ? this.randomBetween(GRID.originY + 40, GRID.originY + this.grid.tileHeight*(this.grid.rows-.6)) : undefined,this.ctx.sunBank);
   }
 
   private randomBetween(min:number,max:number):number {return Math.floor(this.random()*(Math.floor(max)-min+1))+min;}
@@ -662,7 +665,7 @@ export class GameScene extends Phaser.Scene {
     this.resources.add(data.sun-this.resources.sun);
     for(const image of this.graves.values())image.destroy();this.graves.clear();
     for(const grave of data.graves){const point=this.grid.cellToWorld(grave.col,grave.row);this.graves.set(`${grave.col},${grave.row}`,this.add.image(point.x,point.y+25,'grave').setScale(1.6).setOrigin(0.5,0.72).setDepth(9));}
-    for(const plant of data.plants)this.spawnPlant(plant.type,plant.col,plant.row).restore(plant);
+    for(const plant of [...data.plants].sort((a,b)=>Number(b.type==='lilypad')-Number(a.type==='lilypad')))this.spawnPlant(plant.type,plant.col,plant.row).restore(plant);
     const zombies=data.zombies.map(zombie=>this.waves.restoreZombie(zombie));
     zombies.forEach((z,i)=>z.restoreDanceLink(data.zombies[i],zombies));
     for(const crater of data.craters)this.addCrater(crater.col,crater.row,crater.remainingMs);
@@ -696,7 +699,7 @@ export class GameScene extends Phaser.Scene {
 
     g.fillStyle(0x263a23, 1);
     g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-    this.add.image(0, 0, this.level.environment==='night'?'night':'lawn' + Math.min(3, this.level.id)).setOrigin(0).setDisplaySize(GAME_WIDTH,GAME_HEIGHT).setDepth(DEPTH.lawn);
+    this.add.image(0, 0, this.level.environment==='pool'?'pool':this.level.environment==='night'?'night':'lawn' + Math.min(3, this.level.id)).setOrigin(0).setDisplaySize(GAME_WIDTH,GAME_HEIGHT).setDepth(DEPTH.lawn);
     if (this.level.mode === 'bowling') {
       const boundary = GRID.originX + GRID.tileWidth * 3;
       const stripe = this.add.graphics().setDepth(DEPTH.lawn + 1);
@@ -706,7 +709,7 @@ export class GameScene extends Phaser.Scene {
       const guides = this.add.graphics().setDepth(DEPTH.lawn + 1);
       guides.lineStyle(1, 0x244e20, 0.18);
       for (const row of this.level.activeRows) for (let col = 0; col < GRID.cols; col++)
-        guides.strokeRect(GRID.originX + col * GRID.tileWidth, GRID.originY + row * GRID.tileHeight, GRID.tileWidth, GRID.tileHeight);
+        guides.strokeRect(GRID.originX + col * GRID.tileWidth, GRID.originY + row * this.grid.tileHeight, GRID.tileWidth, this.grid.tileHeight);
     }
   }
 

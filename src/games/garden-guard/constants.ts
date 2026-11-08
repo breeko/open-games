@@ -79,6 +79,8 @@ export const ZOMBIE_BARE_TEXTURE = 'zombie';
 /* -------------------------------------------------------------------------- */
 
 export const PLANT_DEFS: Record<PlantType, PlantDefinition> = {
+  lilypad:{type:'lilypad',label:'Lily Pad',cost:25,cooldownMs:7500,texture:'lilypad',maxHp:300,description:'Plant on water, then place another plant on top. Each pad supports one plant.'},
+  squash:{type:'squash',label:'Squash',cost:50,cooldownMs:30000,texture:'squash',maxHp:300,description:'Looks for a nearby zombie, jumps, and crushes a small area once. Works on a Lily Pad too.'},
   iceshroom:{type:'iceshroom',label:'Ice-shroom',cost:75,cooldownMs:50000,texture:'iceshroom',maxHp:300,description:'Freezes enemies across the lawn, then leaves them slowed. Takes one second to activate.'},
   doomshroom:{type:'doomshroom',label:'Doom-shroom',cost:125,cooldownMs:50000,texture:'doomshroom',maxHp:300,description:'A huge blast that leaves its square unusable for three minutes. Plan where you leave the crater.'},
   hypnoshroom:{type:'hypnoshroom',label:'Hypno-shroom',cost:75,cooldownMs:30000,texture:'hypnoshroom',maxHp:300,description:'When eaten, turns the zombie around to fight other zombies. Keeps its remaining armor.'},
@@ -215,7 +217,7 @@ export const SEED_ORDER: PlantType[] = [
   'snowpea',
   'chomper',
   'repeater',
-  'puffshroom','sunshroom','fumeshroom','gravebuster','hypnoshroom','scaredyshroom','iceshroom','doomshroom',
+  'puffshroom','sunshroom','fumeshroom','gravebuster','hypnoshroom','scaredyshroom','iceshroom','doomshroom','lilypad','squash','threepeater',
 ];
 
 /** How many seeds fit in the seed bank (the original's Day levels allow six). */

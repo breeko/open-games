@@ -12,9 +12,10 @@ export class PreloadScene extends Phaser.Scene {
       this.load.image('menu-'+name,'/games/garden-guard/assets/menu/SelectorScreen_'+name+'.png');
     }
     this.load.image('menu-sky','/games/garden-guard/assets/menu/SelectorScreen_BG.jpg');
-    for (const key of ['peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower','puff','puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster','zombie-paper','zombie-paper-angry','zombie-door','hypnoshroom','scaredyshroom','scaredyshroom-hidden','zombie-football','zombie-football-bare','iceshroom','doomshroom','zombie-dancer','zombie-backup']) {
+    for (const key of ['threepeater','lilypad','squash','zombie-swim','zombie-swim-cone','zombie-swim-bucket','peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower','puff','puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster','zombie-paper','zombie-paper-angry','zombie-door','hypnoshroom','scaredyshroom','scaredyshroom-hidden','zombie-football','zombie-football-bare','iceshroom','doomshroom','zombie-dancer','zombie-backup']) {
       this.load.image('reference-' + key, '/games/garden-guard/assets/reference/' + key + '.png');
     }
+    this.load.image('pool','/games/garden-guard/assets/reference/pool.png');
     this.load.image('night','/games/garden-guard/assets/reference/background2.png');
     for(const key of ['grave','plant-shadow','crater','ice-front','ice-back'])this.load.image(key,'/games/garden-guard/assets/reference/'+key+'.png');
     for (const n of [1,2,3]) this.load.image('lawn' + n, '/games/garden-guard/assets/reference/lawn' + n + '.png');
@@ -29,7 +30,7 @@ export class PreloadScene extends Phaser.Scene {
 
   create(): void {
     this.createTextures();
-    for (const key of ['peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower','puff','puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster','zombie-paper','zombie-paper-angry','zombie-door','hypnoshroom','scaredyshroom','scaredyshroom-hidden','zombie-football','zombie-football-bare','iceshroom','doomshroom','zombie-dancer','zombie-backup']) {
+    for (const key of ['threepeater','lilypad','squash','zombie-swim','zombie-swim-cone','zombie-swim-bucket','peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower','puff','puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster','zombie-paper','zombie-paper-angry','zombie-door','hypnoshroom','scaredyshroom','scaredyshroom-hidden','zombie-football','zombie-football-bare','iceshroom','doomshroom','zombie-dancer','zombie-backup']) {
       if (!this.textures.exists('reference-' + key)) continue;
       if (this.textures.exists(key)) this.textures.remove(key);
       this.textures.renameTexture('reference-' + key, key);

@@ -39,7 +39,7 @@ function runScenario(speed:GameSpeed,delta:number,synchronized:boolean){
  const unseen=traces.filter(t=>t.dead&&t.draws===0);
  return {speed,delta,synchronized,spawned:traces.length,peak,missing,badPositions,unseen:unseen.length,samples,unseenSamples:unseen.slice(0,3).map(t=>({from:[t.x,t.y],dead:t.dead}))};
 }
-function longPlayground(speed:GameSpeed,mode:'day'|'night'){
+function longPlayground(speed:GameSpeed,mode:'day'|'night'|'pool'){
  settings.set('gameSpeed',speed);game.scene.stop('menu');game.scene.stop('game');game.scene.start('game',{playground:true,playgroundMode:mode});
  const scene=game.scene.getScene('game');if(!(scene instanceof GameScene))throw new Error('No playground');
  scene.fillPlayground();const delta=1000/30;let quietDying=0,maxQuietTargets=0,quietTargets=0;
@@ -48,12 +48,12 @@ function longPlayground(speed:GameSpeed,mode:'day'|'night'){
   if(i%15===0){const r=scene.playgroundReport;if(r.projectiles?.live===0&&r.targets===0&&r.dying>0)quietDying++;if(r.projectiles?.live===0&&r.targets>0)quietTargets++;else quietTargets=0;maxQuietTargets=Math.max(maxQuietTargets,quietTargets*15*delta*speed);}
  }
  const check=scene.playgroundReport;
- if(check.plants!==28||!check.projectiles||check.projectiles.spawned<1000||check.projectiles.missingDraws||check.projectiles.removed.unexpected)throw new Error('Playground endurance invariant failed: '+JSON.stringify(check));
+ if(check.plants!==(mode==='pool'?42:28)||!check.projectiles||check.projectiles.spawned<1000||check.projectiles.missingDraws||check.projectiles.removed.unexpected)throw new Error('Playground endurance invariant failed: '+JSON.stringify(check));
  return {test:'three-minute public playground',speed,mode,quietSamplesWithOnlyDyingZombies:quietDying,longestQuietWithTargetsMs:maxQuietTargets,...scene.playgroundReport};
 }
 function run(){button.disabled=true;results.textContent='';const prior=settings.current.gameSpeed;
  try {for(const speed of [1,2] as const)for(const delta of [16.67,33.34,66.67])for(const sync of [false,true]){const r=runScenario(speed,delta,sync);if(r.missing||r.badPositions||r.unseen)throw new Error('Projectile stress check failed: '+JSON.stringify(r));results.textContent+=JSON.stringify(r)+'\n';}
- for(const speed of [1,2] as const)for(const mode of ['day','night'] as const)results.textContent+=JSON.stringify(longPlayground(speed,mode))+'\n';}
+ for(const speed of [1,2] as const)for(const mode of ['day','night','pool'] as const)results.textContent+=JSON.stringify(longPlayground(speed,mode))+'\n';}
  catch(error){results.textContent+='ERROR '+(error instanceof Error?error.stack:String(error));}
  finally{settings.set('gameSpeed',prior);button.disabled=false;button.textContent='Run again';}
 }

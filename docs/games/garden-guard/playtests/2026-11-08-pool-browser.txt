@@ -1,0 +1,67 @@
+PASS level 1-1: standard round trip and 2s continuation
+PASS level 1-2: standard round trip and 2s continuation
+PASS level 1-3: standard round trip and 2s continuation
+PASS level 1-4: standard round trip and 2s continuation
+PASS level 1-5: bowling round trip and 2s continuation
+PASS level 1-6: standard round trip and 2s continuation
+PASS level 1-7: standard round trip and 2s continuation
+PASS level 1-8: standard round trip and 2s continuation
+PASS level 1-9: standard round trip and 2s continuation
+PASS level 1-10: conveyor round trip and 2s continuation
+PASS level 2-1: standard round trip and 2s continuation
+PASS level 2-2: standard round trip and 2s continuation
+PASS level 2-3: standard round trip and 2s continuation
+PASS level 2-4: standard round trip and 2s continuation
+PASS level 2-5: whack round trip and 2s continuation
+PASS level 2-6: standard round trip and 2s continuation
+PASS level 2-7: standard round trip and 2s continuation
+PASS level 2-8: standard round trip and 2s continuation
+PASS level 2-9: standard round trip and 2s continuation
+PASS level 2-10: conveyor round trip and 2s continuation
+PASS level 3-1: standard round trip and 2s continuation
+PASS level 3-2: standard round trip and 2s continuation
+PASS pool: stacked Lily Pads, six lanes, swim gait and Squash mid-jump continue identically
+PASS pool: bare water rejects plants without spending sun; Lily Pad supports one defender
+PASS pool: zombies eat the defender first, then the Lily Pad
+PASS pool: destroying a support removes its defender and cannot leave a floating plant
+PASS pool: Squash waits for its jump, crushes nearby armor once, and leaves the Lily Pad
+PASS pool: no water spawns in the first five waves, and water eligibility survives save/restore
+PASS pool: water freezing lasts three seconds and water mowers sink near the edge
+PASS pool: pending final emergence creates exactly two eligible swimmers after two seconds
+PASS pool: daytime mushrooms remain asleep while sky sun and supported defenders continue
+PASS busy night: plant timers, vault, hypnosis allies, slowing, sun flight, projectiles and cooldowns
+PASS bowling: rolling hit history and partial lane bounce
+PASS night: pending final grave rise survives restoration
+PASS dancer entry, four linked backups and continued summoning
+PASS frozen dancer group thaws identically after restoration
+PASS a dying backup is replaced without breaking restored dancer links
+PASS Ice-shroom mid-fuse restores and freezes the same enemies
+PASS Doom-shroom mid-fuse restores blast, crater and surviving defenses identically
+PASS Doom burns armored and rising hostiles once, spares allies and leaves a blocked crater
+PASS night conveyor restores its next supply, weighted random stream and inventory
+PASS crater countdown and removal continue after restoration
+PASS rising backup dancers do not absorb normal projectiles
+PASS Cherry Bombs spare hypnosis allies
+PASS moving mowers spare hypnosis allies and their allied backups
+PASS opponent shortcut immediately registers a newly hypnotized zombie
+PASS opponent shortcut retains restored target ordering with multiple allies
+PASS 2× day: half as many rendered frames produces identical gameplay
+PASS 2× bowling: half as many rendered frames produces identical gameplay
+PASS 2× conveyor: half as many rendered frames produces identical gameplay
+PASS 2× night finale: half as many rendered frames produces identical gameplay
+PASS 2× pool: half as many rendered frames produces identical gameplay
+PASS 2× whack: half as many rendered frames produces identical gameplay
+PASS 2× busy night: half as many rendered frames produces identical gameplay
+PASS 2× frozen dancers: half as many rendered frames produces identical gameplay
+PASS 2× frozen-group resume and switching back to 1× preserve progress
+PASS manual zombie bodies preserve collision outcomes without velocity integration
+PASS drawing grounded sprites and toggling motion never mutates gameplay or collision bodies
+PASS Cherry Bomb swelling respects the half-scale original-art export
+PASS Wall-nut takes 40 seconds of a lone normal zombie eating before disappearing
+PASS Potato Mine waits 15 seconds, explodes once, and removes itself
+PASS unarmed Potato Mine can be eaten before it activates
+PASS 1× background steps match foreground play without rendering or double stepping
+PASS 2× background steps match foreground play without rendering or double stepping
+PASS paused restored level consumes no plant, wave, pickup or projectile time
+
+65 passed; 0 failed.

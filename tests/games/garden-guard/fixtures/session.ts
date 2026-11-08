@@ -22,9 +22,9 @@ export function freshSession(levelId: number): GardenSession {
   });
 }
 
-export function exampleZombie(type: ZombieSnapshot['type'], row = 0): ZombieSnapshot {
+export function exampleZombie(type: ZombieSnapshot['type'], row = 0,environment:'day'|'pool'='day'): ZombieSnapshot {
   const def = ZOMBIE_DEFS[type];
-  return zombieSnapshotSchema.parse({ type, row, wave: 0, x: 1000, y: GRID.originY + (row + .5) * GRID.tileHeight + 10,
+  return zombieSnapshotSchema.parse({ type, row, wave: 0, x: 1000, y: GRID.originY + (row + .5) * (environment==='pool'?136:GRID.tileHeight) + 10,
     hp: def.hp, maxHp: def.hp, armorHp: def.armorHp, shieldHp: def.shieldHp ?? 0, speed: def.speed, speedMultiplier: 1, dps: 100,
     allies: false, hasPole: type === 'polevaulter', emergenceTotal: 0, emergenceMs: 0, rageDelay: 0, headless: false,
     bleedTicks: 0, biteRemainder: 0, slowFactor: 1, slowRemainingMs: 0,
@@ -64,4 +64,25 @@ export function busyNightSession(): GardenSession {
     { x: 570, y: 280, value: 25, pickup: { phase: 'flying', restingMs: 200 }, fromY: 300, targetY: null, fallElapsed: 0, lifeMs: 0, flight: { fromX: 600, fromY: 300, elapsed: 120 } },
   ];
   return gardenSessionSchema.parse(data);
+}
+
+/** Pool layers, a bottom-lane defense, swimming armor and mid-jump Squash. */
+export function busyPoolSession():GardenSession {
+ const data=freshSession(22);data.sun=750;
+ const plant=(type:PlantSnapshot['type'],col:number,row:number,behavior:PlantSnapshot['behavior']):PlantSnapshot=>({type,col,row,hp:PLANT_DEFS[type].maxHp,behavior});
+ const shooting:PlantSnapshot['behavior']={kind:'shooter',cooldown:45,remainder:3,shots:[]};
+ data.plants=[
+  plant('peashooter',0,2,shooting),plant('lilypad',0,2,{kind:'idle'}),
+  plant('lilypad',1,2,{kind:'idle'}),plant('wallnut',1,2,{kind:'idle'}),
+  plant('lilypad',0,3,{kind:'idle'}),plant('sunflower',0,3,{kind:'sunflower',timer:440,next:500}),
+  plant('snowpea',0,5,shooting),plant('repeater',1,5,shooting),
+  plant('squash',6,0,{kind:'squash',phase:'prepare',remainingMs:250,targetX:1000}),
+  plant('lilypad',4,3,{kind:'idle'}),plant('squash',4,3,{kind:'squash',phase:'rise',remainingMs:300,targetX:1000}),
+ ];
+ const swimmer=exampleZombie('conehead',2,'pool');swimmer.motion={gait:'swim',parameter:.3,phase:.25,remainder:7};
+ const bucket=exampleZombie('buckethead',3,'pool');bucket.motion={gait:'swim',parameter:.29,phase:.4,remainder:3};
+ const football=exampleZombie('football',0,'pool');football.motion={gait:'football',parameter:.67,phase:.2,remainder:0};
+ data.zombies=[swimmer,bucket,football,exampleZombie('basic',5,'pool')];
+ data.projectiles=[{x:700,y:410,texture:'pea',velocityX:532.8,velocityY:0,row:2,damage:20,slowFactor:null,slowMs:null,expiresMs:null,originX:200}];
+ return gardenSessionSchema.parse(data);
 }

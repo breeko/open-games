@@ -3,6 +3,8 @@ import {DanceRoutine,iceFreezeMs,backupPositions} from '../night-combat';
 import {ART_SCALE} from '../art';
 import {renderGroundedArt,ZOMBIE_GROUND_OFFSET} from '../sprite-presentation';
 import {settings} from '../state/settings';
+import {sourceToWorldX} from '../reference/motion';
+import {canSwim} from '../terrain';
 import { GroundMotion } from '../reference/motion';
 import {whackBonk} from '../whack-director';
 import {damageWithShield,waveHealth} from '../combat';
@@ -143,12 +145,16 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     body.moves=false;
     body.setAllowGravity(false);
     body.setVelocity(0, 0);
+    this.updatePoolPose();
   }
 
   get remainingHealth(): number { return this.dead ? 0 : Math.max(0,this.hp) + Math.max(0,this.armorHp)+Math.max(0,this.shieldHp); }
 
   get waveHealth():number {return this.dead?0:waveHealth({hp:this.hp,armor:this.armorHp,shield:this.shieldHp});}
   get isHostile():boolean{return !this.allies&&!this.dead;}
+  get isEating():boolean {return this.isChewing();}
+  get canBeCrushed():boolean {return this.isHostile&&this.emergenceMs<=0&&!this.vaulting;}
+  get inPool():boolean {return this.grid.isWaterRow(this.row)&&canSwim(this.zombieType)&&this.x<sourceToWorldX(737);}
   get canBeShot():boolean{return this.isHostile&&!this.headless&&this.emergenceMs<=0&&!this.vaulting;}
   get variant():ZombieType{return this.zombieType;}
   save(references?:ReadonlyMap<Zombie,number>): ZombieSnapshot {
@@ -180,7 +186,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     if(data.vault)zombie.startVault(data.vault.startX,data.vault.groundY,data.vault.elapsed);
     zombie.setPosition(data.x,data.y);
     if(data.emergenceMs>0)zombie.setAlpha(1-data.emergenceMs/data.emergenceTotal);
-    zombie.updateTint();return zombie;
+    zombie.updatePoolPose();zombie.updateTint();return zombie;
   }
   restoreDanceLink(data:ZombieSnapshot,zombies:readonly Zombie[]):void {this.leader=data.leaderIndex===null?undefined:zombies[data.leaderIndex];}
   joinDance(leader:Zombie,slot:number):void {this.leader=leader;this.danceSlot=slot;this.setAllegiance(!leader.isHostile);this.setFlipX(this.allies);}
@@ -190,7 +196,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     const cold=this.isSlowed||this.frozenMs>0;
     this.applySlow(0.5,20000);
     if(this.vaulting)return;
-    this.frozenMs=iceFreezeMs(cold,this.random);this.takeDamage(20);
+    this.frozenMs=this.inPool?3000:iceFreezeMs(cold,this.random);this.takeDamage(20);
   }
   get isHeadless():boolean {return this.headless;}
 
@@ -244,6 +250,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   /** Called every frame by `GameScene`. */
   tick(delta: number): void {
     if (this.dead || !this.active) return;
+    this.updatePoolPose();
     this.chewing=false;
     this.slowRemainingMs=Math.max(0,this.slowRemainingMs-delta);
     if(this.vaulting)return;
@@ -258,9 +265,9 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     if(this.dance){
       const previousPhase=this.dance.phase;
       const members=this.danceMembers();
-      const needs=backupPositions(this.x,this.row).some(p=>!members.some(z=>z.leader===this&&z.danceSlot===p.slot));
+      const needs=backupPositions(this.x,this.row,this.grid.rows).filter(p=>!this.grid.isWaterRow(p.row)).some(p=>!members.some(z=>z.leader===this&&z.danceSlot===p.slot));
       if(this.dance.advance(delta,this.danceClock(),needs,!this.headless,this.x<1211.2)){
-        for(const p of backupPositions(this.x,this.row))if(!members.some(z=>z.leader===this&&z.danceSlot===p.slot))this.summonBackup?.(this,p.slot);
+        for(const p of backupPositions(this.x,this.row,this.grid.rows).filter(p=>!this.grid.isWaterRow(p.row)))if(!members.some(z=>z.leader===this&&z.danceSlot===p.slot))this.summonBackup?.(this,p.slot);
       }
       if(previousPhase==='entry'&&this.dance.phase!=='entry')this.motion=new GroundMotion('dancer',0.45*this.speedMultiplier);
       if(!this.allies)this.motion.parameter=(this.dance.phase==='entry'?0.5:0.45)*this.speedMultiplier;
@@ -276,7 +283,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     const col = this.grid.worldToCol(this.x - (this.hasPole?82:0));
     const plant = this.grid.getPlant(col, this.row);
 
-    if (!this.headless && plant && plant.active && !plant.isDying) {
+    if (!this.headless && plant && plant.active && !plant.isDying && plant.canBeEaten) {
       if (this.hasPole) { this.vault(); return; }
       this.eat(plant, delta);
     } else {
@@ -287,6 +294,20 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     this.updateTint();
   }
 
+  private updatePoolPose():void {
+    if(!this.grid.isWaterRow(this.row)||!canSwim(this.zombieType))return;
+    const swimming=this.inPool;
+    const key=swimming?(this.armorHp>0?(this.zombieType==='buckethead'?'zombie-swim-bucket':'zombie-swim-cone'):'zombie-swim'):(this.armorHp>0?ZOMBIE_DEFS[this.zombieType].texture:ZOMBIE_BARE_TEXTURE);
+    if(this.texture.key!==key){
+      this.setTexture(key);
+      const body=this.body as Phaser.Physics.Arcade.Body;
+      body.setSize(42*1.6/ART_SCALE,(swimming?68:115)*1.6/ART_SCALE);
+      body.setOffset(this.width*this.originX-body.width/2,this.height*this.originY-(swimming?80:144)/ART_SCALE);
+    }
+    if(swimming&&this.motion.gait!=='swim')this.motion=new GroundMotion('swim',this.motion.parameter);
+    else if(!swimming&&this.motion.gait==='swim')this.motion=new GroundMotion('walk',this.motion.parameter);
+  }
+
   private danceMembers():Zombie[] {
     const leader=this.dance?this:this.leader?.active?this.leader:undefined;
     if(!leader)return [];
@@ -295,7 +316,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   private isChewing():boolean {
     if(this.headless||this.frozenMs>0||this.emergenceMs>0)return false;
     const plant=this.grid.getPlant(this.grid.worldToCol(this.x),this.row);
-    return !this.allies&&Boolean(plant?.active&&!plant.isDying);
+    return !this.allies&&Boolean(plant?.active&&!plant.isDying&&plant.canBeEaten);
   }
   private danceCanMove():boolean {
     const leader=this.dance?this:this.leader?.active?this.leader:undefined;
@@ -356,7 +377,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
 
   /** Drops the cone / bucket, leaving an ordinary zombie behind. */
   private shedArmor(): void {
-    this.setTexture(this.zombieType==='football'?'zombie-football-bare':ZOMBIE_BARE_TEXTURE);
+    this.setTexture(this.inPool?'zombie-swim':this.zombieType==='football'?'zombie-football-bare':ZOMBIE_BARE_TEXTURE);
     const body=this.body as Phaser.Physics.Arcade.Body;body.setOffset(this.width*this.originX-body.width/2,this.height*this.originY-288);
 
     this.scene.tweens.add({

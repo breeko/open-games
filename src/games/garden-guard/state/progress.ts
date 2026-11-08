@@ -1,7 +1,7 @@
 import { readGameStorage,writeGameStorage } from './storage';
 import Phaser from 'phaser';
 import { SEED_ORDER } from '../constants';
-import { TOTAL_LEVELS, plantsForLevel } from '../levels';
+import { TOTAL_LEVELS, plantsForLevel,rewardForLevel } from '../levels';
 import type { PlantType } from '../types';
 
 import { freshProgress, parseProgress, recordClear, type ProgressData } from '../progress-data';
@@ -46,7 +46,7 @@ class ProgressStore extends Phaser.Events.EventEmitter {
 
   /** Plants owned right now. */
   get unlockedPlants(): PlantType[] {
-    return plantsForLevel(this.unlockedLevel);
+    return [...new Set([...plantsForLevel(this.unlockedLevel),...this.values.completedLevels.flatMap(id=>{const reward=rewardForLevel(id);return reward?[reward]:[];})])];
   }
 
   /**

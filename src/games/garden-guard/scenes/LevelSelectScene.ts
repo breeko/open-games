@@ -6,10 +6,10 @@ import { progress } from '../state/progress';
 import { Button } from '../ui/Button';
 
 const CARD_W = 214;
-const CARD_H = 158;
+const CARD_H = 208;
 const CARD_GAP = 14;
 const COLS = 5;
-const GRID_TOP = 140;
+const GRID_TOP = 210;
 
 /**
  * Adventure level map — the original's world map, flattened into a grid.
@@ -23,6 +23,8 @@ export class LevelSelectScene extends Phaser.Scene {
   private cards: Phaser.GameObjects.Container[] = [];
   private frames: Phaser.GameObjects.Rectangle[] = [];
   private focusIndex = 0;
+  private page=0;
+  private worldButtons:Button[]=[];
 
   constructor() {
     super('levels');
@@ -42,7 +44,7 @@ export class LevelSelectScene extends Phaser.Scene {
       .setDepth(DEPTH.lawn);
 
     this.add
-      .text(GAME_WIDTH / 2, 54, 'ADVENTURE  \u00b7  DAY & NIGHT', {
+      .text(GAME_WIDTH / 2, 54, 'ADVENTURE  \u00b7  DAY, NIGHT & POOL', {
         fontFamily: 'Arial Black, Arial, sans-serif',
         fontSize: '40px',
         color: '#ffe066',
@@ -62,6 +64,9 @@ export class LevelSelectScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(DEPTH.ui);
 
+    this.page=Math.floor(Math.min(progress.unlockedLevel-1,LEVELS.length-1)/10);
+    this.worldButtons=[];
+    for(const [index,label] of ['Day','Night','Pool'].entries())this.worldButtons.push(new Button(this,400+index*240,155,{label,width:200,height:44,fontSize:22,onClick:()=>{this.page=index;this.focusIndex=index*10;this.buildCards();this.applyFocus();}}));
     this.buildCards();
     this.buildFooter();
     this.wireKeyboard();
@@ -78,10 +83,11 @@ export class LevelSelectScene extends Phaser.Scene {
   /* ------------------------------------------------------------------ */
 
   private buildCards(): void {
+    for(const card of this.cards)card.destroy(true);this.cards=[];this.frames=[];
     const gridWidth = COLS * CARD_W + (COLS - 1) * CARD_GAP;
     const startX = (GAME_WIDTH - gridWidth) / 2 + CARD_W / 2;
 
-    LEVELS.forEach((level, index) => {
+    LEVELS.slice(this.page*10,this.page*10+10).forEach((level, index) => {
       const col = index % COLS;
       const row = Math.floor(index / COLS);
 
@@ -133,7 +139,7 @@ export class LevelSelectScene extends Phaser.Scene {
       pieces.push(
         this.add
           .image(CARD_W / 2 - 34, CARD_H / 2 - 34, def.texture)
-          .setScale(0.31)
+          .setScale(0.24)
           .setAlpha(unlocked ? 1 : 0.35),
         this.add
           .text(CARD_W / 2 - 34, CARD_H / 2 - 8, def.label, {
@@ -245,9 +251,11 @@ export class LevelSelectScene extends Phaser.Scene {
   }
 
   private applyFocus(): void {
+    if(Math.floor(this.focusIndex/10)!==this.page){this.page=Math.floor(this.focusIndex/10);this.buildCards();}
+    this.worldButtons.forEach((button,index)=>button.setLabel(`${index===this.page?'▶ ':''}${['Day','Night','Pool'][index]}`));
     this.frames.forEach((frame, index) => {
-      const level = LEVELS[index];
-      const focused = index === this.focusIndex;
+      const level = LEVELS[index+this.page*10];
+      const focused = index+this.page*10 === this.focusIndex;
       const color = progress.isCompleted(level.id)
         ? 0x6fbf5f
         : level.id === progress.unlockedLevel

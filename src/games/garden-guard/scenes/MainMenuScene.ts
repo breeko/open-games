@@ -35,8 +35,8 @@ export class MainMenuScene extends Phaser.Scene {
     add(570,125,{width:330,height:120,texture:'menu-Adventure_button',highlight:'menu-Adventure_highlight',onClick:()=>this.startAdventure()});
     root.add(this.add.rectangle(572,162,30,18,0x191a29));
     text(572,162,getLevel(progress.unlockedLevel).name,14,'#e6e5da','Arial, sans-serif');
-    add(570,235,{width:280,height:64,label:'CHOOSE A LEVEL',detail:'Day lawns & night gardens',fontSize:25,onClick:go('levels')});
-    add(565,315,{width:280,height:64,label:'ALMANAC',detail:'16 plants & their abilities',onClick:go('collection')});
+    add(570,235,{width:280,height:64,label:'CHOOSE A LEVEL',detail:'Day, night & pool lawns',fontSize:25,onClick:go('levels')});
+    add(565,315,{width:280,height:64,label:'ALMANAC',detail:'19 plants & their abilities',onClick:go('collection')});
     add(558,390,{width:265,height:64,label:'HOW TO PLAY',fontSize:25,onClick:go('help')});
     add(376,478,{width:106,height:108,texture:'menu-Almanac',highlight:'menu-AlmanacHighlight',onClick:go('collection')});
     // Original text assets line up with the three flowerpots in the background.

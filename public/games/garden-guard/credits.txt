@@ -6,6 +6,8 @@ Commit 81071c0d81c83241bb99c57284f34e861fa0c2c3
 
 Original game artwork: EA/PopCap and respective owners. Artwork is not covered by the code MIT license. Reference assets from https://github.com/ruslan831/PlantsVsZombies-decompilation at commit 325b2229a7225d73870bb69322eefcda3a45bf8d. Public redistribution rights have not been established. This prototype is not endorsed by or affiliated with EA or its licensors.
 
+Pool expansion: original LilyPad, Squash, ThreePeater and Zombie duck-tube Reanim artwork, background3 and pool surface from the same pinned EA/PopCap reference assets. Numerical swimming displacement is transcribed from the original anim_swim ground track.
+
 MIT License
 
 Copyright (c) 2026 ThanosTHINOS

@@ -9,7 +9,7 @@ import {inDoomBlast} from '../../../src/games/garden-guard/night-combat';
 import {parseProgress,recordClear} from '../../../src/games/garden-guard/progress-data';
 
 test('night finale transcribes 20-wave enemy tables, economy, flags, and denser grave layout',()=>{
-  assert.deepEqual(LEVELS.slice(18).map(l=>[l.name,l.mode,l.waves.length,l.startingSun,l.skySunIntervalMs]),[['2-9','standard',20,50,0],['2-10','conveyor',20,50,0]]);
+  assert.deepEqual(LEVELS.slice(18,20).map(l=>[l.name,l.mode,l.waves.length,l.startingSun,l.skySunIntervalMs]),[['2-9','standard',20,50,0],['2-10','conveyor',20,50,0]]);
   assert.deepEqual(allowedZombies(19),['basic','conehead','screendoor','dancer']);
   assert.deepEqual(allowedZombies(20),['basic','conehead','screendoor','football','dancer']);
   for(const id of [19,20]){

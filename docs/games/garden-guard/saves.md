@@ -35,3 +35,11 @@ With Vite running, open `/scripts/games/garden-guard/session-browser-check.html`
 Browser UI checks also cover planting on level 2-2, refresh restoring that board paused, and returning through **Menu → Resume saved level**. These checks do not substitute for physical iPad testing or full original-game outcome parity.
 
 The 2-10 conveyor uses the existing supply timer as a remaining countdown and supply index as last picked seed index + 1. Other levels retain their previous elapsed-timer/cycle semantics. This is level-specific state within the same r1 schema; expanding the maximum level preserves all earlier sessions. Doom fuses and active crater expiry continue through restoration.
+
+## Pool expansion compatibility
+
+The same `garden-day-night-r1` format and storage keys remain in use. Rows 0–5 are permitted by the general schema, then checked against the selected level (earlier boards still have only five lanes). A cell may contain one `lilypad` support plus one normal plant; duplicate supports/main plants, land pads, unsupported water defenders, water Potato Mines and swimming in a land lane are rejected. Restore constructs supports first, then defenders. Removing a support cascades to its defender; removing the defender keeps its support. This behavior also applies after restoring a damaged stack.
+
+Swimming gait/phase uses the existing motion snapshot. Squash adds a discriminated `squash` behavior with phase, remaining time and target X; its airborne coordinates are reconstructed from those counters. The pending final pool rise reuses the saved delayed-rise countdown and random stream. Each of six mowers retains used/moving/visible state, including a sunk water-edge mower. No earlier session fields or legacy keys are removed. Progress at level 20 advances to 21 after update, and skipped clears remain separate.
+
+The real Phaser checks compare continued full state at 1×/2× for stacked pads, swimmers, bottom-lane projectiles, mid-jump Squash, final emergence, water mowers and daytime sleeping mushrooms. Earlier day/night continuation cases remain in the same suite.
