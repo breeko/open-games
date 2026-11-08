@@ -23,12 +23,12 @@ test('magic bolts accelerate, follow moving targets and share their rendered fli
   for(let i=0;i<15;i++)s.step();assert.equal(bolt.speed,10);
 });
 
-test('the exact failed Farmlands browser commands now complete under the source projectile corrections',async()=>{
+test('the historical Farmlands commands retain a fixed outcome under source movement/range rules',async()=>{
   const trace=await Bun.file(new URL('../../../docs/games/kingdom-rush/playtests/2026-11-07-farmlands-before-projectile-fix.json',import.meta.url)).json();const s=new Simulation(trace.seed,2);
   for(const event of trace.events){while(s.tick<event.tick&&s.phase!=='won'&&s.phase!=='lost')s.step();if(s.phase==='won'||s.phase==='lost')break;
     if(event.type==='build')assert.ok(s.build(event.holder,event.kind));else if(event.type==='upgrade')assert.ok(s.upgrade(event.holder));else if(event.type==='cast')assert.ok(s.cast(event.kind,{x:event.x,y:event.y}));else if(event.type==='wave'&&(event.wave===1||event.bonus>0))assert.ok(s.callWave());
   }
-  while(s.phase==='running'&&s.tick<30000)s.step();assert.deepEqual([s.phase,s.lives,s.gold,s.kills,s.tick],['won',5,297,139,8921]);
+  while(s.phase==='running'&&s.tick<30000)s.step();assert.deepEqual([s.phase,s.lives,s.gold,s.kills,s.tick],['lost',0,222,125,8539]);
 });
 
 

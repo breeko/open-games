@@ -38,3 +38,7 @@ See level01-manifest.json and level02-manifest.json for per-file input hashes.
 Twin Rivers Pass (map 4) uses the same pinned visual source. Paths, sites,
 campaign waves, cash and new combat facts target the pinned Flash v1.13 binary.
 See level04-manifest.json and twin-rivers-pass.md in the source documentation.
+
+Silveroak Forest (map 5) uses the same pinned visual source. Original numeric
+paths, waves, existing archer tower, elf camp and enemy facts target Flash v1.13.
+See level05-manifest.json and silveroak-forest.md in the source documentation.

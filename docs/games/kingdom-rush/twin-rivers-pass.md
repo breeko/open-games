@@ -53,3 +53,8 @@ The original executable and ActionScript remain outside the repository. The prep
 - Bought tier-three artillery through the browser: 125 + 220 + 320 gold, leaving 15, with the correct tier-three sprite and no further upgrade offered. Confirmed save restoration and all four map cards. At **844 × 390**, the map fills phone landscape with controls over the board and the desktop heading removed; see the [mobile screenshot](playtests/2026-11-07-twin-rivers-mobile.jpg). This is browser emulation, not a physical phone/iPad test.
 
 Validation: **58 Kingdom Rush tests + 4 game-boundary checks**, production build and whitespace checks pass. This pass adds the stage and its mechanics; **a manual all-13-wave victory and full original difficulty parity are still unverified**. No later campaign map is added in this change.
+
+
+## Subsequent calibration pass
+
+The [Silveroak pass](silveroak-forest.md) corrects shared node-tolerance movement and exact base ranges. Its fresh Twin Rivers fixed-defense browser run still loses in wave six (742 gold / 147 kills), versus original wave seven. The earlier default-seed five-life automated defense applies to the previous rules. The revised automated mixed-defense check uses seed 1 and an expanded defense, completing with nine lives. These are distinct strategies/seeds; they do not certify difficulty parity.

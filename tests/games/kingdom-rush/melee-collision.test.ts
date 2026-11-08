@@ -84,5 +84,5 @@ test('historical Pagras browser commands remain a complete regression under corr
   while(s.tick<30000&&s.phase==='running')s.step();
   // Preserve the historical record while checking the outcome under current projectile rules.
   assert.deepEqual({tick:s.tick,phase:s.phase,lives:s.lives,gold:s.gold,kills:s.kills,wave:s.wave},
-    {tick:16538,phase:'won',lives:13,gold:361,kills:322,wave:11});
+    {tick:16658,phase:'won',lives:8,gold:361,kills:317,wave:11});
 });

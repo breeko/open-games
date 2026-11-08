@@ -1,6 +1,6 @@
 # Kingdom Rush — opening campaign
 
-A bounded recreation of Southport, The Farmlands, Pagras and Twin Rivers Pass (stages 1–4) of the original Kingdom Rush for testing appearance, interaction, combat and balance in Open Games. This is an independent TypeScript/Canvas implementation with reference artwork, not a port of the mod engine and not a verified exact retail recreation.
+A bounded recreation of Southport, The Farmlands, Pagras, Twin Rivers Pass and Silveroak Forest (stages 1–5) of the original Kingdom Rush for testing appearance, interaction, combat and balance in Open Games. This is an independent TypeScript/Canvas implementation with reference artwork, not a port of the mod engine and not a verified exact retail recreation.
 
 ## Play
 
@@ -11,9 +11,9 @@ bun run dev
 Open `/games/kingdom-rush/` at the printed address, or choose Kingdom Rush from the library. For the preview started during implementation, use [the local level](http://localhost:5174/games/kingdom-rush/). On an iPad on the same Wi-Fi, use the printed Network address with the same path. Keep the Mac and preview running.
 
 - Tap a foundation, then choose Archers, Barracks, Mages or Artillery.
-- Tap a tower to upgrade, sell or change a barracks' rally point. Southport caps towers at tier 1; The Farmlands and Pagras allow tier 2; Twin Rivers Pass unlocks tier 3.
+- Tap a tower to upgrade, sell or change a barracks' rally point. Southport caps towers at tier 1; The Farmlands and Pagras allow tier 2; Twin Rivers Pass unlocks tier 3. Silveroak Forest adds a wave-five base ranger upgrade, an existing archer tower and a repairable elf camp.
 - Tap Reinforcements, then a road; tap Rain of Fire, then a target. Tap Cancel or press Escape to cancel targeting.
-- Prepare with 265 / 220 / 300 / 680 gold in Southport / The Farmlands / Pagras / Twin Rivers Pass and 20 lives, then start the battle. Later waves can be called early for extra gold and spell recharge after the wave flag appears (50 ticks after the spawners finish).
+- Prepare with 265 / 220 / 300 / 680 / 700 gold in Southport / The Farmlands / Pagras / Twin Rivers Pass / Silveroak Forest and 20 lives, then start the battle. Later waves can be called early for extra gold and spell recharge after the wave flag appears (50 ticks after the spawners finish).
 - Pause freezes the simulation and powers. Switching away pauses automatically; resume explicitly. Space also toggles pause.
 - 1×/2× changes playback speed without changing simulation rules.
 - Restart reuses the displayed seed. The tools section allows a different seed, path/tower-number overlays and JSON battle-trace export.
@@ -108,3 +108,5 @@ The new library separation is appropriate. No shared-engine refactor is recommen
 The other agent's Garden Guard changes are intentionally outside this game's scope. Do not bulk stage or commit the shared working directory while both tasks are active.
 
 Twin Rivers Pass uses original Flash v1.13 paths, tower/rally sites, 680 starting gold and 13 paired-route waves (329 enemies). It adds bandits, brigands and all four tier-three tower upgrades. See [the map report](twin-rivers-pass.md) and [pinned inputs](level04-manifest.json). Open it directly with `?level=4`; its save and completed record are independent.
+
+Silveroak Forest adds the fifth map, 15 original waves and three entrances, matriarch nests, worgs, marauders and hired elves. See [the map and calibration report](silveroak-forest.md) for browser evidence, source corrections and limitations. It is available with `?level=5`.

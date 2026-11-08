@@ -67,3 +67,8 @@ The [fixed-defense diagnostic](playtests/2026-11-07-farmlands-static-recovery-di
 The earlier failed-command replay still wins with 5 lives / 297 gold at tick 8,921; the historical Pagras command replay still wins with 13 lives / 361 gold at tick 16,538. Thus this authentic recovery correction alone does **not** close the previously observed Farmlands browser gap. Repeated original controls and precisely timed purchase/cast comparisons remain necessary before calling difficulty calibrated.
 
 Follow-up validation: **53 Kingdom Rush tests**, **4 boundary tests**, production build and whitespace checks pass. Four new recovery checks cover first/subsequent healing, movement/save continuity, damage and upgrade/older-save handling. All edits remain in Kingdom Rush folders.
+
+
+## Subsequent path-tolerance correction
+
+The Silveroak development pass corrected shared original movement and exact base ranges. Historical browser records above remain as recorded, but replay scores under the new rules are superseded by the [Silveroak calibration report](silveroak-forest.md) and [diagnostic artifact](playtests/2026-11-07-path-tolerance-calibration.json). In particular, the earlier Farmlands five-life replay no longer wins. No new matched original/local victory is claimed.

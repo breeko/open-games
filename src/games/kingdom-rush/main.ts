@@ -1,5 +1,5 @@
 import './style.css';
-import { distance, FPS, getLevel, LEVELS, TOWER_KINDS, TOWERS, type Point, type LevelId } from './content';
+import { maxTowerTier, distance, FPS, getLevel, LEVELS, TOWER_KINDS, TOWERS, type Point, type LevelId } from './content';
 import { Renderer } from './render';
 import { Simulation } from './simulation';
 import { gameStores } from './persistence';
@@ -53,12 +53,18 @@ function notify(text:string):void {message.textContent=text;messageUntil=perform
 function reset():void {const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level);selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();}
 function setMode(value:typeof mode):void {mode=mode===value?'none':value;contextKey='';if(mode==='rally')notify('Tap a nearby road to move your soldiers.');if(mode==='fire')notify('Tap the battlefield to call down fire.');if(mode==='reinforcements')notify('Tap a road to summon two reinforcements.');}
 function renderContext():void {
-  const tower=sim.towers.find(t=>t.id===selected),key=`${selected}/${tower?.kind}/${tower?.level}/${mode}/${sim.phase}/${sim.paused}`;
-  if(key===contextKey){context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');return;}
+  const tower=sim.towers.find(t=>t.id===selected),key=`${selected}/${tower?.kind}/${tower?.level}/${mode}/${sim.phase}/${sim.paused}/${sim.wave}/${sim.elfCampRepaired}/${sim.soldiers.filter(s=>s.kind==='elf'&&s.hp>0).length}`;
+  if(key===contextKey){context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=b.dataset.unavailable==='true'||Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');return;}
   contextKey=key;context.dataset.active=String(selected!==null||mode!=='none'||sim.phase==='won'||sim.phase==='lost');context.replaceChildren();
   const button=(label:string,action:()=>void,price?:number):HTMLButtonElement=>{const b=document.createElement('button');b.textContent=label;b.disabled=sim.paused||sim.phase==='won'||sim.phase==='lost';b.onclick=()=>{action();contextKey='';};if(price!==undefined)b.dataset.price=String(price);context.append(b);return b;};
   if(sim.phase==='won'||sim.phase==='lost') {const p=document.createElement('p');p.textContent=sim.phase==='won'?`${currentLevel.title} defended!`:'Try another defense.';context.append(p);const b=document.createElement('button');b.textContent=sim.phase==='won'&&currentLevel.level<LEVELS.length?'Next map →':'Choose map';b.onclick=()=>{const nextLevel=LEVELS.find(level=>level.level===currentLevel.level+1);if(sim.phase==='won'&&nextLevel)goToMap(nextLevel.level);else openMaps();};context.append(b);return;}
   if(mode!=='none') {const p=document.createElement('p');p.textContent=mode==='rally'?'Choose a rally point':mode==='fire'?'Choose where the fire falls':'Choose a road for your troops';context.append(p);button('Cancel',()=>{mode='none';});return;}
+  if(selected===currentLevel.elfCamp?.id){
+    const label=document.createElement('span');label.className='tower-label';label.textContent='Sylvan elves';context.append(label);
+    if(!sim.elfCampRepaired)button('Repair ◆ 100',()=>{sim.repairElves();},100);
+    else {const live=sim.soldiers.filter(s=>s.kind==='elf'&&s.hp>0).length;const hire=button(`Hire elf ◆ 100 (${live}/4)`,()=>{sim.hireElf();},100);if(live>=4){hire.disabled=true;hire.dataset.unavailable='true';}button('Rally ⚑',()=>setMode('rally'));}
+    button('Done',()=>{selected=null;});return;
+  }
   if(selected!==null&&!tower){
     for(const kind of TOWER_KINDS){
       const b=button('',()=>{if(!sim.build(selected!,kind))notify('You need more gold.');},TOWERS[kind].price[0]);
@@ -66,15 +72,15 @@ function renderContext():void {
       const name=document.createElement('span');name.textContent=TOWERS[kind].name;const cost=document.createElement('small');cost.textContent=`◆ ${TOWERS[kind].price[0]}`;b.append(icon,name,cost);b.setAttribute('aria-label',`Build ${TOWERS[kind].name}, ${TOWERS[kind].price[0]} gold`);
     }
   } else if(tower){
-    const label=document.createElement('span');label.className='tower-label';label.textContent=`${TOWERS[tower.kind].name} · ${tower.level}`;context.append(label);
-    if(tower.level<currentLevel.maxTowerLevel)button(`Upgrade ◆ ${TOWERS[tower.kind].price[tower.level]}`,()=>{if(!sim.upgrade(tower.id))notify('You need more gold.');},TOWERS[tower.kind].price[tower.level]);
+    const label=document.createElement('span');label.className='tower-label';label.textContent=tower.kind==='archer'&&tower.level===4?'Rangers':`${TOWERS[tower.kind].name} · ${tower.level}`;context.append(label);
+    if(tower.level<maxTowerTier(currentLevel,tower.kind,sim.wave))button(`Upgrade ◆ ${TOWERS[tower.kind].price[tower.level]}`,()=>{if(!sim.upgrade(tower.id))notify('You need more gold.');},TOWERS[tower.kind].price[tower.level]);
     if(tower.kind==='barrack')button('Rally ⚑',()=>setMode('rally'));
     button(`Sell ◆ ${Math.floor(tower.spent*.6)}`,()=>{sim.sell(tower.id);});button('Done',()=>{selected=null;});
   } else {
     const p=document.createElement('p');p.textContent='Tap a foundation to build.';
     const small=document.createElement('small');small.textContent='Use barracks to stop enemies.';p.append(small);context.append(p);
   }
-  context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');
+  context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=b.dataset.unavailable==='true'||Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');
 }
 function updateHud():void {
   setText(gold,String(sim.gold));setText(lives,String(sim.lives));setText(wave,`${sim.wave} / ${currentLevel.groups.length}`);
@@ -130,7 +136,8 @@ canvas.addEventListener('pointerdown',event=>{
   if(mode==='fire'||mode==='reinforcements'){if(sim.cast(mode,p)){mode='none';contextKey='';saveSession();}else notify(mode==='reinforcements'?'Choose a road for your reinforcements.':'That power is not ready.');return;}
   if(mode==='rally'){if(selected!==null&&sim.setRally(selected,p)){mode='none';contextKey='';saveSession();}else notify('Choose a road within the barracks’ range.');return;}
   const tower=sim.towers.filter(t=>Math.abs(t.x-p.x)<43&&p.y>=t.y-90&&p.y<t.y+18).sort((a,b)=>distance(a,p)-distance(b,p))[0];
-  const holder=currentLevel.holders.filter(h=>Math.abs(h.pos.x-p.x)<45&&Math.abs(h.pos.y-10-p.y)<30).sort((a,b)=>distance(a.pos,p)-distance(b.pos,p))[0];
+  const sites=currentLevel.elfCamp?[...currentLevel.holders,currentLevel.elfCamp]:currentLevel.holders;
+  const holder=sites.filter(h=>Math.abs(h.pos.x-p.x)<45&&Math.abs(h.pos.y-10-p.y)<30).sort((a,b)=>distance(a.pos,p)-distance(b.pos,p))[0];
   // Dense maps can put a foundation inside a neighboring tower's tall hit box.
   selected=holder&&(!tower||distance(holder.pos,p)<distance(tower,p))?holder.id:tower?.id??holder?.id??null;contextKey='';
 });

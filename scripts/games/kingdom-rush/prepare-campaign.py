@@ -10,13 +10,13 @@ spec=importlib.util.spec_from_file_location('reference',Path(__file__).with_name
 ref=importlib.util.module_from_spec(spec);spec.loader.exec_module(ref)
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('scripts',type=Path);parser.add_argument('swf',type=Path)
-parser.add_argument('--levels',type=int,nargs='+',default=[1,2],choices=[1,2,4])
+parser.add_argument('--levels',type=int,nargs='+',default=[1,2],choices=[1,2,4,5])
 args=parser.parse_args()
 sha=hashlib.sha256(args.swf.read_bytes()).hexdigest()
 assert sha=='7b5467a3eccc17f6dd001ff2d41bdf1b03d79fd515a2a9586c42bfd982bb1e23'
-names={'EnemyGoblin':'enemy_goblin','EnemyFatOrc':'enemy_fat_orc','EnemyWolfSmall':'enemy_wolf_small','EnemyShaman':'enemy_shaman','EnemyOgre':'enemy_ogre','EnemyBandit':'enemy_bandit','EnemyBrigand':'enemy_brigand'}
+names={'EnemyGoblin':'enemy_goblin','EnemyFatOrc':'enemy_fat_orc','EnemyWolfSmall':'enemy_wolf_small','EnemyShaman':'enemy_shaman','EnemyOgre':'enemy_ogre','EnemyBandit':'enemy_bandit','EnemyBrigand':'enemy_brigand','EnemyWolf':'enemy_wolf','EnemySpiderSmall':'enemy_spider_small','EnemySpider':'enemy_spider','EnemyMarauder':'enemy_marauder'}
 for number in args.levels:
-    title={1:'Southport',2:'The Farmlands',4:'Twin Rivers Pass'}[number]
+    title={1:'Southport',2:'The Farmlands',4:'Twin Rivers Pass',5:'Silveroak Forest'}[number]
     stage=f'level{number:02d}'
     items=[(ref.ORIGINAL,f'kr1/data/levels/{stage}_{suffix}.lua') for suffix in ['data','paths']]
     items += [(ref.VISUAL,f'data/{stage}/{name}.json') for name in ['definition','atlas','animations']]
@@ -49,13 +49,19 @@ for number in args.levels:
         goal=min(range(len(center)),key=lambda i:min((center[i]['x']-e['x'])**2+(center[i]['y']-e['y'])**2 for e in exits))
         converted.append(dict(lanes=lanes,start=max(0,first-10),end=goal))
     holders=[dict(id=int(e['tower.holder_id']),pos=point(e['pos']),rally=point(e['tower.default_rally_pos'])) for e in layout['entities_list'] if 'tower.holder_id' in e]
-    level=dict(title=title,level=number,cash=int(re.search(r'this.cash=(\d+)',flash)[1]),lives=20,holders=sorted(holders,key=lambda h:h['id']),paths=converted,groups=groups,maxTowerLevel=1 if number==1 else 3 if number==4 else 2)
-    if number==4:
+    level=dict(title=title,level=number,cash=int(re.search(r'this.cash=(\d+)',flash)[1]),lives=20,holders=sorted(holders,key=lambda h:h['id']),paths=converted,groups=groups,maxTowerLevel=1 if number==1 else 3 if number>=4 else 2)
+    if number>=4:
         text=(args.scripts/f'Level{number}.as').read_text()
         a=text.index('var _loc4_:Array = ')+len('var _loc4_:Array = ')
         roads=json.loads(re.sub(r'new Point\(([^,]+),([^\)]+)\)',r'{"x":\1,"y":\2}',text[a:text.index(';',a)]))
         scaled=lambda x,y:dict(x=round(float(x)*1.28+62.4,6),y=round(float(y)*1.28,6))
-        level['holders']=[dict(id=i+1,pos=scaled(x,y),rally=scaled(rx,ry)) for i,(x,y,rx,ry) in enumerate(re.findall(r'new TowerHolder\(([^,]+),([^,]+),new Point\(([^,]+),([^\)]+)\)\)',text[:a]))]
+        site_text=text[:a] if number==4 else text.split('case GameSettings.§_-0S§:')[1].split('this.loadCampaign();')[0]
+        sites=re.findall(r'new (TowerHolder|TowerArcher|TowerSoldierElfDestroyed)\(([^,]+),([^,]+),new Point\(([^,]+),([^\)]+)\)',site_text)
+        level['holders']=[dict(id=i+1,pos=scaled(x,y),rally=scaled(rx,ry)) for i,(kind,x,y,rx,ry) in enumerate(sites) if kind!='TowerSoldierElfDestroyed']
+        if number==5:
+            level['initialTowers']=[dict(id=i+1,kind='archer',level=3) for i,(kind,*rest) in enumerate(sites) if kind=='TowerArcher']
+            i,(kind,x,y,rx,ry)=next((i,s) for i,s in enumerate(sites) if s[0]=='TowerSoldierElfDestroyed')
+            level['elfCamp']=dict(id=i+1,pos=scaled(x,y),rally=scaled(rx,ry))
         level['paths']=[dict(lanes=[[scaled(p['x'],p['y']) for p in lane] for lane in road],start=0,end=len(road[0])-7,activeStart=10,activeEnd=len(road[0])-11) for road in roads]
     (ref.DATA/f'{stage}.json').write_text(json.dumps(level,separators=(',',':'))+'\n')
     art=ref.ART/stage;art.mkdir(exist_ok=True)
@@ -83,4 +89,4 @@ for number in args.levels:
     decorations=[e for e in definition['layout']['entities_list'] if e['template'] in visuals and e['template'].startswith('decal_')]
     (art/'scene.json').write_text(json.dumps(dict(visuals=visuals,decorations=decorations),separators=(',',':'))+'\n')
     (ref.DOC/f'{stage}-manifest.json').write_text(json.dumps(dict(title=title,flashSHA256=sha,factsOnly=True,waves=len(groups),enemies=sum(c['max'] for g in groups for w in g['waves'] for c in w['spawns']),inputs=[{k:v for k,v in f.items() if k!='cache'} for f in fetched]),indent=2)+'\n')
-    print(title,level['cash'],len(groups),len(holders),len(pages))
+    print(title,level['cash'],len(groups),len(level['holders']),len(pages))

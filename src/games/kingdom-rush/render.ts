@@ -47,12 +47,13 @@ export class Renderer {
     const sprites=this.visuals[name]??[];
     sprites.forEach((s,i)=>{
       if(s.hidden)return;
+      const shooter=s.prefix?.startsWith('shooter')||s.prefix==='tower_ranger_shooter';
       let action=animation??s.name;
       let ticks=age;
-      if(attackAge<24&&s.prefix&&(s.prefix.startsWith('shooter')||s.prefix.startsWith('towerengineer')||s.prefix.startsWith('towermage'))){
-        action=s.prefix.startsWith('shooter')?(up?'shootingUp':'shootingDown'):'shoot';ticks=attackAge;
-        if(name.startsWith('tower_archer')&&i>=2&&i!==(shots%2===0?2:3)){action=up?'idleUp':'idleDown';ticks=age;}
-      } else if(s.prefix?.startsWith('shooter'))action=up?'idleUp':'idleDown';
+      if(attackAge<24&&s.prefix&&(shooter||s.prefix.startsWith('towerengineer')||s.prefix.startsWith('towermage'))){
+        action=shooter?(up?'shootingUp':'shootingDown'):'shoot';ticks=attackAge;
+        if((name.startsWith('tower_archer')||name==='tower_ranger')&&i>=2&&i!==(shots%2===0?2:3)){action=up?'idleUp':'idleDown';ticks=age;}
+      } else if(shooter)action=up?'idleUp':'idleDown';
       const frame=override??(s.animated?this.frameName(s.prefix??'',action,ticks,s.loop&&animation!=='death'&&animation!=='attack'):s.name.replace('%04i','0001'));
       this.sprite(frame,{x:p.x+s.offset.x,y:p.y-s.offset.y},s.anchor,flip,alpha*(s.alpha/255));
     });
@@ -72,11 +73,12 @@ export class Renderer {
     if(e.escaped||e.deadAt>=0&&sim.tick-e.deadAt>60)return;
     const spec=ENEMIES[e.kind],dead=e.hp===0;
     this.template(spec.template,e,sim.tick-e.animAt,e.animation,e.facing<0,dead?Math.min(1,(60-(sim.tick-e.deadAt))/20):1);
-    if(!dead)this.health(e,e.hp,e.maxHp,e.kind==='ogre'?55:34);
+    if(!dead)this.health(e,e.hp,e.maxHp,e.kind==='ogre'||e.kind==='marauder'?55:34);
   }
   private soldier(s:Soldier,sim:Simulation):void {
     if(s.hp===0&&sim.tick-s.deadAt>45)return;
-    this.template(SOLDIERS[s.kind].template,s,sim.tick-s.animAt,s.animation,s.facing<0,s.hp===0?Math.min(1,(45-(sim.tick-s.deadAt))/15):1);
+    const bowAge=sim.tick-(s.nextShot-45),bow=s.kind==='elf'&&bowAge>=0&&bowAge<15;
+    this.template(SOLDIERS[s.kind].template,s,bow?bowAge:sim.tick-s.animAt,bow?'shoot':s.animation,s.facing<0,s.hp===0?Math.min(1,(45-(sim.tick-s.deadAt))/15):1);
     if(s.hp>0)this.health(s,s.hp,SOLDIERS[s.kind].hp,30);
   }
   draw(sim:Simulation,selected:number|null,mode:'none'|'rally'|'fire'|'reinforcements',pointer:Point|null,debug=false):void {
@@ -87,6 +89,7 @@ export class Renderer {
     c.setTransform(width/1024,0,0,height/768,0,0);c.clearRect(0,0,1024,768);c.drawImage(this.background,0,0,1024,768);
     for(const d of this.decorations)this.template(d.template,{x:d.pos.x,y:768-d.pos.y},sim.tick,undefined,false,1,d['render.sprites[1].name']?this.frameName('',d['render.sprites[1].name'],sim.tick):undefined);
     if(debug){c.lineWidth=2;sim.level.paths.forEach((route,i)=>{c.strokeStyle=i===0?'#ffd158':'#b2eaff';c.beginPath();route.lanes[0].forEach((p,j)=>j===0?c.moveTo(p.x,p.y):c.lineTo(p.x,p.y));c.stroke();});}
+    const camp=sim.level.elfCamp;if(camp)this.template(sim.elfCampRepaired?'tower_elf':'tower_elf_holder',camp.pos,sim.tick);
     const t=sim.towers.find(t=>t.id===selected);
     if(t){c.fillStyle='rgba(205,241,130,.12)';c.strokeStyle='#f9e4a0';c.lineWidth=2;c.setLineDash([6,4]);c.beginPath();c.ellipse(t.x,t.y-12,TOWERS[t.kind].range[t.level-1],TOWERS[t.kind].range[t.level-1]*ASPECT,0,0,Math.PI*2);c.fill();c.stroke();c.setLineDash([]);}
     for(const h of sim.level.holders){
@@ -98,13 +101,14 @@ export class Renderer {
     objects.sort((a,b)=>a.value.y-b.value.y);
     for(const object of objects){
       switch(object.kind){
-        case 'tower':{const tower=object.value;this.template(`tower_${tower.kind}_${tower.level}`,tower,sim.tick,undefined,false,1,undefined,sim.tick-tower.animAt,tower.target.y<tower.y,tower.shots);break;}
+        case 'tower':{const tower=object.value;this.template(tower.kind==='archer'&&tower.level===4?'tower_ranger':`tower_${tower.kind}_${tower.level}`,tower,sim.tick,undefined,false,1,undefined,sim.tick-tower.animAt,tower.target.y<tower.y,tower.shots);break;}
         case 'enemy':this.enemy(object.value,sim);break;
         case 'soldier':this.soldier(object.value,sim);break;
       }
     }
-    if(t?.kind==='barrack'){
-      c.strokeStyle='#f4e39a';c.lineWidth=2;c.beginPath();c.moveTo(t.rally.x,t.rally.y);c.lineTo(t.rally.x,t.rally.y-28);c.stroke();c.fillStyle='#6da9d7';c.beginPath();c.moveTo(t.rally.x,t.rally.y-28);c.lineTo(t.rally.x+20,t.rally.y-23);c.lineTo(t.rally.x,t.rally.y-16);c.fill();
+    const rally=t?.kind==='barrack'?t.rally:camp?.id===selected&&sim.elfCampRepaired?(sim.elfRally??camp.rally):null;
+    if(rally){
+      c.strokeStyle='#f4e39a';c.lineWidth=2;c.beginPath();c.moveTo(rally.x,rally.y);c.lineTo(rally.x,rally.y-28);c.stroke();c.fillStyle='#6da9d7';c.beginPath();c.moveTo(rally.x,rally.y-28);c.lineTo(rally.x+20,rally.y-23);c.lineTo(rally.x,rally.y-16);c.fill();
     }
     for(const p of sim.projectiles){
       if(sim.tick<p.start)continue;
@@ -114,7 +118,7 @@ export class Renderer {
       else {c.shadowColor=p.kind==='magic'?'#71d7ff':'#ff8b3f';c.shadowBlur=10;c.fillStyle=p.kind==='magic'?'#aff6ff':p.kind==='true'?'#ffb54e':'#333535';c.beginPath();c.arc(0,0,p.kind==='true'?10:5,0,Math.PI*2);c.fill();}
       c.restore();
     }
-    for(const effect of sim.effects){const fraction=(sim.tick-effect.start)/effect.duration;c.globalAlpha=1-fraction;c.strokeStyle=effect.type==='heal'?'#95f979':effect.type==='fire'?'#ffc36a':'#e7d5ac';c.lineWidth=effect.type==='fire'?7:3;c.beginPath();c.ellipse(effect.x,effect.y,effect.radius*(.3+fraction*.7),effect.radius*ASPECT*(.3+fraction*.7),0,0,Math.PI*2);c.stroke();c.globalAlpha=1;}
+    for(const effect of sim.effects){if(effect.type==='egg'){this.template('enemy_spider_egg',effect,sim.tick-effect.start);continue;}const fraction=(sim.tick-effect.start)/effect.duration;c.globalAlpha=1-fraction;c.strokeStyle=effect.type==='heal'?'#95f979':effect.type==='fire'?'#ffc36a':'#e7d5ac';c.lineWidth=effect.type==='fire'?7:3;c.beginPath();c.ellipse(effect.x,effect.y,effect.radius*(.3+fraction*.7),effect.radius*ASPECT*(.3+fraction*.7),0,0,Math.PI*2);c.stroke();c.globalAlpha=1;}
     if(pointer&&mode!=='none'){c.fillStyle=mode==='fire'?'rgba(255,111,53,.2)':'rgba(149,217,237,.25)';c.strokeStyle=mode==='fire'?'#ffd09d':'#cbf4ff';c.lineWidth=2;c.beginPath();c.ellipse(pointer.x,pointer.y,mode==='fire'?60:35,(mode==='fire'?60:35)*ASPECT,0,0,Math.PI*2);c.fill();c.stroke();}
     if(sim.paused||sim.phase==='won'||sim.phase==='lost'){
       c.fillStyle='rgba(20,30,22,.68)';c.fillRect(0,0,1024,768);c.save();c.translate(512,0);c.scale(this.spriteAspect,1);c.textAlign='center';c.fillStyle='#fff1c8';c.font='bold 56px Georgia';c.fillText(sim.paused?'Paused':sim.phase==='won'?'Victory!':'The road has fallen',0,350);c.font='23px Georgia';c.fillText(sim.paused?'Resume when you’re ready.':sim.phase==='won'?`${sim.lives} lives saved · ${sim.kills} enemies defeated`:'Try a different defense. Barracks buy your towers time.',0,398);c.restore();
