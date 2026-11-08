@@ -1,0 +1,119 @@
+{
+  "title": "The Citadel",
+  "flashSHA256": "7b5467a3eccc17f6dd001ff2d41bdf1b03d79fd515a2a9586c42bfd982bb1e23",
+  "factsOnly": true,
+  "waves": 17,
+  "enemies": 429,
+  "inputs": [
+    {
+      "url": "https://raw.githubusercontent.com/DanQZ/KR1-Smarter-Soldiers-Mod/fa84f20b6fc0cff19f5c8e13c588736fcf228fa7/kr1/data/levels/level06_data.lua",
+      "sha256": "b5a52248000a2fe27b187652161efff874952b9968c7fd645220a08308a156b8",
+      "bytes": 18633
+    },
+    {
+      "url": "https://raw.githubusercontent.com/DanQZ/KR1-Smarter-Soldiers-Mod/fa84f20b6fc0cff19f5c8e13c588736fcf228fa7/kr1/data/levels/level06_paths.lua",
+      "sha256": "24585a28813fe14a2c4a57c1c5021d88c27de32b15e4547341c2f755177db183",
+      "bytes": 122986
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/definition.json",
+      "sha256": "8dccdb39c89b4a764b6d7d2f638317fc8f31988777f9ef73c4a18c055132c7fd",
+      "bytes": 510201
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas.json",
+      "sha256": "41333390dcdf3ecf840a99aaf0f816bcfc9dcf88edd0275cdd7b5a4b26dc710d",
+      "bytes": 1335093
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/animations.json",
+      "sha256": "e68909370b653663a53ee6ec3632f5f4a3abf63aba9b242076978fb8581955e9",
+      "bytes": 45191
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_0.png",
+      "sha256": "36acbbde6b6a1bdfd57c50c45d6bba5da467ee8889d9fc4efce1883f1b1ff622",
+      "bytes": 2130422
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_1.png",
+      "sha256": "759251ba9e9fa75f0c89de5a66fc249f1ea894d59547b6a0c735bba922d94ebc",
+      "bytes": 2310783
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_10.png",
+      "sha256": "069498cd6d79afdfd8cb6ef10e2ced3f30a6906b0321169339cd00cc17454168",
+      "bytes": 4594073
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_11.png",
+      "sha256": "1b9e6b541e845766c52c411aeea0bb467f04d89579559ce9d3bb7bec1deeb59b",
+      "bytes": 2101189
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_12.png",
+      "sha256": "34dfa385b36c70dd96d71cca2fe3fed05f00a24e6ed4fbafab22b0f24f369dc8",
+      "bytes": 2007767
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_13.png",
+      "sha256": "a19a85e1cd8bdf2eeda786a39c91b204d034463926114fa33454b8d620e20dcc",
+      "bytes": 1211569
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_14.png",
+      "sha256": "fd72a379ebbf90665ad0f87ae27ced0c7f4ffacc780248796b4b59f3a394ba9e",
+      "bytes": 872040
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_15.png",
+      "sha256": "58af8e163343cb30f68a8cc633dd1004a34b5cd00c20ef23e7a95d33f259095c",
+      "bytes": 1393427
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_16.png",
+      "sha256": "0ec974ccba7a21202dd1ebfb38ea42c2f5af7aaa54c74fd9e75d00bf362a48cc",
+      "bytes": 156093
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_2.png",
+      "sha256": "d9734c5a26d271b6df0be4740bc29dc31eaabea411a722c8cc4d1766b0b4094c",
+      "bytes": 2314566
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_3.png",
+      "sha256": "2b6b227b0b1f6c1a1cb24ab775e0035b82425f52a796c667bda7e7850bf035b0",
+      "bytes": 2886993
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_4.png",
+      "sha256": "259b2ee7f06e70aaa8d532b2dbfdb5793bafacdaf736efb77baff85de75a1d3e",
+      "bytes": 3861414
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_5.png",
+      "sha256": "d04ba57282ab913ca108d82a49a4781e0464a0b7c9cf399bdd70d05c92b78a33",
+      "bytes": 4053566
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_6.png",
+      "sha256": "acf9f57c33734e89113e00e11e3e1da45a538dd1d294c71dab4f337a4de779c2",
+      "bytes": 3130445
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_7.png",
+      "sha256": "e7d3e0c63438491a56928167d8a1adefc78e0336da268632b6271c5314eb6594",
+      "bytes": 3436782
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_8.png",
+      "sha256": "66bf5f59c55fe8b406631063e844f23d0a6a83af0467446d9f70be0ffb1fb5af",
+      "bytes": 4556212
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/level06/atlas_9.png",
+      "sha256": "45a942a49065cdf06e487dadd483fbc025d08355ca53069169a4edb8cf1591b5",
+      "bytes": 3947506
+    }
+  ]
+}

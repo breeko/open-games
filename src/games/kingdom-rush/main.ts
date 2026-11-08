@@ -34,6 +34,7 @@ if(savedSession.status==='valid') {
   saveStatus.textContent='Saving is unavailable. You can keep playing; choose Restart to try saving again.';
 } else saveStatus.textContent='Your battle saves automatically on this device.';
 function saveSession():void {
+  if(sim.practice){setText(saveStatus,'Practice — completed records and your saved campaign battle are preserved.');return;}
   if(!savingEnabled||finishedSessionCleared)return;
   if(sim.phase==='won'||sim.phase==='lost') {
     const result=stores.session.clear();
@@ -72,7 +73,7 @@ function renderContext():void {
       const name=document.createElement('span');name.textContent=TOWERS[kind].name;const cost=document.createElement('small');cost.textContent=`◆ ${TOWERS[kind].price[0]}`;b.append(icon,name,cost);b.setAttribute('aria-label',`Build ${TOWERS[kind].name}, ${TOWERS[kind].price[0]} gold`);
     }
   } else if(tower){
-    const label=document.createElement('span');label.className='tower-label';label.textContent=tower.kind==='archer'&&tower.level===4?'Rangers':`${TOWERS[tower.kind].name} · ${tower.level}`;context.append(label);
+    const label=document.createElement('span');label.className='tower-label';label.textContent=tower.kind==='mage'&&tower.level===4?'Arcane Wizard':tower.kind==='archer'&&tower.level===4?'Rangers':`${TOWERS[tower.kind].name} · ${tower.level}`;context.append(label);
     if(tower.level<maxTowerTier(currentLevel,tower.kind,sim.wave))button(`Upgrade ◆ ${TOWERS[tower.kind].price[tower.level]}`,()=>{if(!sim.upgrade(tower.id))notify('You need more gold.');},TOWERS[tower.kind].price[tower.level]);
     if(tower.kind==='barrack')button('Rally ⚑',()=>setMode('rally'));
     button(`Sell ◆ ${Math.floor(tower.spent*.6)}`,()=>{sim.sell(tower.id);});button('Done',()=>{selected=null;});
@@ -83,7 +84,7 @@ function renderContext():void {
   context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=b.dataset.unavailable==='true'||Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');
 }
 function updateHud():void {
-  setText(gold,String(sim.gold));setText(lives,String(sim.lives));setText(wave,`${sim.wave} / ${currentLevel.groups.length}`);
+  setText(gold,String(sim.gold));setText(lives,String(sim.lives));setText(wave,`${sim.practice?'Practice ':''}${sim.wave} / ${currentLevel.groups.length}`);
   setText(pause,sim.paused?'Resume':'Pause');pause.dataset.icon=sim.paused?'▶':'Ⅱ';pause.setAttribute('aria-label',sim.paused?'Resume':'Pause');pause.disabled=sim.phase==='won'||sim.phase==='lost';
   fire.setAttribute('aria-pressed',String(mode==='fire'));reinforce.setAttribute('aria-pressed',String(mode==='reinforcements'));
   const fireWait=Math.max(0,Math.ceil((sim.fireReady-sim.tick)/FPS)),reinforceWait=Math.max(0,Math.ceil((sim.reinforcementsReady-sim.tick)/FPS));
@@ -95,10 +96,10 @@ function updateHud():void {
   const detail=sim.wave===0?'Wave 1 →':sim.earlyReward>0?`+${sim.earlyReward} gold · ${Math.ceil(sim.nextIn)}s spell recharge`:sim.wave===currentLevel.groups.length?'Hold the road':`Wave ${sim.wave+1} →`;
   next.dataset.short=sim.wave===0?'▶':sim.wave===currentLevel.groups.length?'✓':sim.canCall?'▶':'⌛';next.setAttribute('aria-label',`${label}. ${detail}`);
   if(next.firstChild?.textContent!==label||next.lastChild?.textContent!==detail){next.replaceChildren(document.createTextNode(label));const sub=document.createElement('span');sub.textContent=detail;next.append(sub);}
-  setText(phase,sim.paused?'Battle paused':sim.phase==='ready'?'Prepare your defenses':sim.phase==='won'?`${currentLevel.title} defended`:sim.phase==='lost'?'Defense broken':sim.canCall&&sim.nextIn>0?`Next wave in ${Math.ceil(sim.nextIn)}s`:'Hold the road');
+  setText(phase,(sim.practice?'Practice · ':'')+(sim.paused?'Battle paused':sim.phase==='ready'?'Prepare your defenses':sim.phase==='won'?`${currentLevel.title} defended`:sim.phase==='lost'?'Defense broken':sim.canCall&&sim.nextIn>0?`Next wave in ${Math.ceil(sim.nextIn)}s`:'Hold the road'));
   renderContext();
   if(performance.now()>messageUntil)message.classList.remove('visible');
-  if(!recorded&&sim.phase==='won'){
+  if(!recorded&&sim.phase==='won'&&!sim.practice){
     recorded=true;
     const prior=stores.results.read();
     if(prior.status==='valid'||prior.status==='missing')stores.results.write(Math.max(prior.status==='valid'?prior.value:0,sim.lives));
@@ -165,3 +166,11 @@ function frame(now:number):void {
 const autosave=startAutosave(saveSession);
 import.meta.hot?.dispose(()=>{autosave.flush();autosave.stop();});
 Renderer.create(canvas,currentLevel.level).then(r=>{renderer=r;loading.hidden=true;showBest();last=performance.now();requestAnimationFrame(frame);}).catch(error=>{loading.textContent=`The battlefield could not load. ${error instanceof Error?error.message:'Try reloading.'}`;});
+
+const practiceWave=element('practice-wave',HTMLSelectElement);
+for(let i=1;i<=currentLevel.groups.length;i++){const option=document.createElement('option');option.value=String(i);option.textContent=`Wave ${i}`;practiceWave.append(option);}
+element('practice-start',HTMLButtonElement).onclick=()=>{
+  saveSession();
+  const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level);sim.preparePractice(Number(practiceWave.value));
+  selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();
+};

@@ -1,4 +1,4 @@
-Kingdom Rush — Southport, The Farmlands and Pagras for Open Games
+Kingdom Rush — original campaign stages 1–6 for Open Games
 
 Original Kingdom Rush artwork, characters, names and game design:
 Copyright Ironhide Game Studio. All rights reserved.
@@ -42,3 +42,7 @@ See level04-manifest.json and twin-rivers-pass.md in the source documentation.
 Silveroak Forest (map 5) uses the same pinned visual source. Original numeric
 paths, waves, existing archer tower, elf camp and enemy facts target Flash v1.13.
 See level05-manifest.json and silveroak-forest.md in the source documentation.
+
+The Citadel (map 6) uses the same pinned visual source. Original paths, sites,
+waves, advanced mage and enemy/boss numeric facts target Flash v1.13.
+See level06-manifest.json and the-citadel.md in the source documentation.

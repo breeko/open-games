@@ -74,7 +74,7 @@ test('a primary blocker reserves an enemy during approach, then takes its attack
 
 test('a shaman heals wounded allies after its cast delay rather than making every enemy regenerate',()=>{
   const s=new Simulation();const shaman=s.spawn('shaman'),orc=s.spawn('orc');
-  shaman.x=600;shaman.y=300;shaman.nextHeal=0;orc.x=610;orc.y=300;orc.hp=10;
+  shaman.x=600;shaman.y=300;shaman.healCounter=240;orc.x=610;orc.y=300;orc.hp=10;
   s.step();assert.equal(orc.hp,10);assert.equal(shaman.animation,'heal');
   // Keep the test focused on casting, independent of path travel.
   while(s.tick<15){orc.x=610;orc.y=300;s.step();}
@@ -135,7 +135,7 @@ test('arrows can miss a target that moves away from the predicted impact point',
 });
 
 test('a healing shaman can heal itself and remains stationary for the full cast',()=>{
-  const s=new Simulation();const e=s.spawn('shaman');e.hp=40;e.nextHeal=0;
+  const s=new Simulation();const e=s.spawn('shaman');e.hp=40;e.healCounter=240;
   s.step();const x=e.x,y=e.y;while(s.tick<15)s.step();assert.equal(e.hp,90);
   while(s.tick<28)s.step();assert.equal(e.x,x);assert.equal(e.y,y);
   s.step();assert.ok(e.x!==x||e.y!==y);

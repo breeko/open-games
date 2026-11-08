@@ -47,10 +47,10 @@ export class Renderer {
     const sprites=this.visuals[name]??[];
     sprites.forEach((s,i)=>{
       if(s.hidden)return;
-      const shooter=s.prefix?.startsWith('shooter')||s.prefix==='tower_ranger_shooter';
+      const shooter=s.prefix?.startsWith('shooter')||s.prefix==='tower_ranger_shooter'||s.prefix==='tower_arcane_wizard_shooter';
       let action=animation??s.name;
       let ticks=age;
-      if(attackAge<24&&s.prefix&&(shooter||s.prefix.startsWith('towerengineer')||s.prefix.startsWith('towermage'))){
+      if(attackAge<(name==='tower_arcane_wizard'?38:24)&&s.prefix&&(shooter||s.prefix.startsWith('towerengineer')||s.prefix.startsWith('towermage'))){
         action=shooter?(up?'shootingUp':'shootingDown'):'shoot';ticks=attackAge;
         if((name.startsWith('tower_archer')||name==='tower_ranger')&&i>=2&&i!==(shots%2===0?2:3)){action=up?'idleUp':'idleDown';ticks=age;}
       } else if(shooter)action=up?'idleUp':'idleDown';
@@ -73,7 +73,7 @@ export class Renderer {
     if(e.escaped||e.deadAt>=0&&sim.tick-e.deadAt>60)return;
     const spec=ENEMIES[e.kind],dead=e.hp===0;
     this.template(spec.template,e,sim.tick-e.animAt,e.animation,e.facing<0,dead?Math.min(1,(60-(sim.tick-e.deadAt))/20):1);
-    if(!dead)this.health(e,e.hp,e.maxHp,e.kind==='ogre'||e.kind==='marauder'?55:34);
+    if(!dead)this.health(e,e.hp,e.maxHp,e.kind==='juggernaut'?120:e.kind==='gargoyle'?78:e.kind==='ogre'||e.kind==='marauder'?55:34);
   }
   private soldier(s:Soldier,sim:Simulation):void {
     if(s.hp===0&&sim.tick-s.deadAt>45)return;
@@ -101,7 +101,7 @@ export class Renderer {
     objects.sort((a,b)=>a.value.y-b.value.y);
     for(const object of objects){
       switch(object.kind){
-        case 'tower':{const tower=object.value;this.template(tower.kind==='archer'&&tower.level===4?'tower_ranger':`tower_${tower.kind}_${tower.level}`,tower,sim.tick,undefined,false,1,undefined,sim.tick-tower.animAt,tower.target.y<tower.y,tower.shots);break;}
+        case 'tower':{const tower=object.value;this.template(tower.kind==='mage'&&tower.level===4?'tower_arcane_wizard':tower.kind==='archer'&&tower.level===4?'tower_ranger':`tower_${tower.kind}_${tower.level}`,tower,sim.tick,undefined,false,1,undefined,sim.tick-tower.animAt,tower.target.y<tower.y,tower.shots);break;}
         case 'enemy':this.enemy(object.value,sim);break;
         case 'soldier':this.soldier(object.value,sim);break;
       }
@@ -112,12 +112,14 @@ export class Renderer {
     }
     for(const p of sim.projectiles){
       if(sim.tick<p.start)continue;
+      if(p.beam!==undefined){c.strokeStyle='#df95ff';c.lineWidth=5;c.beginPath();c.moveTo(p.from.x,p.from.y);c.lineTo(p.to.x,p.to.y);c.stroke();continue;}
       const {x,y,angle}=projectilePose(p,sim.tick);
       c.save();c.translate(x,y);
       if(p.kind==='physical'){c.rotate(angle);c.strokeStyle='#3b281a';c.lineWidth=2;c.beginPath();c.moveTo(-7,0);c.lineTo(7,0);c.stroke();}
       else {c.shadowColor=p.kind==='magic'?'#71d7ff':'#ff8b3f';c.shadowBlur=10;c.fillStyle=p.kind==='magic'?'#aff6ff':p.kind==='true'?'#ffb54e':'#333535';c.beginPath();c.arc(0,0,p.kind==='true'?10:5,0,Math.PI*2);c.fill();}
       c.restore();
     }
+    for(const shot of sim.hostileProjectiles){c.fillStyle=shot.kind==='arrow'?'#d2a173':shot.kind==='missile'?'#ef804a':'#8d9c82';c.beginPath();c.arc(shot.position.x,shot.position.y,shot.kind==='arrow'?3:8,0,Math.PI*2);c.fill();}
     for(const effect of sim.effects){if(effect.type==='egg'){this.template('enemy_spider_egg',effect,sim.tick-effect.start);continue;}const fraction=(sim.tick-effect.start)/effect.duration;c.globalAlpha=1-fraction;c.strokeStyle=effect.type==='heal'?'#95f979':effect.type==='fire'?'#ffc36a':'#e7d5ac';c.lineWidth=effect.type==='fire'?7:3;c.beginPath();c.ellipse(effect.x,effect.y,effect.radius*(.3+fraction*.7),effect.radius*ASPECT*(.3+fraction*.7),0,0,Math.PI*2);c.stroke();c.globalAlpha=1;}
     if(pointer&&mode!=='none'){c.fillStyle=mode==='fire'?'rgba(255,111,53,.2)':'rgba(149,217,237,.25)';c.strokeStyle=mode==='fire'?'#ffd09d':'#cbf4ff';c.lineWidth=2;c.beginPath();c.ellipse(pointer.x,pointer.y,mode==='fire'?60:35,(mode==='fire'?60:35)*ASPECT,0,0,Math.PI*2);c.fill();c.stroke();}
     if(sim.paused||sim.phase==='won'||sim.phase==='lost'){

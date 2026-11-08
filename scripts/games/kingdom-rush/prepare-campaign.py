@@ -10,13 +10,13 @@ spec=importlib.util.spec_from_file_location('reference',Path(__file__).with_name
 ref=importlib.util.module_from_spec(spec);spec.loader.exec_module(ref)
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('scripts',type=Path);parser.add_argument('swf',type=Path)
-parser.add_argument('--levels',type=int,nargs='+',default=[1,2],choices=[1,2,4,5])
+parser.add_argument('--levels',type=int,nargs='+',default=[1,2],choices=[1,2,4,5,6])
 args=parser.parse_args()
 sha=hashlib.sha256(args.swf.read_bytes()).hexdigest()
 assert sha=='7b5467a3eccc17f6dd001ff2d41bdf1b03d79fd515a2a9586c42bfd982bb1e23'
-names={'EnemyGoblin':'enemy_goblin','EnemyFatOrc':'enemy_fat_orc','EnemyWolfSmall':'enemy_wolf_small','EnemyShaman':'enemy_shaman','EnemyOgre':'enemy_ogre','EnemyBandit':'enemy_bandit','EnemyBrigand':'enemy_brigand','EnemyWolf':'enemy_wolf','EnemySpiderSmall':'enemy_spider_small','EnemySpider':'enemy_spider','EnemyMarauder':'enemy_marauder'}
+names={'EnemyGoblin':'enemy_goblin','EnemyFatOrc':'enemy_fat_orc','EnemyWolfSmall':'enemy_wolf_small','EnemyShaman':'enemy_shaman','EnemyOgre':'enemy_ogre','EnemyBandit':'enemy_bandit','EnemyBrigand':'enemy_brigand','EnemyWolf':'enemy_wolf','EnemySpiderSmall':'enemy_spider_small','EnemySpider':'enemy_spider','EnemyMarauder':'enemy_marauder','EnemyGargoyle':'enemy_gargoyle','EnemyDarkKnight':'enemy_dark_knight','EnemyShadowArcher':'enemy_shadow_archer','EnemyJuggernaut':'enemy_juggernaut'}
 for number in args.levels:
-    title={1:'Southport',2:'The Farmlands',4:'Twin Rivers Pass',5:'Silveroak Forest'}[number]
+    title={1:'Southport',2:'The Farmlands',4:'Twin Rivers Pass',5:'Silveroak Forest',6:'The Citadel'}[number]
     stage=f'level{number:02d}'
     items=[(ref.ORIGINAL,f'kr1/data/levels/{stage}_{suffix}.lua') for suffix in ['data','paths']]
     items += [(ref.VISUAL,f'data/{stage}/{name}.json') for name in ['definition','atlas','animations']]
@@ -85,7 +85,7 @@ for number in args.levels:
     lookup={k:v for k,v in atlas['lookup'].items() if v in frames}
     animations=json.loads((web/'animations.json').read_text())['animations']
     (art/'sprites.json').write_text(json.dumps(dict(frames=frames,lookup=lookup,animations=animations,pages=len(pages)),separators=(',',':'))+'\n')
-    visuals={n:t['render']['sprites'] for n,t in definition['templates'].items() if 'render' in t and n.startswith(('tower_','enemy_','soldier_','re_farmer','decal_'))}
+    visuals={n:t['render']['sprites'] for n,t in definition['templates'].items() if 'render' in t and n.startswith(('tower_','enemy_','eb_','soldier_','re_farmer','decal_'))}
     decorations=[e for e in definition['layout']['entities_list'] if e['template'] in visuals and e['template'].startswith('decal_')]
     (art/'scene.json').write_text(json.dumps(dict(visuals=visuals,decorations=decorations),separators=(',',':'))+'\n')
     (ref.DOC/f'{stage}-manifest.json').write_text(json.dumps(dict(title=title,flashSHA256=sha,factsOnly=True,waves=len(groups),enemies=sum(c['max'] for g in groups for w in g['waves'] for c in w['spawns']),inputs=[{k:v for k,v in f.items() if k!='cache'} for f in fetched]),indent=2)+'\n')
