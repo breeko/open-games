@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Garden Guard menu preview</title>
+<style>body{margin:0;background:#14231a;color:#e8edd8;font:14px system-ui}nav{display:flex;gap:12px;align-items:center;padding:8px;flex-wrap:wrap}button,select{font:inherit;padding:8px}#game-root{width:1024px;height:768px;max-width:100vw;margin:auto}canvas{display:block}#status{margin:0 12px}</style>
+<nav><select id="screen" aria-label="Screen"><option value="seeds">Seeds</option><option value="reward">Reward</option><option value="replay">Replay</option></select><select id="level" aria-label="Level"><option value="3">1-3</option><option value="21" selected>3-1</option><option value="24">3-4</option></select><select id="size" aria-label="Size"><option value="1024">1024 × 768</option><option value="640">640 × 480</option></select><span id="status">Loading…</span></nav><div id="game-root"></div>
+<script type="module" src="./menu-preview.ts"></script></html>

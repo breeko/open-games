@@ -257,3 +257,10 @@ See [source rules and difficulty evidence](audit/accuracy.md) and [save compatib
 3-3 has 20 waves and introduces Snorkel Zombies, alongside Threepeater. 3-4 has 30 waves and adds Tangle Kelp to the loadout. Snorkels appear from wave ten, only in water; they evade ordinary peas underwater and surface to eat. Block them on Lily Pads so shooters can hit them, or use Squash/blasts. Plant kelp directly in empty water, without a pad: it consumes one swimmer and itself. Both levels end with three extra swimmers emerging farther into the pool. 3-3 rewards kelp; 3-4 rewards Jalapeno (available to try in Playground; 3-5 is not built yet).
 
 The pool Playground bank includes the new defenders and offers Snorkels in the zombie selector. Diagnostics include snorkel phase, submergence, projectile vulnerability and kelp capture. The Almanac fits all 21 plants.
+
+
+## Menu presentation
+
+The seed picker shows only plants available on the selected level, with original seed-packet art, readable names/prices, and a separate eight-slot tray. Tap a tray plant to remove it. Empty selections disable the start button. Reward screens use a compact plant card without combat stats or explanatory paragraphs; the Almanac retains those details. Both screens use the level's lawn background and original three-piece stone buttons. Loadout ordering, progression and existing save schemas remain unchanged.
+
+`/scripts/games/garden-guard/menu-preview.html` is a development-only scene preview for early/full selections, rewards and replays at 1024×768 and 640×480. Manual checks covered selecting/removing plants, the empty tray, starting with the selected loadout, and reward-to-next-level navigation. All 84 unit tests and 84 real-entity save continuation checks pass.
