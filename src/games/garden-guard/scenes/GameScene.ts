@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {ProjectileProbe} from '../playground/ProjectileProbe';
 import {SimulationClock} from '../simulation-clock';
 import {gamePerformance as perf} from '../diagnostics/performance';
 import {sizeArt} from '../art';
@@ -17,6 +18,7 @@ import {
   GRID_RIGHT,
   PLANT_DEFS,
   SKY_SUN_VALUE,
+  SEED_ORDER,
 } from '../constants';
 import { createPlant } from '../entities/createPlant';
 import type { Plant } from '../entities/Plant';
@@ -31,12 +33,14 @@ import { ResourceManager } from '../managers/ResourceManager';
 import { WaveManager } from '../managers/WaveManager';
 import { progress } from '../state/progress';
 import { settings } from '../state/settings';
-import type { GameContext, PlantType } from '../types';
+import type { GameContext, PlantType, ZombieType } from '../types';
 import { Hud } from '../ui/Hud';
 import { Button } from '../ui/Button';
 import { SeedBank } from '../ui/SeedBank';
 
 export interface GameSceneData {
+  playground?:boolean;
+  playgroundMode?:'day'|'night';
   levelId?: number;
   seeds?: PlantType[];
   resume?: GardenSession;
@@ -50,6 +54,26 @@ export interface GameSceneData {
  * comes from the `LevelDefinition` passed in by the seed-select screen.
  */
 export class GameScene extends Phaser.Scene {
+  private playground=false;
+  private playgroundTime=0;
+  private playgroundSpawnMs=0;
+  private playgroundSampleMs=0;
+  private playgroundHistory:{elapsedMs:number;targets:number;dying:number;peas:number}[]=[];
+  playgroundContinuous=false;
+  playgroundZombie:ZombieType='basic';
+  private projectileProbe?:ProjectileProbe;
+  get isPlayground():boolean {return this.playground;}
+  get playgroundReport(){const enemies=this.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie&&z.active);return {mode:this.level.environment,elapsedMs:this.playgroundTime,plants:this.plants.filter(p=>p.active).length,zombies:enemies.length,targets:enemies.filter(z=>z.canBeShot).length,dying:enemies.filter(z=>z.isHeadless).length,projectiles:this.projectileProbe?.snapshot(),recentActivity:[...this.playgroundHistory]};}
+  selectPlaygroundPlant(type:PlantType):void {if(!this.playground)return;this.deselect();this.selected=type;}
+  addPlaygroundZombies(type:ZombieType,row:number|null,count:number):void {if(!this.playground)return;for(const lane of row===null?this.level.activeRows:[row])this.waves.addPlaygroundZombies(type,lane,count);}
+  fillPlayground():void {
+    if(!this.playground)return;
+    for(let row=0;row<4;row++)for(let col=0;col<7;col++)if(!this.grid.getPlant(col,row)&&!this.ctx.graveAt(col,row)&&!this.ctx.craterAt(col,row))this.spawnPlant('peashooter',col,row);
+    this.playgroundContinuous=true;this.playgroundSpawnMs=0;
+    for(let row=0;row<4;row++)this.addPlaygroundZombies(this.playgroundZombie,row,2);
+  }
+  clearPlaygroundZombies():void {if(this.playground)for(const z of [...this.zombies.getChildren()])z.destroy();}
+  addPlaygroundGraves():void {if(!this.playground)return;for(let row=0;row<5;row++){const col=6,key=`${col},${row}`;if(this.grid.getPlant(col,row)||this.graves.has(key))continue;const p=this.grid.cellToWorld(col,row);this.graves.set(key,this.add.image(p.x,p.y+25,'grave').setScale(1.6).setOrigin(.5,.72).setDepth(9));}}
   private resumeData?:GardenSession;
   private random=randomSource(67890);
   private grid!: GridManager;
@@ -67,7 +91,7 @@ export class GameScene extends Phaser.Scene {
 
   private level!: LevelDefinition;
   get levelId(): number { return this.level.id; }
-  get summary(): string { return `Level ${this.level.name} · Wave ${this.waves.currentWave}/${this.waves.totalWaves} · ${this.level.mode === 'standard'||this.level.mode==='whack' ? this.resources.sun + ' sun' : 'Conveyor supply'} · ${this.plants.filter(p => p.active).length} plants`; }
+  get summary(): string { if(this.playground)return `Playground · ${this.level.environment} · ${this.plants.filter(p=>p.active).length} plants`;return `Level ${this.level.name} · Wave ${this.waves.currentWave}/${this.waves.totalWaves} · ${this.level.mode === 'standard'||this.level.mode==='whack' ? this.resources.sun + ' sun' : 'Conveyor supply'} · ${this.plants.filter(p => p.active).length} plants`; }
   private seeds: PlantType[] = [];
 
   private selected: PlantType | null = null;
@@ -116,13 +140,17 @@ export class GameScene extends Phaser.Scene {
   }
 
   init(data: GameSceneData = {}): void {
+    this.playground=data.playground===true;
     this.resumeData=data.resume?gardenSessionSchema.parse(data.resume):undefined;
     this.level = getLevel(this.resumeData?.levelId ?? data.levelId ?? this.level?.id ?? 1);
     this.seeds = this.level.mode==='whack'?[...this.level.availablePlants]:this.level.mode === 'standard' ? data.seeds && data.seeds.length > 0 ? [...data.seeds] : defaultSeedsForLevel(this.level.id) : [...new Set(this.level.conveyorSeeds)];
     if(this.resumeData)this.seeds=[...this.resumeData.seeds];
+    if(this.playground){this.level={...getLevel(data.playgroundMode==='night'?18:9),title:'Playground',blurb:'Unlimited sun and instant recharge. Campaign saves are safe.',startingSun:999,availablePlants:[...SEED_ORDER]};this.seeds=['peashooter','repeater','snowpea','wallnut','sunflower','cherrybomb','puffshroom','iceshroom'];}
   }
 
   create(): void {
+    this.playgroundTime=0;this.playgroundSpawnMs=0;this.playgroundSampleMs=0;this.playgroundHistory=[];this.playgroundContinuous=false;
+    this.projectileProbe=this.playground?new ProjectileProbe(()=>this.playgroundTime):undefined;
     this.simulationClock.reset(this.time.now);
     // Phaser's default tween clock reads Date.now; gameplay tweens must share
     // the same simulation delta as projectiles, suns, timers and waves.
@@ -142,7 +170,7 @@ export class GameScene extends Phaser.Scene {
     this.grid = new GridManager();
     this.drawBackground();
     this.graves=new Map();this.craters=new Map();
-    for(const {col,row} of initialGraves(this.level.id)){
+    for(const {col,row} of this.playground?[]:initialGraves(this.level.id)){
       const cell=this.grid.cellToWorld(col,row);
       this.graves.set(`${col},${row}`,this.add.image(cell.x,cell.y+25,'grave').setScale(1.6).setOrigin(0.5,0.72).setDepth(9));
     }
@@ -158,6 +186,7 @@ export class GameScene extends Phaser.Scene {
     this.zombies = this.physics.add.group();
 
     this.ctx = {
+      onProjectileSpawn:this.projectileProbe?pea=>this.projectileProbe?.track(pea):undefined,
       random:this.random,
       craterAt:(col,row)=>this.craters.has(`${col},${row}`),
       addCrater:(col,row)=>this.addCrater(col,row,NIGHT_COMBAT.craterMs),
@@ -185,10 +214,10 @@ export class GameScene extends Phaser.Scene {
         zombie.applySlow((pea.getData('slowFactor') as number | undefined) ?? 0.5, slowMs);
       }
 
-      pea.destroy();
+      this.projectileProbe?.removal(pea,'hit');pea.destroy();
     });
 
-    this.seedBank = new SeedBank(this, this.resources, this.seeds, this.level.mode==='bowling'||this.level.mode==='conveyor',this.level.id<=2);
+    this.seedBank = new SeedBank(this, this.resources, this.seeds, this.level.mode==='bowling'||this.level.mode==='conveyor',this.level.id<=2,this.playground);
     this.seedBank.on('select', (type: PlantType | null) => {
       this.selected = type;
       if (type) this.shoveling = false;
@@ -206,6 +235,7 @@ export class GameScene extends Phaser.Scene {
     this.input.dragDistanceThreshold = 12;
 
     this.hud = new Hud(this, this.resources, this.level);
+    if(this.playground)this.hud.setPlayground();
     this.events.on('shovel-request',this.toggleShovel,this);
 
     // Drag feedback: a translucent copy of the plant under the pointer, plus a
@@ -265,8 +295,11 @@ export class GameScene extends Phaser.Scene {
       for (let i=0;i<3;i++) this.seedBank.grant(this.level.conveyorSeeds[i % this.level.conveyorSeeds.length]);
     }
     if(this.resumeData){this.restoreSession(this.resumeData);this.game.events.emit('session-restored');}
-    else {this.waves.start();this.hud.announce(this.level.blurb, '#ffe066', 4500);this.game.events.emit('session-started');}
+    else {if(!this.playground)this.waves.start();this.hud.announce(this.level.blurb, '#ffe066', 4500);this.game.events.emit(this.playground?'playground-started':'session-started');}
     this.resumeData=undefined;
+    const renderProbe=()=>this.projectileProbe?.afterRender(this.cameras.main.renderList);
+    if(this.projectileProbe)this.game.events.on(Phaser.Core.Events.POST_RENDER,renderProbe);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>{this.projectileProbe?.clear();this.game.events.off(Phaser.Core.Events.POST_RENDER,renderProbe);});
 
     // Clean up listeners when the scene restarts so nothing accumulates.
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -284,6 +317,10 @@ export class GameScene extends Phaser.Scene {
   override update(time: number, delta: number): void {
     if (this.finished||this.game.isPaused) return;
     delta = Math.min(delta,100);
+    if(this.playground){
+      this.playgroundTime+=delta;this.waves.tickPlayground(delta);
+      if(this.playgroundContinuous){this.playgroundSpawnMs+=delta;if(this.playgroundSpawnMs>=8000){this.playgroundSpawnMs-=8000;for(let row=0;row<4;row++)this.addPlaygroundZombies(this.playgroundZombie,row,2);}}
+    }
 
     // Move the drag feedback with the live pointer rather than reacting to
     // every pointermove, so the ghost never trails behind the cursor.
@@ -324,7 +361,7 @@ export class GameScene extends Phaser.Scene {
       const pea = child as Phaser.Physics.Arcade.Image;
       const expires=pea.getData('expiresMs');
       if(typeof expires==='number')pea.setData('expiresMs',Math.max(0,expires-delta));
-      if (pea.active && (pea.x > GAME_WIDTH + 60 || (typeof expires==='number'&&expires<=delta))) pea.destroy();
+      if (pea.active && (pea.x > GAME_WIDTH + 60 || (typeof expires==='number'&&expires<=delta))){this.projectileProbe?.removal(pea,pea.x>GAME_WIDTH+60?'offscreen':'expired');pea.destroy();}
     });
 
     perf.section('projectiles',projectileStart);
@@ -350,7 +387,7 @@ export class GameScene extends Phaser.Scene {
 
     perf.section('other gameplay',otherStart);
     const waveStart=perf.mark();
-    this.waves.update(delta);
+    if(!this.playground)this.waves.update(delta);
     this.seedBank.update(delta);
     this.hud.setProgress(this.waves.progress);
 
@@ -373,7 +410,12 @@ export class GameScene extends Phaser.Scene {
       for(const p of this.plants){g.lineStyle(2,0x00ffff,1);const b=p.getBounds();g.strokeRect(b.x,b.y,b.width,b.height);}
       for(const child of this.peas.getChildren())if(child instanceof Phaser.Physics.Arcade.Image){g.lineStyle(2,0xff99ff,1);g.strokeCircle(child.x,child.y,child.displayWidth*12/28);}
     }
-    this.checkForLoss();
+    if(this.playground){
+      for(const z of [...this.zombies.getChildren()])if(z instanceof Zombie&&z.x<0)z.destroy();
+      this.playgroundSampleMs+=delta;
+      if(this.playgroundSampleMs>=1000){this.playgroundSampleMs-=1000;const r=this.playgroundReport;this.playgroundHistory.push({elapsedMs:r.elapsedMs,targets:r.targets,dying:r.dying,peas:r.projectiles?.live??0});if(this.playgroundHistory.length>60)this.playgroundHistory.shift();}
+    }
+    else this.checkForLoss();
     perf.section('other gameplay',finalStart);
   }
 
@@ -395,7 +437,7 @@ export class GameScene extends Phaser.Scene {
 
     if (this.shoveling) {
       const col = this.grid.worldToCol(pointer.worldX); const row = this.grid.worldToRow(pointer.worldY);
-      this.grid.getPlant(col,row)?.remove(); this.shoveling = false;this.game.events.emit('session-dirty'); return;
+      this.grid.getPlant(col,row)?.remove(); if(!this.playground)this.shoveling = false;this.game.events.emit('session-dirty'); return;
     }
     if (!this.selected){if(this.level.mode==='whack')this.bonkAt(pointer.worldX,pointer.worldY);return;}
 
@@ -408,7 +450,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (this.tryPlant(this.selected, col, row)) {
-      this.deselect();
+      if(!this.playground)this.deselect();
     }
   }
 
@@ -497,7 +539,7 @@ export class GameScene extends Phaser.Scene {
    */
   private tryPlant(type: PlantType, col: number, row: number): boolean {
     if (!this.grid.isInside(col, row) || !this.level.activeRows.includes(row)) return false;
-    if (!this.seedBank.isPlantable(type)) return false;
+    if (!this.playground&&!this.seedBank.isPlantable(type)) return false;
     if (this.level.mode === 'bowling') {
       if (col > 2) return false;
       const point = this.grid.cellToWorld(col,row);
@@ -506,7 +548,7 @@ export class GameScene extends Phaser.Scene {
     }
     if (this.grid.getPlant(col, row)||this.ctx.craterAt(col,row)) return false;
     if(type==='gravebuster'?!this.ctx.graveAt(col,row):this.ctx.graveAt(col,row))return false;
-    if ((this.level.mode === 'standard'||this.level.mode==='whack') && !this.resources.spend(PLANT_DEFS[type].cost)) return false;
+    if (!this.playground&&(this.level.mode === 'standard'||this.level.mode==='whack') && !this.resources.spend(PLANT_DEFS[type].cost)) return false;
 
     this.spawnPlant(type, col, row);
     this.seedBank.startCooldown(type);
@@ -663,7 +705,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private lose(): void {
-    if (this.finished) return;
+    if (this.finished||this.playground) return;
     this.finished = true;
     this.waves.stop();
 
@@ -681,7 +723,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private win(): void {
-    if (this.finished) return;
+    if (this.finished||this.playground) return;
     this.finished = true;
 
     const firstClear = progress.completeLevel(this.level.id, this.waves.totalWaves);

@@ -22,6 +22,13 @@ export interface WaveHooks {
   onWhackKill:(zombie:Zombie)=>void;
 }
 export class WaveManager {
+  private playgroundTick:number|null=null;
+  private get battleTick():number {return this.playgroundTick===null?this.director.snapshot.tick:Math.floor(this.playgroundTick);}
+  tickPlayground(delta:number):void {this.playgroundTick=(this.playgroundTick??0)+delta/10;}
+  addPlaygroundZombies(type:ZombieType,row:number,count:number):void {
+    if(!this.level.activeRows.includes(row))return;
+    for(let i=0;i<Math.min(10,Math.max(0,count))&&this.zombies.getLength()<160;i++)this.spawnZombie(type,0,undefined,undefined,{row,x:1200+i*35});
+  }
   private rise=new FinalGraveRise();
   private tickRemainder=0;
   private director: WaveDirector|WhackDirector;
@@ -58,7 +65,7 @@ export class WaveManager {
     this.random.restore(data.random);this.tickRemainder=data.tickRemainder;this.rise.restore(data.riseTicks);this.laneHistory=[...data.laneHistory];
   }
   restoreZombie(data:ZombieSnapshot):Zombie {
-    const zombie=Zombie.fromSave(this.scene,this.grid,data,{group:this.zombies,random:this.random,danceClock:()=>this.director.snapshot.tick,summonBackup:(leader,slot)=>this.spawnBackup(leader,slot),
+    const zombie=Zombie.fromSave(this.scene,this.grid,data,{group:this.zombies,random:this.random,danceClock:()=>this.battleTick,summonBackup:(leader,slot)=>this.spawnBackup(leader,slot),
       onDeath:this.level.mode==='whack'?z=>this.hooks.onWhackKill(z):undefined});
     this.zombies.add(zombie);return zombie;
   }
@@ -76,24 +83,25 @@ export class WaveManager {
     }
   }
   private spawnBackup(leader:Zombie,slot:number):Zombie|null {
+    if(this.playgroundTick!==null&&this.zombies.getLength()>=160)return null;
     const point=backupPositions(leader.x,leader.row).find(p=>p.slot===slot);if(!point)return null;
     const difficulty=DIFFICULTIES[getDifficulty()];
     const zombie=new Zombie(this.scene,point.x,point.row,this.grid,{type:'backup',wave:leader.waveIndex,hp:270*difficulty.health,armorHp:0,
       parameter:0.45*difficulty.speed,speed:35*difficulty.speed,speedMultiplier:difficulty.speed,dps:BALANCE.zombieEatDps,
-      emergenceMs:1500,texture:'zombie-backup',group:this.zombies,random:this.random,danceClock:()=>this.director.snapshot.tick});
+      emergenceMs:1500,texture:'zombie-backup',group:this.zombies,random:this.random,danceClock:()=>this.battleTick});
     this.zombies.add(zombie);zombie.joinDance(leader,slot);zombie.walk();return zombie;
   }
   private hostileCount():number {return this.zombies.getChildren().filter(z=>z instanceof Zombie&&z.active&&z.isHostile).length;}
-  private spawnZombie(type: ZombieType, wave: number,grave?:GridPosition,whackParameter?:number): number {
+  private spawnZombie(type: ZombieType, wave: number,grave?:GridPosition,whackParameter?:number,manual?:{row:number;x:number}): number {
     const def = ZOMBIE_DEFS[type]; const difficulty = DIFFICULTIES[getDifficulty()];
     // Prefer lanes not used in the last two spawns, while keeping randomness.
     const candidates = this.level.activeRows.filter(row => !this.laneHistory.includes(row));
-    const row = grave?.row ?? (candidates.length ? candidates : [...this.level.activeRows])[Math.floor(this.random()*(candidates.length || this.level.activeRows.length))];
+    const row = manual?.row ?? grave?.row ?? (candidates.length ? candidates : [...this.level.activeRows])[Math.floor(this.random()*(candidates.length || this.level.activeRows.length))];
     this.laneHistory.push(row); if (this.laneHistory.length > 2) this.laneHistory.shift();
     const parameter=whackParameter??(type==='polevaulter'||type==='football'?0.66+this.random()*0.02:type==='flag'||type==='dancer'||type==='backup'?0.45:0.23+this.random()*0.14);
     const sourceX=type==='flag'?800:type==='polevaulter'?870+Math.floor(this.random()*10):780+Math.floor(this.random()*40)+(this.level.waves[wave].flag?40:0);
-    const zombie = new Zombie(this.scene,grave?this.grid.cellToWorld(grave.col,row).x-12.8:sourceToWorldX(sourceX+57),row,this.grid, {
-      parameter:parameter*difficulty.speed, speedMultiplier:difficulty.speed, shieldHp:(def.shieldHp??0)*difficulty.health, emergenceMs:grave?(this.level.mode==='whack'?500:1500):0, group:this.zombies, random:this.random, danceClock:()=>this.director.snapshot.tick,summonBackup:(leader,slot)=>this.spawnBackup(leader,slot),
+    const zombie = new Zombie(this.scene,manual?.x ?? (grave?this.grid.cellToWorld(grave.col,row).x-12.8:sourceToWorldX(sourceX+57)),row,this.grid, {
+      parameter:parameter*difficulty.speed, speedMultiplier:difficulty.speed, shieldHp:(def.shieldHp??0)*difficulty.health, emergenceMs:grave?(this.level.mode==='whack'?500:1500):0, group:this.zombies, random:this.random, danceClock:()=>this.battleTick,summonBackup:(leader,slot)=>this.spawnBackup(leader,slot),
       onDeath:this.level.mode==='whack'?z=>this.hooks.onWhackKill(z):undefined,
       hp: def.hp * difficulty.health, armorHp: def.armorHp * difficulty.health,
       speed: def.speed * difficulty.speed, dps: BALANCE.zombieEatDps, texture: def.texture, type, wave,

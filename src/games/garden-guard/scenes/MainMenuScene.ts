@@ -43,6 +43,7 @@ export class MainMenuScene extends Phaser.Scene {
     add(606,491,{width:96,height:54,texture:'menu-Options1',highlight:'menu-Options2',onClick:go('settings')});
     add(671,510,{width:64,height:48,texture:'menu-Help1',highlight:'menu-Help2',onClick:go('help')});
     add(738,522,{width:62,height:48,texture:'menu-Quit1',highlight:'menu-Quit2',onClick:()=>window.location.assign('/')});
+    add(95,507,{width:132,height:38,label:'Playground',fontSize:16,color:'#e0ddb4',shadow:'#23432c',onClick:()=>this.game.events.emit('request-playground')});
     this.musicButton=add(95,545,{width:132,height:36,label:'Music',fontSize:16,color:'#e0ddb4',shadow:'#23432c',onClick:()=>this.toggleMusic()});
     this.refreshMusic();
     add(220,545,{width:106,height:36,label:'‹ Game library',fontSize:14,color:'#e0ddb4',shadow:'#23432c',onClick:()=>window.location.assign('/')});

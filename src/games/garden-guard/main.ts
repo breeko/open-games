@@ -5,7 +5,8 @@ import { getDifficulty, setDifficulty, isDifficulty } from './difficulty';
 import { settings } from './state/settings';
 import { audio } from './audio/AudioManager';
 import { LEVELS, TOTAL_LEVELS } from './levels';
-import { GAME_HEIGHT, GAME_WIDTH } from './constants';
+import type {ZombieType} from './types';
+import { GAME_HEIGHT, GAME_WIDTH, SEED_ORDER, PLANT_DEFS } from './constants';
 import { CollectionScene } from './scenes/CollectionScene';
 import { GameScene } from './scenes/GameScene';
 import { HelpScene } from './scenes/HelpScene';
@@ -28,6 +29,7 @@ function showSaveStatus(message:string):void {if(saveStatus.textContent!==messag
 if(initialSession.status==='invalid')showSaveStatus('Saved level could not resume and has been kept. Start a new level to replace it.');
 else if(initialSession.status==='unavailable')showSaveStatus('Saving is unavailable. You can still play.');
 function saveSession():void {
+  if(game.scene.isActive('game')){const scene=game.scene.getScene('game');if(scene instanceof GameScene&&scene.isPlayground)return;}
   if(!savingEnabled)return;
   if(clearSessionPending){
     const result=sessionStore.clear();clearSessionPending=result.status!=='cleared';
@@ -176,7 +178,7 @@ game.events.on('session-dirty',()=>{capturePending=true;});
 document.querySelector<HTMLButtonElement>('#retry')!.onclick = () => {
   setPaused(false);
   const scene = game.scene.getScene('game') as GameScene;
-  if (game.scene.isActive('game')) scene.scene.restart({levelId:scene.levelId});
+  if (game.scene.isActive('game')) scene.scene.restart({levelId:scene.levelId,playground:scene.isPlayground,playgroundMode:scene.isPlayground?scene.playgroundReport.mode:undefined});
 };
 function openMenu():void {
   saveSession();
@@ -209,6 +211,7 @@ let queuedLevel:number|null=null;
 game.events.once('assets-ready',()=>{
   assetsReady=true;
   if(queuedLevel!==null){const id=queuedLevel;queuedLevel=null;openLevel(id);}
+  else if(new URLSearchParams(location.search).get('mode')==='playground')openPlayground();
   else if(initialSession.status==='valid')openSavedLevel(initialSession.value);
 });
 function openSavedLevel(saved:GardenSession):void {
@@ -237,7 +240,7 @@ document.querySelector<HTMLButtonElement>('#previous')!.onclick = () => openLeve
 document.querySelector<HTMLButtonElement>('#next')!.onclick = () => openLevel(currentLevel + 1);
 difficultySelect.onchange = () => {
   if (isDifficulty(difficultySelect.value)) setDifficulty(difficultySelect.value);
-  openLevel(currentLevel);
+  if(playgroundScene())openPlayground();else openLevel(currentLevel);
 };
 let lastStatus = '';
 let lastShellUpdate=0;
@@ -380,3 +383,67 @@ function refreshSpeed():void {
 function toggleSpeed():void {settings.set('gameSpeed',settings.current.gameSpeed===1?2:1);}
 speedToggle.onclick=toggleSpeed;speedMenu.onclick=toggleSpeed;
 settings.on('changed',refreshSpeed);refreshSpeed();
+
+const playgroundPanel=document.querySelector<HTMLElement>('#playground-panel')!;
+const playgroundTools=document.querySelector<HTMLButtonElement>('#playground-tools')!;
+let playgroundToolsVisible=true;
+function playgroundScene():GameScene|null {const scene=game.scene.getScene('game');return game.scene.isActive('game')&&scene instanceof GameScene&&scene.isPlayground?scene:null;}
+function openPlayground():void {
+ saveSession();setPaused(false);
+ for(const scene of game.scene.getScenes(true))game.scene.stop(scene.scene.key);
+ playgroundToolsVisible=true;game.scene.start('game',{playground:true,playgroundMode:document.querySelector<HTMLSelectElement>('#playground-mode')!.value==='night'?'night':'day'});
+ showSaveStatus('Playground is temporary. Your campaign save is kept.');
+}
+document.querySelector<HTMLButtonElement>('#playground-open')!.onclick=openPlayground;
+game.events.on('request-playground',openPlayground);
+playgroundTools.onclick=()=>{playgroundToolsVisible=!playgroundToolsVisible;refreshPlayground();};
+document.querySelector<HTMLButtonElement>('#playground-hide')!.onclick=()=>{playgroundToolsVisible=false;refreshPlayground();};
+document.querySelector<HTMLSelectElement>('#playground-mode')!.value=new URLSearchParams(location.search).get('lawn')==='night'?'night':'day';
+const playgroundPlant=document.querySelector<HTMLSelectElement>('#playground-plant')!;
+for(const type of SEED_ORDER)playgroundPlant.add(new Option(PLANT_DEFS[type].label,type));
+const zombieTypes:readonly ZombieType[]=['basic','conehead','buckethead','polevaulter','newspaper','screendoor','football','dancer','backup','flag'];
+const playgroundZombie=document.querySelector<HTMLSelectElement>('#playground-zombie')!;
+for(const type of zombieTypes)playgroundZombie.add(new Option(type==='screendoor'?'Screen door':type[0].toUpperCase()+type.slice(1),type));
+playgroundZombie.value='basic';
+playgroundZombie.onchange=()=>{const scene=playgroundScene(),type=zombieTypes.find(t=>t===playgroundZombie.value);if(scene&&type)scene.playgroundZombie=type;};
+document.querySelector<HTMLButtonElement>('#playground-arm')!.onclick=()=>{
+ const scene=playgroundScene(),type=SEED_ORDER.find(t=>t===playgroundPlant.value);if(!scene||!type)return;
+ scene.selectPlaygroundPlant(type);document.querySelector('#playground-selection')!.textContent=`${PLANT_DEFS[type].label} selected — tap any empty lawn squares.`;
+};
+document.querySelector<HTMLButtonElement>('#playground-spawn')!.onclick=()=>{
+ const scene=playgroundScene(),type=zombieTypes.find(t=>t===playgroundZombie.value);if(!scene||!type)return;
+ const lane=document.querySelector<HTMLSelectElement>('#playground-lane')!.value;
+ scene.addPlaygroundZombies(type,lane==='all'?null:Number(lane),Number(document.querySelector<HTMLSelectElement>('#playground-count')!.value));
+};
+document.querySelector<HTMLButtonElement>('#playground-fill')!.onclick=()=>{playgroundScene()?.fillPlayground();refreshPlayground();};
+document.querySelector<HTMLButtonElement>('#playground-clear')!.onclick=openPlayground;
+document.querySelector<HTMLSelectElement>('#playground-mode')!.onchange=openPlayground;
+document.querySelector<HTMLButtonElement>('#playground-clear-zombies')!.onclick=()=>playgroundScene()?.clearPlaygroundZombies();
+document.querySelector<HTMLButtonElement>('#playground-graves')!.onclick=()=>playgroundScene()?.addPlaygroundGraves();
+const continuous=document.querySelector<HTMLButtonElement>('#playground-continuous')!;
+continuous.onclick=()=>{const scene=playgroundScene();if(scene)scene.playgroundContinuous=!scene.playgroundContinuous;refreshPlayground();};
+function refreshPlayground():void {
+ const scene=playgroundScene();playgroundTools.hidden=!scene;playgroundPanel.hidden=!scene||!playgroundToolsVisible;
+ if(!scene)return;
+ continuous.textContent=`Repeat waves: ${scene.playgroundContinuous?'On':'Off'}`;continuous.setAttribute('aria-pressed',String(scene.playgroundContinuous));
+ if(playgroundPanel.hidden)return;
+ const r=scene.playgroundReport,p=r.projectiles;
+ document.querySelector('#playground-readout')!.textContent=`${(r.elapsedMs/1000).toFixed(1)}s · ${r.plants} plants · ${r.zombies} zombies
+Shootable targets: ${r.targets} · dying: ${r.dying}
+Peas alive: ${p?.live??0}
+Spawned: ${p?.spawned??0} · drawn: ${p?.drawnAtLeastOnce??0}
+Missing live draws: ${p?.missingDraws??0}
+Removed before first draw: ${p?.removedBeforeFirstDraw??0}
+Hit: ${p?.removed.hit??0} · expired: ${p?.removed.expired??0} · offscreen: ${p?.removed.offscreen??0}
+Unexpected removals: ${p?.removed.unexpected??0}`;
+}
+game.events.on('playground-started',refreshPlayground);
+game.events.on('session-started',refreshPlayground);
+game.events.on('session-restored',refreshPlayground);
+setInterval(refreshPlayground,500);
+document.querySelector<HTMLButtonElement>('#playground-report')!.onclick=()=>{
+ const scene=playgroundScene();if(!scene)return;
+ const report={version:1,createdAt:new Date().toISOString(),userAgent:navigator.userAgent,speed:settings.current.gameSpeed,...scene.playgroundReport,performance:perf.history.snapshot()};
+ const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));
+ const a=document.createElement('a');a.href=url;a.download='garden-projectile-report.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};

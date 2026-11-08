@@ -15,6 +15,8 @@ export class Hud {
 
   private progressFill: Phaser.GameObjects.Rectangle;
 
+  private playground=false;
+  setPlayground():void {this.playground=true;this.sunText.setText('∞');this.levelText.setText('Playground');this.waveText.setText('PLAYGROUND');}
   private bannerTimer?: Phaser.Time.TimerEvent;
 
   constructor(scene: Phaser.Scene, resources: ResourceManager, level: LevelDefinition) {
@@ -74,7 +76,7 @@ export class Hud {
       if(wave.flag)scene.add.image(barX+12+((index+1)/level.waves.length)*228,barY-20,'FlagMeterParts','flag').setDisplaySize(30,30).setDepth(DEPTH.ui+2);
     });
     resources.on('changed', (sun: number) => {
-      if (level.mode === 'standard'||level.mode==='whack') this.sunText.setText(String(sun));
+      if (!this.playground&&(level.mode === 'standard'||level.mode==='whack')) this.sunText.setText(String(sun));
     });
 
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.bannerTimer?.remove());
@@ -83,6 +85,7 @@ export class Hud {
   setProgress(fraction: number): void { this.progressFill.width = 235 * fraction; }
 
   setWave(wave: number, total: number): void {
+    if(this.playground)return;
     this.waveText.setText(`Wave ${wave} / ${total}`);
   }
 

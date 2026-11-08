@@ -120,6 +120,7 @@ export abstract class Shooter extends Plant {
       pea.setData('slowMs', this.def.slow.durationMs);
     }
 
+    this.ctx.onProjectileSpawn?.(pea);
     audio.sfx('shoot');
   }
 

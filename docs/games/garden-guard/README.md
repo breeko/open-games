@@ -161,3 +161,39 @@ report includes the selected game speed when comparing device measurements.
 Validation compares complete snapshots after 200 normal frames and 100 double
 frames for day, bowling, conveyor, whack, a busy night board and frozen dancers;
 checks double-speed continuation/restoration, live speed changes and pause.
+
+## Public Playground
+
+Choose **Playground** from the main menu or in-game Menu, or open
+`/games/garden-guard/?mode=playground` (`&lawn=night` starts on the night lawn).
+Choose day/night, arm any of the sixteen plants, and tap empty cells repeatedly.
+Planting costs no sun and has no recharge. All plants stay active on either lawn.
+Add zombies by type, lane and count; optionally repeat an eight-second supply
+in the first four lanes. **Fill 4 rows** places 28 Peashooters with a continuous
+basic-zombie supply. Graves, shoveling, clear-zombies and clear-board controls
+let players build other test situations. There is no campaign win/loss or
+automatic Adventure wave progression; a 160-zombie cap bounds crowd overload.
+Hide the tools to see the whole lawn, and use the existing pause/speed controls.
+
+Playgrounds are temporary: refresh/leave resets the board. Entering saves any
+active campaign first; playground autosaves are explicitly excluded from the
+campaign storage path. They neither clear active campaign saves nor award wins,
+attempts or unlocks. **Resume saved level** still restores the campaign.
+
+Projectile diagnostics are opt-in to the Playground, with no per-projectile
+tracking in campaign mode. They count spawn, first draw, live draw omissions,
+hits, expiry, offscreen removal and unexpected destruction. Download the report
+with the last minute of target/dying/projectile activity and performance data.
+The report stays local until the player chooses to share it.
+
+Developer reproduction: open
+`/scripts/games/garden-guard/projectile-browser-check.html` through Vite.
+Twelve crowded-board tests vary speed, synchronized volleys and 60/30/15-FPS
+frame intervals; four additional runs simulate three minutes of the public
+four-row preset on day/night lawns at both speeds. The tested runs submitted
+every live pea for Canvas drawing with no unexpected disappearances. Pauses
+with only dying, untargetable zombies were observed; this is a possible
+explanation for firing gaps, not a confirmed reproduction of the reported
+physical-device issue. Canvas submission checks do not prove the final browser
+compositor displayed every pixel. Use a report from the affected device to
+continue diagnosing if the symptom recurs.

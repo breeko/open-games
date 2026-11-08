@@ -43,6 +43,7 @@ export class SeedBank extends Phaser.Events.EventEmitter {
     seeds: readonly PlantType[],
     private readonly supplied = false,
     private readonly expanded = false,
+    private readonly instant = false,
   ) {
     super();
 
@@ -87,7 +88,7 @@ export class SeedBank extends Phaser.Events.EventEmitter {
   isPlantable(type: PlantType): boolean {
     const card = this.cards.get(type);
     if (!card) return false;
-    return this.supplied ? (this.stock.get(type) ?? 0) > 0 : card.isReady() && this.resources.canAfford(PLANT_DEFS[type].cost);
+    return this.supplied ? (this.stock.get(type) ?? 0) > 0 : (this.instant||card.isReady()) && this.resources.canAfford(PLANT_DEFS[type].cost);
   }
 
   /** Order of the seeds in the bank, so hotkeys can be mapped to them. */
@@ -133,6 +134,7 @@ export class SeedBank extends Phaser.Events.EventEmitter {
     this.stock.set(type,quantity); this.cards.get(type)?.setQuantity(quantity); this.refreshAffordability();
   }
   startCooldown(type: PlantType): void {
+    if(this.instant)return;
     if (!this.supplied) { this.cards.get(type)?.startCooldown(); return; }
     const quantity = Math.max(0,(this.stock.get(type) ?? 0) - 1);
     this.stock.set(type,quantity); this.cards.get(type)?.setQuantity(quantity); this.refreshAffordability();
