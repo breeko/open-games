@@ -190,6 +190,26 @@
     "threepeater": {
       "width": 128,
       "height": 144
+    },
+    "tanglekelp": {
+      "width": 108,
+      "height": 88
+    },
+    "jalapeno": {
+      "width": 96,
+      "height": 128
+    },
+    "zombie-snorkel": {
+      "width": 128,
+      "height": 240
+    },
+    "zombie-snorkel-swim": {
+      "width": 90,
+      "height": 80
+    },
+    "zombie-snorkel-eat": {
+      "width": 110,
+      "height": 148
     }
   }
 }

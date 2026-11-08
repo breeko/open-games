@@ -12,6 +12,12 @@ three=art.pose('ThreePeater',124,('blink',))
 for frame in [15,56,97]:three.alpha_composite(art.pose('ThreePeater',frame,('blink',)))
 art.save_pose('threepeater',three,(128,144))
 art.save_pose('squash',art.pose('Squash',5,('blink',)),(104,128))
+art.save_pose('tanglekelp',art.pose('Tanglekelp',5,('blink',)),(108,88))
+art.save_pose('jalapeno',art.pose('Jalapeno',5,('blink',)),(96,128))
+# Match the walking export's ~1.66 raster factor for each cropped state;
+# fitting every cropped head into a full-width canvas would enlarge its face.
+for key,frame,size in [('zombie-snorkel',22,(128,240)),('zombie-snorkel-swim',78,(90,80)),('zombie-snorkel-eat',97,(110,148))]:
+ art.save_pose(key,art.pose('Zombie_snorkle',frame,('anim_head_lips','anim_head_jaw','anim_head_snorkle')) ,size)
 exclude=('flag','screendoor','whitewater','mustache','tongue','bucket','cone','hair')
 tube=art.pose('Zombie',260,only=['Zombie_duckytube']);tube_box=tube.getbbox()
 if not tube_box:raise RuntimeError('Missing original duck tube track')
@@ -35,4 +41,11 @@ state={};values=[]
 for frame in ground.findall('t'):
  state.update({c.tag:c.text for c in frame});values.append(float(state.get('x',0)))
 path=Path('src/games/garden-guard/reference/ground-tracks.json');tracks=json.loads(path.read_text());tracks['swim']={'file':'Zombie','clip':'anim_swim','start':250,'frameCount':42,'groundX':values[250:292]};path.write_text(json.dumps(tracks,indent=2)+'\n')
+root=ET.fromstring('<root>'+(art.layers/'Zombie_snorkle.reanim').read_text()+'</root>')
+ground=next(t for t in root.findall('track') if t.findtext('name')=='_ground')
+state={};values=[]
+for frame in ground.findall('t'):
+ state.update({c.tag:c.text for c in frame});values.append(float(state.get('x',0)))
+tracks['snorkelWalk']={'file':'Zombie_snorkle','clip':'anim_walk','start':22,'frameCount':37,'groundX':values[22:59]}
+path.write_text(json.dumps(tracks,indent=2)+'\n')
 print('Exported Lily Pad, Squash, shared duck-tube poses, pool board and swimming ground track.')

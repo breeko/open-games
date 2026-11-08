@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import {poolLaneAllowed,canSwim,finalPoolCells} from '../terrain';
+import {poolLaneAllowed,finalPoolCells} from '../terrain';
 import {ZOMBIE_RULES} from '../reference/rules';
 import { DIFFICULTIES, getDifficulty } from '../difficulty';
 import { BALANCE, ZOMBIE_DEFS } from '../constants';
@@ -80,7 +80,7 @@ export class WaveManager {
     if(this.rise.step()){
       if(this.level.environment==='pool'){
         const types=allowedZombies(this.level.id).filter(type=>type==='basic'||type==='conehead'||type==='buckethead');
-        for(const cell of finalPoolCells(this.random)){
+        for(const cell of finalPoolCells(this.random,this.level.id)){
           let roll=this.random()*types.reduce((sum,t)=>sum+ZOMBIE_RULES[t].weight,0);let pick:ZombieType='basic';
           for(const type of types){roll-=ZOMBIE_RULES[type].weight;if(roll<0){pick=type;break;}}
           this.spawnZombie(pick,this.totalWaves-1,cell);
@@ -106,12 +106,12 @@ export class WaveManager {
   private spawnZombie(type: ZombieType, wave: number,grave?:GridPosition,whackParameter?:number,manual?:{row:number;x:number}): number {
     const def = ZOMBIE_DEFS[type]; const difficulty = DIFFICULTIES[getDifficulty()];
     // Prefer lanes not used in the last two spawns, while keeping randomness.
-    const eligible=this.level.activeRows.filter(row=>this.level.environment!=='pool'||(manual?(!this.grid.isWaterRow(row)||canSwim(type)):poolLaneAllowed(type,row,wave)));
-    if(manual&&!eligible.includes(manual.row))return 0;
+    const eligible=this.level.activeRows.filter(row=>type==='snorkel'?this.level.environment==='pool'&&this.grid.isWaterRow(row):this.level.environment!=='pool'||(manual?poolLaneAllowed(type,row,99):poolLaneAllowed(type,row,wave)));
+    if(!eligible.length||manual&&!eligible.includes(manual.row))return 0;
     const candidates = eligible.filter(row => !this.laneHistory.includes(row));
     const row = manual?.row ?? grave?.row ?? (candidates.length ? candidates : [...eligible])[Math.floor(this.random()*(candidates.length || eligible.length))];
     this.laneHistory.push(row); if (this.laneHistory.length > 2) this.laneHistory.shift();
-    const parameter=whackParameter??(type==='polevaulter'||type==='football'?0.66+this.random()*0.02:type==='flag'||type==='dancer'||type==='backup'?0.45:0.23+this.random()*0.14);
+    const parameter=whackParameter??(type==='polevaulter'||type==='football'||type==='snorkel'?0.66+this.random()*0.02:type==='flag'||type==='dancer'||type==='backup'?0.45:0.23+this.random()*0.14);
     const sourceX=type==='flag'?800:type==='polevaulter'?870+Math.floor(this.random()*10):780+Math.floor(this.random()*40)+(this.level.waves[wave].flag?40:0);
     const zombie = new Zombie(this.scene,manual?.x ?? (grave?this.grid.cellToWorld(grave.col,row).x-12.8:sourceToWorldX(sourceX+57)),row,this.grid, {
       parameter:parameter*difficulty.speed, speedMultiplier:difficulty.speed, shieldHp:(def.shieldHp??0)*difficulty.health, emergenceMs:grave?(this.level.mode==='whack'||this.level.environment==='pool'?500:1500):0, group:this.zombies, random:this.random, danceClock:()=>this.battleTick,summonBackup:(leader,slot)=>this.spawnBackup(leader,slot),

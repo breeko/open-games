@@ -1,0 +1,58 @@
+{
+  "sourcePin": "325b2229a7225d73870bb69322eefcda3a45bf8d",
+  "checked": "wave counts, complete allowed-enemy sets, snorkel budget/weight/first wave, new plant costs and recharges",
+  "levels": [
+    {
+      "level": 21,
+      "waves": 10,
+      "enemies": [
+        "basic",
+        "conehead"
+      ]
+    },
+    {
+      "level": 22,
+      "waves": 20,
+      "enemies": [
+        "basic",
+        "buckethead",
+        "conehead",
+        "football",
+        "newspaper"
+      ]
+    },
+    {
+      "level": 23,
+      "waves": 20,
+      "enemies": [
+        "basic",
+        "conehead",
+        "snorkel"
+      ]
+    },
+    {
+      "level": 24,
+      "waves": 30,
+      "enemies": [
+        "basic",
+        "buckethead",
+        "conehead",
+        "newspaper",
+        "polevaulter",
+        "snorkel"
+      ]
+    }
+  ],
+  "snorkel": {
+    "cost": 3,
+    "weight": 2000,
+    "firstWave": 10,
+    "startLevel": 23,
+    "levels": [
+      23,
+      24
+    ]
+  },
+  "result": "pass",
+  "limitation": "Rule comparison does not establish identical RNG, collision geometry, animations or human difficulty."
+}

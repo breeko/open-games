@@ -86,3 +86,17 @@ export function busyPoolSession():GardenSession {
  data.projectiles=[{x:700,y:410,texture:'pea',velocityX:532.8,velocityY:0,row:2,damage:20,slowFactor:null,slowMs:null,expiresMs:null,originX:200}];
  return gardenSessionSchema.parse(data);
 }
+
+/** A Threepeater volley, snorkel transition and in-progress kelp grab. */
+export function nextPoolSession():GardenSession {
+ const data=freshSession(24);data.sun=600;
+ data.plants=[
+  {type:'lilypad',col:0,row:2,hp:300,behavior:{kind:'idle'}},
+  {type:'threepeater',col:0,row:2,hp:300,behavior:{kind:'shooter',cooldown:90,remainder:3,shots:[{row:1,remainingMs:330},{row:2,remainingMs:330},{row:3,remainingMs:330}]}},
+  {type:'tanglekelp',col:5,row:3,hp:300,behavior:{kind:'kelp',remainingMs:720,targetIndex:1}},
+ ];
+ const snorkel=exampleZombie('snorkel',2,'pool');snorkel.snorkel={phase:'rise',remainingMs:300,remainder:3};snorkel.motion={gait:'snorkelWalk',parameter:.2,phase:.3,remainder:0};
+ const grabbed=exampleZombie('buckethead',3,'pool');grabbed.x=770;grabbed.motion.gait='swim';
+ data.zombies=[snorkel,grabbed,exampleZombie('basic',1,'pool')];
+ return gardenSessionSchema.parse(data);
+}

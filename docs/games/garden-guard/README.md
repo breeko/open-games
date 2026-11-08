@@ -1,6 +1,6 @@
 # Open Games — Garden Guard
 
-An ad-free, touch-friendly Plants vs. Zombies reference prototype. Twenty-two day, night and pool levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
+An ad-free, touch-friendly Plants vs. Zombies reference prototype. Twenty-four day, night and pool levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
 
 [Play Garden Guard](https://opengames-breeko.vercel.app/games/garden-guard/)
 
@@ -55,7 +55,7 @@ bun run audit
 bun run build
 ```
 
-Eighty tests cover the twenty-two-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, single-credit sun pickup behavior, validated sessions and restored director/random/motion state. A developer browser check also exercises real Phaser entities, all twenty-two levels and detailed mid-action restoration. Diagnostics show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build retains a bundle-size advisory for Phaser.
+Eighty-four tests cover the twenty-four-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, single-credit sun pickup behavior, validated sessions and restored director/random/motion state. A developer browser check also exercises real Phaser entities, all twenty-four levels and detailed mid-action restoration. Diagnostics show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build retains a bundle-size advisory for Phaser.
 
 Artwork regression checks (requires Python and Pillow):
 
@@ -250,3 +250,10 @@ Two extra eligible enemies emerge from distinct water cells in columns 5–8 two
 The existing versioned storage keys and r1 marker are preserved. Saves allow separate support/defender layers, six lanes, swimming phases and Squash mid-jump, while validating against each level's terrain. All earlier 20 levels continue through the same browser regression suite. The map is paged into Day, Night and Pool so the extra levels remain touch-sized. Pool is also exposed as a Playground lawn.
 
 See [source rules and difficulty evidence](audit/accuracy.md) and [save compatibility](saves.md). Baseline is source-backed, not a claim of exact original execution or measured retail-equivalent difficulty.
+
+
+## Pool: 3-3 and 3-4
+
+3-3 has 20 waves and introduces Snorkel Zombies, alongside Threepeater. 3-4 has 30 waves and adds Tangle Kelp to the loadout. Snorkels appear from wave ten, only in water; they evade ordinary peas underwater and surface to eat. Block them on Lily Pads so shooters can hit them, or use Squash/blasts. Plant kelp directly in empty water, without a pad: it consumes one swimmer and itself. Both levels end with three extra swimmers emerging farther into the pool. 3-3 rewards kelp; 3-4 rewards Jalapeno (available to try in Playground; 3-5 is not built yet).
+
+The pool Playground bank includes the new defenders and offers Snorkels in the zombie selector. Diagnostics include snorkel phase, submergence, projectile vulnerability and kelp capture. The Almanac fits all 21 plants.

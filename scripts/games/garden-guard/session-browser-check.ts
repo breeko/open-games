@@ -7,7 +7,7 @@ import { PreloadScene } from '../../../src/games/garden-guard/scenes/PreloadScen
 import { MainMenuScene } from '../../../src/games/garden-guard/scenes/MainMenuScene';
 import { GameScene } from '../../../src/games/garden-guard/scenes/GameScene';
 import { gardenSessionSchema, type GardenSession } from '../../../src/games/garden-guard/state/session-data';
-import { busyPoolSession,busyNightSession, freshSession, exampleZombie } from '../../../tests/games/garden-guard/fixtures/session';
+import { nextPoolSession,busyPoolSession,busyNightSession, freshSession, exampleZombie } from '../../../tests/games/garden-guard/fixtures/session';
 import {nightDiagnostic} from '../../../src/games/garden-guard/diagnostics/night-scenarios';
 import { GRID } from '../../../src/games/garden-guard/constants';
 import { LEVELS } from '../../../src/games/garden-guard/levels';
@@ -68,6 +68,34 @@ function run(): void {
     catch (error) { results.textContent += `FAIL ${name}\n${error instanceof Error ? error.stack : String(error)}\n`;failed++; }
   };
   for (const level of LEVELS) check(`level ${level.name}: ${level.mode} round trip and 2s continuation`, () => roundTrip(freshSession(level.id), 100));
+  check('pool 3-4: delayed Threepeater volley, snorkel transition and kelp target continue identically',()=>roundTrip(nextPoolSession(),300));
+  for(const phase of ['walk','enter','swim','rise','eat','dive','exit'] as const)check(`snorkel ${phase}: saved transition and continued combat`,()=>{
+    const data=freshSession(23),z=exampleZombie('snorkel',2,'pool');z.snorkel={phase,remainingMs:phase==='enter'?530:phase==='rise'||phase==='dive'?300:0,remainder:3};z.motion.gait='snorkelWalk';z.x=phase==='walk'?1250:700;data.zombies=[z];
+    data.plants=[{type:'lilypad',col:4,row:2,hp:300,behavior:{kind:'idle'}},{type:'wallnut',col:4,row:2,hp:4000,behavior:{kind:'idle'}}];roundTrip(data,150);
+  });
+  check('snorkels evade peas underwater, surface before biting and swim at direct source speed',()=>{
+    const data=freshSession(23),z=exampleZombie('snorkel',2,'pool');z.snorkel={phase:'swim',remainingMs:0,remainder:0};z.motion={gait:'snorkelWalk',parameter:.2,phase:0,remainder:0};z.x=1000;data.zombies=[z];
+    const scene=open(data);step(1);const zombie=scene.children.list.find((c):c is Zombie=>c instanceof Zombie)!;
+    equal(zombie.canBeShot,false,'submerged projectile immunity');const x=zombie.x;step(50);equal(Math.round((x-zombie.x)*100)/100,32,'0.2 source pixels/tick');
+    const before=capture(scene);before.plants=[{type:'lilypad',col:6,row:2,hp:300,behavior:{kind:'idle'}},{type:'wallnut',col:6,row:2,hp:4000,behavior:{kind:'idle'}}];before.zombies[0].x=900;
+    const eating=open(before);step(20);const during=capture(eating);equal(during.zombies[0].snorkel?.phase,'rise','surfacing');equal(during.plants[1].hp,4000,'no bites while rising');
+    const exposed=eating.children.list.find((c):c is Zombie=>c instanceof Zombie)!;equal(exposed.canBeShot,true,'vulnerable while surfacing');step(12);if(capture(eating).plants[1].hp>=4000)throw new Error('Never ate after surfacing');
+  });
+  check('real pea collision passes through submerged snorkels but hits them while surfacing',()=>{
+    const data=freshSession(23),z=exampleZombie('snorkel',2,'pool');z.x=900;z.motion.gait='snorkelWalk';z.snorkel={phase:'swim',remainingMs:0,remainder:0};data.zombies=[z];
+    data.projectiles=[{x:890,y:440,texture:'pea',velocityX:532.8,velocityY:0,row:2,damage:20,slowFactor:null,slowMs:null,expiresMs:null,originX:200}];
+    let scene=open(data);step(3);equal(capture(scene).zombies[0].hp,270,'submerged immune');
+    data.zombies[0].snorkel={phase:'rise',remainingMs:400,remainder:0};data.plants=[{type:'lilypad',col:6,row:2,hp:300,behavior:{kind:'idle'}},{type:'wallnut',col:6,row:2,hp:4000,behavior:{kind:'idle'}}];
+    scene=open(data);step(3);equal(capture(scene).zombies[0].hp,250,'exposed pea hit');
+  });
+  check('Tangle Kelp plants without a pad, consumes one armored or submerged target, and survives reload mid-grab',()=>{
+    const data=freshSession(24);data.sun=200;const z=exampleZombie('snorkel',2,'pool');z.x=640;z.snorkel={phase:'swim',remainingMs:0,remainder:0};z.motion.gait='snorkelWalk';data.zombies=[z];
+    const scene=open(data);equal(scene.plantAt('tanglekelp',4,0),false,'no kelp on land');equal(scene.plantAt('tanglekelp',4,2),true,'bare water planting');equal(capture(scene).sun,175,'25 sun');step(1);
+    const grab=capture(scene);equal(grab.plants[0].behavior.kind,'kelp','grab behavior');if(grab.plants[0].behavior.kind!=='kelp'||grab.plants[0].behavior.targetIndex!==0)throw new Error('No linked prey');
+    const x=grab.zombies[0].x;step(25);equal(capture(scene).zombies[0].x,x,'prey held');roundTrip(capture(scene),15);
+    const restored=open(capture(scene));step(60);equal(capture(restored).zombies.length,0,'one prey drowned');equal(capture(restored).plants.length,0,'kelp consumed');
+  });
+  for(const speed of [1,2] as const)check(`pool 3-4: new combat resumes at ${speed}x`,()=>{const previous=settings.current.gameSpeed;try{settings.set('gameSpeed',speed);roundTrip(nextPoolSession(),200);}finally{settings.set('gameSpeed',previous);}});
   check('pool: stacked Lily Pads, six lanes, swim gait and Squash mid-jump continue identically',()=>roundTrip(busyPoolSession(),300));
   check('pool: bare water rejects plants without spending sun; Lily Pad supports one defender',()=>{
     const data=freshSession(21);data.sun=300;const scene=open(data);
@@ -119,6 +147,28 @@ function run(): void {
     const after=capture(scene);equal(after.zombies.length,2,'two swimmers');equal(after.zombies.map(z=>z.emergenceTotal),[500,500],'pool emergence is 50 ticks');
     if(after.zombies.some(z=>z.row!==2&&z.row!==3||!['basic','conehead','buckethead'].includes(z.type)||z.x<704||z.x>1216))throw new Error('Wrong pool emergence');
     roundTrip(after,150);
+  });
+  for(const levelId of [23,24])check(`pool ${levelId-20}: final rise creates three swimmers and resumes pending emergence`,()=>{
+    const data=freshSession(levelId);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');
+    data.waves.director.index=levelId===23?19:29;data.waves.director.countdown=10000;data.waves.director.initialHealth=270;data.waves.riseTicks=20;
+    const scene=open(data);step(9);equal(capture(scene).zombies.length,0,'still pending');roundTrip(capture(scene),1);
+    const next=open(capture(scene));step(2);const saved=capture(next);equal(saved.zombies.length,3,'three final ambushers');
+    if(saved.zombies.some(z=>z.type==='snorkel'||(z.row!==2&&z.row!==3)))throw new Error('Wrong ambush eligibility');roundTrip(saved,50);
+  });
+  check('Threepeater fires three delayed lanes, clips edge rows and ignores fully submerged-only targets',()=>{
+    for(const row of [0,2,5]){
+      const data=freshSession(23);data.plants=[{type:'threepeater',col:0,row,hp:300,behavior:{kind:'shooter',cooldown:1,remainder:0,shots:[]}},...(row===2?[{type:'lilypad' as const,col:0,row,hp:300,behavior:{kind:'idle' as const}}]:[])];
+      data.zombies=[exampleZombie('basic',row,'pool')];const scene=open(data);step(2);let save=capture(scene);const firing=save.plants.find(p=>p.type==='threepeater')!;
+      if(firing.behavior.kind!=='shooter')throw new Error('Wrong behavior');equal(firing.behavior.shots.map(s=>s.row),row===0?[0,1]:row===5?[4,5]:[1,2,3],'valid target lanes');equal(save.projectiles.length,0,'350ms release delay');
+      step(18);save=capture(scene);equal([...new Set(save.projectiles.map(p=>p.row))].sort(),row===0?[0,1]:row===5?[4,5]:[1,2,3],'peas in all valid lanes');roundTrip(save,30);
+    }
+  });
+  check('Jalapeno reward clears its lane after one second, including submerged snorkels',()=>{
+    const scene=open(freshSession(24));scene.scene.restart({playground:true,playgroundMode:'pool'});step(1);scene.playgroundContinuous=false;
+    scene.addPlaygroundZombies('snorkel',2,1);scene.addPlaygroundZombies('buckethead',2,1);scene.addPlaygroundZombies('basic',0,1);step(150);
+    const targets=scene.children.list.filter((z):z is Zombie=>z instanceof Zombie&&z.active&&z.row===2);if(targets.length!==2||!targets.find(z=>z.variant==='snorkel'&&!z.canBeShot))throw new Error('No submerged target');
+    equal(scene.plantAt('lilypad',0,2),true,'pad');equal(scene.plantAt('jalapeno',0,2),true,'Jalapeno');step(49);equal(targets.filter(z=>z.active&&!z.isDead).length,2,'no early blast');step(2);
+    equal(targets.filter(z=>z.active&&!z.isDead).length,0,'whole water lane burned');equal(scene.children.list.filter(z=>z instanceof Zombie&&z.active&&!z.isDead&&z.row===0).length,1,'other lane spared');
   });
   check('pool: daytime mushrooms remain asleep while sky sun and supported defenders continue',()=>{
     const data=freshSession(21);data.seeds=['lilypad','puffshroom','sunshroom','peashooter'];data.seedBank=data.seeds.map(type=>({type,stock:0,remainingMs:0,totalMs:7500}));

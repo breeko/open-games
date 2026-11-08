@@ -59,6 +59,7 @@ export const BALANCE = {
  * exactly like the original game's cone and bucket.
  */
 export const ZOMBIE_DEFS: Record<ZombieType, ZombieDefinition> = {
+  snorkel:{texture:'zombie-snorkel',hp:270,armorHp:0,speed:52},
   dancer:{texture:'zombie-dancer',hp:500,armorHp:0,speed:35},
   backup:{texture:'zombie-backup',hp:270,armorHp:0,speed:35},
   football:{texture:'zombie-football',hp:270,armorHp:1400,speed:52},
@@ -79,6 +80,8 @@ export const ZOMBIE_BARE_TEXTURE = 'zombie';
 /* -------------------------------------------------------------------------- */
 
 export const PLANT_DEFS: Record<PlantType, PlantDefinition> = {
+  jalapeno:{type:'jalapeno',label:'Jalapeno',cost:125,cooldownMs:50000,texture:'jalapeno',maxHp:300,description:'Burns every hostile zombie in its lane after one second, then disappears. Reward from 3-4; try it in the Playground.'},
+  tanglekelp:{type:'tanglekelp',label:'Tangle Kelp',cost:25,cooldownMs:30000,texture:'tanglekelp',maxHp:300,description:'Plant directly in empty water, without a Lily Pad. Grabs one nearby swimmer and pulls it under, then disappears.'},
   lilypad:{type:'lilypad',label:'Lily Pad',cost:25,cooldownMs:7500,texture:'lilypad',maxHp:300,description:'Plant on water, then place another plant on top. Each pad supports one plant.'},
   squash:{type:'squash',label:'Squash',cost:50,cooldownMs:30000,texture:'squash',maxHp:300,description:'Looks for a nearby zombie, jumps, and crushes a small area once. Works on a Lily Pad too.'},
   iceshroom:{type:'iceshroom',label:'Ice-shroom',cost:75,cooldownMs:50000,texture:'iceshroom',maxHp:300,description:'Freezes enemies across the lawn, then leaves them slowed. Takes one second to activate.'},
@@ -178,7 +181,7 @@ export const PLANT_DEFS: Record<PlantType, PlantDefinition> = {
     type: 'threepeater',
     label: 'Threepeater',
     cost: 325,
-    cooldownMs: 8000,
+    cooldownMs: 7500,
     texture: 'threepeater',
     maxHp: 300,
     description:
@@ -217,7 +220,7 @@ export const SEED_ORDER: PlantType[] = [
   'snowpea',
   'chomper',
   'repeater',
-  'puffshroom','sunshroom','fumeshroom','gravebuster','hypnoshroom','scaredyshroom','iceshroom','doomshroom','lilypad','squash','threepeater',
+  'puffshroom','sunshroom','fumeshroom','gravebuster','hypnoshroom','scaredyshroom','iceshroom','doomshroom','lilypad','squash','threepeater','tanglekelp','jalapeno',
 ];
 
 /** How many seeds fit in the seed bank (the original's Day levels allow six). */

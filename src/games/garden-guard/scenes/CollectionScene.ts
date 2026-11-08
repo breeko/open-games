@@ -7,10 +7,10 @@ import type { PlantType } from '../types';
 import { Button } from '../ui/Button';
 
 const CARD_W = 140;
-const CARD_H = 120;
+const CARD_H = 100;
 const CARD_GAP = 12;
 const GRID_X = 60;
-const GRID_Y = 190;
+const GRID_Y = 160;
 const CARDS_PER_ROW = 4;
 
 const PANEL = { x: 700, y: 140, width: 520, height: 450 };
@@ -97,9 +97,9 @@ export class CollectionScene extends Phaser.Scene {
       const frame = this.add
         .rectangle(0, 0, CARD_W, CARD_H, unlocked ? 0x1e3a1a : 0x141a12)
         .setStrokeStyle(2, unlocked ? 0x3f6b39 : 0x2a3a28);
-      const icon = this.add.image(0, -18, def.texture).setScale(0.325).setAlpha(unlocked ? 1 : 0.3);
+      const icon = this.add.image(0, -20, def.texture).setScale(0.24).setAlpha(unlocked ? 1 : 0.3);
       const name = this.add
-        .text(0, 26, unlocked ? def.label : '???', {
+        .text(0, 21, unlocked ? def.label : '???', {
           fontFamily: 'Arial, sans-serif',
           fontSize: '15px',
           color: unlocked ? '#e8f5e0' : '#68765f',
@@ -107,7 +107,7 @@ export class CollectionScene extends Phaser.Scene {
         })
         .setOrigin(0.5);
       const cost = this.add
-        .text(0, 46, unlocked ? `${def.cost} sun` : 'locked', {
+        .text(0, 39, unlocked ? `${def.cost} sun` : 'locked', {
           fontFamily: 'Arial, sans-serif',
           fontSize: '14px',
           color: unlocked ? '#ffe066' : '#8a9683',

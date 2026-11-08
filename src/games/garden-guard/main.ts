@@ -415,7 +415,7 @@ document.querySelector<HTMLButtonElement>('#playground-hide')!.onclick=()=>{play
 document.querySelector<HTMLSelectElement>('#playground-mode')!.value=new URLSearchParams(location.search).get('lawn')==='pool'?'pool':new URLSearchParams(location.search).get('lawn')==='night'?'night':'day';
 const playgroundPlant=document.querySelector<HTMLSelectElement>('#playground-plant')!;
 for(const type of SEED_ORDER)playgroundPlant.add(new Option(PLANT_DEFS[type].label,type));
-const zombieTypes:readonly ZombieType[]=['basic','conehead','buckethead','polevaulter','newspaper','screendoor','football','dancer','backup','flag'];
+const zombieTypes:readonly ZombieType[]=['snorkel','basic','conehead','buckethead','polevaulter','newspaper','screendoor','football','dancer','backup','flag'];
 const playgroundZombie=document.querySelector<HTMLSelectElement>('#playground-zombie')!;
 for(const type of zombieTypes)playgroundZombie.add(new Option(type==='screendoor'?'Screen door':type[0].toUpperCase()+type.slice(1),type));
 playgroundZombie.value='basic';

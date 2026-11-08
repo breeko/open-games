@@ -1,4 +1,4 @@
-import {LilyPad,Squash} from './PoolPlants';
+import {LilyPad,Squash,TangleKelp,Jalapeno} from './PoolPlants';
 import {PuffShroom,SunShroom,FumeShroom,GraveBuster,HypnoShroom,ScaredyShroom,IceShroom,DoomShroom} from './NightPlants';
 import { PLANT_DEFS } from '../constants';
 import type { GameContext, PlantDefinition, PlantType } from '../types';
@@ -29,7 +29,7 @@ type PlantConstructor = new (
  * `lanes` / `peasPerVolley` / `damage` / `slow` in its definition.
  */
 const REGISTRY: Record<PlantType, PlantConstructor> = {
-  lilypad:LilyPad,squash:Squash,
+  lilypad:LilyPad,squash:Squash,tanglekelp:TangleKelp,jalapeno:Jalapeno,
   iceshroom:IceShroom,doomshroom:DoomShroom,
   hypnoshroom:HypnoShroom,scaredyshroom:ScaredyShroom,
   puffshroom:PuffShroom,sunshroom:SunShroom,fumeshroom:FumeShroom,gravebuster:GraveBuster,

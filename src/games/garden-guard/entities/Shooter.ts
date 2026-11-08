@@ -81,7 +81,7 @@ export abstract class Shooter extends Plant {
 
       for (let i = 0; i < peasPerLane; i += 1) {
         // Repeater-style bursts are spaced slightly apart.
-        this.schedulePea(laneRow,i*140);
+        this.schedulePea(laneRow,this.def.type==='threepeater'?350:i*140);
       }
     }
 

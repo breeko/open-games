@@ -108,7 +108,7 @@ export class GameScene extends Phaser.Scene {
   private skyFallen=0;
   private diagnosticGraphics?:Phaser.GameObjects.Graphics;
   diagnosticsVisible=false;
-  get diagnostics(){return {mode:this.level.mode,graves:[...this.graves.keys()],environment:this.level.environment,projectiles:this.peas.getChildren().filter((p):p is Phaser.Physics.Arcade.Image=>p instanceof Phaser.Physics.Arcade.Image).map(p=>({x:p.x,y:p.y,width:p.displayWidth,height:p.displayHeight,texture:p.texture.key})),level:this.level.id,difficulty:getDifficulty(),...this.waves.diagnostics,zombies:this.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie && z.active).map(z=>({frozenMs:z.freezeRemainingMs,kind:z.variant,team:z.isHostile?'enemy':'ally',x:z.x,y:z.y,row:z.row,wave:z.waveIndex+1,hp:z.remainingHealth,speed:z.currentSpeed,body:z.body?{x:z.body.x,y:z.body.y,width:z.body.width,height:z.body.height}:null}))};}
+  get diagnostics(){return {mode:this.level.mode,graves:[...this.graves.keys()],environment:this.level.environment,projectiles:this.peas.getChildren().filter((p):p is Phaser.Physics.Arcade.Image=>p instanceof Phaser.Physics.Arcade.Image).map(p=>({x:p.x,y:p.y,width:p.displayWidth,height:p.displayHeight,texture:p.texture.key})),level:this.level.id,difficulty:getDifficulty(),...this.waves.diagnostics,zombies:this.zombies.getChildren().filter((z):z is Zombie=>z instanceof Zombie && z.active).map(z=>({...z.poolDiagnostics,frozenMs:z.freezeRemainingMs,kind:z.variant,team:z.isHostile?'enemy':'ally',x:z.x,y:z.y,row:z.row,wave:z.waveIndex+1,hp:z.remainingHealth,speed:z.currentSpeed,body:z.body?{x:z.body.x,y:z.body.y,width:z.body.width,height:z.body.height}:null}))};}
   get performanceCounts(){return {level:this.level.name,plants:this.plants.length,zombies:this.zombies.getLength(),projectiles:this.peas.getLength(),displayObjects:this.children.length,drawCalls:this.game.renderer instanceof Phaser.Renderer.Canvas.CanvasRenderer?this.game.renderer.drawCount:0,physicsBodies:this.physics.world.bodies.size,tweens:this.tweens.getTweens().length};}
   private finished = false;
   get isPlaying():boolean {return !this.finished;}
@@ -156,7 +156,7 @@ export class GameScene extends Phaser.Scene {
     this.level = getLevel(this.resumeData?.levelId ?? data.levelId ?? this.level?.id ?? 1);
     this.seeds = this.level.mode==='whack'?[...this.level.availablePlants]:this.level.mode === 'standard' ? data.seeds && data.seeds.length > 0 ? [...data.seeds] : defaultSeedsForLevel(this.level.id) : [...new Set(this.level.conveyorSeeds)];
     if(this.resumeData)this.seeds=[...this.resumeData.seeds];
-    if(this.playground){this.level={...getLevel(data.playgroundMode==='pool'?22:data.playgroundMode==='night'?18:9),title:'Playground',blurb:'Unlimited sun and instant recharge. Campaign saves are safe.',startingSun:999,availablePlants:[...SEED_ORDER]};this.seeds=data.playgroundMode==='pool'?defaultSeedsForLevel(22):['peashooter','repeater','snowpea','wallnut','sunflower','cherrybomb','puffshroom','iceshroom'];}
+    if(this.playground){this.level={...getLevel(data.playgroundMode==='pool'?24:data.playgroundMode==='night'?18:9),title:'Playground',blurb:'Unlimited sun and instant recharge. Campaign saves are safe.',startingSun:999,availablePlants:[...SEED_ORDER]};this.seeds=data.playgroundMode==='pool'?defaultSeedsForLevel(24):['peashooter','repeater','snowpea','wallnut','sunflower','cherrybomb','puffshroom','iceshroom'];}
   }
 
   create(): void {
@@ -650,7 +650,7 @@ export class GameScene extends Phaser.Scene {
     return gardenSessionSchema.parse({version:1,compatibility:'garden-day-night-r1',savedAt:Date.now(),
       levelId:this.level.id,difficulty:getDifficulty(),seeds:[...this.seeds],sun:this.resources.sun,random:this.random.snapshot(),physicsRemainderMs:saveArcadeClock(this.physics.world),
       skySunTimer:this.skySunTimer,skyNext:this.skyNext,skyFallen:this.skyFallen,supplyTimer:this.supplyTimer,supplyIndex:this.supplyIndex,
-      plants:this.plants.filter(plant=>plant.active&&!plant.isDying).map(plant=>plant.save()),zombies:zombies.map(zombie=>zombie.save(zombieIndexes)),
+      plants:this.plants.filter(plant=>plant.active&&!plant.isDying).map(plant=>plant.save(zombieIndexes)),zombies:zombies.map(zombie=>zombie.save(zombieIndexes)),
       suns,projectiles,seedBank:this.seedBank.save(),waves:this.waves.save(),
       craters:[...this.craters].map(([key,c])=>{const [col,row]=key.split(',').map(Number);return {col,row,remainingMs:c.remainingMs};}),
       graves:[...this.graves.keys()].map(key=>{const [col,row]=key.split(',').map(Number);return {col,row};}),
@@ -668,6 +668,7 @@ export class GameScene extends Phaser.Scene {
     for(const plant of [...data.plants].sort((a,b)=>Number(b.type==='lilypad')-Number(a.type==='lilypad')))this.spawnPlant(plant.type,plant.col,plant.row).restore(plant);
     const zombies=data.zombies.map(zombie=>this.waves.restoreZombie(zombie));
     zombies.forEach((z,i)=>z.restoreDanceLink(data.zombies[i],zombies));
+    for(const plant of this.plants)plant.restoreZombieLinks(zombies);
     for(const crater of data.craters)this.addCrater(crater.col,crater.row,crater.remainingMs);
     this.waves.restore(data.waves);this.seedBank.restore(data.seedBank);
     for(const sun of data.suns)Sun.fromSave(this,sun,value=>this.resources.add(value),this.ctx.sunBank);

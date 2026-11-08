@@ -9,14 +9,15 @@ const ms = z.number().nonnegative();
 const remainder = ms.lt(10);
 const row = count.max(5), col = count.max(8);
 const point = z.object({ x: z.number(), y: z.number() });
-export const plantTypeSchema = z.enum(['lilypad','squash','puffshroom', 'sunshroom', 'fumeshroom', 'gravebuster', 'hypnoshroom', 'scaredyshroom', 'iceshroom', 'doomshroom', 'sunflower', 'peashooter', 'wallnut', 'potatomine', 'snowpea', 'repeater', 'threepeater', 'cherrybomb', 'chomper']);
-const zombieType = z.enum(['basic', 'flag', 'conehead', 'buckethead', 'polevaulter', 'newspaper', 'screendoor', 'football', 'dancer', 'backup']);
+export const plantTypeSchema = z.enum(['jalapeno','tanglekelp','lilypad','squash','puffshroom', 'sunshroom', 'fumeshroom', 'gravebuster', 'hypnoshroom', 'scaredyshroom', 'iceshroom', 'doomshroom', 'sunflower', 'peashooter', 'wallnut', 'potatomine', 'snowpea', 'repeater', 'threepeater', 'cherrybomb', 'chomper']);
+const zombieType = z.enum(['basic', 'flag', 'conehead', 'buckethead', 'polevaulter', 'newspaper', 'screendoor', 'football', 'dancer', 'backup','snorkel']);
 export const plantBehaviorSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('idle') }),
+  z.object({kind:z.literal('kelp'),remainingMs:ms.max(1000),targetIndex:count.nullable()}),
   z.object({kind:z.literal('squash'),phase:z.enum(['idle','look','prepare','rise','fall','landed']),remainingMs:ms.max(1000),targetX:z.number().finite()}).refine(s=>s.remainingMs<=({idle:0,look:800,prepare:450,rise:500,fall:100,landed:1000}[s.phase]),'Invalid Squash countdown'),
   z.object({ kind: z.literal('shooter'), cooldown: z.number().int().min(-1).max(150), remainder,
     hidden:z.boolean().optional(),
-    shots: z.array(z.object({ row, remainingMs: ms.max(140) })).max(15) }),
+    shots: z.array(z.object({ row, remainingMs: ms.max(350) })).max(15) }),
   z.object({ kind: z.literal('sunflower'), timer: ms, next: ms.positive() }),
   z.object({ kind: z.literal('sunshroom'), age: ms, timer: ms, next: ms.positive() }),
   z.object({ kind: z.literal('mine'), timer: ms, armed: z.boolean() }),
@@ -30,7 +31,7 @@ export const plantBehaviorSchema = z.discriminatedUnion('kind', [
 export type PlantBehavior = z.infer<typeof plantBehaviorSchema>;
 const behaviorForPlant = {
   peashooter: 'shooter', snowpea: 'shooter', repeater: 'shooter', threepeater: 'shooter', puffshroom: 'shooter', scaredyshroom: 'shooter',
-  lilypad:'idle',squash:'squash',
+  lilypad:'idle',squash:'squash',tanglekelp:'kelp',jalapeno:'cherry',
   iceshroom:'ice',doomshroom:'doom',
   sunflower: 'sunflower', sunshroom: 'sunshroom', wallnut: 'idle', hypnoshroom: 'idle',
   potatomine: 'mine', cherrybomb: 'cherry', chomper: 'chomper', gravebuster: 'gravebuster', fumeshroom: 'fume',
@@ -40,15 +41,18 @@ export const plantSnapshotSchema = z.object({ type: plantTypeSchema, col, row, h
     'Plant behavior and health must match its type');
 export type PlantSnapshot = z.infer<typeof plantSnapshotSchema>;
 
-export const motionSchema = z.object({ gait: z.enum(['walk', 'walk2', 'poleRun', 'poleWalk', 'paperWalk', 'paperRun', 'football', 'dancer', 'backup', 'dancerEntry','swim']), parameter: ms, phase: ms.lt(1), remainder });
+export const motionSchema = z.object({ gait: z.enum(['walk', 'walk2', 'poleRun', 'poleWalk', 'paperWalk', 'paperRun', 'football', 'dancer', 'backup', 'dancerEntry','swim','snorkelWalk']), parameter: ms, phase: ms.lt(1), remainder });
 export type MotionSnapshot = z.infer<typeof motionSchema>;
 export const danceSchema=z.object({phase:z.enum(['entry','point','hold','dance']),remainingMs:ms.max(3110),replacementMs:ms.max(1000),remainder});
+export const snorkelSchema=z.object({phase:z.enum(['walk','enter','swim','rise','eat','dive','exit']),remainingMs:ms.max(1190),remainder});
+export type SnorkelSnapshot=z.infer<typeof snorkelSchema>;
 export const zombieSnapshotSchema = point.extend({
   type: zombieType, row, wave: count, hp: ms.positive(), maxHp: ms.positive(), armorHp: ms, shieldHp: ms,
   speed: ms, speedMultiplier: ms.positive(), dps: ms, allies: z.boolean(), hasPole: z.boolean(),
   emergenceTotal: ms, emergenceMs: ms, rageDelay: ms, headless: z.boolean(), bleedTicks: remainder,
   biteRemainder: ms.max(80), slowFactor: ms.max(1), slowRemainingMs: ms,
   frozenMs:ms.max(6000).default(0),dance:danceSchema.nullable().default(null),leaderIndex:count.nullable().default(null),danceSlot:count.max(3).nullable().default(null),
+  snorkel:snorkelSchema.nullable().default(null),
   motion: motionSchema, vault: z.object({ startX: z.number(), groundY: z.number(), elapsed: ms.max(650) }).nullable(),
 }).refine(zombie => zombie.hp <= zombie.maxHp && zombie.emergenceMs <= zombie.emergenceTotal, 'Invalid zombie health or emergence');
 export type ZombieSnapshot = z.infer<typeof zombieSnapshotSchema>;
@@ -106,7 +110,12 @@ export const gardenSessionSchema = z.object({
   if(save.graves.some(g=>!level.activeRows.includes(g.row))||save.craters.some(c=>!level.activeRows.includes(c.row)))issue('Invalid terrain lane');
   if(level.environment==='pool'&&save.graves.length)issue('Pool boards have no graves');
   if(save.zombies.some(z=>z.motion.gait==='swim'&&(!water(z.row)||!canSwim(z.type))))issue('Swimming requires a water lane');
+  const kelpTargets=save.plants.flatMap(p=>p.behavior.kind==='kelp'&&p.behavior.targetIndex!==null?[p.behavior.targetIndex]:[]);
+  if(!unique(kelpTargets))issue('Duplicate kelp targets');
+  for(const plant of save.plants)if(plant.behavior.kind==='kelp'&&plant.behavior.targetIndex!==null){const target=save.zombies[plant.behavior.targetIndex];if(!target||target.row!==plant.row||target.allies||!water(target.row)||plant.behavior.remainingMs<=0)issue('Invalid kelp target');}
   for(const [index,zombie] of save.zombies.entries()){
+    if((zombie.type==='snorkel')!==(zombie.snorkel!==null))issue('Wrong snorkel routine');
+    if(zombie.type==='snorkel'&&!water(zombie.row))issue('Snorkel needs water lane');
     if(zombie.type==='dancer'&&!zombie.dance)issue('Dancing Zombie needs a routine');
     if(zombie.type!=='dancer'&&zombie.dance)issue('Wrong dancer routine type');
     if(zombie.leaderIndex!==null){const leader=save.zombies[zombie.leaderIndex];if(zombie.type!=='backup'||zombie.leaderIndex===index||!leader||leader.type!=='dancer'||leader.allies!==zombie.allies||zombie.danceSlot===null)issue('Invalid backup dancer link');}

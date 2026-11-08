@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {SnorkelRoutine} from '../pool-combat';
 import {DanceRoutine,iceFreezeMs,backupPositions} from '../night-combat';
 import {ART_SCALE} from '../art';
 import {renderGroundedArt,ZOMBIE_GROUND_OFFSET} from '../sprite-presentation';
@@ -93,6 +94,9 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   private biteRemainder=0;
   private flagLabel?:Phaser.GameObjects.Text;
   private chewing=false;
+  private snorkel?:SnorkelRoutine;
+  private kelpHeld=false;
+  holdByKelp(held:boolean,sinking:boolean):void {this.kelpHeld=held;this.setAlpha(sinking?.45:1);}
   /** Hit-flash timer, so we don't schedule a delayed call per pea. */
   private flash = 0;
 
@@ -113,14 +117,14 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
 
     this.danceClock=options.danceClock??(()=>Math.floor(scene.time.now/10));this.summonBackup=options.summonBackup;
     this.onDeath=options.onDeath;this.group=options.group;this.emergenceTotal=options.emergenceMs??0;
-    this.zombieType=options.type??'basic';this.shieldHp=options.shieldHp??0;
+    this.zombieType=options.type??'basic';if(this.zombieType==='snorkel')this.snorkel=new SnorkelRoutine();this.shieldHp=options.shieldHp??0;
     this.emergenceMs=options.emergenceMs??0;this.speedMultiplier=options.speedMultiplier??1;
     this.row = row;
     this.waveIndex = options.wave ?? 0;
     this.hasPole = options.type === 'polevaulter';
     this.speed = options.speed;
     this.random=options.random??Math.random;
-    this.motion=new GroundMotion(this.zombieType==='dancer'?'dancerEntry':this.zombieType==='backup'?'backup':this.zombieType==='football'?'football':this.zombieType==='newspaper'?'paperWalk':this.hasPole?'poleRun':this.random()<0.5?'walk':'walk2',options.parameter??0.3);
+    this.motion=new GroundMotion(this.zombieType==='snorkel'?'snorkelWalk':this.zombieType==='dancer'?'dancerEntry':this.zombieType==='backup'?'backup':this.zombieType==='football'?'football':this.zombieType==='newspaper'?'paperWalk':this.hasPole?'poleRun':this.random()<0.5?'walk':'walk2',options.parameter??0.3);
     if(this.zombieType==='dancer')this.dance=new DanceRoutine(3000+Math.floor(this.random()*12)*10);
     if(options.type==='flag')this.flagLabel=scene.add.text(x+20,this.y-55,'⚑',{fontSize:'44px',color:'#e34832'}).setDepth(21);
     this.hp = options.hp;
@@ -153,16 +157,18 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   get waveHealth():number {return this.dead?0:waveHealth({hp:this.hp,armor:this.armorHp,shield:this.shieldHp});}
   get isHostile():boolean{return !this.allies&&!this.dead;}
   get isEating():boolean {return this.isChewing();}
-  get canBeCrushed():boolean {return this.isHostile&&this.emergenceMs<=0&&!this.vaulting;}
-  get inPool():boolean {return this.grid.isWaterRow(this.row)&&canSwim(this.zombieType)&&this.x<sourceToWorldX(737);}
-  get canBeShot():boolean{return this.isHostile&&!this.headless&&this.emergenceMs<=0&&!this.vaulting;}
+  get canBeCrushed():boolean {return this.isHostile&&!this.kelpHeld&&this.emergenceMs<=0&&!this.vaulting&&!this.snorkel?.offGround;}
+  get canBeKelpTarget():boolean {return this.canBeCrushed&&this.inPool&&!this.headless&&!this.kelpHeld;}
+  get inPool():boolean {if(this.snorkel)return this.snorkel.inWater;return this.grid.isWaterRow(this.row)&&canSwim(this.zombieType)&&this.x<sourceToWorldX(737);}
+  get canBeShot():boolean{return this.isHostile&&!this.headless&&this.emergenceMs<=0&&!this.vaulting&&(!this.snorkel||this.snorkel.exposed);}
+  get poolDiagnostics(){return {snorkel:this.snorkel?.save()??null,submerged:Boolean(this.snorkel?.inWater&&!this.snorkel.exposed),kelpHeld:this.kelpHeld,shootable:this.canBeShot};}
   get variant():ZombieType{return this.zombieType;}
   save(references?:ReadonlyMap<Zombie,number>): ZombieSnapshot {
     return {type:this.zombieType,x:this.x,y:this.y,row:this.row,wave:this.waveIndex,hp:this.hp,maxHp:this.maxHp,
       armorHp:this.armorHp,shieldHp:this.shieldHp,speed:this.speed,speedMultiplier:this.speedMultiplier,dps:this.dps,
       allies:this.allies,hasPole:this.hasPole,emergenceTotal:this.emergenceTotal,emergenceMs:this.emergenceMs,
       rageDelay:this.rageDelay,headless:this.headless,bleedTicks:this.bleedTicks,biteRemainder:this.biteRemainder,
-      frozenMs:this.frozenMs,dance:this.dance?.save()??null,leaderIndex:this.leader?references?.get(this.leader)??null:null,danceSlot:this.danceSlot,
+      frozenMs:this.frozenMs,snorkel:this.snorkel?.save()??null,dance:this.dance?.save()??null,leaderIndex:this.leader?references?.get(this.leader)??null:null,danceSlot:this.danceSlot,
       slowFactor:this.slowFactor,slowRemainingMs:this.slowRemainingMs,motion:this.motion.save(),
       vault:this.vaulting&&this.vaultState?{startX:this.vaultState.startX,groundY:this.vaultState.groundY,elapsed:Math.min(650,this.vaultState.tween.elapsed)}:null};
   }
@@ -173,7 +179,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     zombie.hp=data.hp;zombie.setAllegiance(data.allies);zombie.hasPole=data.hasPole;zombie.emergenceMs=data.emergenceMs;
     zombie.rageDelay=data.rageDelay;zombie.headless=data.headless;zombie.bleedTicks=data.bleedTicks;
     zombie.biteRemainder=data.biteRemainder;zombie.slowFactor=data.slowFactor;zombie.slowRemainingMs=data.slowRemainingMs;
-    zombie.motion.restore(data.motion);zombie.frozenMs=data.frozenMs;zombie.danceSlot=data.danceSlot;
+    zombie.motion.restore(data.motion);if(zombie.snorkel&&data.snorkel)zombie.snorkel.restore(data.snorkel);zombie.frozenMs=data.frozenMs;zombie.danceSlot=data.danceSlot;
     if(zombie.dance&&data.dance)zombie.dance.restore(data.dance);
     const texture=data.type==='polevaulter'&&!data.hasPole&&!data.vault?'zombie-pole-walk':
       data.type==='newspaper'&&data.shieldHp===0?'zombie-paper-angry':
@@ -221,6 +227,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   /** Walk speed after any active chill is taken into account. */
   get currentSpeed(): number {
     if(this.frozenMs>0)return 0;
+    if(this.snorkel&&(this.snorkel.inWater||this.snorkel.offGround))return this.motion.parameter*160*(this.isSlowed?.5:1);
     return this.motion.meanPixelsPerSecond*(this.isSlowed?0.5:1);
   }
 
@@ -242,7 +249,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   /** Walking presentation is drawn directly, without a permanent tween. */
   walk():void {}
   renderCanvas(renderer:Phaser.Renderer.Canvas.CanvasRenderer,_src:Zombie,camera:Phaser.Cameras.Scene2D.Camera,parent?:Phaser.GameObjects.Components.TransformMatrix):void {
-    const moving=settings.current.spriteMotion&&!this.dead&&this.frozenMs<=0&&!this.vaulting&&this.emergenceMs<=0&&this.rageDelay<=0;
+    const moving=settings.current.spriteMotion&&!this.dead&&!this.kelpHeld&&this.frozenMs<=0&&!this.vaulting&&this.emergenceMs<=0&&this.rageDelay<=0;
     const t=this.scene.time.now*(this.chewing ? 0.02 : 0.005)+this.row*1.7+this.waveIndex;
     renderGroundedArt(renderer,this,camera,parent,ZOMBIE_GROUND_OFFSET,moving?Math.sin(t)*(this.chewing ? 0.035 : 0.022):0);
   }
@@ -251,6 +258,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   tick(delta: number): void {
     if (this.dead || !this.active) return;
     this.updatePoolPose();
+    if(this.kelpHeld){this.updateTint();return;}
     this.chewing=false;
     this.slowRemainingMs=Math.max(0,this.slowRemainingMs-delta);
     if(this.vaulting)return;
@@ -282,6 +290,22 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     if(this.allies){if(this.danceCanMove())this.x+=this.motion.advance(delta,this.danceChilled());if(this.x>1400){this.destroy();return;}this.updateTint();return;}
     const col = this.grid.worldToCol(this.x - (this.hasPole?82:0));
     const plant = this.grid.getPlant(col, this.row);
+    if(this.snorkel){
+      const previous=this.snorkel.phase;
+      const target=Boolean(!this.headless&&plant?.active&&!plant.isDying&&plant.canBeEaten);
+      this.snorkel.advance(delta,this.x<=sourceToWorldX(777),this.x<=sourceToWorldX(82),target,this.isSlowed);
+      if(previous!==this.snorkel.phase){
+        if(this.snorkel.phase==='enter')this.motion.parameter=.2*this.speedMultiplier;
+        if(previous==='dive'&&this.snorkel.phase==='swim')this.motion.parameter=.3*this.speedMultiplier;
+        if(this.snorkel.phase==='exit'){this.x-=24;this.motion.parameter=(.66+this.random()*.02)*this.speedMultiplier;}
+        this.updatePoolPose();
+      }
+      if(this.headless&&this.snorkel.inWater){this.takeDamage(1800,true);return;}
+      if(!this.snorkel.canEat){
+        if(this.snorkel.phase==='swim'||this.snorkel.phase==='enter')this.x-=this.motion.parameter*delta*.16*(this.isSlowed&&!this.snorkel.offGround?.5:1);
+        this.updateTint();return;
+      }
+    }
 
     if (!this.headless && plant && plant.active && !plant.isDying && plant.canBeEaten) {
       if (this.hasPole) { this.vault(); return; }
@@ -295,6 +319,13 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   }
 
   private updatePoolPose():void {
+    if(this.snorkel){
+      const key=this.snorkel.inWater?(this.snorkel.exposed?'zombie-snorkel-eat':'zombie-snorkel-swim'):'zombie-snorkel';
+      if(this.texture.key!==key){this.setTexture(key);const body=this.body as Phaser.Physics.Arcade.Body;
+        body.setSize(42*1.6/ART_SCALE,(this.snorkel.inWater?68:115)*1.6/ART_SCALE);
+        body.setOffset(this.width*this.originX-body.width/2,this.height*this.originY-(this.snorkel.inWater?80:144)/ART_SCALE);}
+      return;
+    }
     if(!this.grid.isWaterRow(this.row)||!canSwim(this.zombieType))return;
     const swimming=this.inPool;
     const key=swimming?(this.armorHp>0?(this.zombieType==='buckethead'?'zombie-swim-bucket':'zombie-swim-cone'):'zombie-swim'):(this.armorHp>0?ZOMBIE_DEFS[this.zombieType].texture:ZOMBIE_BARE_TEXTURE);

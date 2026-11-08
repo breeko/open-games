@@ -3,6 +3,7 @@ import {ART_SCALE} from '../art';
 import {renderGroundedArt,PLANT_GROUND_OFFSET} from '../sprite-presentation';
 import {settings} from '../state/settings';
 import { DEPTH } from '../constants';
+import type {Zombie} from './Zombie';
 import type { GameContext, PlantDefinition } from '../types';
 import type { PlantBehavior, PlantSnapshot } from '../state/session-data';
 
@@ -102,13 +103,14 @@ export abstract class Plant extends Phaser.GameObjects.Sprite {
   remove(): void { this.kill(); }
 
   get plantType(){return this.def.type;}
-  save(): PlantSnapshot { return {type:this.def.type,col:this.col,row:this.row,hp:this.hp,behavior:this.saveBehavior()}; }
+  save(references?:ReadonlyMap<Zombie,number>): PlantSnapshot { return {type:this.def.type,col:this.col,row:this.row,hp:this.hp,behavior:this.saveBehavior(references)}; }
+  restoreZombieLinks(_zombies:readonly Zombie[]):void {}
   restore(data: PlantSnapshot): void {
     if(data.type!==this.def.type||data.col!==this.col||data.row!==this.row)throw new Error('Plant identity mismatch');
     this.hp=data.hp;this.recoilMs=0;this.ctx.scene.tweens.killTweensOf(this);this.setScale(ART_SCALE).setAlpha(1);
     this.restoreBehavior(data.behavior);
   }
-  protected saveBehavior(): PlantBehavior { return {kind:'idle'}; }
+  protected saveBehavior(_references?:ReadonlyMap<Zombie,number>): PlantBehavior { return {kind:'idle'}; }
   protected restoreBehavior(data: PlantBehavior): void { if(data.kind!=='idle')throw new Error('Wrong plant behavior'); }
 
   get isDying(): boolean {

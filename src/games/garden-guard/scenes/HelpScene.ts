@@ -4,7 +4,7 @@ import { DEPTH, GAME_HEIGHT, GAME_WIDTH } from '../constants';
 import { Button } from '../ui/Button';
 
 const SECTIONS: Array<{ heading: string; lines: string[] }> = [
-  { heading: 'Twenty-two day, night and pool levels', lines: [
+  { heading: 'Twenty-four day, night and pool levels', lines: [
     'Start with one lane and a Peashooter. Later levels open six lanes and new plants.',
     'Use the level menu or arrows to jump backward and forward. Each cleared level saves separately.',
     'Relaxed, Baseline and Hard change enemy strength. Changing difficulty restarts the level.',
@@ -29,6 +29,7 @@ const SECTIONS: Array<{ heading: string; lines: string[] }> = [
     '2-7 / 2-8: Keep Scaredy-shrooms in back. Ice-shrooms freeze enemies; dancers replace lost backups.',
     '2-9 / 2-10: Doom-shrooms leave a three-minute crater. The night finale supplies mushrooms for free.',
     '3-1 / 3-2: Plant Lily Pads before water defenders. Squash crushes once. Water mowers sink near the edge.',
+    '3-3 / 3-4: Snorkels evade peas underwater. Tangle Kelp grows in empty water and pulls one swimmer under.',
     'Waves can overlap. Keep building before the final flag!',
   ]},
 ];

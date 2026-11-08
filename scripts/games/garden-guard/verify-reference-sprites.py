@@ -45,3 +45,8 @@ assert all(Image.open(base/(key+'.png')).size==(256,480) for key in ['zombie-swi
 assert Image.open(base/'lilypad.png').getbbox()[2]-Image.open(base/'lilypad.png').getbbox()[0]>200, 'Lily Pad must remain visible beneath a defender'
 assert Image.open(base/'threepeater.png').getbbox()[3]-Image.open(base/'threepeater.png').getbbox()[1]>220, 'Threepeater needs its full stem and all heads'
 print('Pool board, Lily Pad, Squash, Threepeater reward and shared duck-tube states passed.')
+
+for key in ['tanglekelp','jalapeno','zombie-snorkel','zombie-snorkel-swim','zombie-snorkel-eat']:
+    assert Image.open(base/(key+'.png')).getbbox(), key+' has no original artwork'
+assert Image.open(base/'zombie-snorkel-swim.png').height < Image.open(base/'zombie-snorkel-eat.png').height < Image.open(base/'zombie-snorkel.png').height, 'Snorkel poses must show distinct submergence states'
+print('Tangle Kelp, Jalapeno reward and three distinct snorkel poses passed.')

@@ -30,7 +30,7 @@ bun run build
 bun run dev
 ```
 
-With Vite running, open `/scripts/games/garden-guard/session-browser-check.html`. This development-only page is not a production build entry and does not write game saves. It loads the real engine/assets and checks all twenty level formats plus a busy night fixture, bowling hit history/bounce, final grave rise and pause. Each continuation is compared frame by frame against the uninterrupted run with controlled clocks. The fixtures exercise partial plant timers, emerging/chilled/allied zombies, a pole vault, suns in all active phases and projectiles.
+With Vite running, open `/scripts/games/garden-guard/session-browser-check.html`. This development-only page is not a production build entry and does not write game saves. It loads the real engine/assets and checks all twenty-four level formats plus a busy night fixture, bowling hit history/bounce, final grave rise and pause. Each continuation is compared frame by frame against the uninterrupted run with controlled clocks. The fixtures exercise partial plant timers, emerging/chilled/allied zombies, a pole vault, suns in all active phases and projectiles.
 
 Browser UI checks also cover planting on level 2-2, refresh restoring that board paused, and returning through **Menu → Resume saved level**. These checks do not substitute for physical iPad testing or full original-game outcome parity.
 
@@ -43,3 +43,6 @@ The same `garden-day-night-r1` format and storage keys remain in use. Rows 0–5
 Swimming gait/phase uses the existing motion snapshot. Squash adds a discriminated `squash` behavior with phase, remaining time and target X; its airborne coordinates are reconstructed from those counters. The pending final pool rise reuses the saved delayed-rise countdown and random stream. Each of six mowers retains used/moving/visible state, including a sunk water-edge mower. No earlier session fields or legacy keys are removed. Progress at level 20 advances to 21 after update, and skipped clears remain separate.
 
 The real Phaser checks compare continued full state at 1×/2× for stacked pads, swimmers, bottom-lane projectiles, mid-jump Squash, final emergence, water mowers and daytime sleeping mushrooms. Earlier day/night continuation cases remain in the same suite.
+
+
+3-3/3-4 preserve the same keys and compatibility marker. `snorkel` is an additive nullable zombie routine (null by default for old saves), containing phase, remaining milliseconds and fractional tick remainder. Kelp's discriminated plant behavior stores its remaining grab time and target zombie index. Invalid, duplicate, wrong-lane and allied target links are rejected; restoration reconnects the same target after constructing all zombies. Saving after its prey dies records a null target and still consumes the kelp at the original deadline. Threepeater's pending release timers can now hold 350ms. Earlier 140ms-or-shorter snapshots remain valid. No campaign progress is reset, and level-22 completion now opens 3-3.

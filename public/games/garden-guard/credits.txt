@@ -1,3 +1,5 @@
+Pool extension: Tanglekelp, Jalapeno and Zombie_snorkle poses/ground track use the same original EA/PopCap reference source credited below.
+
 Garden Guard / Open Games — local reference prototype
 
 Game code adapted from Tino1234567/plants-vs-zombies-game
