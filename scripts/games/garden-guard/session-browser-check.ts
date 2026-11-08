@@ -1,5 +1,6 @@
 /** Open session-browser-check.html through Vite. This developer page is not a production entry. */
 import Phaser from 'phaser';
+import {Zombie} from '../../../src/games/garden-guard/entities/Zombie';
 import {settings} from '../../../src/games/garden-guard/state/settings';
 import { PreloadScene } from '../../../src/games/garden-guard/scenes/PreloadScene';
 import { MainMenuScene } from '../../../src/games/garden-guard/scenes/MainMenuScene';
@@ -141,6 +142,29 @@ function run(): void {
       settings.set('gameSpeed',1);step(50);const expected=capture(scene);
       const restored=open(checkpoint);step(50);equal(capture(restored),expected,'speed switch and restore');
     }finally{settings.set('gameSpeed',prior);}
+  });
+  check('Wall-nut takes 40 seconds of a lone normal zombie eating before disappearing',()=>{
+    const data=freshSession(6);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.countdown=100000;
+    data.plants=[{type:'wallnut',col:3,row:2,hp:4000,behavior:{kind:'idle'}}];
+    data.zombies=[{...exampleZombie('basic',2),x:GRID.originX+3.5*GRID.tileWidth}];
+    const scene=open(data);step(500);equal(capture(scene).plants[0]?.hp,3000,'10 seconds of chewing');
+    step(1500);equal(capture(scene).plants.length,0,'Wall-nut consumed after 40 seconds');
+  });
+  check('Potato Mine waits 15 seconds, explodes once, and removes itself',()=>{
+    const data=freshSession(6);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.countdown=100000;
+    data.plants=[{type:'potatomine',col:3,row:2,hp:300,behavior:{kind:'mine',timer:0,armed:false}}];data.zombies=[{...exampleZombie('buckethead',2),x:1250}];
+    const scene=open(data);step(749);const before=capture(scene).plants[0];
+    if(before?.behavior.kind!=='mine'||before.behavior.armed)throw new Error('Mine armed too early');
+    step(1);const armed=capture(scene).plants[0];if(armed?.behavior.kind!=='mine'||!armed.behavior.armed)throw new Error('Mine failed to arm at 15 seconds');
+    const zombie=scene.children.list.find((z):z is Zombie=>z instanceof Zombie);if(!zombie)throw new Error('Target missing');zombie.x=GRID.originX+3.5*GRID.tileWidth;
+    step(1);const after=capture(scene);equal(after.plants.length,0,'Mine consumed');equal(after.zombies.length,0,'Armored target destroyed');
+    step(50);equal(capture(scene).plants.length,0,'Mine did not regenerate');
+  });
+  check('unarmed Potato Mine can be eaten before it activates',()=>{
+    const data=freshSession(6);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.countdown=100000;
+    data.plants=[{type:'potatomine',col:3,row:2,hp:300,behavior:{kind:'mine',timer:0,armed:false}}];data.zombies=[{...exampleZombie('basic',2),x:GRID.originX+3.5*GRID.tileWidth}];
+    const scene=open(data);step(50);equal(capture(scene).plants[0]?.hp,200,'Unarmed mine takes bite damage');
+    step(110);const after=capture(scene);equal(after.plants.length,0,'Unarmed mine eaten');equal(after.zombies[0]?.hp,270,'No premature explosion');
   });
   check('paused restored level consumes no plant, wave, pickup or projectile time',()=>{
     const scene=open(busyNightSession());step(1);const before=capture(scene);
