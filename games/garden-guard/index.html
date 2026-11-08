@@ -9,6 +9,7 @@
 <body>
   <main id="game-root" aria-label="Garden defense game. Tap a seed card then a lawn square to plant. Tap golden suns to collect resources."></main>
   <button id="controls-toggle" aria-haspopup="dialog" aria-controls="controls">Menu</button>
+  <button id="speed-toggle" aria-label="Game speed: 1×. Switch to 2×." aria-pressed="false">1×</button>
   <div id="pause-notice" role="status"><span>Paused</span><button id="resume-play">Resume</button></div>
   <dialog id="controls" aria-labelledby="controls-title">
     <header><div><a class="library-link" href="/">‹ Open Games</a><h1 id="controls-title">Garden Guard</h1></div><button id="close-controls" aria-label="Close menu">×</button></header>
@@ -20,7 +21,7 @@
       <label for="difficulty">Difficulty <small>Changing difficulty restarts this level</small></label>
       <select id="difficulty"><option value="relaxed">Relaxed</option><option value="baseline" selected>Baseline</option><option value="hard">Hard</option></select>
       <div class="secondary-controls">
-        <button id="auto-suns" aria-pressed="false">Auto-collect suns: Off</button><button id="shovel" aria-pressed="false">Shovel</button><button id="cancel">Cancel seed</button><button id="retry">Restart level</button><button id="resume-session">Resume saved level</button><button id="menu">Main menu</button><button id="diagnostics-toggle" aria-expanded="false" aria-controls="diagnostics">Diagnostics</button><button id="performance-toggle" aria-expanded="false" aria-controls="performance-panel">Performance</button><a class="library-action" href="/">Game library</a>
+        <button id="speed-menu" aria-pressed="false">Game speed: 1×</button><button id="auto-suns" aria-pressed="false">Auto-collect suns: Off</button><button id="shovel" aria-pressed="false">Shovel</button><button id="cancel">Cancel seed</button><button id="retry">Restart level</button><button id="resume-session">Resume saved level</button><button id="menu">Main menu</button><button id="diagnostics-toggle" aria-expanded="false" aria-controls="diagnostics">Diagnostics</button><button id="performance-toggle" aria-expanded="false" aria-controls="performance-panel">Performance</button><a class="library-action" href="/">Game library</a>
       </div>
     </nav>
     <footer><span id="save-status" role="status">Free to play. No ads. Levels autosave on this device.</span><span id="play-status" aria-live="off"></span><span>Early balance preview · <a href="/games/garden-guard/credits.txt" target="_blank" rel="noopener">Open-source credits</a></span></footer>

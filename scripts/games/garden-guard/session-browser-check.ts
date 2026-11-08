@@ -1,5 +1,6 @@
 /** Open session-browser-check.html through Vite. This developer page is not a production entry. */
 import Phaser from 'phaser';
+import {settings} from '../../../src/games/garden-guard/state/settings';
 import { PreloadScene } from '../../../src/games/garden-guard/scenes/PreloadScene';
 import { MainMenuScene } from '../../../src/games/garden-guard/scenes/MainMenuScene';
 import { GameScene } from '../../../src/games/garden-guard/scenes/GameScene';
@@ -120,6 +121,26 @@ function run(): void {
     const scene=open(data);step(2);const zombies=capture(scene).zombies;
     if(zombies[1].hp>=270||zombies[2].hp!==270)throw new Error('Enemy selected the wrong ally');
     roundTrip(capture(scene),40);
+  });
+  for(const [name,data] of [['day',freshSession(4)],['bowling',freshSession(5)],['conveyor',freshSession(10)],['whack',freshSession(15)],['busy night',busyNightSession()],['frozen dancers',nightDiagnostic(true)]] as const){
+    check(`2× ${name}: half as many rendered frames produces identical gameplay`,()=>{
+      const prior=settings.current.gameSpeed;
+      try {
+        settings.set('gameSpeed',1);const normal=open(data);step(200);const expected=capture(normal);
+        settings.set('gameSpeed',2);const fast=open(data);step(100);equal(capture(fast),expected,'1× versus 2× full state');
+      }finally{settings.set('gameSpeed',prior);}
+    });
+  }
+  check('2× frozen-group resume and switching back to 1× preserve progress',()=>{
+    const prior=settings.current.gameSpeed;
+    try{
+      settings.set('gameSpeed',2);roundTrip(nightDiagnostic(true),200);
+      const paused=open(busyNightSession());step(1);const beforePause=capture(paused);
+      game.pause();step(100);equal(capture(paused),beforePause,'2× pause freezes every system');game.resume();
+      const scene=open(busyNightSession());step(30);const checkpoint=capture(scene);
+      settings.set('gameSpeed',1);step(50);const expected=capture(scene);
+      const restored=open(checkpoint);step(50);equal(capture(restored),expected,'speed switch and restore');
+    }finally{settings.set('gameSpeed',prior);}
   });
   check('paused restored level consumes no plant, wave, pickup or projectile time',()=>{
     const scene=open(busyNightSession());step(1);const before=capture(scene);

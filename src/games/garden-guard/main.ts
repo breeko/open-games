@@ -103,6 +103,7 @@ let paused = false;
 function setPaused(value: boolean): void {
   const wasPaused=paused;
   paused = value;
+  document.body.classList.toggle('game-paused',value);
   if (value) { game.pause(); audio.stopMusic(); }
   else {
     if(controls.open)controls.close();
@@ -335,7 +336,7 @@ document.querySelector<HTMLButtonElement>('#performance-reset')!.onclick=()=>{pe
 function performanceReport(){
  const scene=game.scene.getScene('game');
  return {version:1,createdAt:new Date().toISOString(),device:{userAgent:navigator.userAgent,viewport:[innerWidth,innerHeight],pixelRatio:devicePixelRatio,canvas:[game.canvas.width,game.canvas.height],renderer:'Canvas'},
-   board:game.scene.isActive('game')&&scene instanceof GameScene?scene.performanceCounts:null,measurements:perf.history.snapshot()};
+   gameSpeed:settings.current.gameSpeed,board:game.scene.isActive('game')&&scene instanceof GameScene?scene.performanceCounts:null,measurements:perf.history.snapshot()};
 }
 setInterval(()=>{
  if(performancePanel.hidden)return;
@@ -366,3 +367,16 @@ document.querySelector<HTMLButtonElement>('#performance-export')!.onclick=()=>{
  const url=URL.createObjectURL(new Blob([JSON.stringify(performanceReport(),null,2)],{type:'application/json'}));
  const a=document.createElement('a');a.href=url;a.download='garden-performance.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
+
+const speedToggle=document.querySelector<HTMLButtonElement>('#speed-toggle')!;
+const speedMenu=document.querySelector<HTMLButtonElement>('#speed-menu')!;
+function refreshSpeed():void {
+ const speed=settings.current.gameSpeed;
+ speedToggle.textContent=`${speed}×`;
+ speedToggle.setAttribute('aria-label',`Game speed: ${speed}×. Switch to ${speed===1?2:1}×.`);
+ speedMenu.textContent=`Game speed: ${speed}×`;
+ for(const button of [speedToggle,speedMenu])button.setAttribute('aria-pressed',String(speed===2));
+}
+function toggleSpeed():void {settings.set('gameSpeed',settings.current.gameSpeed===1?2:1);}
+speedToggle.onclick=toggleSpeed;speedMenu.onclick=toggleSpeed;
+settings.on('changed',refreshSpeed);refreshSpeed();

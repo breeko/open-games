@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {SimulationClock} from '../simulation-clock';
 import {gamePerformance as perf} from '../diagnostics/performance';
 import {sizeArt} from '../art';
 import { randomSource, sampleSkySunTicks } from '../reference/rules';
@@ -93,8 +94,21 @@ export class GameScene extends Phaser.Scene {
   private mowers = new Map<number, { image: Phaser.GameObjects.Image; used: boolean; moving: boolean }>();
   private gridY(row: number): number { return GRID.originY + (row + 0.5) * GRID.tileHeight; }
 
+  private readonly simulationClock=new SimulationClock();
+  private frameDelta=0;
   constructor() {
     super('game');
+    // Pinned Phaser 3.90 integration: step includes PRE_UPDATE (sun pickup),
+    // UPDATE (physics/timers), gameplay, and POST_UPDATE (tweens). Rendering
+    // stays outside this method, so 2× does not double Canvas drawing work.
+    const engineStep=this.sys.step.bind(this.sys);
+    this.sys.step=(_time,delta)=>{
+      if(this.game.isPaused||!this.sys.isActive())return;
+      this.simulationClock.advance(delta,this.finished?1:settings.current.gameSpeed,(time,dt)=>{
+        this.frameDelta=dt;engineStep(time,dt);
+        return !this.game.isPaused&&this.sys.isActive();
+      });
+    };
   }
   /** Phaser tweens use a wall clock internally; exclude time spent fully paused. */
   resumeTweenClock():void {
@@ -109,6 +123,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.simulationClock.reset(this.time.now);
+    // Phaser's default tween clock reads Date.now; gameplay tweens must share
+    // the same simulation delta as projectiles, suns, timers and waves.
+    this.tweens.getDelta=()=>this.frameDelta;
     this.random=randomSource(67890);
     this.plants = [];
     this.rolling = []; this.shoveling = false; this.supplyTimer = 0; this.supplyIndex = 0;

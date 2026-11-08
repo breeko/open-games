@@ -1,8 +1,10 @@
 import { readGameStorage,writeGameStorage } from './storage';
 import Phaser from 'phaser';
+import {readGameSpeed,type GameSpeed} from '../simulation-clock';
 
 /** User-configurable options, persisted to localStorage. */
 export interface Settings {
+  gameSpeed:GameSpeed;
   music: boolean;
   /** 0..1 */
   musicVolume: number;
@@ -17,6 +19,7 @@ export interface Settings {
 
 
 const DEFAULTS: Settings = {
+  gameSpeed:1,
   music: true,
   musicVolume: 0.6,
   sfx: true,
@@ -45,7 +48,7 @@ class SettingsStore extends Phaser.Events.EventEmitter {
   constructor() {
     super();
     const stored=readStored() ?? {};
-    this.values = { ...DEFAULTS, ...stored, autoCollectSuns:stored.autoCollectSuns===true };
+    this.values = { ...DEFAULTS, ...stored, autoCollectSuns:stored.autoCollectSuns===true,gameSpeed:readGameSpeed(stored.gameSpeed) };
   }
 
   get current(): Readonly<Settings> {

@@ -143,3 +143,21 @@ Validation includes 59 per-game unit tests plus 30 real Phaser browser checks fo
 ## Performance monitor
 
 Open **Menu → Performance** after a slowdown to inspect frame, drawing, gameplay and save costs, or download a local report. Measurements continue with the panel closed. See [performance.md](performance.md) for the repeatable crowded-board benchmark, optimizations, and limits of desktop measurements versus a physical iPad.
+
+## Game speed
+
+Tap **1× / 2×** beside Menu to change speed during play, or use **Game speed**
+inside Menu. The device remembers this preference. Switching speed does not
+restart the level, change difficulty, rewrite remaining timers or migrate saves.
+Pause still freezes everything; music and browser controls stay at normal speed.
+
+At 2× the battle scene runs two ordinary simulation steps before one render.
+This includes sun pickup, timers, physics, gameplay and tweens. Gameplay tweens
+use simulation delta rather than Date.now, keeping their motion synchronized.
+The integration wraps Phaser 3.90 Scene Systems.step; recheck its event ordering
+when updating the engine. Menus and rendering do not run twice. The performance
+report includes the selected game speed when comparing device measurements.
+
+Validation compares complete snapshots after 200 normal frames and 100 double
+frames for day, bowling, conveyor, whack, a busy night board and frozen dancers;
+checks double-speed continuation/restoration, live speed changes and pause.

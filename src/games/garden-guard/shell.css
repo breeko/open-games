@@ -40,3 +40,7 @@ footer { display: grid; gap: 6px; border-top: 1px solid #49623e; margin-top: 18p
 #performance-close { float: right; font-size: 23px; padding: 6px 12px; }
 #performance-panel pre { white-space: pre-wrap; font-size: 11px; line-height: 1.5; }
 #performance-panel p { line-height: 1.5; }
+
+#speed-toggle { position: fixed; top: max(8px, env(safe-area-inset-top)); right: calc(max(8px, env(safe-area-inset-right)) + 78px); z-index: 4; min-width: 48px; background: #183322ed; box-shadow: 0 2px 8px #0004; }
+#speed-toggle[aria-pressed="true"] { background: #657c34; border-color: #ecd986; }
+body.controls-open #speed-toggle, body.game-paused #speed-toggle { visibility: hidden; }
