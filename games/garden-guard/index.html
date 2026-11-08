@@ -10,12 +10,13 @@
   <main id="game-root" aria-label="Garden defense game. Tap a seed card then a lawn square to plant. Tap golden suns to collect resources."></main>
   <button id="controls-toggle" aria-haspopup="dialog" aria-controls="controls">Menu</button>
   <button id="speed-toggle" aria-label="Game speed: 1×. Switch to 2×." aria-pressed="false">1×</button>
-  <div id="pause-notice" role="status"><span>Paused</span><button id="resume-play">Resume</button></div>
   <dialog id="controls" aria-labelledby="controls-title">
     <header><div><a class="library-link" href="/">‹ Open Games</a><h1 id="controls-title">Garden Guard</h1></div><button id="close-controls" aria-label="Close menu">×</button></header>
     <nav aria-label="Game controls">
-      <div class="primary-actions"><button id="pause" aria-pressed="false" autofocus>Pause</button><button id="fullscreen">Enter fullscreen</button></div>
+      <div class="primary-actions"><button id="continue-game" autofocus>Back to game</button><button id="fullscreen">Enter fullscreen</button></div>
       <p id="fullscreen-hint" class="hint" hidden>For more space, use your browser’s Add to Home Screen option.</p>
+      <button id="auto-pause" aria-pressed="true">Auto-pause when unfocused: On</button>
+      <p class="hint">Off keeps active games running when you use another window. Browsers can still slow or suspend hidden tabs.</p>
       <label for="level">Level</label>
       <div class="level-controls"><button id="previous" aria-label="Previous level">‹</button><select id="level"><option value="1">1-1 · First shoots</option></select><button id="next" aria-label="Next level">›</button></div>
       <label for="difficulty">Difficulty <small>Changing difficulty restarts this level</small></label>

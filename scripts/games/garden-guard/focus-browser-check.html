@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Garden Guard focus checks</title>
+<style>body{background:#14281c;color:#eff5da;font:14px system-ui;margin:12px}button{padding:10px}iframe{display:block;width:1024px;height:768px;border:1px solid #63815b;margin-top:10px}</style>
+<button id="outside">Focus outside the game</button><span id="outside-count">No outside clicks</span>
+<p>Local manual check: with auto-pause On, click outside an active battle and the game menu should open. With it Off, the battle should continue. Title/map screens should never auto-pause.</p>
+<iframe title="Game under test" src="/games/garden-guard/?mode=playground" allow="fullscreen"></iframe>
+<script>let n=0;document.querySelector('#outside').onclick=()=>document.querySelector('#outside-count').textContent=`Outside clicks: ${++n}`;</script></html>

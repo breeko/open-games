@@ -166,6 +166,18 @@ function run(): void {
     const scene=open(data);step(50);equal(capture(scene).plants[0]?.hp,200,'Unarmed mine takes bite damage');
     step(110);const after=capture(scene);equal(after.plants.length,0,'Unarmed mine eaten');equal(after.zombies[0]?.hp,270,'No premature explosion');
   });
+  for(const speed of [1,2] as const)check(`${speed}× background steps match foreground play without rendering or double stepping`,()=>{
+    const prior=settings.current.gameSpeed;
+    try {
+      settings.set('gameSpeed',speed);const data=busyNightSession(),normal=open(data);step(100);const expected=capture(normal);
+      const background=open(data);background.backgroundDriven=true;const before=capture(background);
+      step(10);equal(capture(background),before,'RAF does not duplicate background progression');
+      let renders=0;const rendered=()=>renders++;game.events.on(Phaser.Core.Events.POST_RENDER,rendered);
+      try{for(let i=0;i<100;i++)background.stepInBackground(20);}finally{game.events.off(Phaser.Core.Events.POST_RENDER,rendered);}
+      equal(renders,0,'No Canvas render in background');equal(capture(background),expected,'Same complete gameplay state');
+      game.pause();background.stepInBackground(100);equal(capture(background),expected,'Open menu blocks background simulation');game.resume();background.backgroundDriven=false;
+    }finally{settings.set('gameSpeed',prior);if(game.isPaused)game.resume();}
+  });
   check('paused restored level consumes no plant, wave, pickup or projectile time',()=>{
     const scene=open(busyNightSession());step(1);const before=capture(scene);
     game.pause();step(1000);equal(capture(scene),before,'pause freeze');

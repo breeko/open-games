@@ -13,7 +13,7 @@ const SECTIONS: Array<{ heading: string; lines: string[] }> = [
     'Tap a seed, then a lawn square. Dragging also works.',
     'Tap golden suns to collect sun (small Sun-shroom suns give 15). Seed cards show their cost and recharge.',
     'Shovel removes a plant without a refund. Cancel seed clears your selection.',
-    'Pause freezes the game; leaving the page pauses automatically. Space also pauses.',
+    'Menu stops gameplay. Space opens/closes it. Auto-pause on focus loss is optional.',
   ]},
   { heading: 'Build a defense', lines: [
     'Sunflowers make 25 sun about every 24 seconds. Plant them early.',

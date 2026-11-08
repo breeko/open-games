@@ -14,3 +14,7 @@ test('probe ignores offscreen culling, classifies unexpected removals and bounds
  for(let i=0;i<50;i++){const pea=projectile();p.track(pea);p.afterRender([]);p.clear();pea.destroy();}
  assert.ok(p.snapshot().recentEvents.length<=20);assert.equal(p.snapshot().removedBeforeFirstDraw,1);assert.equal(p.snapshot().removed.cleared,50);
 });
+test('deliberately unrendered background shots are separate from missing foreground shots',()=>{
+ const p=new ProjectileProbe(()=>0),pea=projectile();p.track(pea);p.setRenderingSuspended(true);p.removal(pea,'hit');pea.destroy();p.setRenderingSuspended(false);
+ const r=p.snapshot();assert.equal(r.removedWhileNotRendering,1);assert.equal(r.removedBeforeFirstDraw,0);assert.equal(r.recentEvents.length,0);
+});

@@ -20,12 +20,12 @@ Open the printed Network URL on an iPad on the same Wi-Fi as this Mac. Keep the 
 - Tap a seed, then a lawn square. Dragging also works.
 - Tap suns to collect 25 sun. Cards show price, recharge, or available conveyor supply.
 - Enable **Menu → Auto-collect suns** (or use Settings) to collect automatically. With auto-collect enabled, sky suns fall for 1.8 seconds and sunflower suns for 0.7 seconds, rest for just 100 ms, then fly to the sun bank in 300 ms and credit once on arrival. The preference saves on this device and can change mid-level; it starts off to preserve manual collection by default. Pause freezes the fall and collection flight.
-- Pause/Resume freezes the game. Switching away pauses automatically. Space also pauses.
-- The lawn fills the current viewport, including browser-toolbar height changes and safe-area insets. There is no persistent page header/footer. Tap the floating **Menu** or the lawn's Menu button for level selection, difficulty, restart, tools and save status; opening it pauses play. **Resume** returns to the lawn. The original 4:3 board stays uncropped, so wide screens keep side margins and portrait screens keep space above/below.
+- **Menu** is the pause screen during a battle. **Back to game**, the close button, or Space returns to play. There is no separate Pause/Resume overlay. Outside gameplay the menu does not freeze the title, level picker or other screens.
+- The lawn fills the current viewport, including browser-toolbar height changes and safe-area insets. There is no persistent page header/footer. Tap the floating **Menu** or the lawn's Menu button for level selection, difficulty, restart, tools and save status; opening it pauses play. **Back to game** returns to the lawn. The original 4:3 board stays uncropped, so wide screens keep side margins and portrait screens keep space above/below.
 - **Menu → Enter fullscreen** requests browser fullscreen from a tap when supported. Unsupported/denied requests keep the normal full-viewport layout and show an Add to Home Screen alternative. Native browser bars cannot be forced away outside a permitted fullscreen session.
 - Shovel removes a plant without a refund. Cancel seed / Escape clears tools and selection.
 - Choose any level with the level menu or previous/next buttons. Each cleared level saves separately.
-- The current level autosaves every two seconds, after planting/resource changes, on pause, and when leaving/backgrounding the page. Refresh or return to restore it paused with the same difficulty, loadout, board, timers and wave. **Menu → Resume saved level** returns from the menu. Restart or starting a new level replaces the ongoing session; victory/defeat clears it while preserving campaign progress. [Save details and verification](saves.md).
+- The current level autosaves every two seconds, after planting/resource changes, on pause, and when leaving/backgrounding the page. Refresh or return to restore it with the menu open and the same difficulty, loadout, board, timers and wave. **Menu → Resume saved level** returns from the menu. Restart or starting a new level replaces the ongoing session; victory/defeat clears it while preserving campaign progress. [Save details and verification](saves.md).
 - Relaxed: 75% enemy health, 80% speed, +50 starting sun. Baseline: unmodified prototype balance. Hard: 135% health, 115% speed. Changing difficulty restarts the selected level.
 
 ## Daytime campaign
@@ -173,7 +173,7 @@ in the first four lanes. **Fill 4 rows** places 28 Peashooters with a continuous
 basic-zombie supply. Graves, shoveling, clear-zombies and clear-board controls
 let players build other test situations. There is no campaign win/loss or
 automatic Adventure wave progression; a 160-zombie cap bounds crowd overload.
-Hide the tools to see the whole lawn, and use the existing pause/speed controls.
+Hide the tools to see the whole lawn, and use the existing Menu/speed controls.
 
 Playgrounds are temporary: refresh/leave resets the board. Entering saves any
 active campaign first; playground autosaves are explicitly excluded from the
@@ -197,3 +197,26 @@ explanation for firing gaps, not a confirmed reproduction of the reported
 physical-device issue. Canvas submission checks do not prove the final browser
 compositor displayed every pixel. Use a report from the affected device to
 continue diagnosing if the symptom recurs.
+
+## Focus and background play
+
+**Menu → Auto-pause when unfocused** starts On and is remembered on this device.
+With it On, blur/hide opens the game menu only during an active battle. Returning
+focus leaves that menu open until the player chooses Back to game. Losing focus
+on title/help/seed/map screens, or with the menu already open, adds no pause.
+With it Off, visible unfocused games keep running. Hidden active games use a
+best-effort timer to advance simulation without drawing, in 20 ms steps and at
+most one second of catch-up per timer callback. Foreground RAF steps are gated
+while that background driver owns simulation, avoiding double progression.
+Opening the menu still freezes both drivers regardless of this preference.
+
+Browsers may [throttle or freeze hidden pages](https://developer.chrome.com/blog/timer-throttling-in-chrome-88),
+so this is not guaranteed full-speed hidden-tab execution. Closing or discarding
+the page does not produce offline progress. Reloaded campaigns open their menu
+before running. Background-only projectile removals are reported separately
+from missing foreground draws.
+
+Validation: focus-policy combinations/defaults and bounded background clock
+unit checks; real Phaser 1×/2× background/foreground state equality, no drawing,
+no duplicate RAF progression and menu blocking; real iframe focus transitions
+through `/scripts/games/garden-guard/focus-browser-check.html`.

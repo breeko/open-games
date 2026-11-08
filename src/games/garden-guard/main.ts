@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {BackgroundClock,shouldOpenMenuOnFocusLoss} from './focus-policy';
 import {gamePerformance as perf, PERFORMANCE_SECTIONS} from './diagnostics/performance';
 import './shell.css';
 import { getDifficulty, setDifficulty, isDifficulty } from './difficulty';
@@ -97,10 +98,9 @@ if (import.meta.env.DEV) {
 }
 
 // Touch controls live outside the scaled canvas so they stay comfortably large.
-const pause = document.querySelector<HTMLButtonElement>('#pause')!;
+const continueGame=document.querySelector<HTMLButtonElement>('#continue-game')!;
 const controls=document.querySelector<HTMLDialogElement>('#controls')!;
 const controlsToggle=document.querySelector<HTMLButtonElement>('#controls-toggle')!;
-let resumeAfterControls=false;
 let paused = false;
 function setPaused(value: boolean): void {
   const wasPaused=paused;
@@ -112,19 +112,20 @@ function setPaused(value: boolean): void {
     if(wasPaused)for(const scene of game.scene.getScenes(true))if(scene instanceof GameScene)scene.resumeTweenClock();
     game.resume(); if (settings.current.music) { audio.unlock(); audio.startMusic(); }
   }
-  pause.textContent = value ? 'Resume' : 'Pause';
-  pause.setAttribute('aria-pressed', String(value));
-  document.querySelector('#pause-notice')!.classList.toggle('visible', value);
-  if(value)saveSession();
+  if(value&&!wasPaused)saveSession();
 }
-pause.onclick = () => setPaused(!paused);
-document.querySelector<HTMLButtonElement>('#resume-play')!.onclick=()=>setPaused(false);
+continueGame.onclick=()=>closeControls();
+function playingScene():GameScene|null {
+ const scene=game.scene.getScene('game');return game.scene.isActive('game')&&scene instanceof GameScene&&scene.isPlaying?scene:null;
+}
 function openControls():void {
   if(controls.open)return;
-  resumeAfterControls=!paused;setPaused(true);
+  const playing=Boolean(playingScene());
+  if(playing)setPaused(true);
+  continueGame.textContent=playing?'Back to game':'Close menu';
   document.body.classList.add('controls-open');controls.showModal();
 }
-function closeControls(resume=resumeAfterControls):void {
+function closeControls(resume=true):void {
   controls.close();
   if(resume)setPaused(false);
 }
@@ -137,7 +138,7 @@ controls.addEventListener('click',event=>{
   const bounds=controls.getBoundingClientRect();
   if(event.clientX<bounds.left||event.clientX>bounds.right||event.clientY<bounds.top||event.clientY>bounds.bottom)closeControls();
 });
-game.events.on('request-pause',openControls);
+game.events.on('request-game-menu',openControls);
 
 const fullscreen=document.querySelector<HTMLButtonElement>('#fullscreen')!;
 const fullscreenHint=document.querySelector<HTMLParagraphElement>('#fullscreen-hint')!;
@@ -146,7 +147,7 @@ fullscreen.hidden=!fullscreenAvailable;fullscreenHint.hidden=fullscreenAvailable
 function refreshFullscreen():void {fullscreen.textContent=document.fullscreenElement?'Exit fullscreen':'Enter fullscreen';}
 document.addEventListener('fullscreenchange',refreshFullscreen);
 fullscreen.onclick=async()=>{
-  const resume=resumeAfterControls;
+  const resume=paused;
   // Browsers can reject fullscreen while a modal dialog is in the top layer.
   // Close it synchronously, retaining the fullscreen button's user activation.
   closeControls(false);
@@ -158,12 +159,12 @@ fullscreen.onclick=async()=>{
   } catch(error) {
     if(import.meta.env.DEV)console.info('Fullscreen unavailable:',error instanceof Error?error.message:String(error));
     fullscreenHint.hidden=false;fullscreenHint.textContent='Fullscreen wasn’t available. You can keep playing here, or use Add to Home Screen.';
-    openControls();resumeAfterControls=resume;
+    openControls();
   }
 };
 game.events.on('session-started',()=>{savingEnabled=true;clearSessionPending=false;capturePending=true;lastSessionSaveAt=-Infinity;});
 game.events.on('session-restored',()=>{
-  setPaused(true);showSaveStatus('Level restored. Tap Resume when you’re ready.');
+  setPaused(true);openControls();continueGame.textContent='Back to game';showSaveStatus('Level restored. Choose Back to game when you’re ready.');
   // Pausing during scene creation can leave the old canvas frame on screen.
   // Redraw after creation finishes, without stepping physics, timers or gameplay.
   requestAnimationFrame(()=>{
@@ -187,7 +188,6 @@ function openMenu():void {
   game.scene.start('menu');
 }
 document.querySelector<HTMLButtonElement>('#menu')!.onclick=openMenu;
-game.events.on('request-menu',openMenu);
 document.querySelector<HTMLButtonElement>('#shovel')!.onclick = () => {
   const scene = game.scene.getScene('game') as GameScene;
   if (game.scene.isActive('game')) scene.toggleShovel();
@@ -198,8 +198,11 @@ document.querySelector<HTMLButtonElement>('#cancel')!.onclick = () => {
   if (game.scene.isActive('game')) scene.cancelSelection();
   closeControls(true);
 };
-document.addEventListener('visibilitychange', () => { if (document.hidden) setPaused(true); });
-window.addEventListener('blur', () => setPaused(true));
+function handleFocusLoss():void {
+ if(shouldOpenMenuOnFocusLoss({enabled:settings.current.autoPauseOnBlur,playing:Boolean(playingScene()),menuOpen:controls.open,paused}))openControls();
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)handleFocusLoss();updateBackgroundMode();});
+window.addEventListener('blur',handleFocusLoss);
 
 const levelSelect = document.querySelector<HTMLSelectElement>('#level')!;
 const difficultySelect = document.querySelector<HTMLSelectElement>('#difficulty')!;
@@ -274,7 +277,7 @@ import.meta.hot?.dispose(()=>{autosave.flush();autosave.stop();});
 
 window.addEventListener('keydown', event => {
   if (event.code !== 'Space' || event.repeat || (event.target instanceof HTMLElement && ['BUTTON','SELECT','INPUT'].includes(event.target.tagName))) return;
-  if (game.scene.isActive('game')) { event.preventDefault(); setPaused(!paused); }
+  if (playingScene()||controls.open) { event.preventDefault();if(controls.open)closeControls();else openControls(); }
 });
 
 const diagnosticsPanel=document.querySelector<HTMLElement>('#diagnostics')!;
@@ -433,7 +436,7 @@ Shootable targets: ${r.targets} · dying: ${r.dying}
 Peas alive: ${p?.live??0}
 Spawned: ${p?.spawned??0} · drawn: ${p?.drawnAtLeastOnce??0}
 Missing live draws: ${p?.missingDraws??0}
-Removed before first draw: ${p?.removedBeforeFirstDraw??0}
+Removed before first draw: ${p?.removedBeforeFirstDraw??0}\nBackground (no drawing): ${p?.removedWhileNotRendering??0}
 Hit: ${p?.removed.hit??0} · expired: ${p?.removed.expired??0} · offscreen: ${p?.removed.offscreen??0}
 Unexpected removals: ${p?.removed.unexpected??0}`;
 }
@@ -447,3 +450,27 @@ document.querySelector<HTMLButtonElement>('#playground-report')!.onclick=()=>{
  const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));
  const a=document.createElement('a');a.href=url;a.download='garden-projectile-report.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
+
+const autoPause=document.querySelector<HTMLButtonElement>('#auto-pause')!;
+function refreshAutoPause():void {
+ autoPause.textContent=`Auto-pause when unfocused: ${settings.current.autoPauseOnBlur?'On':'Off'}`;
+ autoPause.setAttribute('aria-pressed',String(settings.current.autoPauseOnBlur));
+ updateBackgroundMode();
+}
+autoPause.onclick=()=>settings.toggle('autoPauseOnBlur');
+const backgroundClock=new BackgroundClock();
+function updateBackgroundMode():void {
+ const scene=game.scene.getScene('game');
+ if(scene instanceof GameScene)scene.backgroundDriven=Boolean(document.hidden&&!settings.current.autoPauseOnBlur&&!paused&&!controls.open&&playingScene());
+ if(!document.hidden||settings.current.autoPauseOnBlur||paused||controls.open)backgroundClock.reset();
+}
+const backgroundTimer=setInterval(()=>{
+ updateBackgroundMode();const scene=playingScene();
+ backgroundClock.advance(performance.now(),Boolean(scene?.backgroundDriven),delta=>{
+  if(!scene||paused||controls.open||!scene.backgroundDriven)return false;
+  scene.stepInBackground(delta);return scene.isPlaying;
+ });
+},100);
+for(const event of ['session-started','session-restored','playground-started'])game.events.on(event,()=>{backgroundClock.reset();updateBackgroundMode();});
+settings.on('changed',refreshAutoPause);refreshAutoPause();
+import.meta.hot?.dispose(()=>clearInterval(backgroundTimer));

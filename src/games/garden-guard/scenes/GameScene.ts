@@ -118,6 +118,13 @@ export class GameScene extends Phaser.Scene {
   private mowers = new Map<number, { image: Phaser.GameObjects.Image; used: boolean; moving: boolean }>();
   private gridY(row: number): number { return GRID.originY + (row + 0.5) * GRID.tileHeight; }
 
+  backgroundDriven=false;
+  private backgroundStepping=false;
+  stepInBackground(delta:number):void {
+    if(!this.backgroundDriven||this.game.isPaused||!this.sys.isActive())return;
+    this.backgroundStepping=true;this.projectileProbe?.setRenderingSuspended(true);
+    try {this.sys.step(0,delta);}finally{this.backgroundStepping=false;this.projectileProbe?.setRenderingSuspended(false);}
+  }
   private readonly simulationClock=new SimulationClock();
   private frameDelta=0;
   constructor() {
@@ -127,7 +134,7 @@ export class GameScene extends Phaser.Scene {
     // stays outside this method, so 2× does not double Canvas drawing work.
     const engineStep=this.sys.step.bind(this.sys);
     this.sys.step=(_time,delta)=>{
-      if(this.game.isPaused||!this.sys.isActive())return;
+      if(this.game.isPaused||!this.sys.isActive()||(this.backgroundDriven&&!this.backgroundStepping))return;
       this.simulationClock.advance(delta,this.finished?1:settings.current.gameSpeed,(time,dt)=>{
         this.frameDelta=dt;engineStep(time,dt);
         return !this.game.isPaused&&this.sys.isActive();
@@ -149,6 +156,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.backgroundDriven=false;this.backgroundStepping=false;
     this.playgroundTime=0;this.playgroundSpawnMs=0;this.playgroundSampleMs=0;this.playgroundHistory=[];this.playgroundContinuous=false;
     this.projectileProbe=this.playground?new ProjectileProbe(()=>this.playgroundTime):undefined;
     this.simulationClock.reset(this.time.now);
@@ -273,7 +281,7 @@ export class GameScene extends Phaser.Scene {
     this.input.keyboard?.on('keydown-R', () => {
       if (this.finished) this.scene.restart({ levelId: this.level.id, seeds: this.seeds });
     });
-    this.input.keyboard?.on('keydown-M', () => this.game.events.emit('request-menu'));
+    this.input.keyboard?.on('keydown-M', () => this.game.events.emit('request-game-menu'));
 
     // Number keys arm a seed without moving the mouse. Press again to cancel.
     this.input.keyboard?.on('keydown', (event: KeyboardEvent) => {

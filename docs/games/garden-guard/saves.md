@@ -2,7 +2,7 @@
 
 Garden Guard uses the shared typed JSON store and autosave scheduler, while keeping its Zod schema and all engine restoration within this game. The ongoing session key is `open-games.garden-guard.session.v1`; campaign progress, preferences, difficulty and all legacy keys remain separate and retain their existing migration behavior.
 
-Refresh or reenter the game to restore the saved level paused. Nothing advances while away. The menu can be left without discarding the level; choose **Menu → Resume saved level** to return. A new level, a difficulty change or a restart replaces the ongoing session. Victory and defeat clear only the ongoing session, after recording the existing campaign result.
+Refresh or reenter the game to restore the saved level with its menu open. Closed/discarded pages do not advance offline. If the page stays open and auto-pause is Off, an unfocused game can continue running; hidden-tab progress is subject to browser throttling. The menu can be left without discarding the level; choose **Menu → Resume saved level** to return. A new level, a difficulty change or a restart replaces the ongoing session. Victory and defeat clear only the ongoing session, after recording the existing campaign result.
 
 Saves run every two seconds, after planting, resource changes and Whack actions, on pause, when entering the menu, and on visibility/page-exit events. A crash or forced browser termination can lose changes since the last successful save. Storage is local to the browser and site origin. A quota/permission failure leaves gameplay available and reports that saving failed. An invalid or incompatible session is retained and automatic writing stays disabled until the player explicitly starts a new level.
 
@@ -30,6 +30,6 @@ bun run build
 bun run dev
 ```
 
-With Vite running, open `/scripts/games/garden-guard/session-browser-check.html`. This development-only page is not a production build entry and does not write game saves. It loads the real engine/assets and checks all sixteen level formats plus a busy night fixture, bowling hit history/bounce, final grave rise and pause. Each continuation is compared frame by frame against the uninterrupted run with controlled clocks. The fixtures exercise partial plant timers, emerging/chilled/allied zombies, a pole vault, suns in all active phases and projectiles.
+With Vite running, open `/scripts/games/garden-guard/session-browser-check.html`. This development-only page is not a production build entry and does not write game saves. It loads the real engine/assets and checks all eighteen level formats plus a busy night fixture, bowling hit history/bounce, final grave rise and pause. Each continuation is compared frame by frame against the uninterrupted run with controlled clocks. The fixtures exercise partial plant timers, emerging/chilled/allied zombies, a pole vault, suns in all active phases and projectiles.
 
 Browser UI checks also cover planting on level 2-2, refresh restoring that board paused, and returning through **Menu → Resume saved level**. These checks do not substitute for physical iPad testing or full original-game outcome parity.

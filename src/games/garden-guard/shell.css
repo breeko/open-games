@@ -8,9 +8,7 @@ button[aria-pressed="true"] { background: #657c34; border-color: #ecd986; }
 button:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #ffe066; outline-offset: 3px; }
 a { color: #d8dfa2; }
 #controls-toggle { position: fixed; top: max(8px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right)); z-index: 4; background: #183322ed; box-shadow: 0 2px 8px #0004; }
-body.controls-open #controls-toggle, body.controls-open #pause-notice { visibility: hidden; }
-#pause-notice { display: none; position: fixed; left: 50%; top: max(10px, env(safe-area-inset-top)); transform: translateX(-50%); z-index: 5; gap: 16px; align-items: center; background: #12241bf5; border: 1px solid #809f69; padding: 6px 8px 6px 16px; border-radius: 10px; }
-#pause-notice.visible { display: flex; }
+body.controls-open #controls-toggle { visibility: hidden; }
 dialog { color: #edf1d8; background: #142b1e; border: 1px solid #63815b; border-radius: 16px; padding: 20px; width: min(520px, calc(100% - 24px)); max-height: calc(100svh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; }
 dialog::backdrop { background: #07140ccc; }
 dialog header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; }
@@ -20,7 +18,7 @@ h1 { margin: 6px 0 0; font-size: 22px; }
 nav { display: grid; gap: 10px; }
 .primary-actions { display: flex; gap: 10px; }
 .primary-actions button { flex: 1; }
-#pause { background: #607c32; border-color: #a8bc66; }
+#continue-game { background: #607c32; border-color: #a8bc66; }
 label { font-size: 13px; font-weight: 650; margin-top: 4px; }
 label small { display: block; color: #a8bea0; font-size: 11px; font-weight: 400; margin-top: 3px; }
 .level-controls { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 8px; }

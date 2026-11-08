@@ -36,7 +36,7 @@ export class Hud {
       resolution:2,fontFamily:'Georgia, serif',fontSize:'37px',fontStyle:'bold',color:'#57c82b',stroke:'#234524',strokeThickness:2,
     }).setOrigin(0.5).setDepth(DEPTH.ui+1);
     scene.add.zone(menuX+menuWidth/2,menuY+menuHeight/2,menuWidth,menuHeight).setDepth(DEPTH.ui+3)
-      .setInteractive({useHandCursor:true}).on('pointerdown',(_p:Phaser.Input.Pointer,_x:number,_y:number,e:Phaser.Types.Input.EventData)=>{e.stopPropagation();scene.game.events.emit('request-pause');});
+      .setInteractive({useHandCursor:true}).on('pointerdown',(_p:Phaser.Input.Pointer,_x:number,_y:number,e:Phaser.Types.Input.EventData)=>{e.stopPropagation();scene.game.events.emit('request-game-menu');});
     if(level.id>=5){
       scene.add.image(948,8,'ShovelBank').setOrigin(0).setDisplaySize(112,115).setDepth(DEPTH.ui);
       scene.add.image(1004,62,'Shovel_hi_res').setDisplaySize(78,84).setDepth(DEPTH.ui+1);
