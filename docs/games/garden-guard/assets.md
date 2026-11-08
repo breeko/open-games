@@ -42,3 +42,16 @@ The 2-5/2-6 expansion adds original Hypno-shroom and Scaredy-shroom poses plus a
 
 
 Late-night additions use `IceShroom` and `DoomShroom` poses, the original red-jacket `Zombie_disco` leader, the bandanna `Zombie_backup`, original `icetrap`/`icetrap2` layers, and one frame from the two-frame crater sheet. Motion exports include the leader's walk and moonwalk and backup walk; the moonwalk curve is sign-normalized for leftward travel. The generation scripts reproduce those crops and curve transforms. Original-art ownership/attribution remains unchanged.
+
+## Main selector menu
+
+The menu reuses `SelectorScreen` tree, distant house/lawn, gravestone, clouds,
+welcome sign, Adventure normal/highlight, almanac book and flowerpot labels from
+the same pinned source. `scripts/games/garden-guard/prepare-menu-assets.py`
+reproduces `assets/menu/`: it decodes the three original JPEG color planes with
+their grayscale PNG alpha masks and copies the remaining originals without
+resizing. The composition follows the native 800 × 600 selector coordinates;
+Phaser scales the whole menu to the existing responsive canvas. Labels for
+implemented features use crisp live text. Unsupported original modes are not
+advertised. Quit returns to the library. No new animation loops, physics bodies,
+fonts or external requests are added to the menu.

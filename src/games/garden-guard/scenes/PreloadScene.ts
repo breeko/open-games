@@ -1,19 +1,17 @@
 import Phaser from 'phaser';
 import { DEPTH } from '../constants';
 
-/**
- * Generates every texture the game needs with the Graphics API.
- *
- * Nothing is loaded from disk, so the project runs immediately after
- * `bun install`. When you have real art, drop it into `assets/` (or `public/`)
- * and replace these calls with `this.load.image('peashooter', '...')`.
- */
+/** Loads original reference art, with generated fallback gameplay textures. */
 export class PreloadScene extends Phaser.Scene {
   constructor() {
     super('preload');
   }
 
   preload(): void {
+    for(const name of ['BG_Left','BG_Center','BG_Right','WoodSign1','Adventure_button','Adventure_highlight','Cloud1','Cloud2','Cloud4','Almanac','AlmanacHighlight','Options1','Options2','Help1','Help2','Quit1','Quit2']) {
+      this.load.image('menu-'+name,'/games/garden-guard/assets/menu/SelectorScreen_'+name+'.png');
+    }
+    this.load.image('menu-sky','/games/garden-guard/assets/menu/SelectorScreen_BG.jpg');
     for (const key of ['peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower','puff','puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster','zombie-paper','zombie-paper-angry','zombie-door','hypnoshroom','scaredyshroom','scaredyshroom-hidden','zombie-football','zombie-football-bare','iceshroom','doomshroom','zombie-dancer','zombie-backup']) {
       this.load.image('reference-' + key, '/games/garden-guard/assets/reference/' + key + '.png');
     }
