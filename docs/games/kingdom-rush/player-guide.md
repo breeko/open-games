@@ -79,3 +79,11 @@ Tower skills are purchased with battle gold. Power star upgrades are available t
 Silveroak elves: repair 100 gold, hire 100 gold each, maximum four living. Each has 200 HP and 25–50 physical melee/bow damage. Melee interval 1.6s; bow interval 1.5s and range 204.8. Elves have no automatic replacement.
 
 See [all skill ranks and power training](skills-and-power-upgrades.md) for costs, effects, source quirks, star earning/refunds and validation evidence.
+
+## Practice
+
+Open **About this test level & tools**, choose a practice wave, and press **Prepare practice**. Wave one starts with the map's normal gold. Later waves add scheduled kill rewards from earlier waves, excluding early-call bonuses and summoned enemies.
+
+Practice uses your campaign powers by default. **Custom practice powers** lets you try any Rain of Fire and reinforcement ranks without buying them. The panel shows the star cost and flags budgets above the stars available from earlier maps on a first visit. The map labels the temporary budget, for example **Practice ★14**.
+
+Practice awards no records or stars and preserves your campaign battle and upgrades. **Restart** restarts the practice setup. To leave, use **Return to campaign** in tools or select your current map in **Maps**. The return button also appears after practice ends. In fullscreen phone landscape, use Maps to return; rotate to portrait to access the tools below the map.

@@ -1,6 +1,6 @@
 # Citadel campaign calibration — November 8, 2026
 
-The Citadel now has a reproducible full seventeen-wave **simulation victory**, including the Juggernaut, with ordinary campaign money and an achievable fourteen-star power loadout. A manual browser victory and a matched original Citadel comparison remain unverified. No enemy, tower, money, or wave values were changed in this pass.
+The Citadel now has both a reproducible full seventeen-wave **simulation victory** and a complete **browser practice victory**, including the Juggernaut, with normal starting money and a fourteen-star power loadout. The browser run saved ten lives. Its power budget was selected temporarily for practice, not earned in that browser's campaign. A matched original Citadel comparison and a clear using that browser's earned campaign upgrades remain unverified. No enemy, tower, money, or wave values were changed.
 
 ## Fixed defense and upgrade budget
 
@@ -39,13 +39,43 @@ Reloaded the page during wave two. The game restored paused at 27 gold, sixteen 
 
 ## Original comparison and next milestone
 
-The Armor Games reference remains at six earned stars, with Twin Rivers unfinished and Silveroak/Citadel locked. Purchased Fire 3 and reinforcements 1 there to retain an explicit six-star comparison loadout. No original Citadel playthrough or matched fourteen-star comparison occurred in this pass.
+Continued the [Armor Games original](https://armorgames.com/play/12141/kingdom-rush) on Normal, with Fire 3 and reinforcements 1, using six earned stars and no tower star upgrades. The Twin Rivers run is paused in wave 5/13, with eleven lives and 124 gold; [checkpoint screenshot](playtests/2026-11-08-original-twin-rivers-progress.jpg). Its opening was barracks 13/5, artillery 14/6, mages 12/4 and archer 9; later promoted mages 12/4 and artillery 14 to tier two. Powers were placed through the original UI. This is an unfinished unlock run, not a completed control or a Citadel comparison. Silveroak/Citadel remain locked.
 
-Before adding Coldstep Mines: complete the manual local defense with a clearly recorded campaign budget, unlock the original Citadel through its campaign, and compare matched purchases/powers. Investigate the existing earlier-map parity gap using that evidence. Do not weaken enemies simply because a low-budget authored defense or a manual attempt loses.
+Before adding Coldstep Mines: finish unlocking the original Citadel and compare matched purchases/powers, including a lower campaign budget. The full local browser practice milestone is complete; original difficulty parity is still open. Investigate the existing earlier-map parity gap using evidence. Do not weaken enemies simply because a low-budget authored defense or a manual attempt loses.
+
+## Full browser practice victory
+
+Added temporary practice power selection under **About this test level & tools**. Campaign powers remain the default. Custom ranks show their total star cost and the maximum from earlier maps on a first visit, flagging larger budgets. Practice never changes the earned-star profile or completed records. Restart now restarts practice instead of replacing the saved campaign battle. Return to campaign is available in tools, the terminal controls, and the current map's card in Maps. Campaign power purchases are disabled during practice, including wave-one preparation.
+
+Two actual browser attempts used the same seed and temporary Fire 5 / reinforcements 2 budget:
+
+| Attempt | Result | Tick | Gold | Kills |
+| --- | --- | ---: | ---: | ---: |
+| First practice run | Defeat, wave 8 | 10,082 | 123 | 118 |
+| Retry from wave one | Victory, 10 lives | 21,062 | 203 | 530 |
+
+The first [complete trace](playtests/2026-11-08-citadel-practice-first-browser.json) is retained alongside the successful [complete trace](playtests/2026-11-08-citadel-practice-victory-browser.json) and [victory screenshot](playtests/2026-11-08-citadel-practice-victory-browser.jpg). Both start with normal 700 gold; wave-one practice supplies no prior-wave income. Neither used injected gold, lives or damage. Preparation occupied 166 ticks in the winning run. Pauses were used to inspect and plan; this is an agent-controlled browser playtest, not a human win-rate measurement.
+
+The retry bought the same seven opening mages and mage 12, promoted the central mages and barracks, then added Rangers at 8/11. Arcane Wizards at 9/10 were followed by 4/6; 14/12 became Arcane Wizards during the boss fight. Teleport ranks 1–2 were bought at 9 in wave thirteen, and Thorns ranks 1–3 at 11 during wave fourteen/the boss. Fifteen Fire casts and twenty-nine reinforcement casts were placed through the actual UI. All sixteen subsequent waves were called early. Every purchase, placement and call is in the trace.
+
+| Start of wave | Lives |
+| ---: | ---: |
+| 1–6 | 20 |
+| 7–8 | 18 |
+| 9 | 13 |
+| 10–11 | 11 |
+| 12–17 | 10 |
+| Victory | 10 |
+
+The ten escapes were **five Worgs, three Shamans and two Bandits**. There were no Gargoyle, Dark Knight or boss escapes. Teleport fired thirty portals, moving sixty-three enemies; Thorns applied twenty-six roots. Sixteen Golem launches were observed. The final result includes summoned enemies and the original-style army cleanup on boss death.
+
+The successful trace replays to the exact phase/tick/gold/lives/kills after the practice UI changes, which did not alter combat. Reloading after the win restored campaign preparation at 700 gold, twenty lives and wave zero. Guide still showed three earned stars, two spent, Fire 2 / reinforcements 0; the map still showed Citadel as not yet defended. The new practice Restart and Maps → Return to The Citadel campaign were also exercised through the UI and preserved that campaign state. A 24-star selection correctly flagged that it exceeds the fifteen-star first-visit budget.
+
+The victory screenshot predates the subsequent practice-only terminal wording cleanup: its two-star result indicator did not award a campaign record. Current practice completion explicitly says no stars are awarded. Desktop controls were checked. A requested browser viewport override did not change the local tab's measured 1280×720 viewport, so this pass does not add a new phone-size validation; earlier landscape evidence and the physical-device limitation remain as recorded.
 
 ## Verification
 
-105 Kingdom Rush tests and four library-boundary checks pass, along with the production build. The two new checks cover the full restored campaign and replay of the actual browser attempt. Only Kingdom Rush scripts, tests and documentation changed; production gameplay and assets were unchanged.
+108 Kingdom Rush tests and four library-boundary checks pass, along with the production build. Checks now include exact replay of the full browser victory, campaign isolation for custom practice, and default later-wave practice behavior. Changes are confined to Kingdom Rush UI, practice setup, tests and documentation. Combat values, schedules, save formats and assets were unchanged.
 
 ```sh
 bun scripts/games/kingdom-rush/calibrate-citadel.ts

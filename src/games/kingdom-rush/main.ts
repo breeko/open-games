@@ -4,7 +4,8 @@ import { Renderer } from './render';
 import {renderFieldGuide,towerName,towerSummary,type GuideTopic} from './field-guide';
 import { Simulation } from './simulation';
 import { gameStores,powerUpgradeStore } from './persistence';
-import {SKILLS,SKILL_IDS,NO_POWER_UPGRADES,starsForLives,purchasePower,type PowerLoadout,type PowerBranch} from './upgrades';
+import {SKILLS,SKILL_IDS,NO_POWER_UPGRADES,starsForLives,spentStars,purchasePower,powerLoadoutSchema,type PowerLoadout,type PowerBranch} from './upgrades';
+import {preparePractice,type PracticePowers} from './practice';
 import {renderPowerTraining} from './power-training';
 import { startAutosave } from '../../shared/persistence/autosave';
 
@@ -57,14 +58,14 @@ function saveSession():void {
 }
 function setText(node:HTMLElement,text:string):void {if(node.textContent!==text)node.textContent=text;}
 function notify(text:string):void {message.textContent=text;messageUntil=performance.now()+3000;message.classList.add('visible');}
-function reset():void {const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level,powerProfile);selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();}
+function reset():void {if(sim.practice){startPractice();return;}const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level,powerProfile);selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();}
 function setMode(value:typeof mode):void {mode=mode===value?'none':value;contextKey='';if(mode==='rally')notify('Tap a nearby road to move your soldiers.');if(mode==='fire')notify('Tap the battlefield to call down fire.');if(mode==='reinforcements')notify('Tap a road to summon two reinforcements.');}
 function renderContext():void {
   const tower=sim.towers.find(t=>t.id===selected),key=`${selected}/${tower?.kind}/${tower?.level}/${tower?.poison}/${tower?.thorns}/${tower?.deathRay}/${tower?.teleport}/${mode}/${sim.phase}/${sim.paused}/${sim.wave}/${sim.elfCampRepaired}/${sim.soldiers.filter(s=>s.kind==='elf'&&s.hp>0).length}`;
   if(key===contextKey){context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=b.dataset.unavailable==='true'||Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');return;}
   contextKey=key;context.dataset.active=String(selected!==null||mode!=='none'||sim.phase==='won'||sim.phase==='lost');context.replaceChildren();
   const button=(label:string,action:()=>void,price?:number):HTMLButtonElement=>{const b=document.createElement('button');b.textContent=label;b.disabled=sim.paused||sim.phase==='won'||sim.phase==='lost';b.onclick=()=>{action();contextKey='';};if(price!==undefined)b.dataset.price=String(price);context.append(b);return b;};
-  if(sim.phase==='won'||sim.phase==='lost') {const p=document.createElement('p');p.textContent=sim.phase==='won'?`${currentLevel.title} defended! ★ ${starsForLives(sim.lives)}/3`:'Try another defense.';context.append(p);const b=document.createElement('button');b.textContent=sim.phase==='won'&&currentLevel.level<LEVELS.length?'Next map →':'Choose map';b.onclick=()=>{const nextLevel=LEVELS.find(level=>level.level===currentLevel.level+1);if(sim.phase==='won'&&nextLevel)goToMap(nextLevel.level);else openMaps();};context.append(b);return;}
+  if(sim.phase==='won'||sim.phase==='lost') {const p=document.createElement('p');p.textContent=sim.phase==='won'?(sim.practice?`Practice cleared — ${sim.lives} lives saved. No stars awarded.`:`${currentLevel.title} defended! ★ ${starsForLives(sim.lives)}/3`):'Try another defense.';context.append(p);const b=document.createElement('button');b.textContent=sim.practice?'Return to campaign':sim.phase==='won'&&currentLevel.level<LEVELS.length?'Next map →':'Choose map';b.onclick=()=>{if(sim.practice){location.reload();return;}const nextLevel=LEVELS.find(level=>level.level===currentLevel.level+1);if(sim.phase==='won'&&nextLevel)goToMap(nextLevel.level);else openMaps();};context.append(b);return;}
   if(mode!=='none') {const p=document.createElement('p');p.textContent=mode==='rally'?'Choose a rally point':mode==='fire'?'Choose where the fire falls':'Choose a road for your troops';context.append(p);if(mode==='fire'||mode==='reinforcements'){const info=button('ⓘ Stats',()=>openGuide('powers'));info.disabled=false;}button('Cancel',()=>{mode='none';});return;}
   if(selected===currentLevel.elfCamp?.id){
     const label=document.createElement('span');label.className='tower-label';label.textContent='Sylvan elves';context.append(label);
@@ -96,7 +97,8 @@ function renderContext():void {
   context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=b.dataset.unavailable==='true'||Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');
 }
 function updateHud():void {
-  setText(gold,String(sim.gold));setText(lives,String(sim.lives));setText(wave,`${sim.practice?'Practice ':''}${sim.wave} / ${currentLevel.groups.length}`);
+  practiceReturn.hidden=!sim.practice;
+  setText(gold,String(sim.gold));setText(lives,String(sim.lives));setText(wave,`${sim.practice?`Practice ★${spentStars(sim.powerUpgrades)} · `:''}${sim.wave} / ${currentLevel.groups.length}`);
   setText(pause,sim.paused?'Resume':'Pause');pause.dataset.icon=sim.paused?'▶':'Ⅱ';pause.setAttribute('aria-label',sim.paused?'Resume':'Pause');pause.disabled=sim.phase==='won'||sim.phase==='lost';
   fire.setAttribute('aria-pressed',String(mode==='fire'));reinforce.setAttribute('aria-pressed',String(mode==='reinforcements'));
   const fireWait=Math.max(0,Math.ceil((sim.fireReady-sim.tick)/FPS)),reinforceWait=Math.max(0,Math.ceil((sim.reinforcementsReady-sim.tick)/FPS));
@@ -126,13 +128,13 @@ function refreshGuide():void {
   if(topic==='training'){
     const results=LEVELS.map(level=>gameStores(undefined,level.level).results.read()),available=trainingReadable&&results.every(r=>r.status==='valid'||r.status==='missing');
     const earned=results.reduce((n,r)=>n+(r.status==='valid'?starsForLives(r.value):0),0);
-    renderPowerTraining(guideContent,{profile:powerProfile,active:sim.powerUpgrades,earned,available,canChange:sim.phase==='ready'&&sim.wave===0,buy:branch=>changePowerProfile(branch,earned),reset:()=>savePowerProfile({...NO_POWER_UPGRADES})});
+    renderPowerTraining(guideContent,{profile:powerProfile,active:sim.powerUpgrades,earned,available,canChange:!sim.practice&&sim.phase==='ready'&&sim.wave===0,buy:branch=>changePowerProfile(branch,earned),reset:()=>savePowerProfile({...NO_POWER_UPGRADES})});
   }else renderFieldGuide(guideContent,topic,currentLevel,sim.wave,sim.towers.find(t=>t.id===selected),sim.powerUpgrades);
 }
 function savePowerProfile(profile:PowerLoadout):void {
-  if(sim.phase!=='ready'||sim.wave!==0)return;
+  if(sim.practice||sim.phase!=='ready'||sim.wave!==0)return;
   const result=trainingStore.write(profile);if(result.status!=='saved'){notify('Power upgrades could not be saved. Your previous upgrades have been kept.');return;}
-  trainingReadable=true;powerProfile=profile;sim.configurePowers(profile);saveSession();refreshGuide();
+  trainingReadable=true;powerProfile=profile;sim.configurePowers(profile);saveSession();refreshGuide();updatePracticeBudget();
 }
 function changePowerProfile(branch:PowerBranch,earned:number):void {const next=purchasePower(powerProfile,branch,earned);if(next)savePowerProfile(next);}
 function openGuide(topic:GuideTopic='all'):void {
@@ -149,12 +151,13 @@ function openMaps():void {
   if(sim.phase==='running'||sim.phase==='ready')sim.setPaused(true);accumulator=0;saveSession();
   const list=element('map-list',HTMLDivElement);list.replaceChildren();
   for(const level of LEVELS){
-    const card=document.createElement('button');card.className='map-card';card.setAttribute('aria-label',`Play ${level.title}`);
+    const returnToCampaign=sim.practice&&level.level===currentLevel.level;
+    const card=document.createElement('button');card.className='map-card';card.setAttribute('aria-label',returnToCampaign?`Return to ${level.title} campaign`:`Play ${level.title}`);
     const image=document.createElement('img');image.src=level.level===3?'/games/kingdom-rush/assets/pagras.png':`/games/kingdom-rush/assets/level${String(level.level).padStart(2,'0')}/background.png`;image.alt='';
     const name=document.createElement('strong');name.textContent=`${level.level}. ${level.title}`;
-    const detail=document.createElement('span');const result=gameStores(undefined,level.level).results.read();detail.textContent=`${level.groups.length} waves · ${result.status==='valid'&&result.value>0?`★ ${starsForLives(result.value)}/3 · Best: ${result.value} lives`:'Not yet defended'}`;
+    const detail=document.createElement('span');const result=gameStores(undefined,level.level).results.read();detail.textContent=`${returnToCampaign?'Return to saved campaign · ':''}${level.groups.length} waves · ${result.status==='valid'&&result.value>0?`★ ${starsForLives(result.value)}/3 · Best: ${result.value} lives`:'Not yet defended'}`;
     if(level.level===currentLevel.level)card.setAttribute('aria-current','true');
-    card.append(image,name,detail);card.onclick=()=>{if(level.level===currentLevel.level){mapDialog.close();return;}goToMap(level.level);};list.append(card);
+    card.append(image,name,detail);card.onclick=()=>{if(level.level===currentLevel.level&&!returnToCampaign){mapDialog.close();return;}goToMap(level.level);};list.append(card);
   }
   mapDialog.showModal();
 }
@@ -206,8 +209,26 @@ Renderer.create(canvas,currentLevel.level).then(r=>{renderer=r;loading.hidden=tr
 
 const practiceWave=element('practice-wave',HTMLSelectElement);
 for(let i=1;i<=currentLevel.groups.length;i++){const option=document.createElement('option');option.value=String(i);option.textContent=`Wave ${i}`;practiceWave.append(option);}
-element('practice-start',HTMLButtonElement).onclick=()=>{
+const customPractice=element('practice-custom',HTMLInputElement),practiceFire=element('practice-fire',HTMLSelectElement),practiceReinforcements=element('practice-reinforcements',HTMLSelectElement),practiceBudget=element('practice-budget',HTMLParagraphElement),practiceReturn=element('practice-return',HTMLButtonElement);
+practiceReturn.onclick=()=>{if(sim.practice)location.reload();};
+for(const select of [practiceFire,practiceReinforcements])for(let rank=0;rank<=5;rank++){const option=document.createElement('option');option.value=String(rank);option.textContent=`${rank}/5`;select.append(option);}
+function practicePowers():PracticePowers {
+  const parsed=powerLoadoutSchema.safeParse({fire:Number(practiceFire.value),reinforcements:Number(practiceReinforcements.value)});
+  return customPractice.checked&&parsed.success?{kind:'custom',loadout:parsed.data}:{kind:'campaign'};
+}
+function updatePracticeBudget():void {
+  practiceFire.disabled=practiceReinforcements.disabled=!customPractice.checked;
+  const selected=practicePowers(),loadout=selected.kind==='custom'?selected.loadout:powerProfile;
+  const spent=spentStars(loadout),priorMaximum=(currentLevel.level-1)*3;
+  practiceBudget.textContent=`Practice powers: Fire ${loadout.fire}/5 · Reinforcements ${loadout.reinforcements}/5 · ★ ${spent} spent. First visit: up to ${priorMaximum} stars from earlier maps.${spent>priorMaximum?' This loadout exceeds that first-visit budget.':''} Practice awards no records or stars and preserves your campaign battle and upgrades.`;
+}
+customPractice.onchange=practiceFire.onchange=practiceReinforcements.onchange=updatePracticeBudget;
+updatePracticeBudget();
+function startPractice():void {
+  const seed=Number(seedInput.value),practice=preparePractice(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level,Number(practiceWave.value),practicePowers(),powerProfile);
+  if(!practice){notify('Choose a valid practice wave.');return;}
   saveSession();
-  const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level,powerProfile);sim.preparePractice(Number(practiceWave.value));
+  sim=practice;
   selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();
-};
+}
+element('practice-start',HTMLButtonElement).onclick=startPractice;

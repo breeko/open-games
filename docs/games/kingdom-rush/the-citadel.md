@@ -2,7 +2,7 @@
 
 Added November 8, 2026. Open `/games/kingdom-rush/?level=6`, choose it in Maps, or continue from Silveroak. Saves and completed records remain independent per map.
 
-**Latest calibration:** the [campaign follow-up](citadel-calibration.md) records full simulation victories with a fourteen-star budget, the active browser wave-six defeat, and save/restore checks. Historical observations below retain their original scope; the original Citadel comparison and manual victory remain open. Tower skills and power training described as unavailable below were subsequently added in [the upgrades pass](skills-and-power-upgrades.md).
+**Latest calibration:** the [campaign follow-up](citadel-calibration.md) records a complete browser practice victory with ten lives, fourteen temporary power stars and normal starting gold, plus full simulation victories and restoration checks. The original Citadel comparison and a clear using earned campaign upgrades remain open. Historical observations below retain their original scope. Tower skills and power training described as unavailable below were subsequently added in [the upgrades pass](skills-and-power-upgrades.md).
 
 ## Original facts used
 
@@ -39,7 +39,7 @@ Historical command replays under the new rule are distinct from their preserved 
 
 A fixed three-tower opening was also observed in the browser: tier-two mages 14/12 and tier-two barracks 9 rallied near (513,235), with no later purchases or powers. It lost in wave 4 at tick 32,738, 372 gold / 26 kills. Preparation occupied the early ticks; wave one began at 28,558. Its [complete commands](playtests/2026-11-08-citadel-opening-browser.json) and [screen](playtests/2026-11-08-citadel-opening-browser.jpg) are preserved. This is a passive control, not an active full-defense attempt.
 
-Several authored full Citadel defenses still lose around waves 4–6. **No full seventeen-wave victory or matched original Citadel browser comparison has been established.** This map is available for playtesting; its difficulty is not certified. A normal original campaign may already have star upgrades, whereas this comparison mode has none.
+At the initial stage-six addition, several authored full Citadel defenses lost around waves 4–6, and no full seventeen-wave victory or matched original Citadel browser comparison had been established. The later full victories linked above supersede that victory limit; difficulty parity is still not certified. The initial comparison used no stars, whereas a progressing original campaign may already have star upgrades.
 
 Played the final encounter in the actual local browser using Practice wave 17, seed 12,648,430. Preparation used six Arcane Wizards (14, 12, 9, 10, 8, 11) and two Rangers (4, 6); mage 3 was added and promoted during combat. Powers were placed manually. The attempt ended in **defeat at tick 5,522, 538 gold, 131 kills**, with the boss escaping at **1,858 HP**. The [exported command history](playtests/2026-11-08-citadel-boss-browser.json) replays that terminal result exactly. The [final screen](playtests/2026-11-08-citadel-boss-browser.jpg) is preserved. This was boss practice, not a full campaign run or a win.
 
