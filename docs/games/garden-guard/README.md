@@ -230,3 +230,9 @@ through `/scripts/games/garden-guard/focus-browser-check.html`.
 Doom blasts test the whole collision rectangle against a 400-board-pixel radius and a three-row cap, rather than the zombie's image anchor. Current land enemies burn through armor/shields; emerging targets are included and allies excluded. The existing crater state, conveyor countdown, last selection, inventory and seeded random stream resume without resetting. No storage keys or previous sessions change.
 
 Verification: 74 unit tests, 50 real-entity browser checks, original-art checks, source-rule audit and production build. Browser checks include a Doom mid-fuse restore, armored/emerging/ally blast targets, crater expiry, and weighted conveyor continuation at both speeds. Manual 1024×768 checks cover free mushroom placement, Grave Buster, Doom blast and blocked crater placement. These checks establish rule consistency and save continuity, not identical retail difficulty. The conveyor remains a fixed bank with quantities (up to five per type), rather than original moving packets.
+
+## Sprite alignment and motion polish
+
+Sprites are grounded by measured stem/foot anchors instead of their entire canvas (important for poles, newspapers, football gear and asymmetric mushrooms). Drag previews use the planted stem/feet baseline. Subtle plant sway/breathing, shot recoil and walking/chewing motion are drawn without changing saved positions or hitboxes. **Menu → Sprite motion** toggles this and saves the preference. Cherry Bomb swelling respects the original-art export scale.
+
+Large screens choose a sharper backing canvas at page load, capped at twice the logical board resolution. The iPad-sized layout keeps its original drawing budget. Physics and tween costs are broken out in **Menu → Performance**; the crowded-board desktop measurement still averages about 60 FPS, but the physical iPad hitch is not reproduced. See [performance evidence and limits](performance.md).

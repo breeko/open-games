@@ -6,6 +6,7 @@ import {readGameSpeed,type GameSpeed} from '../simulation-clock';
 /** User-configurable options, persisted to localStorage. */
 export interface Settings {
   autoPauseOnBlur:boolean;
+  spriteMotion:boolean;
   gameSpeed:GameSpeed;
   music: boolean;
   /** 0..1 */
@@ -22,6 +23,7 @@ export interface Settings {
 
 const DEFAULTS: Settings = {
   autoPauseOnBlur:true,
+  spriteMotion:true,
   gameSpeed:1,
   music: true,
   musicVolume: 0.6,
@@ -51,7 +53,7 @@ class SettingsStore extends Phaser.Events.EventEmitter {
   constructor() {
     super();
     const stored=readStored() ?? {};
-    this.values = { ...DEFAULTS, ...stored, autoCollectSuns:stored.autoCollectSuns===true,gameSpeed:readGameSpeed(stored.gameSpeed),autoPauseOnBlur:readAutoPause(stored.autoPauseOnBlur) };
+    this.values = { ...DEFAULTS, ...stored, autoCollectSuns:stored.autoCollectSuns===true,gameSpeed:readGameSpeed(stored.gameSpeed),autoPauseOnBlur:readAutoPause(stored.autoPauseOnBlur),spriteMotion:stored.spriteMotion!==false };
   }
 
   get current(): Readonly<Settings> {
@@ -65,7 +67,7 @@ class SettingsStore extends Phaser.Events.EventEmitter {
     this.emit('changed', key);
   }
 
-  toggle(key: 'music' | 'sfx' | 'showGrid' | 'autoCollectSuns' | 'autoPauseOnBlur'): void {
+  toggle(key: 'music' | 'sfx' | 'showGrid' | 'autoCollectSuns' | 'autoPauseOnBlur' | 'spriteMotion'): void {
     this.set(key, !this.values[key]);
   }
 

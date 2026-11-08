@@ -39,7 +39,8 @@ game.events.on(Phaser.Core.Events.POST_RENDER,()=>{
  if(frames++>=60)costs.push({update,render:performance.now()-render,save:saveCost});
  if(--remaining===0){
   const stats=(key:'update'|'render'|'save')=>{const a=costs.map(c=>c[key]).filter(n=>key!=='save'||n>0).sort((a,b)=>a-b);return {mean:a.reduce((s,n)=>s+n,0)/a.length,p95:a[Math.ceil(a.length*.95)-1],max:a[a.length-1]};};
-  results.textContent=JSON.stringify({frames:costs.length,update:stats('update'),render:stats('render'),save:stats('save'),detailed:perf.history.snapshot()},null,2);button.disabled=false;button.textContent='Run again';
+  const scene=game.scene.getScene('game');
+  results.textContent=JSON.stringify({board:scene instanceof GameScene?scene.performanceCounts:null,frames:costs.length,update:stats('update'),render:stats('render'),save:stats('save'),detailed:perf.history.snapshot()},null,2);button.disabled=false;button.textContent='Run again';
  }
 });
 game.events.once('assets-ready',()=>{button.disabled=false;button.textContent='Run benchmark';button.onclick=run;run();});

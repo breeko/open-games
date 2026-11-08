@@ -1,5 +1,6 @@
 /** Open session-browser-check.html through Vite. This developer page is not a production entry. */
 import Phaser from 'phaser';
+import {Plant} from '../../../src/games/garden-guard/entities/Plant';
 import {Zombie} from '../../../src/games/garden-guard/entities/Zombie';
 import {settings} from '../../../src/games/garden-guard/state/settings';
 import { PreloadScene } from '../../../src/games/garden-guard/scenes/PreloadScene';
@@ -169,6 +170,32 @@ function run(): void {
       settings.set('gameSpeed',1);step(50);const expected=capture(scene);
       const restored=open(checkpoint);step(50);equal(capture(restored),expected,'speed switch and restore');
     }finally{settings.set('gameSpeed',prior);}
+  });
+  check('manual zombie bodies preserve collision outcomes without velocity integration',()=>{
+    for(const data of [busyNightSession(),nightDiagnostic(true)]){
+      const reference=open(data);
+      for(const z of reference.children.list)if(z instanceof Zombie&&z.body instanceof Phaser.Physics.Arcade.Body)z.body.moves=true;
+      const expected:GardenSession[]=[];for(let frame=0;frame<200;frame++){step(1);expected.push(capture(reference));}
+      const optimized=open(data);for(let frame=0;frame<200;frame++){step(1);equal(capture(optimized),expected[frame],'body integration parity frame '+frame);}
+    }
+  });
+  check('drawing grounded sprites and toggling motion never mutates gameplay or collision bodies',()=>{
+    const scene=open(busyNightSession());step(1);game.pause();
+    const checkpoint=capture(scene),bodies=projectileBodies(scene);
+    const transforms=()=>scene.children.list.filter((child):child is Plant|Zombie=>child instanceof Plant||child instanceof Zombie).map(p=>[p.x,p.y,p.originX,p.originY,p.scaleX,p.scaleY,p.rotation]);
+    const before=transforms(),prior=settings.current.spriteMotion;
+    try{
+      for(const enabled of [true,false,true]){
+        settings.set('spriteMotion',enabled);game.renderer.preRender();game.scene.render(game.renderer);game.renderer.postRender();
+        equal(capture(scene),checkpoint,'render keeps full saved state');equal(projectileBodies(scene),bodies,'render keeps physics');equal(transforms(),before,'render restores every transform');
+      }
+    }finally{settings.set('spriteMotion',prior);game.resume();}
+  });
+  check('Cherry Bomb swelling respects the half-scale original-art export',()=>{
+    const data=freshSession(3);data.plants=[{type:'cherrybomb',col:1,row:2,hp:300,behavior:{kind:'cherry',fuse:1000}}];
+    const scene=open(data);step(1);const cherry=scene.children.list.find((p):p is Plant=>p instanceof Plant&&p.plantType==='cherrybomb');
+    if(!cherry||cherry.displayWidth>173||cherry.displayWidth<128)throw new Error('Cherry Bomb swelling uses the wrong art scale');
+    roundTrip(capture(scene),5);
   });
   check('Wall-nut takes 40 seconds of a lone normal zombie eating before disappearing',()=>{
     const data=freshSession(6);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.countdown=100000;

@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import {DanceRoutine,iceFreezeMs,backupPositions} from '../night-combat';
 import {ART_SCALE} from '../art';
+import {renderGroundedArt,ZOMBIE_GROUND_OFFSET} from '../sprite-presentation';
+import {settings} from '../state/settings';
 import { GroundMotion } from '../reference/motion';
 import {whackBonk} from '../whack-director';
 import {damageWithShield,waveHealth} from '../combat';
@@ -88,7 +90,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   private headless=false;
   private biteRemainder=0;
   private flagLabel?:Phaser.GameObjects.Text;
-  private bobTween?: Phaser.Tweens.Tween;
+  private chewing=false;
   /** Hit-flash timer, so we don't schedule a delayed call per pea. */
   private flash = 0;
 
@@ -125,6 +127,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     this.armorHp = options.armorHp ?? 0;
 
     scene.add.existing(this);
+    scene.sys.updateList.remove(this);
     scene.physics.add.existing(this);
 
     this.setDepth(DEPTH.zombies+row*0.1);
@@ -135,6 +138,9 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     const bodyWidth=(this.zombieType==='football'?57:42)*1.6/ART_SCALE;
     body.setSize(bodyWidth,115*1.6/ART_SCALE);
     body.setOffset(this.width*this.originX-bodyWidth/2,this.height*this.originY-144/ART_SCALE);
+    // Ground tracks / vault tweens own position. Retain overlap bodies but
+    // skip velocity integration and writing the same position back each step.
+    body.moves=false;
     body.setAllowGravity(false);
     body.setVelocity(0, 0);
   }
@@ -227,21 +233,18 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     this.slowRemainingMs = durationMs;
   }
 
-  /** Starts the idle shuffle animation. */
-  walk(): void {
-    this.bobTween?.stop();
-    this.bobTween = this.scene.tweens.add({
-      targets: this,
-      angle: { from: -3, to: 3 },
-      duration: 700,
-      yoyo: true,
-      repeat: -1,
-    });
+  /** Walking presentation is drawn directly, without a permanent tween. */
+  walk():void {}
+  renderCanvas(renderer:Phaser.Renderer.Canvas.CanvasRenderer,_src:Zombie,camera:Phaser.Cameras.Scene2D.Camera,parent?:Phaser.GameObjects.Components.TransformMatrix):void {
+    const moving=settings.current.spriteMotion&&!this.dead&&this.frozenMs<=0&&!this.vaulting&&this.emergenceMs<=0&&this.rageDelay<=0;
+    const t=this.scene.time.now*(this.chewing ? 0.02 : 0.005)+this.row*1.7+this.waveIndex;
+    renderGroundedArt(renderer,this,camera,parent,ZOMBIE_GROUND_OFFSET,moving?Math.sin(t)*(this.chewing ? 0.035 : 0.022):0);
   }
 
   /** Called every frame by `GameScene`. */
   tick(delta: number): void {
     if (this.dead || !this.active) return;
+    this.chewing=false;
     this.slowRemainingMs=Math.max(0,this.slowRemainingMs-delta);
     if(this.vaulting)return;
 
@@ -397,8 +400,7 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     const interval=this.isSlowed?80:40;
     while(this.biteRemainder>=interval){this.biteRemainder-=interval;plant.takeDamage(this.dps*0.04);}
 
-    // Chewing wobble.
-    this.setAngle(Math.sin(this.scene.time.now * 0.03) * 5);
+    this.chewing=true;
   }
 
   bonk():boolean {
@@ -414,7 +416,6 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     this.dead = true;
     this.onDeath?.(this);
     this.flagLabel?.destroy();
-    this.bobTween?.stop();
     this.scene.tweens.killTweensOf(this);
     this.setActive(false);
     audio.sfx('zombieDie');
@@ -438,8 +439,6 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   override destroy(fromScene?: boolean): void {
     if(this.group)Zombie.alliesByGroup.get(this.group)?.delete(this);
     this.iceFront?.destroy();this.iceBack?.destroy();this.allyMarker?.destroy();this.iceFront=undefined;this.iceBack=undefined;this.allyMarker=undefined;
-    this.bobTween?.stop();
-    this.bobTween = undefined;
     this.flagLabel?.destroy();
     super.destroy(fromScene);
   }

@@ -1,3 +1,4 @@
+import {ART_SCALE} from '../art';
 import { explode } from '../utils/explosion';
 import type { GameContext, PlantDefinition } from '../types';
 import { Plant } from './Plant';
@@ -26,7 +27,7 @@ export class CherryBomb extends Plant {
 
     // Swell up as it gets closer to exploding. (The plant's own spawn tween
     // finishes in 180ms, so only start resizing after that.)
-    if (this.fuse > 200) this.setScale(1 + progress * 0.35);
+    if (this.fuse > 200) this.setScale(ART_SCALE*(1 + progress * 0.35));
 
     // Blink faster right before the bang.
     if (progress > 0.55) {

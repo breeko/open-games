@@ -1,4 +1,5 @@
 import {sizeArt} from '../art';
+import {plantMuzzleX} from '../sprite-presentation';
 import Phaser from 'phaser';
 import { audio } from '../audio/AudioManager';
 import { BALANCE, DEPTH } from '../constants';
@@ -98,7 +99,7 @@ export abstract class Shooter extends Plant {
 
     // Muzzle measured in the flattened texture; transform follows recoil and planting scale.
     const muzzleY=this.def.type==='scaredyshroom'?0.5:this.def.type==='puffshroom'?0.75:0.35;
-    const point=this.getWorldTransformMatrix().transformPoint((0.88-this.originX)*this.width,(muzzleY-this.originY)*this.height);
+    const point=this.getWorldTransformMatrix().transformPoint((plantMuzzleX(this.texture.key)-this.originX)*this.width,(muzzleY-this.originY)*this.height);
     const y=point.y+(laneRow-this.row)*160;
     const texture = this.def.projectile ?? 'pea';
 
@@ -124,12 +125,4 @@ export abstract class Shooter extends Plant {
     audio.sfx('shoot');
   }
 
-  private recoil(): void {
-    this.ctx.scene.tweens.add({
-      targets: this,
-      x: this.x - 4,
-      duration: 60,
-      yoyo: true,
-    });
-  }
 }

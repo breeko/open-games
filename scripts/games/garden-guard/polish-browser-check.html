@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Garden Guard screen checks</title>
+<style>body{margin:12px;background:#15231b;color:#eef5df;font:16px system-ui}button{padding:10px;margin:0 8px 12px 0}iframe{display:block;border:1px solid #476747}</style>
+<h1>Large-screen and tablet checks</h1><p>Game runs inside a real viewport of the chosen size. This developer page is not a production entry.</p>
+<button id="wide">1920 × 1080 screen</button><button id="tablet">1024 × 768 tablet</button><button id="phone">844 × 390 phone</button>
+<iframe title="Garden Guard preview" width="1920" height="1080" src="/games/garden-guard/?mode=playground"></iframe>
+<script type="module">
+const frame=document.querySelector('iframe');
+for(const [id,width,height] of [['wide',1920,1080],['tablet',1024,768],['phone',844,390]])document.querySelector('#'+id).onclick=()=>{frame.width=String(width);frame.height=String(height);frame.src='/games/garden-guard/?mode=playground';};
+</script></html>

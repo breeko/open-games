@@ -55,3 +55,7 @@ Phaser scales the whole menu to the existing responsive canvas. Labels for
 implemented features use crisp live text. Unsupported original modes are not
 advertised. Quit returns to the library. No new animation loops, physics bodies,
 fonts or external requests are added to the menu.
+
+### Grounded presentation
+
+The existing exported PNGs are unchanged. `sprite-presentation.ts` records lower-silhouette stem/foot X positions (measured from alpha pixels, visually reviewed) so transparent padding, noses and held objects do not determine the pivot. Normal/cone/bucket, football helmet states and Wall-nut damage states share anchors. Artwork transforms are temporary during Canvas batching; plant/zombie world anchors and collision-body offsets remain unchanged. Shooter muzzle X incorporates the corresponding static drawing offset. Decorative sway/recoil is approximate, not original skeletal animation. Cherry Bomb swell uses the same 0.5 export scale as all other plants.

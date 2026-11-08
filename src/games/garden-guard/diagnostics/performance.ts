@@ -1,12 +1,12 @@
 /** Bounded, device-local measurements. No network reporting or gameplay changes. */
-export const PERFORMANCE_SECTIONS = ['plants','zombies','projectiles','waves/UI','other gameplay'] as const;
+export const PERFORMANCE_SECTIONS = ['plants','zombies','projectiles','physics','tweens','waves/UI','other gameplay'] as const;
 export type PerformanceSection = typeof PERFORMANCE_SECTIONS[number];
 export interface FrameCost {
   interval: number; update: number; render: number;
   sections: Record<PerformanceSection,number>;
 }
 function emptySections():Record<PerformanceSection,number> {
-  return {plants:0,zombies:0,projectiles:0,'waves/UI':0,'other gameplay':0};
+  return {plants:0,zombies:0,projectiles:0,physics:0,tweens:0,'waves/UI':0,'other gameplay':0};
 }
 function stats(values:number[]) {
   if(!values.length)return {mean:0,p95:0,max:0};

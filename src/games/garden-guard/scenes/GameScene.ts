@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import {ProjectileProbe} from '../playground/ProjectileProbe';
 import {SimulationClock} from '../simulation-clock';
+import '../diagnostics/engine-costs';
 import {gamePerformance as perf} from '../diagnostics/performance';
 import {sizeArt} from '../art';
 import { randomSource, sampleSkySunTicks } from '../reference/rules';
@@ -26,6 +27,7 @@ import { Sun } from '../entities/Sun';
 import { Zombie } from '../entities/Zombie';
 import {NIGHT_COMBAT} from '../night-combat';
 import {whackLoot} from '../whack-director';
+import {groundX,PLANT_GROUND_OFFSET} from '../sprite-presentation';
 import {initialGraves} from '../night';
 import {NIGHT_CONVEYOR,conveyorInterval,nightConveyorWeights,pickNightConveyor} from '../night-conveyor';
 import { getLevel, defaultSeedsForLevel, type LevelDefinition } from '../levels';
@@ -335,7 +337,7 @@ export class GameScene extends Phaser.Scene {
     // every pointermove, so the ghost never trails behind the cursor.
     if (this.draggingType && this.dragPointer) {
       const { worldX, worldY } = this.dragPointer;
-      this.dragGhost.setPosition(worldX, worldY);
+      this.dragGhost.setPosition(worldX, worldY+PLANT_GROUND_OFFSET);
       this.updateDropHighlight(worldX, worldY);
     } else if (this.selected) {
       // Seed armed by click or hotkey: show where it would land.
@@ -426,7 +428,7 @@ export class GameScene extends Phaser.Scene {
       const g=this.diagnosticGraphics!;g.lineStyle(1,0xffff00,0.8);
       for(let row=0;row<5;row++)for(let col=0;col<9;col++)g.strokeRect(GRID.originX+col*GRID.tileWidth,GRID.originY+row*GRID.tileHeight,GRID.tileWidth,GRID.tileHeight);
       for(const z of this.diagnostics.zombies){g.lineStyle(2,0xff4050,1);if(z.body)g.strokeRect(z.body.x,z.body.y,z.body.width,z.body.height);g.lineBetween(z.x-6,z.y,z.x+6,z.y);g.lineBetween(z.x,z.y-6,z.x,z.y+6);}
-      for(const p of this.plants){g.lineStyle(2,0x00ffff,1);const b=p.getBounds();g.strokeRect(b.x,b.y,b.width,b.height);}
+      for(const p of this.plants){g.lineStyle(2,0x00ffff,1);const b=p.getBounds();g.strokeRect(b.x,b.y,b.width,b.height);const cell=this.grid.cellToWorld(p.col,p.row);g.lineStyle(2,0xffffff,1);g.lineBetween(cell.x-9,cell.y+PLANT_GROUND_OFFSET,cell.x+9,cell.y+PLANT_GROUND_OFFSET);g.lineBetween(cell.x,cell.y+PLANT_GROUND_OFFSET-6,cell.x,cell.y+PLANT_GROUND_OFFSET+6);}
       for(const child of this.peas.getChildren())if(child instanceof Phaser.Physics.Arcade.Image){g.lineStyle(2,0xff99ff,1);g.strokeCircle(child.x,child.y,child.displayWidth*12/28);}
     }
     if(this.playground){
@@ -488,7 +490,7 @@ export class GameScene extends Phaser.Scene {
 
     this.draggingType = type;
     this.dragPointer = pointer;
-    sizeArt(this.dragGhost.setTexture(PLANT_DEFS[type].texture),PLANT_DEFS[type].texture).setVisible(true);
+    sizeArt(this.dragGhost.setTexture(PLANT_DEFS[type].texture),PLANT_DEFS[type].texture).setOrigin(groundX(PLANT_DEFS[type].texture),1).setVisible(true);
   }
 
   private endDrag(pointer: Phaser.Input.Pointer): void {
@@ -529,6 +531,7 @@ export class GameScene extends Phaser.Scene {
     const blocked = this.level.mode === 'bowling' ? col > 2 : Boolean(this.grid.getPlant(col,row)) || this.ctx.craterAt(col,row) || (this.selected==='gravebuster'?!this.ctx.graveAt(col,row):this.ctx.graveAt(col,row));
     const color = blocked ? 0xff6b6b : 0x7cff6b;
     const centre = this.grid.cellToWorld(col, row);
+    if(this.draggingType)this.dragGhost.setPosition(centre.x,centre.y+PLANT_GROUND_OFFSET);
 
     this.dropHighlight
       .setPosition(centre.x, centre.y)

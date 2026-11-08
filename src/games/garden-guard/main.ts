@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import {boardRenderScale} from './render-quality';
 import {BackgroundClock,shouldOpenMenuOnFocusLoss} from './focus-policy';
 import {gamePerformance as perf, PERFORMANCE_SECTIONS} from './diagnostics/performance';
 import './shell.css';
@@ -47,11 +48,12 @@ function saveSession():void {
   finally {lastSessionSaveAt=performance.now();perf.history.save(lastSessionSaveAt-saveStart);}
 }
 
+const renderScale=boardRenderScale(innerWidth,innerHeight);
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.CANVAS,
   parent: 'game-root',
-  width: GAME_WIDTH,
-  height: GAME_HEIGHT,
+  width: GAME_WIDTH*renderScale,
+  height: GAME_HEIGHT*renderScale,
   backgroundColor: '#101810',
   fps: { target: 60, min: 30 },
   render: {
@@ -83,6 +85,15 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 const game = new Phaser.Game(config);
+// Keep the game world at 1280×960. Only backing-canvas density changes.
+function syncRenderCameras():void {
+ for(const scene of game.scene.getScenes(true)){
+  const camera=scene.cameras.main;
+  if(camera.zoom!==renderScale)camera.setZoom(renderScale).centerOn(GAME_WIDTH/2,GAME_HEIGHT/2);
+ }
+}
+game.events.on(Phaser.Core.Events.PRE_RENDER,syncRenderCameras);
+
 // Header wrapping and Safari's browser chrome can resize the available lawn
 // without a window resize. Keep the canvas inside that actual rectangle.
 const gameRoot=document.querySelector<HTMLElement>('#game-root')!;
@@ -169,7 +180,7 @@ game.events.on('session-restored',()=>{
   // Redraw after creation finishes, without stepping physics, timers or gameplay.
   requestAnimationFrame(()=>{
     if(!paused||!game.scene.isActive('game'))return;
-    game.renderer.preRender();game.scene.render(game.renderer);game.renderer.postRender();
+    syncRenderCameras();game.renderer.preRender();game.scene.render(game.renderer);game.renderer.postRender();
   });
   const scene=game.scene.getScene('game');
   if(scene instanceof GameScene){lastStatus=scene.summary;document.querySelector('#play-status')!.textContent=lastStatus;}
@@ -201,7 +212,7 @@ document.querySelector<HTMLButtonElement>('#cancel')!.onclick = () => {
 function handleFocusLoss():void {
  if(shouldOpenMenuOnFocusLoss({enabled:settings.current.autoPauseOnBlur,playing:Boolean(playingScene()),menuOpen:controls.open,paused}))openControls();
 }
-document.addEventListener('visibilitychange',()=>{if(document.hidden)handleFocusLoss();updateBackgroundMode();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){perf.resetClock();handleFocusLoss();}updateBackgroundMode();});
 window.addEventListener('blur',handleFocusLoss);
 
 const levelSelect = document.querySelector<HTMLSelectElement>('#level')!;
@@ -474,3 +485,11 @@ const backgroundTimer=setInterval(()=>{
 for(const event of ['session-started','session-restored','playground-started'])game.events.on(event,()=>{backgroundClock.reset();updateBackgroundMode();});
 settings.on('changed',refreshAutoPause);refreshAutoPause();
 import.meta.hot?.dispose(()=>clearInterval(backgroundTimer));
+
+const spriteMotion=document.querySelector<HTMLButtonElement>('#sprite-motion')!;
+function refreshSpriteMotion():void {
+ spriteMotion.textContent=`Sprite motion: ${settings.current.spriteMotion?'On':'Off'}`;
+ spriteMotion.setAttribute('aria-pressed',String(settings.current.spriteMotion));
+}
+spriteMotion.onclick=()=>settings.toggle('spriteMotion');
+settings.on('changed',refreshSpriteMotion);refreshSpriteMotion();

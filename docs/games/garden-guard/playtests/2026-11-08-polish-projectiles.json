@@ -1,0 +1,258 @@
+[
+  {
+    "speed": 1,
+    "delta": 16.67,
+    "synchronized": false,
+    "spawned": 221,
+    "peak": 49,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 1,
+    "delta": 16.67,
+    "synchronized": true,
+    "spawned": 235,
+    "peak": 60,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 1,
+    "delta": 33.34,
+    "synchronized": false,
+    "spawned": 221,
+    "peak": 49,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 1,
+    "delta": 33.34,
+    "synchronized": true,
+    "spawned": 235,
+    "peak": 59,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 1,
+    "delta": 66.67,
+    "synchronized": false,
+    "spawned": 216,
+    "peak": 49,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 1,
+    "delta": 66.67,
+    "synchronized": true,
+    "spawned": 235,
+    "peak": 55,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 2,
+    "delta": 16.67,
+    "synchronized": false,
+    "spawned": 221,
+    "peak": 49,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 2,
+    "delta": 16.67,
+    "synchronized": true,
+    "spawned": 235,
+    "peak": 60,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 2,
+    "delta": 33.34,
+    "synchronized": false,
+    "spawned": 221,
+    "peak": 49,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 2,
+    "delta": 33.34,
+    "synchronized": true,
+    "spawned": 235,
+    "peak": 59,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 2,
+    "delta": 66.67,
+    "synchronized": false,
+    "spawned": 216,
+    "peak": 49,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "speed": 2,
+    "delta": 66.67,
+    "synchronized": true,
+    "spawned": 235,
+    "peak": 55,
+    "missing": 0,
+    "badPositions": 0,
+    "unseen": 0,
+    "samples": [],
+    "unseenSamples": []
+  },
+  {
+    "test": "three-minute public playground",
+    "speed": 1,
+    "mode": "day",
+    "quietSamplesWithOnlyDyingZombies": 33,
+    "longestQuietWithTargetsMs": 500.00000000000006,
+    "elapsedMs": 180000.0000000066,
+    "plants": 28,
+    "zombies": 8,
+    "targets": 4,
+    "dying": 4,
+    "projectiles": {
+      "spawned": 2212,
+      "drawnAtLeastOnce": 2212,
+      "live": 15,
+      "missingDraws": 0,
+      "removedBeforeFirstDraw": 0,
+      "removedWhileNotRendering": 0,
+      "removed": {
+        "hit": 1819,
+        "expired": 0,
+        "offscreen": 378,
+        "cleared": 0,
+        "unexpected": 0
+      },
+      "recentEvents": []
+    }
+  },
+  {
+    "test": "three-minute public playground",
+    "speed": 1,
+    "mode": "night",
+    "quietSamplesWithOnlyDyingZombies": 32,
+    "longestQuietWithTargetsMs": 500.00000000000006,
+    "elapsedMs": 180000.0000000066,
+    "plants": 28,
+    "zombies": 8,
+    "targets": 4,
+    "dying": 4,
+    "projectiles": {
+      "spawned": 2206,
+      "drawnAtLeastOnce": 2206,
+      "live": 21,
+      "missingDraws": 0,
+      "removedBeforeFirstDraw": 0,
+      "removedWhileNotRendering": 0,
+      "removed": {
+        "hit": 1817,
+        "expired": 0,
+        "offscreen": 368,
+        "cleared": 0,
+        "unexpected": 0
+      },
+      "recentEvents": []
+    }
+  },
+  {
+    "test": "three-minute public playground",
+    "speed": 2,
+    "mode": "day",
+    "quietSamplesWithOnlyDyingZombies": 11,
+    "longestQuietWithTargetsMs": 1000.0000000000001,
+    "elapsedMs": 180000.0000000066,
+    "plants": 28,
+    "zombies": 8,
+    "targets": 4,
+    "dying": 4,
+    "projectiles": {
+      "spawned": 2212,
+      "drawnAtLeastOnce": 2212,
+      "live": 15,
+      "missingDraws": 0,
+      "removedBeforeFirstDraw": 0,
+      "removedWhileNotRendering": 0,
+      "removed": {
+        "hit": 1819,
+        "expired": 0,
+        "offscreen": 378,
+        "cleared": 0,
+        "unexpected": 0
+      },
+      "recentEvents": []
+    }
+  },
+  {
+    "test": "three-minute public playground",
+    "speed": 2,
+    "mode": "night",
+    "quietSamplesWithOnlyDyingZombies": 11,
+    "longestQuietWithTargetsMs": 1000.0000000000001,
+    "elapsedMs": 180000.0000000066,
+    "plants": 28,
+    "zombies": 8,
+    "targets": 4,
+    "dying": 4,
+    "projectiles": {
+      "spawned": 2206,
+      "drawnAtLeastOnce": 2206,
+      "live": 21,
+      "missingDraws": 0,
+      "removedBeforeFirstDraw": 0,
+      "removedWhileNotRendering": 0,
+      "removed": {
+        "hit": 1817,
+        "expired": 0,
+        "offscreen": 368,
+        "cleared": 0,
+        "unexpected": 0
+      },
+      "recentEvents": []
+    }
+  }
+]

@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {GamePerformance,PerformanceHistory,type FrameCost} from '../../../src/games/garden-guard/diagnostics/performance';
-const frame=(interval:number):FrameCost=>({interval,update:8,render:3,sections:{plants:1,zombies:2,projectiles:1,'waves/UI':1,'other gameplay':1}});
+const frame=(interval:number):FrameCost=>({interval,update:8,render:3,sections:{plants:1,zombies:2,projectiles:1,physics:0,tweens:0,'waves/UI':1,'other gameplay':1}});
 test('performance history bounds memory, reports tail latency, and retains earlier hitches',()=>{
  const h=new PerformanceHistory(3);h.add(frame(120));h.add(frame(16));h.add(frame(17));h.add(frame(18));
  const r=h.snapshot();assert.equal(r.frames,3);assert.equal(r.interval.max,18);assert.equal(r.interval.p95,18);assert.equal(r.worst[0].interval,120);assert.equal(r.engineOther.mean,2);
