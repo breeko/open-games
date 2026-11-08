@@ -2,6 +2,8 @@
 
 Added November 8, 2026. Open `/games/kingdom-rush/?level=6`, choose it in Maps, or continue from Silveroak. Saves and completed records remain independent per map.
 
+**Latest calibration:** the [campaign follow-up](citadel-calibration.md) records full simulation victories with a fourteen-star budget, the active browser wave-six defeat, and save/restore checks. Historical observations below retain their original scope; the original Citadel comparison and manual victory remain open. Tower skills and power training described as unavailable below were subsequently added in [the upgrades pass](skills-and-power-upgrades.md).
+
 ## Original facts used
 
 Targets Armor Games Flash v1.13, Normal, without heroes or purchased star upgrades. The [manifest](level06-manifest.json) records pinned literal inputs and their hashes. Original numeric facts come from the locally inspected publisher SWF, SHA-256 `7b5467a3eccc17f6dd001ff2d41bdf1b03d79fd515a2a9586c42bfd982bb1e23`. Neither its executable nor decompiled ActionScript is shipped. The pinned community export supplies artwork and animation descriptors.
