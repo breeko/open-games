@@ -87,6 +87,33 @@ function run(): void {
   check('Ice-shroom mid-fuse restores and freezes the same enemies',()=>{
     const data=nightDiagnostic();data.plants.push({type:'iceshroom',col:1,row:4,hp:300,behavior:{kind:'ice',fuse:730}});roundTrip(data,150);
   });
+  check('Doom-shroom mid-fuse restores blast, crater and surviving defenses identically',()=>{
+    const data=freshSession(19);data.plants=[{type:'doomshroom',col:3,row:2,hp:300,behavior:{kind:'doom',fuse:730}}];
+    data.zombies=[{...exampleZombie('screendoor',2),x:650},{...exampleZombie('basic',4),x:1200}];
+    roundTrip(data,150);
+  });
+  check('Doom burns armored and rising hostiles once, spares allies and leaves a blocked crater',()=>{
+    const data=freshSession(19);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.countdown=100000;
+    data.plants=[{type:'doomshroom',col:3,row:2,hp:300,behavior:{kind:'doom',fuse:0}},
+      {type:'puffshroom',col:2,row:1,hp:300,behavior:{kind:'shooter',cooldown:100,remainder:0,shots:[]}}];
+    data.zombies=[{...exampleZombie('screendoor',2),x:650},
+      {...exampleZombie('basic',2),x:700,allies:true},
+      {...exampleZombie('basic',1),x:650,emergenceTotal:1500,emergenceMs:1400},
+      {...exampleZombie('basic',4),x:1250}];
+    const scene=open(data);step(49);equal(capture(scene).craters.length,0,'no early explosion');
+    step(1);const after=capture(scene);
+    equal(after.plants.map(p=>p.type),['puffshroom'],'one shot without destroying nearby plants');
+    equal(after.zombies.length,2,'armored and emerging enemies removed');
+    if(!after.zombies.some(z=>z.allies)||!after.zombies.some(z=>!z.allies&&z.row===4))throw new Error('Wrong blast targets');
+    equal(after.craters.map(c=>[c.col,c.row,c.remainingMs]),[[3,2,180000]],'three-minute crater');
+    if(gardenSessionSchema.safeParse({...after,plants:[...after.plants,{type:'puffshroom',col:3,row:2,hp:300,behavior:{kind:'shooter',cooldown:100,remainder:0,shots:[]}}]}).success)throw new Error('Save accepted planting in crater');
+    roundTrip(after,200);
+  });
+  check('night conveyor restores its next supply, weighted random stream and inventory',()=>{
+    const data=freshSession(20);if(data.waves.director.kind!=='standard')throw new Error('Wrong director');data.waves.director.countdown=100000;
+    data.supplyTimer=30;data.supplyIndex=3;data.seedBank[2].stock=3;
+    roundTrip(data,600);
+  });
   check('crater countdown and removal continue after restoration',()=>{
     const data=nightDiagnostic();data.craters=[{col:2,row:4,remainingMs:30}];roundTrip(data,10);
   });
@@ -123,7 +150,7 @@ function run(): void {
     if(zombies[1].hp>=270||zombies[2].hp!==270)throw new Error('Enemy selected the wrong ally');
     roundTrip(capture(scene),40);
   });
-  for(const [name,data] of [['day',freshSession(4)],['bowling',freshSession(5)],['conveyor',freshSession(10)],['whack',freshSession(15)],['busy night',busyNightSession()],['frozen dancers',nightDiagnostic(true)]] as const){
+  for(const [name,data] of [['day',freshSession(4)],['bowling',freshSession(5)],['conveyor',freshSession(10)],['night finale',freshSession(20)],['whack',freshSession(15)],['busy night',busyNightSession()],['frozen dancers',nightDiagnostic(true)]] as const){
     check(`2× ${name}: half as many rendered frames produces identical gameplay`,()=>{
       const prior=settings.current.gameSpeed;
       try {

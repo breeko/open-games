@@ -14,7 +14,7 @@ export function freshSession(levelId: number): GardenSession {
     new WaveDirector(level.waves, { spawn: () => 270, health: () => 270, liveCount: () => 1, start() {}, complete() {} });
   return gardenSessionSchema.parse({
     version: 1, compatibility: 'garden-day-night-r1', savedAt: 1, levelId, difficulty: 'baseline', seeds,
-    sun: level.startingSun, random: random.snapshot(), physicsRemainderMs:0, skySunTimer: 0, skyNext, skyFallen: 0, supplyTimer: 0, supplyIndex: 0,
+    sun: level.startingSun, random: random.snapshot(), physicsRemainderMs:0, skySunTimer: 0, skyNext, skyFallen: 0, supplyTimer: levelId===20?2000:0, supplyIndex: 0,
     plants: [], zombies: [], suns: [], projectiles: [], graves: initialGraves(levelId),
     waves: { random: 12345, tickRemainder: 0, riseTicks: 0, laneHistory: [], director: director.save() },
     seedBank: seeds.map(type => ({ type, stock: 0, remainingMs: 0, totalMs: 1 })),

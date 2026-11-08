@@ -11,6 +11,12 @@ export function scaredyThreat(plantX:number,plantY:number,row:number,zombie:{row
  return dx*dx+dy*dy<=192*192;
 }
 export const NIGHT_COMBAT={fuseMs:1000,iceChillMs:20000,iceDamage:20,doomDamage:1800,doomRadius:400,craterMs:180000} as const;
+/** Source tests a radius against the entire zombie rectangle, not its anchor. */
+export function inDoomBlast(x:number,y:number,row:number,target:{row:number;left:number;top:number;right:number;bottom:number}):boolean {
+ if(Math.abs(target.row-row)>3)return false;
+ const dx=Math.max(target.left-x,0,x-target.right),dy=Math.max(target.top-y,0,y-target.bottom);
+ return dx*dx+dy*dy<=NIGHT_COMBAT.doomRadius**2;
+}
 export type DancePhase='entry'|'point'|'hold'|'dance';
 export interface DanceState {phase:DancePhase;remainingMs:number;replacementMs:number;remainder:number}
 /** Ten point frames at 24fps occupy 42 source ticks; entry/hold and the 23-frame global dance beat are retained. */

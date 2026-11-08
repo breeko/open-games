@@ -6,6 +6,7 @@ import {initialGraves,NIGHT_RULES} from '../../../src/games/garden-guard/night';
 import {LEVELS} from '../../../src/games/garden-guard/levels';
 import {WhackDirector,WHACK} from '../../../src/games/garden-guard/whack-director';
 import {DanceRoutine,NIGHT_COMBAT,backupPositions} from '../../../src/games/garden-guard/night-combat';
+import {NIGHT_CONVEYOR} from '../../../src/games/garden-guard/night-conveyor';
 import {REFERENCE} from '../../../src/games/garden-guard/reference/rules';
 function run(level:number,kill:boolean){
   const waves=referenceWaves(level);let hp=0;
@@ -20,5 +21,5 @@ function whackRun(){
  return {rules:WHACK,gravesAtFinal:graves,events:director.events};
 }
 function danceAudit(){const dance=new DanceRoutine(3000),summonTicks:number[]=[];for(let tick=1;tick<=2000;tick++)if(dance.advance(10,tick,true,true))summonTicks.push(tick);return {summonTicks,centerSlots:backupPositions(800,2),edgeSlots:backupPositions(800,0),note:'Unblocked leader with missing followers; actual deaths, freezing and eating change timing.'};}
-writeFileSync('docs/games/garden-guard/audit/reference-report.json',JSON.stringify({sourcePins:REFERENCE.sourcePins,seed:12345,edition:'PC first Adventure; tutorial gates skipped',lateNight:{rules:NIGHT_COMBAT,dancer:danceAudit(),freezeTicks:{first:[400,600],alreadyCold:[300,400]},sessionCompatibility:'garden-day-night-r1; additive field defaults preserve existing sessions'},levels:LEVELS.map((level,i)=>({level:i+1,environment:level.environment,startingSun:level.startingSun,skySun:level.environment==='day',graves:initialGraves(i+1),nightRules:level.environment==='night'?NIGHT_RULES:undefined,mode:level.mode,plan:level.mode==='whack'?undefined:referenceWaves(i+1),whack:level.mode==='whack'?whackRun():undefined,noDamage:level.mode==='whack'?undefined:run(i+1,false),immediateDamage:level.mode==='whack'?undefined:run(i+1,true)}))},null,2)+'\n');
-console.log('Wrote source-rule audit for eighteen levels to docs/games/garden-guard/audit/reference-report.json');
+writeFileSync('docs/games/garden-guard/audit/reference-report.json',JSON.stringify({sourcePins:REFERENCE.sourcePins,seed:12345,edition:'PC first Adventure; tutorial gates skipped',lateNight:{rules:NIGHT_COMBAT,dancer:danceAudit(),freezeTicks:{first:[400,600],alreadyCold:[300,400]},sessionCompatibility:'garden-day-night-r1; additive field defaults preserve existing sessions'},levels:LEVELS.map((level,i)=>({level:i+1,environment:level.environment,startingSun:level.startingSun,skySun:level.environment==='day',graves:initialGraves(i+1),nightRules:level.environment==='night'?NIGHT_RULES:undefined,mode:level.mode,conveyor:level.id===20?{weights:NIGHT_CONVEYOR,initialSupplyMs:2000,intervalMs:[4000,4250,5000,10000],waveBudgetMultiplier:3,firstWaveMs:1000}:undefined,plan:level.mode==='whack'?undefined:referenceWaves(i+1),whack:level.mode==='whack'?whackRun():undefined,noDamage:level.mode==='whack'?undefined:run(i+1,false),immediateDamage:level.mode==='whack'?undefined:run(i+1,true)}))},null,2)+'\n');
+console.log('Wrote source-rule audit for twenty levels to docs/games/garden-guard/audit/reference-report.json');

@@ -133,6 +133,8 @@ export class SeedBank extends Phaser.Events.EventEmitter {
     const quantity = Math.min(5,(this.stock.get(type) ?? 0) + 1);
     this.stock.set(type,quantity); this.cards.get(type)?.setQuantity(quantity); this.refreshAffordability();
   }
+  stockCount(type:PlantType):number {return this.stock.get(type)??0;}
+  get totalStock():number {return [...this.stock.values()].reduce((sum,count)=>sum+count,0);}
   startCooldown(type: PlantType): void {
     if(this.instant)return;
     if (!this.supplied) { this.cards.get(type)?.startCooldown(); return; }

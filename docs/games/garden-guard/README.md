@@ -1,6 +1,6 @@
 # Open Games — Garden Guard
 
-An ad-free, touch-friendly Plants vs. Zombies reference prototype. Eighteen day and night levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
+An ad-free, touch-friendly Plants vs. Zombies reference prototype. Twenty day and night levels, built with Vite, strict TypeScript and Phaser 3 using Canvas 2D.
 
 [Play Garden Guard](https://opengames-breeko.vercel.app/games/garden-guard/)
 
@@ -45,7 +45,7 @@ Open the printed Network URL on an iPad on the same Wi-Fi as this Mac. Keep the 
 
 Plants use complete static original poses, including stems and leaves. Wall-nuts show damage; mines show arming states; Chompers show digestion; pole vaulters jump once and lose their poles. Story scenes are omitted.
 
-Wave composition, simultaneous spawns, huge-wave warnings, health-triggered countdowns, and walking ground tracks now follow pinned PC reconstruction rules. See the [accuracy audit](audit/accuracy.md) for evidence, edition differences, and remaining approximations. **Baseline does not claim exact retail difficulty**; tutorial gates and special-mode supply still differ. Night/pool/fog/roof, full skeletal animation, and most original side modes are not implemented.
+Wave composition, simultaneous spawns, huge-wave warnings, health-triggered countdowns, and walking ground tracks now follow pinned PC reconstruction rules. See the [accuracy audit](audit/accuracy.md) for evidence, edition differences, and remaining approximations. **Baseline does not claim exact retail difficulty**; tutorial gates and special-mode supply still differ. Pool/fog/roof, full skeletal animation, and most original side modes are not implemented.
 
 ## Verification
 
@@ -55,7 +55,7 @@ bun run audit
 bun run build
 ```
 
-Fifty-nine tests cover the eighteen-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, single-credit sun pickup behavior, validated sessions and restored director/random/motion state. A developer browser check also exercises real Phaser entities, all eighteen levels and detailed mid-action restoration. Diagnostics show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build retains a bundle-size advisory for Phaser.
+Seventy-four tests cover the twenty-level ledger, starting resources, difficulty modifiers, armor overflow, blast geometry, source flag positions/budgets, simultaneous spawns, exact countdown fixtures, frame-independent motion, wave completion, save migration, single-credit sun pickup behavior, validated sessions and restored director/random/motion state. A developer browser check also exercises real Phaser entities, all twenty levels and detailed mid-action restoration. Diagnostics show live coordinates, collision bodies, wave plans and spawn logs, with JSON trace export. The production build retains a bundle-size advisory for Phaser.
 
 Artwork regression checks (requires Python and Pillow):
 
@@ -220,3 +220,13 @@ Validation: focus-policy combinations/defaults and bounded background clock
 unit checks; real Phaser 1×/2× background/foreground state equality, no drawing,
 no duplicate RAF progression and menu blocking; real iframe focus transitions
 through `/scripts/games/garden-guard/focus-browser-check.html`.
+
+## Complete night world: 2-9 and 2-10
+
+**2-9: A crater in the plan** is a 20-wave standard night board. Doom-shroom joins the seed selection and default loadout: 125 sun, a one-second fuse, 50-second recharge, and a large blast. Its square becomes a crater for three minutes; nearby plants and hypnotized zombies survive. There are eleven graves and no falling sun. Basic, conehead, screen-door and Dancing Zombies are eligible.
+
+**2-10: The last night** is the 20-wave mushroom conveyor finale, with thirteen graves. Seven mushroom types arrive as free stock: Grave Buster, Ice-shroom, Doom-shroom, Hypno-shroom, Scaredy-shroom, Fume-shroom and Puff-shroom. Source weights, duplicate suppression, anti-repeat weighting, Grave Buster suppression when no graves remain, and inventory-dependent supply timing are implemented. First stock arrives at two seconds; waves start after one second. Miniboss wave budgets are tripled after forced flag entries. Football Zombies join the eligible enemies. Clearing it completes the currently available day/night campaign; pool content and the original Lily Pad reward are deferred.
+
+Doom blasts test the whole collision rectangle against a 400-board-pixel radius and a three-row cap, rather than the zombie's image anchor. Current land enemies burn through armor/shields; emerging targets are included and allies excluded. The existing crater state, conveyor countdown, last selection, inventory and seeded random stream resume without resetting. No storage keys or previous sessions change.
+
+Verification: 74 unit tests, 50 real-entity browser checks, original-art checks, source-rule audit and production build. Browser checks include a Doom mid-fuse restore, armored/emerging/ally blast targets, crater expiry, and weighted conveyor continuation at both speeds. Manual 1024×768 checks cover free mushroom placement, Grave Buster, Doom blast and blocked crater placement. These checks establish rule consistency and save continuity, not identical retail difficulty. The conveyor remains a fixed bank with quantities (up to five per type), rather than original moving packets.

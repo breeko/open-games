@@ -32,7 +32,7 @@ test('difficulty scales are ordered and baseline preserves base definitions', ()
 });
 
 test('expanded campaign preserves the original day special modes and plants', () => {
-  assert.equal(LEVELS.length,18);
+  assert.equal(LEVELS.length,20);
   assert.equal(LEVELS[4].mode,'bowling');
   assert.equal(LEVELS[9].mode,'conveyor');
   assert.ok(plantsForLevel(8).includes('chomper'));

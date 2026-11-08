@@ -11,7 +11,7 @@ import {nightDiagnostic} from '../../../src/games/garden-guard/diagnostics/night
 import {freshSession,busyNightSession,exampleZombie} from './fixtures/session';
 
 test('2-7 and 2-8 use the source waves, eligible enemies, rewards and grave distribution',()=>{
- assert.deepEqual(LEVELS.slice(16).map(l=>[l.name,l.waves.length,l.startingSun,l.reward]),[['2-7',20,50,'iceshroom'],['2-8',10,50,'doomshroom']]);
+ assert.deepEqual(LEVELS.slice(16,18).map(l=>[l.name,l.waves.length,l.startingSun,l.reward]),[['2-7',20,50,'iceshroom'],['2-8',10,50,'doomshroom']]);
  assert.deepEqual(allowedZombies(17),['basic','conehead','screendoor','football']);
  assert.deepEqual(allowedZombies(18),['basic','conehead','dancer']);
  for(const id of [17,18]){

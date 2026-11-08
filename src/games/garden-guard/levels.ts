@@ -48,8 +48,15 @@ const availableCounts = [1,2,3,4,4,5,6,7,8,8];
 const rewards: (PlantType | undefined)[] = ['sunflower','cherrybomb','wallnut',undefined,'potatomine','snowpea','chomper','repeater',undefined,'puffshroom'];
 
 /** Wave construction is audited separately from UI progression. */
-export const LEVELS: readonly LevelDefinition[] = Array.from({length:18}, (_, index): LevelDefinition => {
+export const LEVELS: readonly LevelDefinition[] = Array.from({length:20}, (_, index): LevelDefinition => {
   const id = index + 1;
+  if(id===20)return {id,name:'2-10',title:'The last night',blurb:'Mushrooms arrive on the conveyor. Clear graves and save your blasts for the rush.',
+    environment:'night',mode:'conveyor',startingSun:50,skySunIntervalMs:0,activeRows:[0,1,2,3,4],waves:referenceWaves(id),
+    availablePlants:['gravebuster','iceshroom','doomshroom','hypnoshroom','scaredyshroom','fumeshroom','puffshroom'],
+    conveyorSeeds:['gravebuster','iceshroom','doomshroom','hypnoshroom','scaredyshroom','fumeshroom','puffshroom']};
+  if(id===19)return {id,name:'2-9',title:'A crater in the plan',blurb:'Doom-shroom clears a huge area, but leaves its square unusable for three minutes.',
+    environment:'night',mode:'standard',startingSun:50,skySunIntervalMs:0,activeRows:[0,1,2,3,4],waves:referenceWaves(id),
+    availablePlants:[...ORDER,'puffshroom','sunshroom','fumeshroom','gravebuster','hypnoshroom','scaredyshroom','iceshroom','doomshroom']};
   if(id===17||id===18)return {id,name:`2-${id-10}`,title:id===17?'Keep your distance':'Freeze the dance floor',
     blurb:id===17?'Keep Scaredy-shrooms in back. They hide near zombies.':'Freeze the lawn. Dancers replace lost backups.',
     environment:'night',mode:'standard',startingSun:50,skySunIntervalMs:0,activeRows:[0,1,2,3,4],waves:referenceWaves(id),
@@ -79,6 +86,6 @@ export function rewardForLevel(id: number): PlantType | undefined { return getLe
 /** Night defaults always include the new defenders and a source of sun. */
 export function defaultSeedsForLevel(id:number):PlantType[] {
  const available=plantsForLevel(id);
- const order:PlantType[]=id>=17?['iceshroom','scaredyshroom','puffshroom','sunshroom','fumeshroom','hypnoshroom','gravebuster','cherrybomb','wallnut','sunflower','snowpea','potatomine','repeater','peashooter','chomper']:id>10?['hypnoshroom','puffshroom','sunshroom','fumeshroom','gravebuster','sunflower','wallnut','cherrybomb','snowpea','potatomine','repeater','peashooter','chomper']:available;
+ const order:PlantType[]=id>=17?['doomshroom','iceshroom','scaredyshroom','puffshroom','sunshroom','fumeshroom','hypnoshroom','gravebuster','cherrybomb','wallnut','sunflower','snowpea','potatomine','repeater','peashooter','chomper']:id>10?['hypnoshroom','puffshroom','sunshroom','fumeshroom','gravebuster','sunflower','wallnut','cherrybomb','snowpea','potatomine','repeater','peashooter','chomper']:available;
  return order.filter(p=>available.includes(p)).slice(0,8);
 }

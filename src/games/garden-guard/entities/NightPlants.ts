@@ -2,7 +2,7 @@ import {Plant} from './Plant';
 import {Shooter} from './Shooter';
 import {Sun} from './Sun';
 import {Zombie} from './Zombie';
-import {NIGHT_COMBAT,scaredyThreat} from '../night-combat';
+import {NIGHT_COMBAT,scaredyThreat,inDoomBlast} from '../night-combat';
 import {NIGHT_RULES} from '../night';
 import {DEPTH} from '../constants';
 import type {PlantBehavior} from '../state/session-data';
@@ -91,7 +91,11 @@ export class DoomShroom extends Plant {
  protected onTick(delta:number):void {
   this.fuse+=delta;if(this.fuse<NIGHT_COMBAT.fuseMs)return;
   const point=this.ctx.grid.cellToWorld(this.col,this.row);
-  for(const z of this.ctx.zombies.getChildren())if(z instanceof Zombie&&z.active&&z.isHostile&&Math.abs(z.row-this.row)<=3&&Math.hypot(z.x-point.x,z.y-point.y)<=NIGHT_COMBAT.doomRadius)z.takeDamage(NIGHT_COMBAT.doomDamage);
+  for(const z of [...this.ctx.zombies.getChildren()]){
+   if(!(z instanceof Zombie)||!z.active||!z.isHostile||!z.body)continue;
+   const b=z.body;
+   if(inDoomBlast(point.x,point.y,this.row,{row:z.row,left:b.x,top:b.y,right:b.x+b.width,bottom:b.y+b.height}))z.burn();
+  }
   this.ctx.addCrater(this.col,this.row);
   const ring=this.scene.add.circle(point.x,point.y,30,0x71315e,0.6).setDepth(DEPTH.effects);
   this.scene.tweens.add({targets:ring,scale:13,alpha:0,duration:450,onComplete:()=>ring.destroy()});this.remove();

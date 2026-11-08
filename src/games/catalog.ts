@@ -26,6 +26,6 @@ export const GAMES: readonly GameListing[] = [
     description: 'Grow your defenses. Gather sunlight. Keep the zombies off your lawn.',
     href: '/games/garden-guard/',
     cover: '/games/garden-guard/assets/reference/lawn3.jpg',
-    detail: '18 levels · Day & night · Touch & mouse',
+    detail: '20 levels · Day & night · Touch & mouse',
   },
 ];

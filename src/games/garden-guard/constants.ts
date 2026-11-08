@@ -80,7 +80,7 @@ export const ZOMBIE_BARE_TEXTURE = 'zombie';
 
 export const PLANT_DEFS: Record<PlantType, PlantDefinition> = {
   iceshroom:{type:'iceshroom',label:'Ice-shroom',cost:75,cooldownMs:50000,texture:'iceshroom',maxHp:300,description:'Freezes enemies across the lawn, then leaves them slowed. Takes one second to activate.'},
-  doomshroom:{type:'doomshroom',label:'Doom-shroom',cost:125,cooldownMs:50000,texture:'doomshroom',maxHp:300,description:'A huge blast that leaves its square unusable for three minutes. Earned after 2-8 for the next night levels.'},
+  doomshroom:{type:'doomshroom',label:'Doom-shroom',cost:125,cooldownMs:50000,texture:'doomshroom',maxHp:300,description:'A huge blast that leaves its square unusable for three minutes. Plan where you leave the crater.'},
   hypnoshroom:{type:'hypnoshroom',label:'Hypno-shroom',cost:75,cooldownMs:30000,texture:'hypnoshroom',maxHp:300,description:'When eaten, turns the zombie around to fight other zombies. Keeps its remaining armor.'},
   scaredyshroom:{type:'scaredyshroom',label:'Scaredy-shroom',cost:25,cooldownMs:7500,texture:'scaredyshroom',maxHp:300,projectile:'puff',damage:20,description:'Shoots long-range spores, but hides when zombies get close.'},
   puffshroom: {type:'puffshroom',label:'Puff-shroom',cost:0,cooldownMs:7500,texture:'puffshroom',maxHp:300,damage:20,range:400,projectile:'puff',description:'Free short-range night defender. Shoots spores about three squares ahead.'},

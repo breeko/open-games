@@ -30,6 +30,8 @@ bun run build
 bun run dev
 ```
 
-With Vite running, open `/scripts/games/garden-guard/session-browser-check.html`. This development-only page is not a production build entry and does not write game saves. It loads the real engine/assets and checks all eighteen level formats plus a busy night fixture, bowling hit history/bounce, final grave rise and pause. Each continuation is compared frame by frame against the uninterrupted run with controlled clocks. The fixtures exercise partial plant timers, emerging/chilled/allied zombies, a pole vault, suns in all active phases and projectiles.
+With Vite running, open `/scripts/games/garden-guard/session-browser-check.html`. This development-only page is not a production build entry and does not write game saves. It loads the real engine/assets and checks all twenty level formats plus a busy night fixture, bowling hit history/bounce, final grave rise and pause. Each continuation is compared frame by frame against the uninterrupted run with controlled clocks. The fixtures exercise partial plant timers, emerging/chilled/allied zombies, a pole vault, suns in all active phases and projectiles.
 
 Browser UI checks also cover planting on level 2-2, refresh restoring that board paused, and returning through **Menu → Resume saved level**. These checks do not substitute for physical iPad testing or full original-game outcome parity.
+
+The 2-10 conveyor uses the existing supply timer as a remaining countdown and supply index as last picked seed index + 1. Other levels retain their previous elapsed-timer/cycle semantics. This is level-specific state within the same r1 schema; expanding the maximum level preserves all earlier sessions. Doom fuses and active crater expiry continue through restoration.

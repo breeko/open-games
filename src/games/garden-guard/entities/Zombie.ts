@@ -320,6 +320,13 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
     if(elapsed>0)restoreTween(tween,elapsed);
   }
 
+  /** Original ApplyBurn destroys current land enemies regardless of helmets or
+   * carried doors. Future enemies with 1800+ body HP instead take blast damage. */
+  burn():void {
+    if(this.hp>=1800)this.takeDamage(1800,true);
+    else this.takeDamage(this.remainingHealth);
+  }
+
   takeDamage(amount: number,bypassShield=false): void {
     if (this.dead || !this.active) return;
 

@@ -56,7 +56,7 @@ export class RewardScene extends Phaser.Scene {
     if (reward) {
       this.showReward(reward);
     } else if (!hasNext) {
-      this.showDayComplete();
+      this.showCampaignComplete();
     } else {
       this.showReplay();
     }
@@ -148,11 +148,11 @@ export class RewardScene extends Phaser.Scene {
       .setDepth(DEPTH.ui);
   }
 
-  private showDayComplete(): void {
+  private showCampaignComplete(): void {
     const cx = GAME_WIDTH / 2;
 
     this.add
-      .text(cx, 250, 'DAYTIME ADVENTURE COMPLETE!', {
+      .text(cx, 250, 'DAY AND NIGHT COMPLETE!', {
         fontFamily: 'Arial Black, Arial, sans-serif',
         fontSize: '40px',
         color: '#ffe066',
@@ -163,7 +163,7 @@ export class RewardScene extends Phaser.Scene {
       .setDepth(DEPTH.ui);
 
     this.add
-      .text(cx, 320, 'Your garden is safe. Thanks for trying this early version!', {
+      .text(cx, 320, 'Night finale cleared. The pool adventure is next.', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '19px',
         color: '#bfe0b0',
@@ -185,7 +185,7 @@ export class RewardScene extends Phaser.Scene {
 
   private showReplay(): void {
     this.add
-      .text(GAME_WIDTH / 2, 300, 'Already cleared \u2014 no new plant this time.', {
+      .text(GAME_WIDTH / 2, 300, this.firstClear?'Level cleared! Your progress is saved.':'Already cleared \u2014 no new plant this time.', {
         fontFamily: 'Arial, sans-serif',
         fontSize: '24px',
         color: '#bfe0b0',

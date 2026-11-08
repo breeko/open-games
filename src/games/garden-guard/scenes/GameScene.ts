@@ -27,6 +27,7 @@ import { Zombie } from '../entities/Zombie';
 import {NIGHT_COMBAT} from '../night-combat';
 import {whackLoot} from '../whack-director';
 import {initialGraves} from '../night';
+import {NIGHT_CONVEYOR,conveyorInterval,nightConveyorWeights,pickNightConveyor} from '../night-conveyor';
 import { getLevel, defaultSeedsForLevel, type LevelDefinition } from '../levels';
 import { GridManager } from '../managers/GridManager';
 import { ResourceManager } from '../managers/ResourceManager';
@@ -165,7 +166,7 @@ export class GameScene extends Phaser.Scene {
     this.tweens.getDelta=()=>this.frameDelta;
     this.random=randomSource(67890);
     this.plants = [];
-    this.rolling = []; this.shoveling = false; this.supplyTimer = 0; this.supplyIndex = 0;
+    this.rolling = []; this.shoveling = false; this.supplyTimer = this.level.id===20?2000:0; this.supplyIndex = 0;
     this.selected = null;
     this.draggingType = null;
     this.dragPointer = undefined;
@@ -299,7 +300,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.hud.setWave(0,this.level.waves.length);
-    if (!this.resumeData&&(this.level.mode==='bowling'||this.level.mode==='conveyor')) {
+    if (!this.resumeData&&this.level.id!==20&&(this.level.mode==='bowling'||this.level.mode==='conveyor')) {
       for (let i=0;i<3;i++) this.seedBank.grant(this.level.conveyorSeeds[i % this.level.conveyorSeeds.length]);
     }
     if(this.resumeData){this.restoreSession(this.resumeData);this.game.events.emit('session-restored');}
@@ -374,7 +375,17 @@ export class GameScene extends Phaser.Scene {
 
     perf.section('projectiles',projectileStart);
     const otherStart=perf.mark();
-    if (this.level.mode==='bowling'||this.level.mode==='conveyor') {
+    if(this.level.id===20){
+      // Level 20 stores a remaining countdown and last picked index (+1), so
+      // both supply timing and anti-repeat weighting survive a saved session.
+      this.supplyTimer-=delta;
+      if(this.supplyTimer<=0){
+        this.supplyTimer+=conveyorInterval(this.seedBank.totalStock);
+        const weights=nightConveyorWeights(type=>this.seedBank.stockCount(type),type=>this.plants.filter(p=>p.active&&p.plantType===type).length,this.graves.size,NIGHT_CONVEYOR[this.supplyIndex-1]?.type);
+        const index=pickNightConveyor(weights,this.random);
+        this.seedBank.grant(NIGHT_CONVEYOR[index].type);this.supplyIndex=index+1;
+      }
+    }else if (this.level.mode==='bowling'||this.level.mode==='conveyor') {
       this.supplyTimer += delta;
       if (this.supplyTimer >= (this.level.mode === 'bowling' ? 3500 : 5000)) {
         this.supplyTimer = 0;

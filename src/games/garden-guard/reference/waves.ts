@@ -18,7 +18,7 @@ export function referenceWaves(level:number,seed=12345):WaveDefinition[] {
     if(flag){for(let n=0;n<Math.min(baseBudget,8);n++)put('basic');put('flag');}
     // Source applies special-level multipliers AFTER the forced plain/flag entries.
     if(level===5)budget*=4;
-    if(level===10)budget*=3;
+    if(level===10||level===20)budget*=3;
     if(intro && (index===Math.floor(count/2)||final))put(intro);
     if(final)for(const type of allowed)if(!zombies[type])put(type);
     while(budget>0 && sequence.length<50){
