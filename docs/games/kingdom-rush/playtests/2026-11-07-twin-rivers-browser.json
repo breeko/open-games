@@ -1,0 +1,1099 @@
+{
+  "format": "open-games.kingdom-rush.trace.v1",
+  "seed": 12648430,
+  "level": 4,
+  "reference": "Armor Games Flash v1.13 / geometry fa84f20 / visual 3e4eac4",
+  "tick": 12538,
+  "phase": "lost",
+  "gold": 380,
+  "lives": 0,
+  "wave": 8,
+  "kills": 176,
+  "events": [
+    {
+      "tick": 8618,
+      "type": "restore"
+    },
+    {
+      "tick": 8618,
+      "type": "resume"
+    },
+    {
+      "tick": 8626,
+      "type": "spawn",
+      "enemy": 317,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 8646,
+      "type": "upgrade",
+      "holder": 4,
+      "level": 2,
+      "gold": 221
+    },
+    {
+      "tick": 8656,
+      "type": "spawn",
+      "enemy": 319,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 8662,
+      "type": "kill",
+      "enemy": 301,
+      "gold": 224
+    },
+    {
+      "tick": 8675,
+      "type": "upgrade",
+      "holder": 14,
+      "level": 2,
+      "gold": 4
+    },
+    {
+      "tick": 8686,
+      "type": "spawn",
+      "enemy": 321,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 8711,
+      "type": "cast",
+      "kind": "reinforcements",
+      "x": 842.4704520311817,
+      "y": 478.0060031216232
+    },
+    {
+      "tick": 8716,
+      "type": "spawn",
+      "enemy": 324,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 8724,
+      "type": "kill",
+      "enemy": 303,
+      "gold": 7
+    },
+    {
+      "tick": 8739,
+      "type": "cast",
+      "kind": "fire",
+      "x": 449.6152718104402,
+      "y": 656.7313517314718
+    },
+    {
+      "tick": 8746,
+      "type": "spawn",
+      "enemy": 329,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 8752,
+      "type": "kill",
+      "enemy": 304,
+      "gold": 10
+    },
+    {
+      "tick": 8758,
+      "type": "spawn",
+      "enemy": 330,
+      "kind": "orc",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 8776,
+      "type": "spawn",
+      "enemy": 332,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 8784,
+      "type": "kill",
+      "enemy": 319,
+      "gold": 13
+    },
+    {
+      "tick": 8784,
+      "type": "kill",
+      "enemy": 321,
+      "gold": 16
+    },
+    {
+      "tick": 8794,
+      "type": "kill",
+      "enemy": 315,
+      "gold": 25
+    },
+    {
+      "tick": 8794,
+      "type": "kill",
+      "enemy": 324,
+      "gold": 28
+    },
+    {
+      "tick": 8806,
+      "type": "spawn",
+      "enemy": 333,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 8818,
+      "type": "spawn",
+      "enemy": 335,
+      "kind": "orc",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 8836,
+      "type": "spawn",
+      "enemy": 336,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 2
+    },
+    {
+      "tick": 8842,
+      "type": "kill",
+      "enemy": 306,
+      "gold": 31
+    },
+    {
+      "tick": 8842,
+      "type": "kill",
+      "enemy": 307,
+      "gold": 34
+    },
+    {
+      "tick": 8842,
+      "type": "kill",
+      "enemy": 309,
+      "gold": 37
+    },
+    {
+      "tick": 8866,
+      "type": "spawn",
+      "enemy": 338,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 2
+    },
+    {
+      "tick": 8867,
+      "type": "kill",
+      "enemy": 310,
+      "gold": 40
+    },
+    {
+      "tick": 8878,
+      "type": "spawn",
+      "enemy": 339,
+      "kind": "orc",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 8896,
+      "type": "spawn",
+      "enemy": 340,
+      "kind": "goblin",
+      "route": 1,
+      "lane": 2
+    },
+    {
+      "tick": 8932,
+      "type": "kill",
+      "enemy": 312,
+      "gold": 43
+    },
+    {
+      "tick": 8932,
+      "type": "kill",
+      "enemy": 314,
+      "gold": 46
+    },
+    {
+      "tick": 8938,
+      "type": "spawn",
+      "enemy": 342,
+      "kind": "orc",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 8959,
+      "type": "kill",
+      "enemy": 316,
+      "gold": 49
+    },
+    {
+      "tick": 8998,
+      "type": "spawn",
+      "enemy": 345,
+      "kind": "shaman",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 9022,
+      "type": "kill",
+      "enemy": 317,
+      "gold": 52
+    },
+    {
+      "tick": 9058,
+      "type": "spawn",
+      "enemy": 347,
+      "kind": "shaman",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 9112,
+      "type": "kill",
+      "enemy": 329,
+      "gold": 55
+    },
+    {
+      "tick": 9139,
+      "type": "kill",
+      "enemy": 332,
+      "gold": 58
+    },
+    {
+      "tick": 9146,
+      "type": "kill",
+      "enemy": 302,
+      "gold": 67
+    },
+    {
+      "tick": 9202,
+      "type": "kill",
+      "enemy": 333,
+      "gold": 70
+    },
+    {
+      "tick": 9202,
+      "type": "kill",
+      "enemy": 336,
+      "gold": 73
+    },
+    {
+      "tick": 9202,
+      "type": "kill",
+      "enemy": 338,
+      "gold": 76
+    },
+    {
+      "tick": 9236,
+      "type": "soldier-death",
+      "soldier": 5
+    },
+    {
+      "tick": 9236,
+      "type": "kill",
+      "enemy": 305,
+      "gold": 85
+    },
+    {
+      "tick": 9254,
+      "type": "soldier-death",
+      "soldier": 322
+    },
+    {
+      "tick": 9272,
+      "type": "soldier-death",
+      "soldier": 6
+    },
+    {
+      "tick": 9292,
+      "type": "kill",
+      "enemy": 340,
+      "gold": 88
+    },
+    {
+      "tick": 9315,
+      "type": "soldier-death",
+      "soldier": 4
+    },
+    {
+      "tick": 9400,
+      "type": "kill",
+      "enemy": 308,
+      "gold": 97
+    },
+    {
+      "tick": 9488,
+      "type": "kill",
+      "enemy": 311,
+      "gold": 106
+    },
+    {
+      "tick": 9536,
+      "type": "soldier-respawn",
+      "soldier": 5
+    },
+    {
+      "tick": 9572,
+      "type": "soldier-respawn",
+      "soldier": 6
+    },
+    {
+      "tick": 9615,
+      "type": "soldier-respawn",
+      "soldier": 4
+    },
+    {
+      "tick": 9620,
+      "type": "kill",
+      "enemy": 330,
+      "gold": 115
+    },
+    {
+      "tick": 9851,
+      "type": "kill",
+      "enemy": 342,
+      "gold": 124
+    },
+    {
+      "tick": 9925,
+      "type": "soldier-death",
+      "soldier": 5
+    },
+    {
+      "tick": 10057,
+      "type": "leak",
+      "enemy": 335,
+      "lives": 10,
+      "gold": 133
+    },
+    {
+      "tick": 10074,
+      "type": "leak",
+      "enemy": 345,
+      "lives": 9,
+      "gold": 143
+    },
+    {
+      "tick": 10118,
+      "type": "leak",
+      "enemy": 339,
+      "lives": 8,
+      "gold": 152
+    },
+    {
+      "tick": 10225,
+      "type": "soldier-respawn",
+      "soldier": 5
+    },
+    {
+      "tick": 10288,
+      "type": "kill",
+      "enemy": 347,
+      "gold": 162
+    },
+    {
+      "tick": 10460,
+      "type": "wave",
+      "wave": 6,
+      "bonus": 0,
+      "gold": 162,
+      "spawnEnd": 10844
+    },
+    {
+      "tick": 10490,
+      "type": "spawn",
+      "enemy": 386,
+      "kind": "bandit",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 10490,
+      "type": "spawn",
+      "enemy": 387,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 10520,
+      "type": "spawn",
+      "enemy": 388,
+      "kind": "bandit",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 10520,
+      "type": "spawn",
+      "enemy": 389,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 10550,
+      "type": "spawn",
+      "enemy": 390,
+      "kind": "bandit",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 10550,
+      "type": "spawn",
+      "enemy": 391,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 10782,
+      "type": "spawn",
+      "enemy": 395,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 10812,
+      "type": "spawn",
+      "enemy": 397,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 10842,
+      "type": "spawn",
+      "enemy": 398,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 10910,
+      "type": "kill",
+      "enemy": 386,
+      "gold": 170
+    },
+    {
+      "tick": 10923,
+      "type": "soldier-death",
+      "soldier": 4
+    },
+    {
+      "tick": 10940,
+      "type": "soldier-death",
+      "soldier": 3
+    },
+    {
+      "tick": 10943,
+      "type": "soldier-death",
+      "soldier": 2
+    },
+    {
+      "tick": 10946,
+      "type": "soldier-death",
+      "soldier": 5
+    },
+    {
+      "tick": 10952,
+      "type": "soldier-death",
+      "soldier": 1
+    },
+    {
+      "tick": 10965,
+      "type": "soldier-death",
+      "soldier": 6
+    },
+    {
+      "tick": 10988,
+      "type": "kill",
+      "enemy": 390,
+      "gold": 178
+    },
+    {
+      "tick": 11000,
+      "type": "kill",
+      "enemy": 388,
+      "gold": 186
+    },
+    {
+      "tick": 11050,
+      "type": "kill",
+      "enemy": 391,
+      "gold": 194
+    },
+    {
+      "tick": 11092,
+      "type": "kill",
+      "enemy": 387,
+      "gold": 202
+    },
+    {
+      "tick": 11156,
+      "type": "cast",
+      "kind": "reinforcements",
+      "x": 842.4704520311817,
+      "y": 478.0060031216232
+    },
+    {
+      "tick": 11217,
+      "type": "soldier-death",
+      "soldier": 410
+    },
+    {
+      "tick": 11223,
+      "type": "soldier-respawn",
+      "soldier": 4
+    },
+    {
+      "tick": 11240,
+      "type": "soldier-respawn",
+      "soldier": 3
+    },
+    {
+      "tick": 11242,
+      "type": "soldier-death",
+      "soldier": 411
+    },
+    {
+      "tick": 11243,
+      "type": "soldier-respawn",
+      "soldier": 2
+    },
+    {
+      "tick": 11246,
+      "type": "soldier-respawn",
+      "soldier": 5
+    },
+    {
+      "tick": 11252,
+      "type": "soldier-respawn",
+      "soldier": 1
+    },
+    {
+      "tick": 11265,
+      "type": "soldier-respawn",
+      "soldier": 6
+    },
+    {
+      "tick": 11279,
+      "type": "kill",
+      "enemy": 389,
+      "gold": 210
+    },
+    {
+      "tick": 11304,
+      "type": "kill",
+      "enemy": 395,
+      "gold": 218
+    },
+    {
+      "tick": 11310,
+      "type": "soldier-death",
+      "soldier": 4
+    },
+    {
+      "tick": 11353,
+      "type": "soldier-death",
+      "soldier": 6
+    },
+    {
+      "tick": 11363,
+      "type": "soldier-death",
+      "soldier": 5
+    },
+    {
+      "tick": 11444,
+      "type": "wave",
+      "wave": 7,
+      "bonus": 0,
+      "gold": 218,
+      "spawnEnd": 12010
+    },
+    {
+      "tick": 11461,
+      "type": "kill",
+      "enemy": 398,
+      "gold": 226
+    },
+    {
+      "tick": 11464,
+      "type": "spawn",
+      "enemy": 418,
+      "kind": "wolf",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 11464,
+      "type": "spawn",
+      "enemy": 419,
+      "kind": "wolf",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 11484,
+      "type": "spawn",
+      "enemy": 420,
+      "kind": "wolf",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 11484,
+      "type": "spawn",
+      "enemy": 421,
+      "kind": "wolf",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 11504,
+      "type": "spawn",
+      "enemy": 423,
+      "kind": "wolf",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 11504,
+      "type": "spawn",
+      "enemy": 424,
+      "kind": "wolf",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 11524,
+      "type": "spawn",
+      "enemy": 425,
+      "kind": "wolf",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 11524,
+      "type": "spawn",
+      "enemy": 426,
+      "kind": "wolf",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 11544,
+      "type": "spawn",
+      "enemy": 428,
+      "kind": "wolf",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 11549,
+      "type": "kill",
+      "enemy": 397,
+      "gold": 234
+    },
+    {
+      "tick": 11610,
+      "type": "soldier-respawn",
+      "soldier": 4
+    },
+    {
+      "tick": 11646,
+      "type": "spawn",
+      "enemy": 433,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 11653,
+      "type": "soldier-respawn",
+      "soldier": 6
+    },
+    {
+      "tick": 11663,
+      "type": "soldier-respawn",
+      "soldier": 5
+    },
+    {
+      "tick": 11666,
+      "type": "spawn",
+      "enemy": 434,
+      "kind": "bandit",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 11666,
+      "type": "spawn",
+      "enemy": 435,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 11672,
+      "type": "kill",
+      "enemy": 418,
+      "gold": 239
+    },
+    {
+      "tick": 11672,
+      "type": "kill",
+      "enemy": 420,
+      "gold": 244
+    },
+    {
+      "tick": 11686,
+      "type": "spawn",
+      "enemy": 436,
+      "kind": "bandit",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 11686,
+      "type": "spawn",
+      "enemy": 437,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 11706,
+      "type": "spawn",
+      "enemy": 438,
+      "kind": "bandit",
+      "route": 1,
+      "lane": 3
+    },
+    {
+      "tick": 11706,
+      "type": "spawn",
+      "enemy": 439,
+      "kind": "bandit",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 11726,
+      "type": "spawn",
+      "enemy": 440,
+      "kind": "bandit",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 11757,
+      "type": "kill",
+      "enemy": 419,
+      "gold": 249
+    },
+    {
+      "tick": 11757,
+      "type": "kill",
+      "enemy": 421,
+      "gold": 254
+    },
+    {
+      "tick": 11762,
+      "type": "kill",
+      "enemy": 423,
+      "gold": 259
+    },
+    {
+      "tick": 11764,
+      "type": "kill",
+      "enemy": 425,
+      "gold": 264
+    },
+    {
+      "tick": 11797,
+      "type": "kill",
+      "enemy": 424,
+      "gold": 269
+    },
+    {
+      "tick": 11801,
+      "type": "kill",
+      "enemy": 426,
+      "gold": 274
+    },
+    {
+      "tick": 11811,
+      "type": "kill",
+      "enemy": 428,
+      "gold": 279
+    },
+    {
+      "tick": 11928,
+      "type": "spawn",
+      "enemy": 447,
+      "kind": "wolf",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 11948,
+      "type": "spawn",
+      "enemy": 449,
+      "kind": "wolf",
+      "route": 1,
+      "lane": 2
+    },
+    {
+      "tick": 11948,
+      "type": "spawn",
+      "enemy": 450,
+      "kind": "wolf",
+      "route": 2,
+      "lane": 2
+    },
+    {
+      "tick": 11968,
+      "type": "spawn",
+      "enemy": 451,
+      "kind": "wolf",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 11968,
+      "type": "spawn",
+      "enemy": 452,
+      "kind": "wolf",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 11988,
+      "type": "spawn",
+      "enemy": 454,
+      "kind": "wolf",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 11988,
+      "type": "spawn",
+      "enemy": 455,
+      "kind": "wolf",
+      "route": 2,
+      "lane": 1
+    },
+    {
+      "tick": 12008,
+      "type": "spawn",
+      "enemy": 456,
+      "kind": "wolf",
+      "route": 1,
+      "lane": 1
+    },
+    {
+      "tick": 12008,
+      "type": "spawn",
+      "enemy": 457,
+      "kind": "wolf",
+      "route": 2,
+      "lane": 3
+    },
+    {
+      "tick": 12061,
+      "type": "soldier-death",
+      "soldier": 1
+    },
+    {
+      "tick": 12065,
+      "type": "soldier-death",
+      "soldier": 4
+    },
+    {
+      "tick": 12075,
+      "type": "soldier-death",
+      "soldier": 2
+    },
+    {
+      "tick": 12086,
+      "type": "soldier-death",
+      "soldier": 5
+    },
+    {
+      "tick": 12086,
+      "type": "kill",
+      "enemy": 434,
+      "gold": 287
+    },
+    {
+      "tick": 12086,
+      "type": "kill",
+      "enemy": 436,
+      "gold": 295
+    },
+    {
+      "tick": 12096,
+      "type": "soldier-death",
+      "soldier": 3
+    },
+    {
+      "tick": 12105,
+      "type": "soldier-death",
+      "soldier": 6
+    },
+    {
+      "tick": 12154,
+      "type": "kill",
+      "enemy": 447,
+      "gold": 300
+    },
+    {
+      "tick": 12184,
+      "type": "kill",
+      "enemy": 449,
+      "gold": 305
+    },
+    {
+      "tick": 12243,
+      "type": "kill",
+      "enemy": 450,
+      "gold": 310
+    },
+    {
+      "tick": 12271,
+      "type": "kill",
+      "enemy": 438,
+      "gold": 318
+    },
+    {
+      "tick": 12288,
+      "type": "kill",
+      "enemy": 451,
+      "gold": 323
+    },
+    {
+      "tick": 12355,
+      "type": "leak",
+      "enemy": 454,
+      "lives": 7,
+      "gold": 328
+    },
+    {
+      "tick": 12361,
+      "type": "soldier-respawn",
+      "soldier": 1
+    },
+    {
+      "tick": 12364,
+      "type": "leak",
+      "enemy": 452,
+      "lives": 6,
+      "gold": 333
+    },
+    {
+      "tick": 12365,
+      "type": "soldier-respawn",
+      "soldier": 4
+    },
+    {
+      "tick": 12375,
+      "type": "soldier-respawn",
+      "soldier": 2
+    },
+    {
+      "tick": 12375,
+      "type": "leak",
+      "enemy": 456,
+      "lives": 5,
+      "gold": 338
+    },
+    {
+      "tick": 12384,
+      "type": "leak",
+      "enemy": 455,
+      "lives": 4,
+      "gold": 343
+    },
+    {
+      "tick": 12386,
+      "type": "soldier-respawn",
+      "soldier": 5
+    },
+    {
+      "tick": 12396,
+      "type": "soldier-respawn",
+      "soldier": 3
+    },
+    {
+      "tick": 12404,
+      "type": "leak",
+      "enemy": 457,
+      "lives": 3,
+      "gold": 348
+    },
+    {
+      "tick": 12405,
+      "type": "soldier-respawn",
+      "soldier": 6
+    },
+    {
+      "tick": 12432,
+      "type": "kill",
+      "enemy": 440,
+      "gold": 356
+    },
+    {
+      "tick": 12510,
+      "type": "wave",
+      "wave": 8,
+      "bonus": 0,
+      "gold": 356,
+      "spawnEnd": 13054
+    },
+    {
+      "tick": 12520,
+      "type": "leak",
+      "enemy": 433,
+      "lives": 2,
+      "gold": 364
+    },
+    {
+      "tick": 12531,
+      "type": "leak",
+      "enemy": 439,
+      "lives": 1,
+      "gold": 372
+    },
+    {
+      "tick": 12538,
+      "type": "leak",
+      "enemy": 435,
+      "lives": 0,
+      "gold": 380
+    },
+    {
+      "tick": 12538,
+      "type": "defeat"
+    }
+  ]
+}

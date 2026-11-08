@@ -1,4 +1,4 @@
-import { ASPECT, blastDamage, damageAfterArmor, distance, ENEMIES, enemyKind, FPS, inRange, getLevel, LEVEL, rollDamage, SOLDIERS, STEP, TOWERS, type DamageKind, type EnemyKind, type Point, type Level, type LevelId, type SoldierKind, type TowerKind } from './content';
+import { barracksSoldier, battleCompatibility, ASPECT, blastDamage, damageAfterArmor, distance, ENEMIES, enemyKind, FPS, inRange, getLevel, LEVEL, rollDamage, SOLDIERS, STEP, TOWERS, type DamageKind, type EnemyKind, type Point, type Level, type LevelId, type SoldierKind, type TowerKind } from './content';
 import { arrowHits, barracksFormation } from './collision';
 import { battleSnapshotSchema, type BattleSnapshot } from './save-state';
 
@@ -44,7 +44,7 @@ export class Simulation {
   /** Capture gameplay data only, detached from the live simulation and renderer. */
   snapshot(): BattleSnapshot {
     const data: BattleSnapshot = {
-      compatibility: this.level.level===3?'pagras-flash-v1.13-r2':'opening-flash-v1.13-r1', level: this.level.level,
+      compatibility: battleCompatibility(this.level.level), level: this.level.level,
       tick: this.tick, gold: this.gold, lives: this.lives, wave: this.wave,
       kills: this.kills, leaked: this.leaked, phase: this.phase, paused: this.paused,
       seed: this.seed, rng: this.rng, nextId: this.nextId, groupEnd: this.groupEnd,
@@ -104,7 +104,7 @@ export class Simulation {
     this.gold-=cost;t.spent+=cost;t.level++;
     if(t.kind==='barrack')for(const s of this.soldiers.filter(s=>s.towerId===t.id)){
       if(s.hp<=0){this.release(s);s.x=t.x;s.y=t.y;s.activeAt=this.tick+12;}
-      s.regenTicks=0;if(s.hp<=0)s.idleTicks=0;s.kind='footmen';s.hp=SOLDIERS.footmen.hp;s.deadAt=-1;s.respawnAt=0;s.hitAt=0;s.nextAttack=this.tick+30;
+      s.regenTicks=0;if(s.hp<=0)s.idleTicks=0;s.kind=barracksSoldier(t.level);s.hp=SOLDIERS[s.kind].hp;s.deadAt=-1;s.respawnAt=0;s.hitAt=0;s.nextAttack=this.tick+30;
     }
     this.log('upgrade',{holder:id,level:t.level,gold:this.gold});return true;
   }
@@ -160,7 +160,7 @@ export class Simulation {
   private createSoldier(t:Tower|undefined,slot:number,p?:Point):void {
     const home={...(t?.rally??p??{x:0,y:0})};
     const rally=t?barracksFormation(home,slot):{x:home.x+(slot===0?8.96:-8.96),y:home.y+(slot===0?8.96:-8.96)};
-    const kind:SoldierKind=t?(t.level===1?'militia':'footmen'):'farmer';
+    const kind:SoldierKind=t?barracksSoldier(t.level):'farmer';
     this.soldiers.push({id:this.nextId++,kind,towerId:t?.id??0,activeAt:t?this.tick+FPS+12:this.tick+7,slot,rally,hp:SOLDIERS[kind].hp,...(t?{x:t.x,y:t.y}:rally),deadAt:-1,respawnAt:0,expires:t?Infinity:this.tick+7+20*FPS,target:0,home,destination:{...rally},meleeSlot:-1,arrived:false,redeploying:false,nextAttack:this.tick+FPS,hitAt:0,regenAt:this.tick+FPS,idleTicks:0,regenTicks:0,animation:'running',animAt:this.tick,facing:1});
   }
   spawn(kind:EnemyKind,route=0,lane=0):Enemy {
@@ -236,7 +236,7 @@ export class Simulation {
       }
       if(s.hitAt>0&&this.tick>=s.hitAt){this.hurtEnemy(target,this.roll(spec.damage),'physical',true);s.hitAt=0;}
       if(s.target&&target.hp>0&&this.tick>=s.nextAttack){s.animation='attack';s.animAt=this.tick;s.hitAt=this.tick+5;s.nextAttack=this.tick+Math.round(spec.cooldown*FPS);}
-      else if(this.tick-s.animAt>=(s.kind==='footmen'?20:11))this.animate(s,'idle');
+      else if(this.tick-s.animAt>=(s.kind==='footmen'||s.kind==='knight'?20:11))this.animate(s,'idle');
       s.regenAt=this.tick+3*FPS;
     } else {
       s.hitAt=0;
@@ -305,10 +305,10 @@ export class Simulation {
         if(target){if(t.kind!=='engineer'||this.blocked(target))t.target={x:target.x,y:target.y};else if(t.targetId!==target.id)t.target=this.bombAim(target);}
         const aim=target??t.target;
         const up=aim.y<t.y;
-        const from=t.kind==='mage'?{x:t.x+(up?7.68:-7.68),y:t.y-61.44}:{x:t.x+(t.kind==='archer'?(t.shots%2===0?6.4:-11.52):0),y:t.y-57.6};
+        const from=t.kind==='mage'?{x:t.x+(t.level===3?(up?7.68:-8.96):(up?7.68:-7.68)),y:t.y-(t.level===3?(up?65.28:67.84):61.44)}:{x:t.x+(t.kind==='archer'?(t.level===3?(t.shots%2===0?10.24:-8.96):(t.shots%2===0?6.4:-11.52)):0),y:t.y-(t.kind==='archer'&&t.level===3?64:57.6)};
         const flight=t.kind==='mage'?Math.max(.15,distance(from,aim)/300):spec.flight;
         const to=t.kind==='engineer'?{...t.target}:t.kind==='archer'&&target?this.arrowAim(target,Math.round(flight*FPS)):{x:aim.x,y:aim.y-10.24};
-        this.projectiles.push({id:this.nextId++,kind:spec.damageKind,from,to,start:this.tick,impact:this.tick+(t.kind==='mage'?300:Math.round(flight*FPS)),target:target?.id??0,...(t.kind==='mage'?{position:{...from},speed:1}:{}),damage:t.kind==='engineer'?spec.damage[idx][1]:this.roll(spec.damage[idx]),radius:spec.radius,...(t.kind==='engineer'?{minDamage:spec.damage[idx][0]}:{})});t.shots++;
+        this.projectiles.push({id:this.nextId++,kind:spec.damageKind,from,to,start:this.tick,impact:this.tick+(t.kind==='mage'?300:Math.round(flight*FPS)),target:target?.id??0,...(t.kind==='mage'?{position:{...from},speed:1}:{}),damage:t.kind==='engineer'?spec.damage[idx][1]:this.roll(spec.damage[idx]),radius:spec.radius[idx],...(t.kind==='engineer'?{minDamage:spec.damage[idx][0]}:{})});t.shots++;
       }
     }
     if(this.tick>=t.nextAttack&&t.fireAt===0){const target=this.target(t);if(target){t.targetId=target.id;t.target=t.kind==='engineer'?this.bombAim(target):{x:target.x,y:target.y};t.animAt=this.tick;t.fireAt=this.tick+Math.round(spec.windup*FPS);t.nextAttack=this.tick+Math.round(spec.cooldown[idx]*FPS);}}

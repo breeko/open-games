@@ -2,7 +2,7 @@
 
 - Work only in this game's folders, plus the minimum catalog/build registration.
 - Another agent owns Garden Guard. Never edit or import its code, art, saves or tests.
-- Current authorized campaign scope: Southport, The Farmlands and Pagras (stages 1–3).
+- Current authorized campaign scope: Southport, The Farmlands, Pagras and Twin Rivers Pass (stages 1–4), explicitly authorized by Branko.
 - Keep map geometry/waves/assets separate from shared Kingdom Rush combat rules.
 - Preserve Pagras save/result keys and use separate stores for other maps.
 - Geometry comes from the pinned older reference. Campaign wave timing and verified

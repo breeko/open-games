@@ -34,3 +34,7 @@ parameters and starting gold were transcribed from the publisher-hosted Flash
 v1.13 binary, SHA256 7b5467a3eccc17f6dd001ff2d41bdf1b03d79fd515a2a9586c42bfd982bb1e23.
 The original executable and ActionScript are not distributed with this project.
 See level01-manifest.json and level02-manifest.json for per-file input hashes.
+
+Twin Rivers Pass (map 4) uses the same pinned visual source. Paths, sites,
+campaign waves, cash and new combat facts target the pinned Flash v1.13 binary.
+See level04-manifest.json and twin-rivers-pass.md in the source documentation.

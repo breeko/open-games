@@ -16,7 +16,7 @@ export function enemyBounds(enemy:Point&{kind:EnemyKind;animation:string;animAt:
   const frame=start+(action.startsWith('walking')?age%(end-start+1):Math.min(age,end-start));
   const b=symbol.frames[frame];
   const bar=symbols[enemy.kind==='ogre'?'barMedium':'barSmall'].frames[0];
-  const barY={goblin:-20,orc:-23,wolf:-20,shaman:-25,ogre:-39}[enemy.kind];
+  const barY={goblin:-20,orc:-23,wolf:-20,shaman:-25,ogre:-39,bandit:-23,brigand:-25}[enemy.kind];
   const left=Math.min(b[0],bar[0]),right=Math.max(b[2],bar[2]);
   return {left:enemy.x+(enemy.facing<0?-right:left)*SCALE,right:enemy.x+(enemy.facing<0?-left:right)*SCALE,
     top:enemy.y+Math.min(b[1],bar[1]+barY)*SCALE,bottom:enemy.y+Math.max(b[3],bar[3]+barY)*SCALE};

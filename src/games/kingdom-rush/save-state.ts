@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { getLevel } from './content';
+import { battleCompatibility, getLevel } from './content';
 
 const tick = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const uint32 = z.number().int().min(0).max(0xffffffff);
@@ -8,7 +8,7 @@ const id = tick;
 const health = z.number().nonnegative();
 // null explicitly represents "never"; JSON cannot represent Infinity.
 const deadline = tick.nullable();
-const enemyKind = z.enum(['goblin', 'orc', 'wolf', 'shaman', 'ogre']);
+const enemyKind = z.enum(['goblin', 'orc', 'wolf', 'shaman', 'ogre', 'bandit', 'brigand']);
 const animation = z.string().min(1).max(64);
 const facing = z.number().int().refine((value): boolean => value === -1 || value === 1);
 const deadAt = z.number().int().min(-1);
@@ -19,7 +19,7 @@ const enemySchema = point.extend({
   healAt: tick, healUntil: tick, nextHeal: tick, animation, animAt: tick, facing,
 });
 const soldierSchema = point.extend({
-  id: id.positive(), kind: z.enum(['militia', 'footmen', 'farmer']), towerId: id,
+  id: id.positive(), kind: z.enum(['militia', 'footmen', 'knight', 'farmer']), towerId: id,
   activeAt: tick, slot: z.number().int().min(0).max(2), rally: point, hp: health,
   deadAt, respawnAt: deadline, expires: deadline, target: id, nextAttack: tick,
   home: point, destination: point, meleeSlot: z.number().int().min(-1).max(2), arrived: z.boolean(), redeploying: z.boolean(),
@@ -27,7 +27,7 @@ const soldierSchema = point.extend({
 });
 const towerSchema = point.extend({
   id: id.positive(),
-  kind: z.enum(['archer', 'barrack', 'mage', 'engineer']), level: z.number().int().min(1).max(2),
+  kind: z.enum(['archer', 'barrack', 'mage', 'engineer']), level: z.number().int().min(1).max(3),
   readyAt: tick, spent: tick, rally: point, targetId: id, nextAttack: tick,
   fireAt: tick, animAt: z.number().int(), target: point, shots: tick,
 });
@@ -46,7 +46,7 @@ const spawnSchema = z.object({
 
 /** Bump compatibility when changed rules cannot safely resume an older battle. */
 export const battleSnapshotSchema = z.object({
-  compatibility: z.enum(['pagras-flash-v1.13-r2','opening-flash-v1.13-r1']), level: z.union([z.literal(1),z.literal(2),z.literal(3)]),
+  compatibility: z.enum(['pagras-flash-v1.13-r2','opening-flash-v1.13-r1','twin-rivers-flash-v1.13-r1']), level: z.union([z.literal(1),z.literal(2),z.literal(3),z.literal(4)]),
   tick, gold: tick, lives: tick.max(20), wave: tick.max(99),
   kills: tick, leaked: tick, phase: z.enum(['ready', 'running', 'won', 'lost']), paused: z.boolean(),
   seed: uint32, rng: uint32.positive(), nextId: id.positive(),
@@ -57,7 +57,7 @@ export const battleSnapshotSchema = z.object({
   pending: z.array(spawnSchema).max(1024),
 }).superRefine((battle, ctx) => {
   const level=getLevel(battle.level);
-  if(battle.compatibility!==(level.level===3?'pagras-flash-v1.13-r2':'opening-flash-v1.13-r1'))ctx.addIssue({code:'custom',message:'Saved battle uses an older map path revision'});
+  if(battle.compatibility!==battleCompatibility(level.level))ctx.addIssue({code:'custom',message:'Saved battle uses an older map path revision'});
   if(battle.wave>level.groups.length||battle.towers.length>level.holders.length||battle.towers.some(tower=>tower.level>level.maxTowerLevel||!level.holders.some(holder=>holder.id===tower.id))||battle.pending.some(spawn=>!level.paths[spawn.route]))ctx.addIssue({code:'custom',message:'Invalid map wave, tower or pending route'});
   for(const enemy of battle.enemies){const route=level.paths[enemy.route];if(!route||enemy.node<route.start||enemy.node>route.end||enemy.hp>enemy.maxHp)ctx.addIssue({code:'custom',message:'Invalid enemy path position or health'});}
   const entityIds = [...battle.enemies, ...battle.soldiers, ...battle.projectiles].map(entity => entity.id);

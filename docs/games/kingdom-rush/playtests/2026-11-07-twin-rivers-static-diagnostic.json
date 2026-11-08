@@ -1,0 +1,50 @@
+{
+  "kind": "headless fixed-defense control",
+  "seed": 12648430,
+  "level": 4,
+  "plan": "Two barracks (13,5), two artillery (14,6), two mages (12,4), one archer (9), all tier 1. No further commands.",
+  "phase": "lost",
+  "tick": 8354,
+  "wave": 6,
+  "gold": 734,
+  "lives": 0,
+  "kills": 146,
+  "checkpoints": [
+    {
+      "wave": 1,
+      "tick": 0,
+      "lives": 20,
+      "gold": 20
+    },
+    {
+      "wave": 2,
+      "tick": 1279,
+      "lives": 20,
+      "gold": 89
+    },
+    {
+      "wave": 3,
+      "tick": 2807,
+      "lives": 20,
+      "gold": 230
+    },
+    {
+      "wave": 4,
+      "tick": 3771,
+      "lives": 18,
+      "gold": 320
+    },
+    {
+      "wave": 5,
+      "tick": 5323,
+      "lives": 10,
+      "gold": 538
+    },
+    {
+      "wave": 6,
+      "tick": 7487,
+      "lives": 2,
+      "gold": 682
+    }
+  ]
+}

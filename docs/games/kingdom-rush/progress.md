@@ -107,3 +107,13 @@ See [the detailed comparison](original-comparison.md#melee-and-collision-follow-
 - Completed a stricter Farmlands browser control with only barracks 4 and artillery 7 bought before battle: original Normal lost in wave 7; local lost in wave 6 with 325 gold / 66 kills. Screenshots and actual local command trace are retained. No later purchases, powers, rally changes or early calls. The local sample still looks harsher; calibration remains open.
 - Twenty-one headless fixed-defense seeds all lost (18 in wave 6, three in wave 7). This shows variation, not original win-rate parity. Existing failed-command and Pagras replays retain their previous corrected outcomes. No numeric balance values changed. See opening-calibration.md for the detailed follow-up.
 - Fifty-three Kingdom Rush tests, four boundary checks and production build pass. Only Kingdom Rush files changed.
+
+
+## November 7, 2026 — Twin Rivers Pass
+
+- Added the fourth freely selectable map: original Flash paths/sites, 680 gold, 20 lives, 13 paired-route waves / 329 enemies. Added pinned visual assets and input hashes, separate saves/results, and Next map from Pagras.
+- Added bandits (melee dodge), armored brigands, all four tier-three towers and knight soldiers using original Normal facts. New collision bounds come from the pinned Flash symbols. Existing stage caps, saves, enemy bounds and regression outcomes remain unchanged.
+- Fixed nearby foundations being intercepted by taller adjacent tower selection areas. Upgrade prices/affordability now follow the next tier.
+- Original Normal fixed seven-tower control lost in wave 7; the equivalent local headless control lost in wave 6. Local browser attempt with later purchases/powers lost in wave 8. Automated complete defense wins all 13 waves with five lives. These are distinct results: no manual full-level victory or exact balance parity is claimed. Original/local screenshots, a partial post-restore trace and diagnostic totals are retained.
+- Verified tier-three purchase/rendering and full-screen 844×390 landscape with on-map controls. Physical iPad testing remains open. Fifty-eight Kingdom Rush tests, four boundary checks and production build pass. Only Kingdom Rush folders changed.
+- Detailed report, known limits and reproduction: twin-rivers-pass.md. Next: repeated original comparisons and a complete browser victory before adding another map; improve trace-history continuity across restores.
