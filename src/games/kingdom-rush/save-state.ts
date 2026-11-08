@@ -34,7 +34,7 @@ const towerSchema = point.extend({
 const projectileSchema = z.object({
   id: id.positive(), kind: z.enum(['physical', 'magic', 'explosion', 'true']),
   from: point, to: point, start: tick, impact: tick, target: id,
-  damage: health, radius: health, minDamage: health.optional(),
+  damage: health, radius: health, minDamage: health.optional(), position: point.optional(), speed:z.number().positive().max(10).optional(),
 });
 const effectSchema = point.extend({
   type: z.enum(['hit', 'heal', 'fire', 'death']), start: tick, duration: tick, radius: health,
@@ -46,7 +46,7 @@ const spawnSchema = z.object({
 
 /** Bump compatibility when changed rules cannot safely resume an older battle. */
 export const battleSnapshotSchema = z.object({
-  compatibility: z.literal('pagras-flash-v1.13-r2'), level: z.union([z.literal(1),z.literal(2),z.literal(3)]),
+  compatibility: z.enum(['pagras-flash-v1.13-r2','opening-flash-v1.13-r1']), level: z.union([z.literal(1),z.literal(2),z.literal(3)]),
   tick, gold: tick, lives: tick.max(20), wave: tick.max(99),
   kills: tick, leaked: tick, phase: z.enum(['ready', 'running', 'won', 'lost']), paused: z.boolean(),
   seed: uint32, rng: uint32.positive(), nextId: id.positive(),
@@ -57,6 +57,7 @@ export const battleSnapshotSchema = z.object({
   pending: z.array(spawnSchema).max(1024),
 }).superRefine((battle, ctx) => {
   const level=getLevel(battle.level);
+  if(battle.compatibility!==(level.level===3?'pagras-flash-v1.13-r2':'opening-flash-v1.13-r1'))ctx.addIssue({code:'custom',message:'Saved battle uses an older map path revision'});
   if(battle.wave>level.groups.length||battle.towers.length>level.holders.length||battle.towers.some(tower=>tower.level>level.maxTowerLevel||!level.holders.some(holder=>holder.id===tower.id))||battle.pending.some(spawn=>!level.paths[spawn.route]))ctx.addIssue({code:'custom',message:'Invalid map wave, tower or pending route'});
   for(const enemy of battle.enemies){const route=level.paths[enemy.route];if(!route||enemy.node<route.start||enemy.node>route.end||enemy.hp>enemy.maxHp)ctx.addIssue({code:'custom',message:'Invalid enemy path position or health'});}
   const entityIds = [...battle.enemies, ...battle.soldiers, ...battle.projectiles].map(entity => entity.id);

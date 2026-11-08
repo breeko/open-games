@@ -6,7 +6,7 @@ export interface Event { tick:number; type:string; [key:string]:string|number|bo
 export interface Enemy extends Point { id:number; kind:EnemyKind; route:number; lane:number; node:number; hp:number; maxHp:number; deadAt:number; escaped:boolean; nextAttack:number; hitAt:number; attackTarget:number; healAt:number; healUntil:number; nextHeal:number; animation:string; animAt:number; facing:number }
 export interface Soldier extends Point { id:number; kind:SoldierKind; towerId:number; activeAt:number; slot:number; rally:Point; hp:number; deadAt:number; respawnAt:number; expires:number; target:number; home:Point; destination:Point; meleeSlot:number; arrived:boolean; redeploying:boolean; nextAttack:number; hitAt:number; regenAt:number; animation:string; animAt:number; facing:number }
 export interface Tower extends Point { id:number; kind:TowerKind; level:number; readyAt:number; spent:number; rally:Point; targetId:number; nextAttack:number; fireAt:number; animAt:number; target:Point; shots:number }
-export interface Projectile { id:number; kind:DamageKind; from:Point; to:Point; start:number; impact:number; target:number; damage:number; radius:number; minDamage?:number }
+export interface Projectile { id:number; kind:DamageKind; from:Point; to:Point; start:number; impact:number; target:number; damage:number; radius:number; minDamage?:number; position?:Point; speed?:number }
 export interface Effect extends Point { type:'hit'|'heal'|'fire'|'death'; start:number; duration:number; radius:number }
 export interface SpawnEvent { tick:number; kind:EnemyKind; route:number; lane:number }
 export interface SpawnPlan { events:SpawnEvent[]; end:number }
@@ -44,7 +44,7 @@ export class Simulation {
   /** Capture gameplay data only, detached from the live simulation and renderer. */
   snapshot(): BattleSnapshot {
     const data: BattleSnapshot = {
-      compatibility: 'pagras-flash-v1.13-r2', level: this.level.level,
+      compatibility: this.level.level===3?'pagras-flash-v1.13-r2':'opening-flash-v1.13-r1', level: this.level.level,
       tick: this.tick, gold: this.gold, lives: this.lives, wave: this.wave,
       kills: this.kills, leaked: this.leaked, phase: this.phase, paused: this.paused,
       seed: this.seed, rng: this.rng, nextId: this.nextId, groupEnd: this.groupEnd,
@@ -170,13 +170,15 @@ export class Simulation {
   }
   remaining(e:Enemy):number {return this.level.paths[e.route].end-e.node;}
   private living():Enemy[] {return this.enemies.filter(e=>e.hp>0&&!e.escaped);}
+  private active(e:Enemy):boolean {const route=this.level.paths[e.route];return e.hp>0&&!e.escaped&&e.node>=(route.activeStart??route.start)&&e.node<(route.activeEnd??route.end+1);}
+  private targets():Enemy[] {return this.living().filter(e=>this.active(e));}
   private animate(unit:Enemy|Soldier,animation:string):void {if(unit.animation!==animation){unit.animation=animation;unit.animAt=this.tick;}}
   private move(p:Point,to:Point,speed:number):boolean {
     const d=distance(p,to),step=speed*STEP;if(d<=step){p.x=to.x;p.y=to.y;return true;}
     p.x+=(to.x-p.x)*step/d;p.y+=(to.y-p.y)*step/d;return false;
   }
   private hurtEnemy(e:Enemy,value:number,kind:DamageKind,melee=false):void {
-    if(e.hp<=0||e.escaped)return;
+    if(!this.active(e))return;
     const spec=ENEMIES[e.kind];if(melee&&this.random()<spec.dodge){this.effects.push({...e,type:'hit',start:this.tick,duration:8,radius:12});return;}
     const damage=damageAfterArmor(value,kind,spec.armor,spec.magicArmor);e.hp=Math.max(0,e.hp-damage);
     if(e.hp===0){for(const s of this.soldiers.filter(s=>s.target===e.id))this.release(s);e.deadAt=this.tick;e.animation='death';e.animAt=this.tick;this.kills++;this.gold+=spec.gold;this.log('kill',{enemy:e.id,gold:this.gold});}
@@ -215,13 +217,13 @@ export class Simulation {
     }
     const spec=SOLDIERS[s.kind];
     if(s.redeploying){this.animate(s,'running');s.facing=s.rally.x>=s.x?1:-1;s.redeploying=!this.move(s,s.rally,spec.speed);s.regenAt=this.tick+3*FPS;return;}
-    let target=this.enemies.find(e=>e.id===s.target&&e.hp>0&&!e.escaped);
+    let target=this.enemies.find(e=>e.id===s.target&&this.active(e));
     if(target&&!this.blocker(target)){this.release(s);target=undefined;}
     // A primary blocker stays committed. Helpers prefer a new unblocked enemy.
     if(!target||s.meleeSlot!==2){
       const tower=this.towers.find(t=>t.id===s.towerId);
       const center=tower?{x:tower.rally.x,y:tower.rally.y+12.8}:s.home;
-      const candidates=this.living().filter(e=>inRange(center,e,64)).sort((a,b)=>a.node-b.node||a.id-b.id);
+      const candidates=this.targets().filter(e=>inRange(center,e,64)).sort((a,b)=>a.node-b.node||a.id-b.id);
       const unblocked=candidates.find(e=>!this.blocker(e));
       const next=unblocked??(!target?candidates.find(e=>this.blocker(e)):undefined);
       if(next){this.claim(s,next,!!unblocked);target=next;}
@@ -272,9 +274,9 @@ export class Simulation {
       const dx=e.x-oldX,dy=e.y-oldY;e.facing=dx>=0?1:-1;
       this.animate(e,Math.abs(dy)>Math.abs(dx)*1.4?(dy>0?'walkingDown':'walkingUp'):'walkingRightLeft');
     }
-    if(e.node>=route.end){e.escaped=true;this.lives=Math.max(0,this.lives-spec.lives);this.leaked++;this.log('leak',{enemy:e.id,lives:this.lives});}
+    if(e.node>=route.end){e.escaped=true;this.lives=Math.max(0,this.lives-spec.lives);this.leaked++;this.gold+=spec.gold;this.log('leak',{enemy:e.id,lives:this.lives,gold:this.gold});}
   }
-  private target(t:Tower):Enemy|undefined {return this.living().filter(e=>inRange({x:t.x,y:t.y-12},t.kind==='engineer'?this.bombAim(e):e,TOWERS[t.kind].range[t.level-1])&&e.x>=0&&e.x<=1024).sort((a,b)=>this.remaining(a)-this.remaining(b))[0];}
+  private target(t:Tower):Enemy|undefined {return this.targets().filter(e=>inRange({x:t.x,y:t.y-12},t.kind==='engineer'?this.bombAim(e):e,TOWERS[t.kind].range[t.level-1])&&e.x>=0&&e.x<=1024).sort((a,b)=>this.remaining(a)-this.remaining(b))[0];}
   private blocked(e:Enemy):boolean {return !!this.blocker(e);}
   private bombAim(e:Enemy):Point {
     if(this.blocked(e)||this.tick<e.healUntil)return {x:e.x,y:e.y};
@@ -293,14 +295,15 @@ export class Simulation {
   private stepTower(t:Tower):void {
     if(t.kind==='barrack'||this.tick<t.readyAt)return;const spec=TOWERS[t.kind],idx=t.level-1;
     if(t.fireAt>0&&this.tick>=t.fireAt){
-      const target=this.enemies.find(e=>e.id===t.targetId&&e.hp>0&&!e.escaped)??this.target(t);t.fireAt=0;
-      if(target){
-        if(t.kind!=='engineer'||this.blocked(target))t.target={x:target.x,y:target.y};
-        else if(t.targetId!==target.id)t.target=this.bombAim(target);
-        const from={x:t.x+(t.kind==='archer'?(t.shots%2===0?-10:10):0),y:t.y-(t.kind==='mage'?60:50)};
-        const flight=t.kind==='mage'?Math.max(.15,distance(from,target)/300):spec.flight;
-        const to=t.kind==='engineer'?{...t.target}:t.kind==='archer'?this.arrowAim(target,Math.round(flight*FPS)):{x:target.x,y:target.y-10.24};
-        this.projectiles.push({id:this.nextId++,kind:spec.damageKind,from,to,start:this.tick,impact:this.tick+Math.round(flight*FPS),target:target.id,damage:t.kind==='engineer'?spec.damage[idx][1]:this.roll(spec.damage[idx]),radius:spec.radius,...(t.kind==='engineer'?{minDamage:spec.damage[idx][0]}:{})});t.shots++;
+      const target=this.enemies.find(e=>e.id===t.targetId&&this.active(e))??this.target(t);t.fireAt=0;
+      if(target||t.kind==='engineer'){
+        if(target){if(t.kind!=='engineer'||this.blocked(target))t.target={x:target.x,y:target.y};else if(t.targetId!==target.id)t.target=this.bombAim(target);}
+        const aim=target??t.target;
+        const up=aim.y<t.y;
+        const from=t.kind==='mage'?{x:t.x+(up?7.68:-7.68),y:t.y-61.44}:{x:t.x+(t.kind==='archer'?(t.shots%2===0?6.4:-11.52):0),y:t.y-57.6};
+        const flight=t.kind==='mage'?Math.max(.15,distance(from,aim)/300):spec.flight;
+        const to=t.kind==='engineer'?{...t.target}:t.kind==='archer'&&target?this.arrowAim(target,Math.round(flight*FPS)):{x:aim.x,y:aim.y-10.24};
+        this.projectiles.push({id:this.nextId++,kind:spec.damageKind,from,to,start:this.tick,impact:this.tick+(t.kind==='mage'?300:Math.round(flight*FPS)),target:target?.id??0,...(t.kind==='mage'?{position:{...from},speed:1}:{}),damage:t.kind==='engineer'?spec.damage[idx][1]:this.roll(spec.damage[idx]),radius:spec.radius,...(t.kind==='engineer'?{minDamage:spec.damage[idx][0]}:{})});t.shots++;
       }
     }
     if(this.tick>=t.nextAttack&&t.fireAt===0){const target=this.target(t);if(target){t.targetId=target.id;t.target=t.kind==='engineer'?this.bombAim(target):{x:target.x,y:target.y};t.animAt=this.tick;t.fireAt=this.tick+Math.round(spec.windup*FPS);t.nextAttack=this.tick+Math.round(spec.cooldown[idx]*FPS);}}
@@ -314,7 +317,18 @@ export class Simulation {
     for(const t of this.towers)this.stepTower(t);
     const arrowsHit=new Set<number>();
     for(const p of this.projectiles){
-      if(p.kind!=='physical'||this.tick<p.impact-2||this.tick>p.impact)continue;
+      if(p.kind==='magic'&&p.position){
+        const target=this.enemies.find(e=>e.id===p.target&&this.active(e));
+        if(target)p.to={x:target.x+(target.kind==='ogre'?3.84:0),y:target.y-(target.kind==='ogre'?23.04:10.24)};
+        else p.target=0;
+        const dx=p.to.x-p.position.x,dy=p.to.y-p.position.y,angle=Math.atan2(dy,dx);
+        p.speed=Math.min(10,(p.speed??1)+Math.ceil((p.speed??1)*.05));
+        if(this.tick===p.start&&dy<=0)p.position.y-=14.08;
+        p.position.x+=Math.cos(angle)*p.speed*1.28;p.position.y+=Math.sin(angle)*p.speed*1.28;
+        if(distance(p.position,p.to)<p.speed*1.28){if(target)this.hurtEnemy(target,p.damage,'magic');this.effects.push({...p.to,type:'hit',start:this.tick,duration:7,radius:10});arrowsHit.add(p.id);}
+        continue;
+      }
+      if(p.kind!=='physical' ||this.tick<p.impact-2||this.tick>p.impact)continue;
       const e=this.enemies.find(e=>e.id===p.target&&e.hp>0&&!e.escaped);
       if(e&&arrowHits(e,p,this.tick)){this.hurtEnemy(e,p.damage,p.kind);arrowsHit.add(p.id);}
     }

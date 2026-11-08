@@ -1,0 +1,148 @@
+{
+  "description": "Simulation-only fixed command schedule, alternate local seeds; not original-game win rates",
+  "trace": "2026-11-07-farmlands-before-projectile-fix.json",
+  "traceSHA256": "a5c18b49c440944fb7854046532cba7564e737b113b28d9f68ed03accc3ce0f0",
+  "simulationAndContentSHA256": "c487bb72ed9ab66c19c26ae4d2f7eb8c07c1381b6671703f526080190e55b147",
+  "results": [
+    {
+      "seed": 1,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 279
+    },
+    {
+      "seed": 2,
+      "valid": true,
+      "phase": "won",
+      "lives": 3,
+      "gold": 297
+    },
+    {
+      "seed": 3,
+      "valid": true,
+      "phase": "won",
+      "lives": 2,
+      "gold": 297
+    },
+    {
+      "seed": 4,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 252
+    },
+    {
+      "seed": 5,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 297
+    },
+    {
+      "seed": 6,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 252
+    },
+    {
+      "seed": 7,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 297
+    },
+    {
+      "seed": 8,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 261
+    },
+    {
+      "seed": 9,
+      "valid": true,
+      "phase": "won",
+      "lives": 1,
+      "gold": 297
+    },
+    {
+      "seed": 10,
+      "valid": true,
+      "phase": "won",
+      "lives": 1,
+      "gold": 297
+    },
+    {
+      "seed": 11,
+      "valid": true,
+      "phase": "won",
+      "lives": 8,
+      "gold": 297
+    },
+    {
+      "seed": 12,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 288
+    },
+    {
+      "seed": 13,
+      "valid": true,
+      "phase": "won",
+      "lives": 2,
+      "gold": 297
+    },
+    {
+      "seed": 14,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 94
+    },
+    {
+      "seed": 15,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 279
+    },
+    {
+      "seed": 16,
+      "valid": true,
+      "phase": "won",
+      "lives": 1,
+      "gold": 297
+    },
+    {
+      "seed": 17,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 261
+    },
+    {
+      "seed": 18,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 270
+    },
+    {
+      "seed": 19,
+      "valid": true,
+      "phase": "lost",
+      "lives": 0,
+      "gold": 297
+    },
+    {
+      "seed": 20,
+      "valid": true,
+      "phase": "won",
+      "lives": 3,
+      "gold": 297
+    }
+  ]
+}

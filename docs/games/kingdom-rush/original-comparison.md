@@ -1,6 +1,6 @@
 # Pagras: original Flash comparison
 
-Comparison date: November 7, 2026. Target: **original Kingdom Rush, Armor Games Flash v1.13, Pagras campaign, Normal, no hero, no purchased star upgrades**. This replaces the community desktop export as the authority for verified gameplay differences; desktop-scaled geometry/art remain in use.
+Comparison date: November 7, 2026. **Follow-up:** the [opening-map calibration](opening-calibration.md) supersedes this report's mage/artillery release timing and records additional projectile/economy corrections. Historical browser scores below remain as originally observed. Target: **original Kingdom Rush, Armor Games Flash v1.13, Pagras campaign, Normal, no hero, no purchased star upgrades**. This replaces the community desktop export as the authority for verified gameplay differences; desktop-scaled geometry/art remain in use.
 
 ## Reference and method
 
@@ -18,7 +18,7 @@ Comparison date: November 7, 2026. Target: **original Kingdom Rush, Armor Games 
 | Wave breathing room | Empty road immediately started another wave. Flags were available immediately after spawning. | `Level` retains the countdown and reveals flags after fifty ticks. The prototype now does both. |
 | Early-call reward | Extra gold only. | `Level` → `MenuBottom` → power controller: same remaining frame count also advances power recharge. Both spells now receive this benefit. |
 | Damage distribution | Inclusive uniform integer rolls, including the displayed minimum. | `Arrow.getDamage`, `Bolt.getDamage`, `Soldier.getDamage`, `Enemy.getDamage`, `Fireball`: minimum + ceil(random × span). In particular, unupgraded farmers almost always deal 2, not an average of 1.5. All corresponding rolls now follow Flash. |
-| Wind-ups / flights | Archer 5-frame wind-up, 22-frame flight; mage 8-frame wind-up; artillery 12-frame wind-up, 31-frame flight. | Flash archer fires at 7 / arrow travels 17; mage fires at 5; artillery fires at 24 / bomb travels 27. |
+| Wind-ups / flights | Archer 5-frame wind-up, 22-frame flight; mage 8-frame wind-up; artillery 12-frame wind-up, 31-frame flight. | Archer fires at 7 / arrow travels 17; later audit corrected mage/artillery release to 10 frames each (their source expressions subtract counters). Bomb travel remains 27. |
 | Artillery damage | Tier two 20–40, uniform splash damage. | `GameSettings` / `Bomb`: tier two 15–30; maximum at blast center, minimum at edge. Same horizontal radius, flatter 2:3 ellipse. |
 | Artillery aim | Current target position at firing time. | `TowerEngineer` / `Enemy.getNodesSpeed`: predicts ahead along path nodes, uses blocked enemy position, retains charge-time aim. Implemented. |
 | Arrows | Always damage a still-living target at impact. | `Arrow`: velocity prediction, aim error and collision can produce misses. Added lead/error; the follow-up below replaces generic bounds with extracted display-list geometry. |
@@ -81,7 +81,7 @@ Two full local attempts were played through the real UI against the revised comb
 
 The local run lost six lives around the wave-three wulf rush, one near the end of wave eight, and eight near the end of wave nine. Waves ten and eleven leaked none; all ogres were defeated. Purchases, reinforcements and fire were human-timed, not synchronized between games. Five versus ten lives is therefore an observation, **not evidence that ours is a fixed amount harder**. Both runs punish delayed defense and concentrate pressure in the mass rush; source-verified corrections were used instead of arbitrary cash/HP balancing.
 
-The [complete browser-exported trace](playtests/2026-11-07-melee-browser-win.json) records commands and outcomes for seed `12648430`. A regression test replays those command ticks and reproduces the exact local victory, gold, kills and duration. This supplements the browser playthrough; it does not replace it or prove the original shares our RNG.
+The [complete browser-exported trace](playtests/2026-11-07-melee-browser-win.json) records commands and outcomes for seed `12648430`. This command trace originally reproduced the exact local result. The later opening-map source audit changes its replay to thirteen lives and 361 gold; see the follow-up report. The historical browser score and file remain unchanged. This supplements the browser playthrough; it does not replace it or prove the original shares our RNG.
 
 Validation: **32 Kingdom Rush tests**, **4 library boundary tests**, production build. Save compatibility is now `pagras-flash-v1.13-r2` because melee ownership/destination state changed. Older in-progress battles are rejected safely; completed best results remain separate.
 

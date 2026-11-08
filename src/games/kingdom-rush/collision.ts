@@ -23,7 +23,8 @@ export function enemyBounds(enemy:Point&{kind:EnemyKind;animation:string;animAt:
 }
 
 /** One ballistic equation supplies both drawing and hit testing. */
-export function projectilePose(p:{from:Point;to:Point;start:number;impact:number;kind:string},tick:number):Point&{angle:number} {
+export function projectilePose(p:{from:Point;to:Point;start:number;impact:number;kind:string;position?:Point},tick:number):Point&{angle:number} {
+  if(p.position)return {...p.position,angle:Math.atan2(p.to.y-p.position.y,p.to.x-p.position.x)};
   const duration=Math.max(1,p.impact-p.start),t=Math.max(0,Math.min(duration,tick-p.start));
   const vx=(p.to.x-p.from.x)/duration,vy=(p.to.y-p.from.y)/duration;
   const gravity=p.kind==='physical'||p.kind==='explosion'?SCALE:0;

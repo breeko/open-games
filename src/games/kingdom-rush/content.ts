@@ -2,6 +2,7 @@ import source from './reference/level03.json';
 import southport from './reference/level01.json';
 import farmlands from './reference/level02.json';
 import flash from './reference/flash-pagras.json';
+import openingPaths from './reference/flash-opening-paths.json';
 
 export interface Point { x: number; y: number }
 export type TowerKind = 'archer' | 'barrack' | 'mage' | 'engineer';
@@ -11,13 +12,13 @@ export type DamageKind = 'physical' | 'magic' | 'explosion' | 'true';
 export interface SpawnChunk { interval: number; max_same: number; fixed_sub_path: number; creep: string; creep_aux?: string; path: number; interval_next: number; max: number }
 export interface WaveRoute { delay: number; path_index: number; spawns: SpawnChunk[] }
 export interface WaveGroup { interval: number; waves: WaveRoute[] }
-export interface Route { lanes: Point[][]; start: number; end: number }
+export interface Route { lanes: Point[][]; start: number; end: number; activeStart?:number; activeEnd?:number }
 export interface Holder { id: number; pos: Point; rally: Point }
 export type LevelId = 1 | 2 | 3;
 export interface Level { title: string; level: LevelId; maxTowerLevel:number; cash: number; lives: number; holders: Holder[]; paths: Route[]; groups: WaveGroup[] }
 // Flash v1.13 campaign timing on the existing desktop-scaled board.
 export const LEVEL: Level = {...source, level:3, maxTowerLevel:2, groups: flash.groups};
-export const LEVELS:readonly Level[]=[{...southport,level:1},{...farmlands,level:2},LEVEL];
+export const LEVELS:readonly Level[]=[{...southport,...openingPaths.levels['1'],level:1},{...farmlands,...openingPaths.levels['2'],level:2},LEVEL];
 export function getLevel(id:number):Level {const level=LEVELS.find(level=>level.level===id);if(!level)throw new Error(`Unknown Kingdom Rush map: ${id}`);return level;}
 export const FPS = 30;
 export const STEP = 1 / FPS;
@@ -26,8 +27,8 @@ export const TOWER_KINDS: readonly TowerKind[] = ['archer', 'barrack', 'mage', '
 export const TOWERS: Readonly<Record<TowerKind, { name: string; price: readonly number[]; range: readonly number[]; cooldown: number[]; windup: number; damage: readonly (readonly [number, number])[]; damageKind: DamageKind; flight: number; radius: number }>> = {
   archer: { name: 'Archers', price: [70, 110], range: [140, 160], cooldown: [0.8, 0.6], windup: 7/30, damage: [[4,6],[7,11]], damageKind: 'physical', flight: 17/30, radius: 0 },
   barrack: { name: 'Barracks', price: [70,110], range: [145,145], cooldown: [0,0], windup: 0, damage: [[0,0],[0,0]], damageKind: 'physical', flight: 0, radius: 0 },
-  mage: { name: 'Mages', price: [100,160], range: [140,160], cooldown: [1.5,1.5], windup: 5/30, damage: [[9,17],[23,43]], damageKind: 'magic', flight: 0.45, radius: 0 },
-  engineer: { name: 'Artillery', price: [125,220], range: [160,160], cooldown: [3,3], windup: 24/30, damage: [[8,15],[15,30]], damageKind: 'explosion', flight: 27/30, radius: 62.4 },
+  mage: { name: 'Mages', price: [100,160], range: [140,160], cooldown: [1.5,1.5], windup: 10/30, damage: [[9,17],[23,43]], damageKind: 'magic', flight: 0.45, radius: 0 },
+  engineer: { name: 'Artillery', price: [125,220], range: [160,160], cooldown: [3,3], windup: 10/30, damage: [[8,15],[15,30]], damageKind: 'explosion', flight: 27/30, radius: 62.4 },
 };
 export interface EnemySpec { template: string; name: string; hp: number; armor: number; magicArmor: number; speed: number; gold: number; lives: number; damage: readonly [number,number]; cooldown: number; hitTime: number; dodge: number; slot: number }
 export const ENEMIES: Readonly<Record<EnemyKind, EnemySpec>> = {
@@ -58,7 +59,11 @@ export function damageAfterArmor(value:number,kind:DamageKind,armor:number,magic
 
 /** Flash artillery deals maximum damage at the center, minimum at the edge. */
 export function blastDamage(min:number,max:number,center:Point,target:Point,radius:number):number {
-  const fraction=Math.min(1,Math.hypot(target.x-center.x,(target.y-center.y)*1.5)/radius);
+  const dx=target.x-center.x,dy=target.y-center.y;
+  // Flash samples its ellipse at a truncated angle before measuring radial falloff.
+  const angle=(Math.trunc(Math.atan2(dx,dy)*180/Math.PI)-90)*Math.PI/180;
+  const boundary=Math.hypot(radius*Math.cos(angle),radius*2/3*Math.sin(angle));
+  const fraction=Math.min(1,Math.hypot(dx,dy)/boundary);
   return Math.floor(max-(max-min)*fraction);
 }
 
