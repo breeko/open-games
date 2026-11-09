@@ -17,6 +17,14 @@ import type { GridManager } from '../managers/GridManager';
 import type { ZombieType } from '../types';
 import type { Plant } from './Plant';
 
+const SHARED_HEADLESS_POSES: Readonly<Record<string, string>> = {
+  'zombie-cone': 'zombie',
+  'zombie-bucket': 'zombie',
+  'zombie-football-bare': 'zombie-football',
+  'zombie-swim-cone': 'zombie-swim',
+  'zombie-swim-bucket': 'zombie-swim',
+};
+
 export interface ZombieOptions {
   onDeath?:(zombie:Zombie)=>void;
   danceClock?:()=>number;
@@ -251,7 +259,14 @@ export class Zombie extends Phaser.Physics.Arcade.Sprite {
   renderCanvas(renderer:Phaser.Renderer.Canvas.CanvasRenderer,_src:Zombie,camera:Phaser.Cameras.Scene2D.Camera,parent?:Phaser.GameObjects.Components.TransformMatrix):void {
     const moving=settings.current.spriteMotion&&!this.dead&&!this.kelpHeld&&this.frozenMs<=0&&!this.vaulting&&this.emergenceMs<=0&&this.rageDelay<=0;
     const t=this.scene.time.now*(this.chewing ? 0.02 : 0.005)+this.row*1.7+this.waveIndex;
-    renderGroundedArt(renderer,this,camera,parent,ZOMBIE_GROUND_OFFSET,moving?Math.sin(t)*(this.chewing ? 0.035 : 0.022):0);
+    const sway = moving ? Math.sin(t) * (this.chewing ? 0.035 : 0.022) : 0;
+    // Both poses share a canvas and anchor. Swapping the draw frame leaves the body and save state alone.
+    let frame = this.frame;
+    if (this.headless) {
+      const pose = SHARED_HEADLESS_POSES[this.texture.key] ?? this.texture.key;
+      frame = this.scene.textures.getFrame(pose + '-headless') ?? frame;
+    }
+    renderGroundedArt(renderer, this, camera, parent, ZOMBIE_GROUND_OFFSET, sway, 1, 0, frame);
   }
 
   /** Called every frame by `GameScene`. */

@@ -20,12 +20,12 @@ export function plantMuzzleX(key:string):number {return .88+.5-groundX(key);}
 
 /** Render around a grounded pivot, then restore every gameplay transform.
  * Idle motion requires no extra objects, tweens, physics or saved state. */
-export function renderGroundedArt(renderer:Phaser.Renderer.Canvas.CanvasRenderer,src:Phaser.GameObjects.Sprite,camera:Phaser.Cameras.Scene2D.Camera,parent:Phaser.GameObjects.Components.TransformMatrix|undefined,groundOffset:number,sway:number,breath=1,kick=0):void {
+export function renderGroundedArt(renderer:Phaser.Renderer.Canvas.CanvasRenderer,src:Phaser.GameObjects.Sprite,camera:Phaser.Cameras.Scene2D.Camera,parent:Phaser.GameObjects.Components.TransformMatrix|undefined,groundOffset:number,sway:number,breath=1,kick=0,frame=src.frame):void {
  const x=src.x,y=src.y,ox=src.originX,oy=src.originY,sx=src.scaleX,sy=src.scaleY,rotation=src.rotation;
  camera.addToRenderList(src);
  try {
   src.setOrigin(src.flipX?1-groundX(src.texture.key):groundX(src.texture.key),1);
   src.x=x+kick;src.y=y+groundOffset;src.rotation=rotation+sway;src.scaleY=sy*breath;
-  renderer.batchSprite(src,src.frame,camera,parent);
+  renderer.batchSprite(src,frame,camera,parent);
  }finally{src.setOrigin(ox,oy);src.x=x;src.y=y;src.scaleX=sx;src.scaleY=sy;src.rotation=rotation;}
 }

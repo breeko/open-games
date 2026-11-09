@@ -299,6 +299,37 @@ function run(): void {
       }
     }finally{settings.set('spriteMotion',prior);game.resume();}
   });
+  check('a headless zombie draws the headless pose, stops attracting shots and cannot breach the house', () => {
+    const data = freshSession(3);
+    data.plants = [{type:'peashooter',col:0,row:2,hp:300,behavior:{kind:'shooter',cooldown:1,remainder:0,shots:[]}}];
+    data.zombies = [{...exampleZombie('basic',2),x:800}];
+    const scene = open(data);
+    const zombie = scene.children.list.find((child): child is Zombie => child instanceof Zombie)!;
+    zombie.takeDamage(200);
+    const renderer = game.renderer;
+    if (!(renderer instanceof Phaser.Renderer.Canvas.CanvasRenderer)) throw new Error('Expected Canvas renderer');
+    let pose: string | undefined;
+    const draw = renderer.batchSprite;
+    renderer.batchSprite = function (...args) {
+      if (args[0] === zombie) pose = args[1].texture.key;
+      return draw.apply(this, args);
+    };
+    try { step(1); } finally { renderer.batchSprite = draw; }
+    equal(pose, 'zombie-headless', 'drawn zombie pose');
+    const checkpoint = capture(scene);
+    equal(checkpoint.projectiles.length, 0, 'no new shots at a dying zombie');
+    roundTrip(checkpoint, 50);
+    for (const used of [false, true]) {
+      const breach = structuredClone(checkpoint);
+      breach.zombies[0].x = GRID.originX - 41;
+      breach.mowers.find(mower => mower.row === 2)!.used = used;
+      const resumed = open(breach);
+      step(1);
+      const after = capture(resumed);
+      equal(after.zombies.length, 0, 'dying zombie collapses at the house');
+      equal(after.mowers, breach.mowers, 'mower state is preserved');
+    }
+  });
   check('Cherry Bomb swelling respects the half-scale original-art export',()=>{
     const data=freshSession(3);data.plants=[{type:'cherrybomb',col:1,row:2,hp:300,behavior:{kind:'cherry',fuse:1000}}];
     const scene=open(data);step(1);const cherry=scene.children.list.find((p):p is Plant=>p instanceof Plant&&p.plantType==='cherrybomb');

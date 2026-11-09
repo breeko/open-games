@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { DEPTH } from '../constants';
+import artManifest from '../reference/art-manifest.json';
 
 /** Loads original reference art, with generated fallback gameplay textures. */
 export class PreloadScene extends Phaser.Scene {
@@ -14,6 +15,9 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('menu-sky','/games/garden-guard/assets/menu/SelectorScreen_BG.jpg');
     for (const key of ['jalapeno','tanglekelp','zombie-snorkel','zombie-snorkel-swim','zombie-snorkel-eat','threepeater','lilypad','squash','zombie-swim','zombie-swim-cone','zombie-swim-bucket','peashooter','sunflower','wallnut','wallnut-cracked','wallnut-broken','cherrybomb','potatomine','potatomine-armed','snowpea','repeater','chomper','chomper-digest','zombie','zombie-cone','zombie-bucket','zombie-pole','zombie-pole-walk','pea','icepea','sun','mower','puff','puffshroom','sunshroom','sunshroom-grown','fumeshroom','gravebuster','zombie-paper','zombie-paper-angry','zombie-door','hypnoshroom','scaredyshroom','scaredyshroom-hidden','zombie-football','zombie-football-bare','iceshroom','doomshroom','zombie-dancer','zombie-backup']) {
       this.load.image('reference-' + key, '/games/garden-guard/assets/reference/' + key + '.png');
+    }
+    for (const key of Object.keys(artManifest.sprites)) {
+      if (key.endsWith('-headless')) this.load.image(key, '/games/garden-guard/assets/reference/' + key + '.png');
     }
     this.load.image('pool','/games/garden-guard/assets/reference/pool.png');
     this.load.image('night','/games/garden-guard/assets/reference/background2.png');

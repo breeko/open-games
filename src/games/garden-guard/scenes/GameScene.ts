@@ -722,6 +722,11 @@ export class GameScene extends Phaser.Scene {
     for (const child of this.zombies.getChildren()) {
       const zombie = child as Zombie;
       if (zombie.active && zombie.isHostile && zombie.x < GRID.originX - 40) {
+        // A dying zombie can stagger to the house but cannot breach it.
+        if (zombie.isHeadless) {
+          zombie.takeDamage(zombie.remainingHealth);
+          continue;
+        }
         const mower = this.mowers.get(zombie.row);
         if (mower && !mower.used) {
           mower.used = true; mower.moving = true; zombie.takeDamage(99999);

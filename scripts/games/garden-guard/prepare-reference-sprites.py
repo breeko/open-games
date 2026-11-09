@@ -36,6 +36,11 @@ def save_pose(key, image, size, crop=None):
  dest.alpha_composite(image,((size[0]-image.width)//2,size[1]-image.height))
  dest.save(out/(key+'.png'))
 
+def save_headless_pose(key, source, frame, size, crop, exclude=(), exclude_exact=()):
+ # Use the intact pose's crop to preserve its body size and anchor.
+ head_tracks=('anim_head','anim_hair','anim_tongue','zombie_football_helmet')
+ save_pose(key+'-headless',pose(source,frame,exclude+head_tracks,exclude_exact=exclude_exact),size,crop)
+
 def main():
  # Stalk/leaf tracks end before the separately animated heads begin.
  body_tracks=['backleaf','backleaf_left_tip','backleaf_right_tip','stalk_bottom','stalk_top','frontleaf','frontleaf_right_tip','frontleaf_tip_left']
@@ -68,9 +73,14 @@ def main():
  # One shared crop and scale keeps feet and body size identical after armor drops.
  boxes=[im.getbbox() for _,im in zombie_poses]
  shared=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
- for key,im in zombie_poses:save_pose(key,im,(128,240),shared)
+ for key,im in zombie_poses:
+  save_pose(key,im,(128,240),shared)
+ save_headless_pose('zombie','Zombie',11,(128,240),shared,exclude)
  save_pose('zombie-pole',pose('Zombie_polevaulter',0),(260,280))
  save_pose('zombie-pole-walk',pose('Zombie_polevaulter',0,exclude_exact=('Zombie_polevaulter_pole','Zombie_polevaulter_pole2')),(128,240))
+ for key, size, omitted in [('zombie-pole',(260,280),()),('zombie-pole-walk',(128,240),('Zombie_polevaulter_pole','Zombie_polevaulter_pole2'))]:
+  crop=pose('Zombie_polevaulter',0,exclude_exact=omitted).getbbox()
+  save_headless_pose(key,'Zombie_polevaulter',0,size,crop,exclude_exact=omitted)
  # Night plants and shield states, from the original Reanim tracks.
  for key,name,frame,size in [('puffshroom','PuffShroom',4,(72,72)),('fumeshroom','FumeShroom',4,(112,140)),('gravebuster','Gravebuster',11,(112,136))]:
   save_pose(key,pose(name,frame,('blink','sleep')),size)
@@ -82,16 +92,24 @@ def main():
   aligned=Image.new('RGBA',exported.size);aligned.alpha_composite(exported,(0,dy));aligned.save(out/(key+'.png'))
  paper=[pose('Zombie_paper',f) for f in [25,145]]
  boxes=[im.getbbox() for im in paper];crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
- for key,im in zip(['zombie-paper','zombie-paper-angry'],paper):save_pose(key,im,(160,224),crop)
+ for key,im,frame in zip(['zombie-paper','zombie-paper-angry'],paper,[25,145]):
+  save_pose(key,im,(160,224),crop)
+  save_headless_pose(key,'Zombie_paper',frame,(160,224),crop)
  door=pose('Zombie',11,tuple(x for x in exclude if x!='screendoor'))
  save_pose('zombie-door',door,(160,240),(131,100,318,384))
+ save_headless_pose('zombie-door','Zombie',11,(160,240),(131,100,318,384),tuple(x for x in exclude if x!='screendoor'))
  for key,name,frame,size in [('hypnoshroom','HypnoShroom',0,(104,104)),('scaredyshroom','ScaredyShroom',5,(88,128)),('scaredyshroom-hidden','ScaredyShroom',49,(88,128))]:
   save_pose(key,pose(name,frame,('sleep','blink','eye2')),size)
  football=[pose('Zombie_football',21),pose('Zombie_football',21,exclude_exact=('zombie_football_helmet',))]
  boxes=[im.getbbox() for im in football];crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
- for key,im in zip(['zombie-football','zombie-football-bare'],football):save_pose(key,im,(160,240),crop)
+ for key,im in zip(['zombie-football','zombie-football-bare'],football):
+  save_pose(key,im,(160,240),crop)
+ save_headless_pose('zombie-football','Zombie_football',21,(160,240),crop)
  for key,name,frame,size in [('iceshroom','IceShroom',4,(100,110)),('doomshroom','DoomShroom',0,(112,128)),('zombie-dancer','Zombie_disco',46,(144,240)),('zombie-backup','Zombie_backup',0,(128,224))]:
-  save_pose(key,pose(name,frame,('blink','sleep','eye2')),size)
+  image=pose(name,frame,('blink','sleep','eye2'))
+  save_pose(key,image,size)
+  if key.startswith('zombie-'):
+   save_headless_pose(key,name,frame,size,image.getbbox(),('blink','sleep','eye2'))
  for key,source in [('ice-front','icetrap.png'),('ice-back','icetrap2.png')]:Image.open(base/'images'/source).save(out/(key+'.png'))
  crater=Image.open(base/'images/crater.png');crater.crop((0,0,crater.width//2,crater.height)).save(out/'crater.png')
  # Original projectiles, sized in board coordinates rather than their source canvas.

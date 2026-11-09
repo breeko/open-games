@@ -44,7 +44,7 @@ Counts are stochastic: original levels define budgets and weighted rules, not on
 
 - Level 1-1 and 1-2 skip scripted tutorial gates and their countdown resets (99 / 999 ticks). The source initialization countdowns are retained. This deliberately differs from first-time tutorial pacing.
 - Lane selection still avoids the last two lanes rather than reproducing the original weighted lane picker. Wave composition has a separate random stream from placements/countdowns; seed 12345 is portable, not an original save seed.
-- Artwork is a flattened pose, not the original moving skeleton. Anchor/body overlays expose the distinction. Headless damage behavior has no matching headless art yet; the flag uses a simple flag marker.
+- Artwork is a flattened pose, not the original moving skeleton. Anchor/body overlays expose the distinction. Headless poses omit the original head layers and keep the intact body anchor. The flag uses a simple flag marker.
 - Collision body dimensions and spawn mapping are improved, but plant attack-range checks, pole vault trajectory/landing, mower collision, and projectile overlap are still approximations. Post-vault speed resets omit difficulty scaling.
 - Shot release, mine rise, sunflower release, and eating animation phase offsets are omitted; physics collisions run on Phaser's frame clock. Very slow frames can still affect combat despite independent wave/motion clocks. Visible time is simulation time, not guaranteed wall time under throttling.
 - Bowling / 1-10 use corrected wave budgets, but conveyor supply, explosive nuts, bounce damage, and inventory weighting are not audited implementations. Their overall difficulty is **not** yet original-equivalent.

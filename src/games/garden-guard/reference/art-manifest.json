@@ -210,6 +210,58 @@
     "zombie-snorkel-eat": {
       "width": 110,
       "height": 148
+    },
+    "zombie-headless": {
+      "width": 128,
+      "height": 240
+    },
+    "zombie-pole-headless": {
+      "width": 260,
+      "height": 280
+    },
+    "zombie-pole-walk-headless": {
+      "width": 128,
+      "height": 240
+    },
+    "zombie-paper-headless": {
+      "width": 160,
+      "height": 224
+    },
+    "zombie-paper-angry-headless": {
+      "width": 160,
+      "height": 224
+    },
+    "zombie-door-headless": {
+      "width": 160,
+      "height": 240
+    },
+    "zombie-football-headless": {
+      "width": 160,
+      "height": 240
+    },
+    "zombie-dancer-headless": {
+      "width": 144,
+      "height": 240
+    },
+    "zombie-backup-headless": {
+      "width": 128,
+      "height": 224
+    },
+    "zombie-snorkel-headless": {
+      "width": 128,
+      "height": 240
+    },
+    "zombie-snorkel-swim-headless": {
+      "width": 90,
+      "height": 80
+    },
+    "zombie-snorkel-eat-headless": {
+      "width": 110,
+      "height": 148
+    },
+    "zombie-swim-headless": {
+      "width": 128,
+      "height": 240
     }
   }
 }

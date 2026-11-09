@@ -17,7 +17,10 @@ art.save_pose('jalapeno',art.pose('Jalapeno',5,('blink',)),(96,128))
 # Match the walking export's ~1.66 raster factor for each cropped state;
 # fitting every cropped head into a full-width canvas would enlarge its face.
 for key,frame,size in [('zombie-snorkel',22,(128,240)),('zombie-snorkel-swim',78,(90,80)),('zombie-snorkel-eat',97,(110,148))]:
- art.save_pose(key,art.pose('Zombie_snorkle',frame,('anim_head_lips','anim_head_jaw','anim_head_snorkle')) ,size)
+ omitted=('anim_head_lips','anim_head_jaw','anim_head_snorkle')
+ image=art.pose('Zombie_snorkle',frame,omitted)
+ art.save_pose(key,image,size)
+ art.save_headless_pose(key,'Zombie_snorkle',frame,size,image.getbbox(),omitted)
 exclude=('flag','screendoor','whitewater','mustache','tongue','bucket','cone','hair')
 tube=art.pose('Zombie',260,only=['Zombie_duckytube']);tube_box=tube.getbbox()
 if not tube_box:raise RuntimeError('Missing original duck tube track')
@@ -28,7 +31,9 @@ for key,gear in [('zombie-swim',None),('zombie-swim-cone','anim_cone'),('zombie-
  poses.append((key,im))
 boxes=[im.getbbox() for _,im in poses]
 crop=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),tube_box[1]+round((tube_box[3]-tube_box[1])*.72))
-for key,im in poses:art.save_pose(key,im,(128,240),crop)
+for key,im in poses:
+ art.save_pose(key,im,(128,240),crop)
+art.save_headless_pose('zombie-swim','Zombie',260,(128,240),crop,exclude)
 # Canvas path in PoolEffect::PoolEffectDraw places the original pool at (34,278)
 # in the 800x600 camera view (background source crop starts at X=220).
 background=Image.open(art.base/'images/background3.jpg').convert('RGBA')
