@@ -10,6 +10,7 @@
   and docs/games/kingdom-rush/original-comparison.md. Newer Dove export is
   visual data only: do not import its cash, combat buffs, upgrades or AI.
 - Keep simulation independent of DOM/rendering, seeded, at 30 source ticks/second.
+- Keep browser testing muted: turn off music and sound effects in the original reference and mute any video ads before continuing.
 - Record known approximations; do not claim exact retail fidelity without comparison.
 - Opening-map calibration evidence and outstanding parity limits: docs/games/kingdom-rush/opening-calibration.md.
 - Keep original Ironhide artwork provenance separate from authored implementation.

@@ -1,0 +1,21 @@
+{
+  "note": "Visual reference only. Original Ironhide artwork; see credits. Navigation is authored TypeScript, with six available locations. Flag positions are adapted for touch spacing.",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/map_kr1/definition.json",
+      "sha256": "9daa48dcd11bff34ca4f7cb285d0230aef0611260d1af32ab5337d7dbfe78ce9"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/map_kr1/atlas.json",
+      "sha256": "18607548dbb39dd0079b3f1b081035c168b4cdc1a20ec1a5f3fd513f2dd0bf22"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wicked-knife/KingdomRushWeb/3e4eac4110ce0e228f1300ca145cd7c29d2dbc8a/data/map_kr1/atlas_11.png",
+      "sha256": "e6eccc12ef2db4864f9383cc5f29b7cd892a2ade40d07924eb851ee391881fe9"
+    }
+  ],
+  "frames": [
+    "map_background_kr1",
+    "map_flag_0020"
+  ]
+}

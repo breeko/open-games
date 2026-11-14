@@ -50,3 +50,10 @@ See level06-manifest.json and the-citadel.md in the source documentation.
 Ranger/Arcane skills and the power star-upgrade chains use factual numeric
 research from the same Flash v1.13 binary. See skills-manifest.json and
 skills-and-power-upgrades.md in the source documentation for rules and limits.
+
+Campaign navigation uses map_background_kr1 and map_flag_0020 from the same
+pinned KingdomRushWeb visual export (data/map_kr1). This is the later colored
+map artwork, not the Flash v1.13 parchment map. Flag spacing, route overlay,
+English briefings and navigation are authored for this prototype. All six
+implemented maps remain unlocked. See campaign-map-manifest.json in docs for
+input hashes and scripts/games/kingdom-rush/prepare-campaign-map.py for extraction.

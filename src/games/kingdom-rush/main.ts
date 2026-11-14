@@ -1,4 +1,5 @@
 import './style.css';
+import {renderCampaignMap} from './campaign-map';
 import { maxTowerTier, distance, FPS, getLevel, LEVELS, TOWER_KINDS, TOWERS, type Point, type LevelId } from './content';
 import { Renderer } from './render';
 import {renderFieldGuide,towerName,towerSummary,type GuideTopic} from './field-guide';
@@ -146,19 +147,18 @@ element('close-guide',HTMLButtonElement).onclick=()=>guideDialog.close();
 guideTopic.onchange=refreshGuide;
 guideDialog.addEventListener('close',()=>{if(resumeAfterGuide)sim.setPaused(false);resumeAfterGuide=false;accumulator=0;contextKey='';saveSession();});
 const mapDialog=element('map-dialog',HTMLDialogElement);
+let resumeAfterMaps=false;
+mapDialog.addEventListener('close',()=>{if(resumeAfterMaps)sim.setPaused(false);resumeAfterMaps=false;accumulator=0;contextKey='';saveSession();});
 function goToMap(level:LevelId):void {saveSession();const url=new URL(location.href);url.searchParams.set('level',String(level));location.assign(url);}
 function openMaps():void {
-  if(sim.phase==='running'||sim.phase==='ready')sim.setPaused(true);accumulator=0;saveSession();
-  const list=element('map-list',HTMLDivElement);list.replaceChildren();
-  for(const level of LEVELS){
-    const returnToCampaign=sim.practice&&level.level===currentLevel.level;
-    const card=document.createElement('button');card.className='map-card';card.setAttribute('aria-label',returnToCampaign?`Return to ${level.title} campaign`:`Play ${level.title}`);
-    const image=document.createElement('img');image.src=level.level===3?'/games/kingdom-rush/assets/pagras.png':`/games/kingdom-rush/assets/level${String(level.level).padStart(2,'0')}/background.png`;image.alt='';
-    const name=document.createElement('strong');name.textContent=`${level.level}. ${level.title}`;
-    const detail=document.createElement('span');const result=gameStores(undefined,level.level).results.read();detail.textContent=`${returnToCampaign?'Return to saved campaign · ':''}${level.groups.length} waves · ${result.status==='valid'&&result.value>0?`★ ${starsForLives(result.value)}/3 · Best: ${result.value} lives`:'Not yet defended'}`;
-    if(level.level===currentLevel.level)card.setAttribute('aria-current','true');
-    card.append(image,name,detail);card.onclick=()=>{if(level.level===currentLevel.level&&!returnToCampaign){mapDialog.close();return;}goToMap(level.level);};list.append(card);
-  }
+  resumeAfterMaps=!sim.paused&&(sim.phase==='running'||sim.phase==='ready');
+  if(resumeAfterMaps)sim.setPaused(true);accumulator=0;saveSession();
+  renderCampaignMap(element('map-list',HTMLDivElement),{
+    current:currentLevel.level,practice:sim.practice,
+    bestLives:level=>{const result=gameStores(undefined,level).results.read();return result.status==='valid'?result.value:0;},
+    hasBattle:level=>{const result=gameStores(undefined,level).session.read();return result.status==='valid'&&(result.value.battle.phase==='ready'||result.value.battle.phase==='running');},
+    play:level=>{if(level===currentLevel.level&&!sim.practice){mapDialog.close();return;}goToMap(level);},
+  });
   mapDialog.showModal();
 }
 element('campaign',HTMLButtonElement).onclick=openMaps;
@@ -188,7 +188,7 @@ element('restart',HTMLButtonElement).onclick=reset;element('apply-seed',HTMLButt
 next.onclick=()=>{if(sim.callWave()){mode='none';contextKey='';}};
 fire.onclick=()=>setMode('fire');reinforce.onclick=()=>setMode('reinforcements');
 document.addEventListener('keydown',event=>{if(guideDialog.open||mapDialog.open||event.target instanceof HTMLInputElement||event.target instanceof HTMLSelectElement)return;if(event.code==='Space'){event.preventDefault();if(sim.phase==='running'||sim.phase==='ready'){sim.setPaused(!sim.paused);saveSession();}}if(event.code==='Escape'){mode='none';selected=null;contextKey='';}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){resumeAfterGuide=false;sim.setPaused(true);accumulator=0;contextKey='';}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){resumeAfterGuide=false;resumeAfterMaps=false;sim.setPaused(true);accumulator=0;contextKey='';}});
 // Runs after button actions, including dynamically created build/upgrade controls.
 document.addEventListener('click',event=>{if(event.target instanceof Element&&event.target.closest('button'))saveSession();});
 element('export',HTMLButtonElement).onclick=()=>{const url=URL.createObjectURL(new Blob([sim.export()],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`level${currentLevel.level}-${sim.seed}-${sim.tick}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
@@ -205,7 +205,7 @@ function frame(now:number):void {
 }
 const autosave=startAutosave(saveSession);
 import.meta.hot?.dispose(()=>{autosave.flush();autosave.stop();});
-Renderer.create(canvas,currentLevel.level).then(r=>{renderer=r;loading.hidden=true;showBest();last=performance.now();requestAnimationFrame(frame);}).catch(error=>{loading.textContent=`The battlefield could not load. ${error instanceof Error?error.message:'Try reloading.'}`;});
+Renderer.create(canvas,currentLevel.level).then(r=>{renderer=r;loading.hidden=true;showBest();if(!new URL(location.href).searchParams.has('level'))openMaps();last=performance.now();requestAnimationFrame(frame);}).catch(error=>{loading.textContent=`The battlefield could not load. ${error instanceof Error?error.message:'Try reloading.'}`;});
 
 const practiceWave=element('practice-wave',HTMLSelectElement);
 for(let i=1;i<=currentLevel.groups.length;i++){const option=document.createElement('option');option.value=String(i);option.textContent=`Wave ${i}`;practiceWave.append(option);}
