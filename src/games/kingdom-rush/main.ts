@@ -15,6 +15,7 @@ const canvas=element('battlefield',HTMLCanvasElement),context=element('context',
 const pause=element('pause',HTMLButtonElement),speed=element('speed',HTMLButtonElement),next=element('next-wave',HTMLButtonElement);
 const fire=element('fire',HTMLButtonElement),reinforce=element('reinforcements',HTMLButtonElement);
 const gold=element('gold',HTMLElement),lives=element('lives',HTMLElement),wave=element('wave',HTMLElement),phase=element('phase-label',HTMLElement);
+const placementHint=element('placement-hint',HTMLElement);
 const fireTime=element('fire-time',HTMLElement),reinforceTime=element('reinforce-time',HTMLElement),debug=element('debug',HTMLInputElement);
 const seedInput=element('seed',HTMLInputElement),message=element('message',HTMLDivElement),loading=element('loading',HTMLDivElement);
 const requestedLevel=Number(new URL(location.href).searchParams.get('level')??3);
@@ -27,6 +28,13 @@ let trainingReadable=savedTraining.status==='valid'||savedTraining.status==='mis
 let powerProfile:PowerLoadout=savedTraining.status==='valid'?savedTraining.value:{...NO_POWER_UPGRADES};
 let sim=new Simulation(undefined,currentLevel.level,powerProfile),renderer:Renderer,selected:number|null=null,mode:'none'|'rally'|'fire'|'reinforcements'='none',pointer:Point|null=null,multiplier:1|2=1;
 let contextKey='',messageUntil=0,recorded=false;
+const placementPrompts={
+  none:'',
+  rally:'Tap a road to rally',
+  fire:'Tap to cast Rain of Fire',
+  reinforcements:'Tap a road to deploy',
+};
+let placementError='',placementErrorUntil=0;
 const stores=gameStores(undefined,currentLevel.level),savedSession=stores.session.read();
 const saveStatus=element('save-status',HTMLParagraphElement);
 let savingEnabled=savedSession.status==='valid'||savedSession.status==='missing';
@@ -59,15 +67,40 @@ function saveSession():void {
 }
 function setText(node:HTMLElement,text:string):void {if(node.textContent!==text)node.textContent=text;}
 function notify(text:string):void {message.textContent=text;messageUntil=performance.now()+3000;message.classList.add('visible');}
-function reset():void {if(sim.practice){startPractice();return;}const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level,powerProfile);selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();}
-function setMode(value:typeof mode):void {mode=mode===value?'none':value;contextKey='';if(mode==='rally')notify('Tap a nearby road to move your soldiers.');if(mode==='fire')notify('Tap the battlefield to call down fire.');if(mode==='reinforcements')notify('Tap a road to summon two reinforcements.');}
+function reset():void {if(sim.practice){startPractice();return;}const seed=Number(seedInput.value);sim=new Simulation(Number.isFinite(seed)?seed:0xc0ffee,currentLevel.level,powerProfile);selected=null;setMode('none');pointer=null;recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();}
+function setMode(value:typeof mode):void {
+  mode=mode===value?'none':value;
+  placementErrorUntil=0;
+  contextKey='';
+}
+function rejectPlacement(text:string):void {
+  placementError=text;
+  placementErrorUntil=performance.now()+1600;
+}
+function updatePlacementHint():void {
+  const active=mode!=='none'&&!sim.paused&&(sim.phase==='ready'||sim.phase==='running');
+  const invalid=active&&performance.now()<placementErrorUntil;
+  setText(placementHint,invalid?placementError:active?placementPrompts[mode]:'');
+  placementHint.toggleAttribute('data-invalid',invalid);
+}
 function renderContext():void {
   const tower=sim.towers.find(t=>t.id===selected),key=`${selected}/${tower?.kind}/${tower?.level}/${tower?.poison}/${tower?.thorns}/${tower?.deathRay}/${tower?.teleport}/${mode}/${sim.phase}/${sim.paused}/${sim.wave}/${sim.elfCampRepaired}/${sim.soldiers.filter(s=>s.kind==='elf'&&s.hp>0).length}`;
   if(key===contextKey){context.querySelectorAll<HTMLButtonElement>('button[data-price]').forEach(b=>b.disabled=b.dataset.unavailable==='true'||Number(b.dataset.price)>sim.gold||sim.paused||sim.phase==='won'||sim.phase==='lost');return;}
-  contextKey=key;context.dataset.active=String(selected!==null||mode!=='none'||sim.phase==='won'||sim.phase==='lost');context.replaceChildren();
+  contextKey=key;context.toggleAttribute('data-placement',mode!=='none'&&sim.phase!=='won'&&sim.phase!=='lost');context.dataset.active=String(selected!==null||mode!=='none'||sim.phase==='won'||sim.phase==='lost');context.replaceChildren();
   const button=(label:string,action:()=>void,price?:number):HTMLButtonElement=>{const b=document.createElement('button');b.textContent=label;b.disabled=sim.paused||sim.phase==='won'||sim.phase==='lost';b.onclick=()=>{action();contextKey='';};if(price!==undefined)b.dataset.price=String(price);context.append(b);return b;};
   if(sim.phase==='won'||sim.phase==='lost') {const p=document.createElement('p');p.textContent=sim.phase==='won'?(sim.practice?`Practice cleared — ${sim.lives} lives saved. No stars awarded.`:`${currentLevel.title} defended! ★ ${starsForLives(sim.lives)}/3`):'Try another defense.';context.append(p);const b=document.createElement('button');b.textContent=sim.practice?'Return to campaign':sim.phase==='won'&&currentLevel.level<LEVELS.length?'Next map →':'Choose map';b.onclick=()=>{if(sim.practice){location.reload();return;}const nextLevel=LEVELS.find(level=>level.level===currentLevel.level+1);if(sim.phase==='won'&&nextLevel)goToMap(nextLevel.level);else openMaps();};context.append(b);return;}
-  if(mode!=='none') {const p=document.createElement('p');p.textContent=mode==='rally'?'Choose a rally point':mode==='fire'?'Choose where the fire falls':'Choose a road for your troops';context.append(p);if(mode==='fire'||mode==='reinforcements'){const info=button('ⓘ Stats',()=>openGuide('powers'));info.disabled=false;}button('Cancel',()=>{mode='none';});return;}
+  if(mode!=='none') {
+    if(mode==='fire'||mode==='reinforcements'){
+      const info=button('ⓘ Stats',()=>openGuide('powers'));
+      info.disabled=false;
+      info.className='placement-stats';
+    }
+    const cancel=button('Cancel',()=>setMode('none'));
+    cancel.disabled=false;
+    cancel.className='cancel-placement';
+    cancel.setAttribute('aria-label','Cancel placement');
+    return;
+  }
   if(selected===currentLevel.elfCamp?.id){
     const label=document.createElement('span');label.className='tower-label';label.textContent='Sylvan elves';context.append(label);
     if(!sim.elfCampRepaired)button('Repair ◆ 100',()=>{sim.repairElves();},100);
@@ -112,6 +145,7 @@ function updateHud():void {
   next.dataset.short=sim.wave===0?'▶':sim.wave===currentLevel.groups.length?'✓':sim.canCall?'▶':'⌛';next.setAttribute('aria-label',`${label}. ${detail}`);
   if(next.firstChild?.textContent!==label||next.lastChild?.textContent!==detail){next.replaceChildren(document.createTextNode(label));const sub=document.createElement('span');sub.textContent=detail;next.append(sub);}
   setText(phase,(sim.practice?'Practice · ':'')+(sim.paused?'Battle paused':sim.phase==='ready'?'Prepare your defenses':sim.phase==='won'?`${currentLevel.title} defended`:sim.phase==='lost'?'Defense broken':sim.canCall&&sim.nextIn>0?`Next wave in ${Math.ceil(sim.nextIn)}s`:'Hold the road'));
+  updatePlacementHint();
   renderContext();
   if(performance.now()>messageUntil)message.classList.remove('visible');
   if(!recorded&&sim.phase==='won'&&!sim.practice){
@@ -170,12 +204,20 @@ function showBest():void {
 function point(event:PointerEvent):Point {const rect=canvas.getBoundingClientRect();return{x:(event.clientX-rect.left)*1024/rect.width,y:(event.clientY-rect.top)*768/rect.height};}
 canvas.addEventListener('pointermove',event=>{pointer=point(event);});
 canvas.addEventListener('pointerleave',()=>{pointer=null;});
-canvas.addEventListener('pointercancel',()=>{pointer=null;mode='none';contextKey='';});
+canvas.addEventListener('pointercancel',()=>{pointer=null;setMode('none');});
 canvas.addEventListener('pointerdown',event=>{
   if(!event.isPrimary||event.button!==0)return;event.preventDefault();canvas.focus({preventScroll:true});const p=point(event);pointer=p;
   if(sim.paused||sim.phase==='won'||sim.phase==='lost')return;
-  if(mode==='fire'||mode==='reinforcements'){if(sim.cast(mode,p)){mode='none';contextKey='';saveSession();}else notify(mode==='reinforcements'?'Choose a road for your reinforcements.':'That power is not ready.');return;}
-  if(mode==='rally'){if(selected!==null&&sim.setRally(selected,p)){mode='none';contextKey='';saveSession();}else notify('Choose a road within the barracks’ range.');return;}
+  if(mode==='fire'||mode==='reinforcements'){
+    if(sim.cast(mode,p)){setMode('none');saveSession();}
+    else rejectPlacement(mode==='reinforcements'?'Deploy on the road':'Rain of Fire is recharging');
+    return;
+  }
+  if(mode==='rally'){
+    if(selected!==null&&sim.setRally(selected,p)){setMode('none');saveSession();}
+    else rejectPlacement('Use a road within rally range');
+    return;
+  }
   const tower=sim.towers.filter(t=>Math.abs(t.x-p.x)<43&&p.y>=t.y-90&&p.y<t.y+18).sort((a,b)=>distance(a,p)-distance(b,p))[0];
   const sites=currentLevel.elfCamp?[...currentLevel.holders,currentLevel.elfCamp]:currentLevel.holders;
   const holder=sites.filter(h=>Math.abs(h.pos.x-p.x)<45&&Math.abs(h.pos.y-10-p.y)<30).sort((a,b)=>distance(a.pos,p)-distance(b.pos,p))[0];
@@ -185,9 +227,9 @@ canvas.addEventListener('pointerdown',event=>{
 pause.onclick=()=>{sim.setPaused(!sim.paused);accumulator=0;contextKey='';};
 speed.onclick=()=>{multiplier=multiplier===1?2:1;speed.textContent=`${multiplier}×`;};
 element('restart',HTMLButtonElement).onclick=reset;element('apply-seed',HTMLButtonElement).onclick=reset;
-next.onclick=()=>{if(sim.callWave()){mode='none';contextKey='';}};
+next.onclick=()=>{if(sim.callWave())setMode('none');};
 fire.onclick=()=>setMode('fire');reinforce.onclick=()=>setMode('reinforcements');
-document.addEventListener('keydown',event=>{if(guideDialog.open||mapDialog.open||event.target instanceof HTMLInputElement||event.target instanceof HTMLSelectElement)return;if(event.code==='Space'){event.preventDefault();if(sim.phase==='running'||sim.phase==='ready'){sim.setPaused(!sim.paused);saveSession();}}if(event.code==='Escape'){mode='none';selected=null;contextKey='';}});
+document.addEventListener('keydown',event=>{if(guideDialog.open||mapDialog.open||event.target instanceof HTMLInputElement||event.target instanceof HTMLSelectElement)return;if(event.code==='Space'){event.preventDefault();if(sim.phase==='running'||sim.phase==='ready'){sim.setPaused(!sim.paused);saveSession();}}if(event.code==='Escape'){setMode('none');selected=null;}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){resumeAfterGuide=false;resumeAfterMaps=false;sim.setPaused(true);accumulator=0;contextKey='';}});
 // Runs after button actions, including dynamically created build/upgrade controls.
 document.addEventListener('click',event=>{if(event.target instanceof Element&&event.target.closest('button'))saveSession();});
@@ -229,6 +271,6 @@ function startPractice():void {
   if(!practice){notify('Choose a valid practice wave.');return;}
   saveSession();
   sim=practice;
-  selected=null;mode='none';pointer=null;contextKey='';recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();
+  selected=null;setMode('none');pointer=null;recorded=false;accumulator=0;savingEnabled=true;finishedSessionCleared=false;terminalSaveAttempted=false;saveSession();
 }
 element('practice-start',HTMLButtonElement).onclick=startPractice;

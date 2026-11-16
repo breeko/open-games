@@ -5,7 +5,7 @@
     <main id="game">
       <header class="masthead"><div><a href="/" class="back">← Open Games</a><h1>Kingdom Rush <span id="level-title">Pagras</span></h1></div><div class="header-actions"><a class="mobile-exit" href="/" aria-label="Back to games" title="Back to games">←</a><button id="campaign" aria-label="Choose map" title="Choose map">Campaign</button><button id="guide" aria-label="Tower and power guide" title="Tower and power guide">ⓘ Guide</button><button id="pause">Pause</button><button id="speed" aria-label="Toggle game speed">1×</button><button id="restart" aria-label="Restart" title="Restart">Restart</button></div></header>
       <section class="battle" aria-label="Pagras battlefield">
-        <div class="hud"><div class="hud-values"><span class="gold">◆ <strong id="gold">300</strong></span><span class="lives">♥ <strong id="lives">20</strong></span><span class="wave">WAVE <strong id="wave">0 / 11</strong></span></div><span id="phase-label">Prepare your defenses</span></div>
+        <div class="hud"><div class="hud-values"><span class="gold">◆ <strong id="gold">300</strong></span><span class="lives">♥ <strong id="lives">20</strong></span><span class="wave">WAVE <strong id="wave">0 / 11</strong></span></div><div class="hud-status"><span id="phase-label">Prepare your defenses</span><span id="placement-hint" role="status"></span></div></div>
         <canvas id="battlefield" width="1024" height="768" tabindex="0" aria-label="Battlefield. Tap a marked foundation to build a tower."></canvas>
         <div id="loading" role="status">Preparing the battlefield…</div>
         <div class="toast" id="message" role="status"></div>
